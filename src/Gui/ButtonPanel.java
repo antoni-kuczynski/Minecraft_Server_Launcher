@@ -1,4 +1,4 @@
-package Main;
+package Gui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +28,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     public ButtonPanel() {
         setLayout(new GridLayout(10, 5, 10, 10));
         // Add 10 JButtons to the panel
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 20; i++) {
             JButton button = createButton("Button " + i);
             setButtonIcon(button, "app_icon.png");
 

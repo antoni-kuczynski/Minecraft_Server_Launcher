@@ -1,13 +1,11 @@
-package Main;
+package Gui;
 
-import Main.ButtonPanel;
-import Main.ConfigStuffPanel;
-import Main.TitlePanel;
+import Servers.Config;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
+import java.io.IOException;
 
 public class Frame extends JFrame {
 
@@ -16,7 +14,7 @@ public class Frame extends JFrame {
 
         // Set up the JFrame
         setIconImage(new ImageIcon("app_icon.png").getImage());
-        setTitle("Minecraft Server Launcher V2");
+        setTitle("Minecraft Server Server.Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create the JPanels
@@ -30,16 +28,17 @@ public class Frame extends JFrame {
         add(configStuffPanel, BorderLayout.PAGE_END);
 
         // Set the JFrame size and make it visible
-        setSize(500, 500);
+        setSize(500, 700);
         setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf() );
         } catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
         new Frame();
+        new Config();
     }
 }
