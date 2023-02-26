@@ -1,11 +1,16 @@
 package Gui;
 
+import Servers.Config;
+import Servers.Runner;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class ButtonPanel extends JPanel implements ActionListener {
+    private final Config config = new Config();
 
     public void setButtonIcon(JButton button, String iconPath) {
         ImageIcon icon = new ImageIcon(iconPath);
@@ -25,12 +30,13 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
 
 
-    public ButtonPanel() {
+    public ButtonPanel() throws IOException {
+
         setLayout(new GridLayout(10, 5, 10, 10));
         // Add 10 JButtons to the panel
-        for (int i = 1; i <= 20; i++) {
-            JButton button = createButton("Button " + i);
-            setButtonIcon(button, "app_icon.png");
+        for (int i = 0; i < config.getData().size(); i++) {
+            JButton button = createButton(config.getData().get(i).getButtonText());
+            setButtonIcon(button, config.getData().get(i).getPathToButtonIcon());
 
             button.setPreferredSize(new Dimension(100, 40)); // Set the preferred size of the button
             button.setFont(new Font("Arial", Font.PLAIN, 14)); // Set the font and size of the button text
@@ -49,6 +55,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String index = e.getActionCommand(); // Get the action command (i.e., the index of the button)
-        System.out.println("Button " + index + " was clicked!"); // Print the index of the clicked button
+        Runner runner = new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile());
+        System.out.println(config.getData().get(Integer.parseInt(index)).getButtonText());
     }
 }

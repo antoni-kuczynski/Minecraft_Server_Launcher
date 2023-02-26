@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Frame extends JFrame {
 
-    public Frame() {
+    public Frame() throws IOException {
 
 
         // Set up the JFrame

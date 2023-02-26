@@ -6,9 +6,16 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 
 public class Config {
+
+    public ArrayList<ButtonData> getData() {
+        return data;
+    }
+
     private JSONObject serverList;
+    private final ArrayList<ButtonData> data = new ArrayList<>();
 
     public static String readFileString(File f) throws IOException {
         StringBuilder bobTheBuilder = new StringBuilder();
@@ -30,11 +37,12 @@ public class Config {
             String pathToServerFolder = jsonObject.getString("pathToServerFolder");
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
 
-            // Do something with the parsed data
-            System.out.println("Button text: " + buttonText);
-            System.out.println("Path to button icon: " + pathToButtonIcon);
-            System.out.println("Path to server folder: " + pathToServerFolder);
-            System.out.println("Path to server jar file: " + pathToServerJarFile);
+            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile));
+//            // Do something with the parsed data
+//            System.out.println("Button text: " + buttonText);
+//            System.out.println("Path to button icon: " + pathToButtonIcon);
+//            System.out.println("Path to server folder: " + pathToServerFolder);
+//            System.out.println("Path to server jar file: " + pathToServerJarFile);
         }
     }
 
