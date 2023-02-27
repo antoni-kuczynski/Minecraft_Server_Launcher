@@ -1,32 +1,38 @@
 [
   {
-    "buttonText": "Server 1",
+    "buttonText": "1.18.1",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "",
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\szkola_1.18.1\\",
     "pathToServerJarFile": ""
   },
   {
-    "buttonText": "Server 2",
+    "buttonText": "1.17.1",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "",
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.17.1\\",
     "pathToServerJarFile": ""
   },
   {
-    "buttonText": "Server 3",
+    "buttonText": "1.16.5",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "",
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.16.5podSyna\\",
     "pathToServerJarFile": ""
   },
   {
-    "buttonText": "Server 4",
+    "buttonText": "1.11",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "",
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.11\\",
     "pathToServerJarFile": ""
   },
   {
-    "buttonText": "Server 5",
+    "buttonText": "1.8.9_#1",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "",
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\[1.8.9]PVP\\",
+    "pathToServerJarFile": ""
+  },
+  {
+    "buttonText": "1.8.9_#2",
+    "pathToButtonIcon": "",
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.8.8bukkit\\",
     "pathToServerJarFile": ""
   }
 ]
