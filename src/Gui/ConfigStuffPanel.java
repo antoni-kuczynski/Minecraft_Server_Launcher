@@ -12,9 +12,6 @@ public class ConfigStuffPanel extends JPanel {
         JButton openCfg = new JButton("Open App's Config File");
         openServerFolder = new JButton("Open Last Opened Server's File Folder");
 
-
-//        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
-//        add(separator, BorderLayout.PAGE_START);
         add(openCfg, BorderLayout.LINE_START);
         add(openServerFolder, BorderLayout.LINE_END);
     }
