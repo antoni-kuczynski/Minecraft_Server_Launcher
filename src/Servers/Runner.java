@@ -1,10 +1,15 @@
 package Servers;
 
+import Gui.AlertType;
+import Gui.Frame;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static Gui.Frame.alert;
 
 public class Runner extends Thread {
     private String pathToServerJar;
@@ -33,7 +38,7 @@ public class Runner extends Thread {
             Process process = Runtime.getRuntime().exec(command);
             process.waitFor();
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            Frame.alert(AlertType.ERROR, e.getMessage());
         }
     }
 
@@ -45,13 +50,13 @@ public class Runner extends Thread {
 
                 // check if the file exists
                 if (!file.exists()) {
-                    System.out.println("File not found: " + file.getAbsolutePath());
+                    alert(AlertType.ERROR, "Config file " + file.getAbsolutePath() + " not found.");
                     return;
                 }
 
                 // check if the Desktop API is supported
                 if (!Desktop.isDesktopSupported()) {
-                    System.out.println("Desktop API is not supported on this platform");
+                    alert(AlertType.ERROR, "Desktop API is not supported on this platform.");
                     return;
                 }
 
@@ -66,7 +71,7 @@ public class Runner extends Thread {
 
                 // check if the file can be opened
                 if (!desktop.isSupported(Desktop.Action.OPEN)) {
-                    System.out.println("Open action is not supported on this platform");
+                    alert(AlertType.ERROR, "Open Action is not supported on this platform.");
                     return;
                 }
 
@@ -82,13 +87,13 @@ public class Runner extends Thread {
 
                 // check if the directory exists
                 if (!directory.exists()) {
-                    System.out.println("Directory not found: " + directory.getAbsolutePath());
+                    alert(AlertType.ERROR, "Directory not found: " + directory.getAbsolutePath());
                     return;
                 }
 
                 // check if the Desktop API is supported
                 if (!Desktop.isDesktopSupported()) {
-                    System.out.println("Desktop API is not supported on this platform");
+                    alert(AlertType.ERROR, "Desktop API is not supported on this platform");
                     return;
                 }
 
@@ -97,7 +102,7 @@ public class Runner extends Thread {
 
                 // check if the directory can be opened
                 if (!desktop.isSupported(Desktop.Action.OPEN)) {
-                    System.out.println("Open action is not supported on this platform");
+                    alert(AlertType.ERROR, "Open action is not supported on this platform");
                     return;
                 }
 

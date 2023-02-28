@@ -14,15 +14,11 @@ public class ConfigStuffPanel extends JPanel {
     public ConfigStuffPanel() {
         setLayout(new BorderLayout(10, 10));
         JButton openCfg = new JButton("Open App's Config File");
-        openServerFolder = new JButton("Open Last Opened Server's File Folder");
+        openServerFolder = new JButton("Open Last Opened Server's Folder");
 
-        openCfg.addActionListener(e -> {
-            new Runner(Run.CONFIG_FILE).start();
-        });
+        openCfg.addActionListener(e -> new Runner(Run.CONFIG_FILE).start());
 
-        openServerFolder.addActionListener(e -> {
-            new Runner(Run.SERVER_FOLDER, servPath).start();
-        });
+        openServerFolder.addActionListener(e -> new Runner(Run.SERVER_FOLDER, servPath).start());
 
         add(openCfg, BorderLayout.LINE_START);
         add(openServerFolder, BorderLayout.LINE_END);

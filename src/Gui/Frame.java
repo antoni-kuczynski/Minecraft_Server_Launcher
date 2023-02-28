@@ -1,6 +1,11 @@
 package Gui;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,12 +19,21 @@ public class Frame extends JFrame {
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
 
+
+    public static void alert(AlertType alertType, String message) {
+        switch(alertType) {
+            case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+            case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+            case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+            case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     public Frame() throws IOException {
 
 
         // Set up the JFrame
         setIconImage(new ImageIcon("app_icon.png").getImage());
-        setTitle("Minecraft Server Server.Launcher V2");
+        setTitle("Minecraft Server Server Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create the JPanels
@@ -65,6 +79,7 @@ public class Frame extends JFrame {
         add(configPanel, BorderLayout.PAGE_END);
 
         // Set the JFrame size and make it visible
+
         setSize(500, 700);
         setVisible(true);
 
@@ -106,6 +121,7 @@ public class Frame extends JFrame {
         } catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
+//        FlatAtomOneDarkIJTheme.setup(); //TODO: test some themes and maybe add a theme switcher
         new Frame();
     }
 }

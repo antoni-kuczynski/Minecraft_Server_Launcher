@@ -55,7 +55,6 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         String index = e.getActionCommand(); // Get the action command (i.e., the index of the button)
         new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile(), Run.SERVER_JAR).start();
         System.out.println(config.getData().get(Integer.parseInt(index)).getButtonText());
