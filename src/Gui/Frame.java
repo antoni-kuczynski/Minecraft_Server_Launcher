@@ -1,18 +1,18 @@
 package Gui;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
-public class Frame extends JFrame {
+public class Frame extends JFrame implements ActionListener {
 
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
@@ -28,8 +28,49 @@ public class Frame extends JFrame {
             case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private JMenuItem darculaMenuItem;
+    private JMenuItem githubDarkMenuItem;
+    private JMenuItem windowsMenuItem;
+    private JMenuItem inteliijLightMenuItem;
+    private JMenuItem githubLightMenuItem;
+    private JMenuItem gtkMenuItem;
+
     public Frame() throws IOException {
 
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu lookAndFeelMenu = new JMenu("Look and Feel");
+
+        darculaMenuItem = new JMenuItem("Darcula");
+        darculaMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(darculaMenuItem);
+
+        githubDarkMenuItem = new JMenuItem("GitHub Dark");
+        githubDarkMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(githubDarkMenuItem);
+
+        windowsMenuItem = new JMenuItem("Windows");
+        windowsMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(windowsMenuItem);
+
+        inteliijLightMenuItem = new JMenuItem("Inteliij Light");
+        inteliijLightMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(inteliijLightMenuItem);
+
+        githubLightMenuItem = new JMenuItem("Github Light");
+        githubLightMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(githubLightMenuItem);
+
+        gtkMenuItem = new JMenuItem("GTK");
+        gtkMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(gtkMenuItem);
+
+        darculaMenuItem.setSelected(true);
+
+        menuBar.add(lookAndFeelMenu);
+
+        setJMenuBar(menuBar);
 
         // Set up the JFrame
         setIconImage(new ImageIcon("app_icon.png").getImage());
@@ -115,6 +156,33 @@ public class Frame extends JFrame {
         });
     }
 
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == darculaMenuItem) {
+            setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+        } else if (e.getSource() == githubDarkMenuItem) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme");
+        } else if (e.getSource() == windowsMenuItem) {
+            setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } else if (e.getSource() == inteliijLightMenuItem) {
+            setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel");
+        } else if (e.getSource() == githubLightMenuItem) {
+            setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+        } else if (e.getSource() == gtkMenuItem) {
+            setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+        }
+    }
+
+    private void setLookAndFeel(String className) {
+        try {
+            UIManager.setLookAndFeel(className);
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf() );
@@ -122,6 +190,11 @@ public class Frame extends JFrame {
             System.err.println( "Failed to initialize LaF" );
         }
 //        FlatAtomOneDarkIJTheme.setup(); //TODO: test some themes and maybe add a theme switcher
+        int x = 2;
+        if(x == 1)
+            FlatGitHubDarkIJTheme.setup();
+        if(x == 2)
+            FlatDraculaIJTheme.setup();
         new Frame();
     }
 }
