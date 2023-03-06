@@ -9,9 +9,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 public class ButtonPanel extends JPanel implements ActionListener {
     private final Config config = new Config();
+    private final pre
 
     public void setButtonIcon(JButton button, String iconPath) {
         ImageIcon icon = new ImageIcon(iconPath);
@@ -31,7 +33,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
 
 
-    public ButtonPanel() throws IOException {
+    public ButtonPanel(Preferences preferences) throws IOException {
 
         setLayout(new GridLayout(10, 5, 10, 10));
         // Add 10 JButtons to the panel
@@ -59,5 +61,6 @@ public class ButtonPanel extends JPanel implements ActionListener {
         new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile(), Run.SERVER_JAR).start();
         System.out.println(config.getData().get(Integer.parseInt(index)).getButtonText());
         ConfigStuffPanel.setServerVariables(config.getData().get(Integer.parseInt(index)).getButtonText(), config.getData().get(Integer.parseInt(index)).getPathToServerFolder());
+
     }
 }

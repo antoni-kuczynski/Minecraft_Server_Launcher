@@ -1,9 +1,5 @@
 package Gui;
 
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,6 +13,7 @@ public class Frame extends JFrame implements ActionListener {
     private final String PREFS_KEY_Y = "window_y";
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
+    private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
 
 
     public static void alert(AlertType alertType, String message) {
@@ -35,7 +32,6 @@ public class Frame extends JFrame implements ActionListener {
     private JMenuItem githubLightMenuItem;
     private JMenuItem draculaMenuItem;
     private static String lookAndFeel;
-
     public Frame() throws IOException {
 
         JMenuBar menuBar = new JMenuBar();
@@ -78,7 +74,7 @@ public class Frame extends JFrame implements ActionListener {
 
         // Create the JPanels
         TitlePanel titlePanel = new TitlePanel();
-        ButtonPanel buttonPanel = new ButtonPanel();
+        ButtonPanel buttonPanel = new ButtonPanel(Preferences.userNodeForPackage(getClass()));
         ConfigStuffPanel configStuffPanel = new ConfigStuffPanel();
         configStuffPanel.setPanel(configStuffPanel);
 
@@ -151,7 +147,7 @@ public class Frame extends JFrame implements ActionListener {
                 prefs.putInt(PREFS_KEY_Y, bounds.y);
                 prefs.putInt(PREFS_KEY_WIDTH, bounds.width);
                 prefs.putInt(PREFS_KEY_HEIGHT, bounds.height);
-                prefs.put("look_and_feel", lookAndFeel);
+                prefs.put(PREFS_KEY_LOOK_AND_FEEL, lookAndFeel);
             }
         });
     }
@@ -192,12 +188,6 @@ public class Frame extends JFrame implements ActionListener {
         } catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
-////        FlatAtomOneDarkIJTheme.setup(); //TODO: test some themes and maybe add a theme switcher
-//        int x = 2;
-//        if(x == 1)
-//            FlatGitHubDarkIJTheme.setup();
-//        if(x == 2)
-//            FlatDraculaIJTheme.setup();
         new Frame();
     }
 }
