@@ -4,9 +4,12 @@ import Gui.AlertType;
 import Gui.Frame;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static Gui.Frame.alert;
@@ -39,6 +42,30 @@ public class Runner extends Thread {
             process.waitFor();
         } catch (IOException | InterruptedException e) {
             Frame.alert(AlertType.ERROR, e.getMessage());
+        }
+    }
+
+    private void launchServer(String serverPath, ArrayList<String> arguments) throws IOException {
+        ArrayList<String> command = new ArrayList<String>();
+        command.add("cmd");
+        command.add("/c");
+        command.add("start");
+        command.add("java");
+        command.add("-jar");
+        command.add(serverPath);
+        command.addAll(arguments);
+        command.add("nogui");
+
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(new File(serverPath).getParentFile());
+        pb.redirectErrorStream(true);
+
+        Process process = pb.start();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
         }
     }
 
@@ -114,21 +141,11 @@ public class Runner extends Thread {
                 }
             }
             case SERVER_JAR -> {
-                String jarFilePath = "H:\\Minecraft_Serwery\\1.16.5podSyna\\paper-1.16.5-705.jar";
-                File jarFile = new File(jarFilePath);
-                String jarDirectoryPath = jarFile.getParent();
-                File jarDirectory = new File(jarDirectoryPath);
-
-                ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "java", "-jar", "H:\\Minecraft_Serwery\\1.16.5podSyna\\paper-1.16.5-705.jar");
-                pb.directory(jarDirectory);
-
                 try {
-                    Process process = pb.start();
-                    int exitCode = process.waitFor();
-                    System.out.println("JAR file exited with code " + exitCode);
-                } catch (IOException | InterruptedException e) {
-                    alert(AlertType.ERROR, e.getMessage());
-                } //TODO: this doesn't work
+                    launchServer(pathToServerJar, new ArrayList<>());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
