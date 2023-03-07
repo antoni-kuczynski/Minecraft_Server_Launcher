@@ -51,9 +51,9 @@ public class Runner extends Thread {
         command.add("/c");
         command.add("start");
         command.add("java");
+        command.addAll(arguments);
         command.add("-jar");
         command.add(serverPath);
-        command.addAll(arguments);
         command.add("nogui");
 
         ProcessBuilder pb = new ProcessBuilder(command);

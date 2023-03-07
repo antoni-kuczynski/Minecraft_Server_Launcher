@@ -109,17 +109,23 @@ public class Frame extends JFrame implements ActionListener {
         configPanel.add(emptyPanel4, BorderLayout.LINE_END);
         configPanel.add(emptyPanel5, BorderLayout.PAGE_END);
 
+        //Add the world add JPanel to the frame
+        AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
+        addWorldsPanel.add(emptyPanel2);
+
+
         // Add the JPanel to the JFrame's BorderLayout.CENTER
         add(titlePanel, BorderLayout.PAGE_START);
         add(emptyPanel1, BorderLayout.LINE_START);
         add(buttonPanel, BorderLayout.CENTER);
-        add(emptyPanel2, BorderLayout.LINE_END);
+        add(addWorldsPanel, BorderLayout.LINE_END);
+       // add(emptyPanel2, BorderLayout.LINE_END);
 //        add(emptyPanel3, BorderLayout.PAGE_END);
         add(configPanel, BorderLayout.PAGE_END);
 
         // Set the JFrame size and make it visible
 
-        setSize(500, 700);
+//        setSize(900, 700);
         setVisible(true);
 
         // Set the initial size and position of the JFrame
