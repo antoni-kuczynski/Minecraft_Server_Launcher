@@ -5,16 +5,21 @@ import Servers.Runner;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.prefs.Preferences;
 
 public class ConfigStuffPanel extends JPanel {
     private final JButton openServerFolder;
     private static String servName;
     private static String servPath;
     private static ConfigStuffPanel panel;
-    public ConfigStuffPanel() {
+    private final Preferences preferences;
+    public ConfigStuffPanel(Preferences preferences) {
+        this.preferences = preferences;
         setLayout(new BorderLayout(10, 10));
         JButton openCfg = new JButton("Open App's Config File");
-        openServerFolder = new JButton("Open Last Opened Server's Folder");
+        servName = preferences.get("SELECTED_SERVER_NAME", "ERROR");
+        servPath = preferences.get("SELECTED_SERVER_PATH", "ERROR");
+        openServerFolder = new JButton("Open " + preferences.get("SELECTED_SERVER_NAME", "ERROR") + "'s Server Folder");
 
         openCfg.addActionListener(e -> new Runner(Run.CONFIG_FILE).start());
 
@@ -37,11 +42,8 @@ public class ConfigStuffPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(servName == null)
-            openServerFolder.setEnabled(false);
-        else {
-            openServerFolder.setEnabled(true);
-            openServerFolder.setText("Open " + servName + "'s Server Folder");
-        }
+        preferences.put("SELECTED_SERVER_NAME", servName);
+        preferences.put("SELECTED_SERVER_PATH", servPath);
+        openServerFolder.setText("Open " + servName + "'s Server Folder");
     }
 }

@@ -72,10 +72,13 @@ public class Frame extends JFrame implements ActionListener {
         setTitle("Minecraft Server Server Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+
         // Create the JPanels
         TitlePanel titlePanel = new TitlePanel();
         ButtonPanel buttonPanel = new ButtonPanel(Preferences.userNodeForPackage(getClass()));
-        ConfigStuffPanel configStuffPanel = new ConfigStuffPanel();
+        ConfigStuffPanel configStuffPanel = new ConfigStuffPanel(prefs);
         configStuffPanel.setPanel(configStuffPanel);
 
         //Empty Panels (one panel doesn't work) WTF!!!
@@ -128,7 +131,7 @@ public class Frame extends JFrame implements ActionListener {
         setBounds(x, y, width, height);
 
         // Load the window position from user preferences
-        Preferences prefs = Preferences.userNodeForPackage(getClass());
+
         int savedX = prefs.getInt(PREFS_KEY_X, Integer.MIN_VALUE);
         int savedY = prefs.getInt(PREFS_KEY_Y, Integer.MIN_VALUE);
         int savedWidth = prefs.getInt(PREFS_KEY_WIDTH, Integer.MIN_VALUE);

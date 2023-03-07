@@ -127,7 +127,7 @@ public class Runner extends Thread {
                     int exitCode = process.waitFor();
                     System.out.println("JAR file exited with code " + exitCode);
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    alert(AlertType.ERROR, e.getMessage());
                 } //TODO: this doesn't work
             }
         }

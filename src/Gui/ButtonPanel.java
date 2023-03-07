@@ -13,7 +13,11 @@ import java.util.prefs.Preferences;
 
 public class ButtonPanel extends JPanel implements ActionListener {
     private final Config config = new Config();
-    private final pre
+    private static Preferences preferences;
+
+    public static Preferences getPreferences() {
+        return preferences;
+    }
 
     public void setButtonIcon(JButton button, String iconPath) {
         ImageIcon icon = new ImageIcon(iconPath);
@@ -34,7 +38,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
 
     public ButtonPanel(Preferences preferences) throws IOException {
-
+        ButtonPanel.preferences = preferences;
         setLayout(new GridLayout(10, 5, 10, 10));
         // Add 10 JButtons to the panel
         for (int i = 0; i < config.getData().size(); i++) {
@@ -59,7 +63,6 @@ public class ButtonPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String index = e.getActionCommand(); // Get the action command (i.e., the index of the button)
         new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile(), Run.SERVER_JAR).start();
-        System.out.println(config.getData().get(Integer.parseInt(index)).getButtonText());
         ConfigStuffPanel.setServerVariables(config.getData().get(Integer.parseInt(index)).getButtonText(), config.getData().get(Integer.parseInt(index)).getPathToServerFolder());
 
     }
