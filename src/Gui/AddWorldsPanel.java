@@ -4,30 +4,32 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.Serial;
+import java.util.ArrayList;
 
 public class AddWorldsPanel extends JPanel {
-    private JButton button;
+    private final ArrayList<File> worlds = new ArrayList<>();
+    private final JButton button;
     public AddWorldsPanel() {
         //super(new BorderLayout());
 
         button = new JButton("Open Folder");
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                FileDialog fileDialog = new FileDialog((Frame)null, "Select Folder");
-                fileDialog.setMode(FileDialog.LOAD);
-                fileDialog.setFile("*.txt");
-                fileDialog.setVisible(true);
+        button.addActionListener(e -> {
+            FileDialog fileDialog = new FileDialog((Frame)null, "Select Folder");
+            fileDialog.setMode(FileDialog.LOAD);
+            fileDialog.setFile("*.dat");
+            fileDialog.setVisible(true);
 
-                String folderPath = fileDialog.getDirectory();
-                if (folderPath != null) {
-                    System.out.println("Selected folder: " + folderPath);
-                }
+            String folderPath = fileDialog.getDirectory();
+            if (folderPath != null) {
+                if(!worlds.contains(new File(folderPath)))
+                    worlds.add(new File(folderPath));
+                System.out.println(worlds);
             }
         });
         button.setTransferHandler(new TransferHandler() {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -40,9 +42,9 @@ public class AddWorldsPanel extends JPanel {
                 try {
                     Transferable transferable = support.getTransferable();
                     DataFlavor[] flavors = transferable.getTransferDataFlavors();
-                    for (int i = 0; i < flavors.length; i++) {
-                        if (flavors[i].isFlavorJavaFileListType()) {
-                            java.util.List<File> files = (java.util.List<File>) transferable.getTransferData(flavors[i]);
+                    for (DataFlavor flavor : flavors) {
+                        if (flavor.isFlavorJavaFileListType()) {
+                            java.util.List<File> files = (java.util.List<File>) transferable.getTransferData(flavor);
                             for (File file : files) {
                                 if (file.isDirectory()) {
                                     System.out.println("Dropped folder: " + file.getAbsolutePath());
