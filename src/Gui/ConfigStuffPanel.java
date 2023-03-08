@@ -1,9 +1,6 @@
 package Gui;
 
-import Servers.ButtonData;
-import Servers.Config;
-import Servers.Run;
-import Servers.Runner;
+import Servers.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,9 +39,12 @@ public class ConfigStuffPanel extends JPanel {
             serverSelection.addItem(btnData.getButtonText());
         }
 
+        Config finalConfig = config;
         serverSelection.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
-
+                servName = (String) e.getItem();
+                servPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
+                panel.repaint();
             }
         });
 
@@ -74,5 +74,13 @@ public class ConfigStuffPanel extends JPanel {
         preferences.put("SELECTED_SERVER_NAME", servName);
         preferences.put("SELECTED_SERVER_PATH", servPath);
         openServerFolder.setText("Open " + servName + "'s Server Folder");
+    }
+
+    public static String getServName() {
+        return servName;
+    }
+
+    public static String getServPath() {
+        return servPath;
     }
 }

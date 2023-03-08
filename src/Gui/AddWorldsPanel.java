@@ -12,16 +12,17 @@ public class AddWorldsPanel extends JPanel {
     private final ArrayList<File> worlds = new ArrayList<>();
     private final JButton button;
     public AddWorldsPanel() {
-        //super(new BorderLayout());
-        JLabel selServerTitle = new JLabel("Select server here:");
-        JComboBox<String> serverSelection = new JComboBox<>();
+//        setLayout(new BorderLayout());
+        super(new GridLayout(6, 12));
+        JLabel dragNDropInfo = new JLabel(" or drag and drop it into the button.");
+//        JComboBox<String> serverSelection = new JComboBox<>();
 
-
+        JButton startCopying = new JButton("Start Copying");
         button = new JButton("Open Folder");
         button.addActionListener(e -> {
             FileDialog fileDialog = new FileDialog((Frame)null, "Select Folder");
             fileDialog.setMode(FileDialog.LOAD);
-            fileDialog.setFile("*.dat");
+            fileDialog.setFile("level.dat");
             fileDialog.setVisible(true);
 
             String folderPath = fileDialog.getDirectory();
@@ -62,8 +63,8 @@ public class AddWorldsPanel extends JPanel {
                 return false;
             }
         });
-        add(selServerTitle);
-        add(serverSelection);
         add(button);
+        add(dragNDropInfo);
+        add(startCopying);
     }
 }
