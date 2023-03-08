@@ -13,6 +13,9 @@ public class AddWorldsPanel extends JPanel {
     private final JButton button;
     public AddWorldsPanel() {
         //super(new BorderLayout());
+        JLabel selServerTitle = new JLabel("Select server here:");
+        JComboBox<String> serverSelection = new JComboBox<>();
+
 
         button = new JButton("Open Folder");
         button.addActionListener(e -> {
@@ -59,6 +62,8 @@ public class AddWorldsPanel extends JPanel {
                 return false;
             }
         });
+        add(selServerTitle);
+        add(serverSelection);
         add(button);
     }
 }
