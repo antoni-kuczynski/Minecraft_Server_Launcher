@@ -1,19 +1,25 @@
 package Gui;
 
 import javax.swing.*;
+import java.util.List;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 
 public class AddWorldsPanel extends JPanel {
     private final ArrayList<File> worlds = new ArrayList<>();
+    private final JList<String> pathList = new JList<>();
+    private final DefaultListModel<String> pathListModel = new DefaultListModel<>();
 
     public AddWorldsPanel() {
 //        setLayout(new BorderLayout());
         super(new BorderLayout());
+        pathList.setModel(pathListModel);
         JLabel dragNDropInfo = new JLabel(" or drag and drop it into the button.");
 //        JComboBox<String> serverSelection = new JComboBox<>();
 
@@ -42,34 +48,32 @@ public class AddWorldsPanel extends JPanel {
             }
 
             @Override
-            public boolean importData(TransferHandler.TransferSupport support) {
-                try {
-                    Transferable transferable = support.getTransferable();
-                    DataFlavor[] flavors = transferable.getTransferDataFlavors();
-                    for (DataFlavor flavor : flavors) {
-                        if (flavor.isFlavorJavaFileListType()) {
-                            java.util.List<File> files = (java.util.List<File>) transferable.getTransferData(flavor);
-                            for (File file : files) {
-                                if (file.isDirectory()) {
-                                    System.out.println("Dropped folder: " + file.getAbsolutePath());
-                                    return true;
-                                }
-                            }
-                        }
+            public boolean importData(TransferSupport support) {
+                    if (!canImport(support)) {
+                        return false;
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return false;
+                    Transferable t = support.getTransferable();
+                    try {
+                        List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+                        worlds.addAll(l);
+                        for(File f : l) {
+                            pathListModel.add(pathListModel.getSize(), f.toPath().toString());
+                        }
+                    } catch (UnsupportedFlavorException | IOException e) {
+                        return false;
+                    }
+                return true;
             }
         });
         JProgressBar progressBar = new JProgressBar();
-        JPanel emptyPanel1 = new JPanel();
+
+        pathList.setPreferredSize(new Dimension(400, 10));
         JPanel emptyPanel2 = new JPanel();
         JPanel copyStuffPanel = new JPanel();
         copyStuffPanel.setLayout(new BorderLayout());
 
-        emptyPanel1.setPreferredSize(new Dimension(50, 100));
+//        emptyPanel1.setPreferredSize(new Dimension(50, 100));
+//        pathListPanel.add(pathList);
         emptyPanel2.setPreferredSize(new Dimension(50, 10));
         JPanel dragAndDropBtnPanel = new JPanel();
         button.setPreferredSize(new Dimension(130, 50));
@@ -82,7 +86,7 @@ public class AddWorldsPanel extends JPanel {
 
         add(dragAndDropBtnPanel, BorderLayout.PAGE_START);
 //        add(emptyPanel1, BorderLayout.LINE_END);
-        add(emptyPanel1, BorderLayout.CENTER);
+        add(pathList, BorderLayout.LINE_START);
         add(copyStuffPanel, BorderLayout.PAGE_END);
 //        add(button, BorderLayout.LINE_START);
 //        add(dragNDropInfo, BorderLayout.LINE_END);
