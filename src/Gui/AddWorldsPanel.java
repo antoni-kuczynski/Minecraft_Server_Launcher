@@ -12,7 +12,12 @@ import java.io.Serial;
 import java.util.ArrayList;
 
 public class AddWorldsPanel extends JPanel {
-    private final ArrayList<File> worlds = new ArrayList<>();
+
+    public static ArrayList<File> getWorlds() {
+        return worlds;
+    }
+
+    private static final ArrayList<File> worlds = new ArrayList<>(); //lol that makes no fucking sense u cant add more worlds than one to a sever
     private final JList<String> pathList = new JList<>();
     private final DefaultListModel<String> pathListModel = new DefaultListModel<>();
 
@@ -33,8 +38,10 @@ public class AddWorldsPanel extends JPanel {
 
             String folderPath = fileDialog.getDirectory();
             if (folderPath != null) {
-                if(!worlds.contains(new File(folderPath)))
+                if(!worlds.contains(new File(folderPath))) {
                     worlds.add(new File(folderPath));
+                    pathListModel.addElement(folderPath);
+                }
                 System.out.println(worlds);
             }
         });
@@ -55,9 +62,12 @@ public class AddWorldsPanel extends JPanel {
                     Transferable t = support.getTransferable();
                     try {
                         List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
-                        worlds.addAll(l);
+//                        worlds.addAll(l);
                         for(File f : l) {
-                            pathListModel.add(pathListModel.getSize(), f.toPath().toString());
+                            if(f.isDirectory() && !worlds.contains(f)) {
+                                worlds.add(f);
+                                pathListModel.add(pathListModel.getSize(), f.toPath().toString());
+                            }
                         }
                     } catch (UnsupportedFlavorException | IOException e) {
                         return false;

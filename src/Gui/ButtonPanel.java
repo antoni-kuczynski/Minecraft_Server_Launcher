@@ -1,8 +1,6 @@
 package Gui;
 
-import Servers.Config;
-import Servers.Run;
-import Servers.Runner;
+import Servers.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -64,6 +62,10 @@ public class ButtonPanel extends JPanel implements ActionListener {
         String index = e.getActionCommand(); // Get the action command (i.e., the index of the button)
         new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile(), Run.SERVER_JAR).start();
         ConfigStuffPanel.setServerVariables(config.getData().get(Integer.parseInt(index)).getButtonText(), config.getData().get(Integer.parseInt(index)).getPathToServerFolder());
-
+        try {
+            new WorldCopyHandler();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
