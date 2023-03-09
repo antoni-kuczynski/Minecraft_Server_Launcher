@@ -10,15 +10,15 @@ import java.util.ArrayList;
 
 public class AddWorldsPanel extends JPanel {
     private final ArrayList<File> worlds = new ArrayList<>();
-    private final JButton button;
+
     public AddWorldsPanel() {
 //        setLayout(new BorderLayout());
-        super(new GridLayout(6, 12));
+        super(new BorderLayout());
         JLabel dragNDropInfo = new JLabel(" or drag and drop it into the button.");
 //        JComboBox<String> serverSelection = new JComboBox<>();
 
         JButton startCopying = new JButton("Start Copying");
-        button = new JButton("Open Folder");
+        JButton button = new JButton("Open Folder");
         button.addActionListener(e -> {
             FileDialog fileDialog = new FileDialog((Frame)null, "Select Folder");
             fileDialog.setMode(FileDialog.LOAD);
@@ -63,8 +63,29 @@ public class AddWorldsPanel extends JPanel {
                 return false;
             }
         });
-        add(button);
-        add(dragNDropInfo);
-        add(startCopying);
+        JProgressBar progressBar = new JProgressBar();
+        JPanel emptyPanel1 = new JPanel();
+        JPanel emptyPanel2 = new JPanel();
+        JPanel copyStuffPanel = new JPanel();
+        copyStuffPanel.setLayout(new BorderLayout());
+
+        emptyPanel1.setPreferredSize(new Dimension(50, 100));
+        emptyPanel2.setPreferredSize(new Dimension(50, 10));
+        JPanel dragAndDropBtnPanel = new JPanel();
+        button.setPreferredSize(new Dimension(130, 50));
+        dragAndDropBtnPanel.add(button);
+        dragAndDropBtnPanel.add(dragNDropInfo);
+
+        copyStuffPanel.add(startCopying, BorderLayout.PAGE_START);
+        copyStuffPanel.add(emptyPanel2, BorderLayout.CENTER);
+        copyStuffPanel.add(progressBar, BorderLayout.PAGE_END);
+
+        add(dragAndDropBtnPanel, BorderLayout.PAGE_START);
+//        add(emptyPanel1, BorderLayout.LINE_END);
+        add(emptyPanel1, BorderLayout.CENTER);
+        add(copyStuffPanel, BorderLayout.PAGE_END);
+//        add(button, BorderLayout.LINE_START);
+//        add(dragNDropInfo, BorderLayout.LINE_END);
+//        add(startCopying, BorderLayout.LINE_END);
     }
 }
