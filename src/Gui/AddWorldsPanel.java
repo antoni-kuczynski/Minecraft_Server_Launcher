@@ -11,17 +11,25 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
-import java.util.ArrayList;
 
 public class AddWorldsPanel extends JPanel {
 
-    public static ArrayList<File> getWorlds() {
-        return worlds;
+    public static File getworldToAdd() {
+        return worldToAdd;
     }
-
-    private static final ArrayList<File> worlds = new ArrayList<>(); //lol that makes no fucking sense u cant add more worlds than one to a sever
+    private static File worldToAdd;
     private final JList<String> pathList = new JList<>();
     private final DefaultListModel<String> pathListModel = new DefaultListModel<>();
+
+    private static String getFileExtension(File file) {
+        String fileName = file.getName();
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex == -1) {
+            return "";
+        } else {
+            return fileName.substring(lastDotIndex + 1);
+        }
+    }
 
     public AddWorldsPanel() {
 //        setLayout(new BorderLayout());
@@ -38,14 +46,20 @@ public class AddWorldsPanel extends JPanel {
             fileDialog.setFile("level.dat");
             fileDialog.setVisible(true);
 
+            File filePath = fileDialog.getFiles()[0];
             String folderPath = fileDialog.getDirectory();
-            if (folderPath != null) {
-                if(!worlds.contains(new File(folderPath))) {
-                    worlds.add(new File(folderPath));
+
+            if(filePath != null && folderPath != null) { //null pointer prevention
+                String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
+                if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
+                    worldToAdd = filePath;
+                    pathListModel.addElement(filePath.toString());
+                } else {
+                    worldToAdd = new File(folderPath);
                     pathListModel.addElement(folderPath);
+                    }
                 }
-                System.out.println(worlds);
-            }
+            System.out.println(worldToAdd);
         });
         button.setTransferHandler(new TransferHandler() {
             @Serial
@@ -64,13 +78,19 @@ public class AddWorldsPanel extends JPanel {
                     Transferable t = support.getTransferable();
                     try {
                         List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
-//                        worlds.addAll(l);
-                        for(File f : l) {
-                            if(f.isDirectory() && !worlds.contains(f)) {
-                                worlds.add(f);
-                                pathListModel.add(pathListModel.getSize(), f.toPath().toString());
-                            }
+//                        worldToAdd.addAll(l);
+                        File fileToAdd = l.get(l.size() - 1);
+                        String fileExtension = fileToAdd.toString().split("\\.")[fileToAdd.toString().split("\\.").length - 1];
+                        System.out.println(fileToAdd);
+
+                        if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
+                            worldToAdd = fileToAdd;
+                            pathListModel.addElement(fileToAdd.toString());
+                        } else {
+                            worldToAdd = new File(fileToAdd.getParent());
+                            pathListModel.addElement(fileToAdd.getParent());
                         }
+
                     } catch (UnsupportedFlavorException | IOException e) {
                         return false;
                     }
@@ -96,8 +116,6 @@ public class AddWorldsPanel extends JPanel {
         JPanel copyStuffPanel = new JPanel();
         copyStuffPanel.setLayout(new BorderLayout());
 
-//        emptyPanel1.setPreferredSize(new Dimension(50, 100));
-//        pathListPanel.add(pathList);
         emptyPanel2.setPreferredSize(new Dimension(50, 10));
         JPanel dragAndDropBtnPanel = new JPanel();
         button.setPreferredSize(new Dimension(130, 50));
@@ -109,11 +127,7 @@ public class AddWorldsPanel extends JPanel {
         copyStuffPanel.add(progressBar, BorderLayout.PAGE_END);
 
         add(dragAndDropBtnPanel, BorderLayout.PAGE_START);
-//        add(emptyPanel1, BorderLayout.LINE_END);
         add(pathList, BorderLayout.LINE_START);
         add(copyStuffPanel, BorderLayout.PAGE_END);
-//        add(button, BorderLayout.LINE_START);
-//        add(dragNDropInfo, BorderLayout.LINE_END);
-//        add(startCopying, BorderLayout.LINE_END);
     }
 }
