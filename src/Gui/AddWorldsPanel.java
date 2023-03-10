@@ -1,5 +1,7 @@
 package Gui;
 
+import Servers.WorldCopyHandler;
+
 import javax.swing.*;
 import java.util.List;
 import java.awt.*;
@@ -75,7 +77,19 @@ public class AddWorldsPanel extends JPanel {
                 return true;
             }
         });
+
+
         JProgressBar progressBar = new JProgressBar();
+
+
+        startCopying.addActionListener(e -> {
+            try {
+                WorldCopyHandler worldCopyHandler = new WorldCopyHandler(progressBar);
+                worldCopyHandler.start();
+            } catch (IOException ex) {
+                Frame.alert(AlertType.ERROR, ex.getMessage());
+            }
+        });
 
         pathList.setPreferredSize(new Dimension(400, 10));
         JPanel emptyPanel2 = new JPanel();

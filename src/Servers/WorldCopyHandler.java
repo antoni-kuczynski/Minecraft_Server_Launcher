@@ -1,9 +1,12 @@
 package Servers;
 
 import Gui.AddWorldsPanel;
+import Gui.AlertType;
 import Gui.ConfigStuffPanel;
+import Gui.Frame;
 import org.apache.commons.io.FileUtils;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,18 +16,51 @@ public class WorldCopyHandler extends Thread {
     private final String serverWorldName;
     private final File originalDir;
     private final File serverWorldDir;
-    public WorldCopyHandler() throws IOException {
+    private final JProgressBar progressBar;
+    public WorldCopyHandler(JProgressBar progressBar) throws IOException {
         ServerProperties serverProperties = new ServerProperties();
         this.serverWorldName = serverProperties.getWorldName();
         this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
         this.originalDir = AddWorldsPanel.getWorlds().get(0);
+        this.progressBar = progressBar;
 
         System.out.println("Original dir: " + originalDir + "\nServer world dir: " + serverWorldDir);
+    }
+
+
+    private void copyDirectory(File sourceDir, File destDir) throws IOException {
+        long totalBytes = FileUtils.sizeOfDirectory(sourceDir);
+        long copiedBytes = 0;
+
+        // Create the destination directory if it doesn't exist
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+
+        // Iterate through all files and directories in the source directory
+        for (File sourceFile : sourceDir.listFiles()) {
+            File destFile = new File(destDir, sourceFile.getName());
+
+            if (sourceFile.isDirectory()) {
+                // Recursively copy sub-directories
+                copyDirectory(sourceFile, destFile);
+            } else {
+                // Copy files and update progress bar
+                FileUtils.copyFile(sourceFile, destFile);
+                copiedBytes += sourceFile.length();
+                int progress = (int) Math.round((double) copiedBytes / totalBytes * 100);
+                progressBar.setValue(progress);
+            }
+        }
     }
 
     @Override
     public void run() {
         super.run();
-        //TODO: copying dir to server dir/{world_name}, but also check for world name variable in server.properties file
+        try {
+            copyDirectory(originalDir, serverWorldDir);
+        } catch (IOException e) {
+            Frame.alert(AlertType.ERROR, e.getMessage());
+        }
     }
 }
