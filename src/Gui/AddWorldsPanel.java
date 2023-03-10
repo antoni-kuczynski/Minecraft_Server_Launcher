@@ -14,12 +14,17 @@ import java.io.Serial;
 
 public class AddWorldsPanel extends JPanel {
 
+    public JPanel getPanel() {
+        return this;
+    }
     public static File getworldToAdd() {
         return worldToAdd;
     }
     private static File worldToAdd;
-    private final JList<String> pathList = new JList<>();
-    private final DefaultListModel<String> pathListModel = new DefaultListModel<>();
+//    private final JList<String> pathList = new JList<>();
+//    private final DefaultListModel<String> pathListModel = new DefaultListModel<>();
+    private JLabel selectedServerTxt = new JLabel();
+    private final String selServPrefix = "Selected server: ";
 
     private static String getFileExtension(File file) {
         String fileName = file.getName();
@@ -34,10 +39,10 @@ public class AddWorldsPanel extends JPanel {
     public AddWorldsPanel() {
 //        setLayout(new BorderLayout());
         super(new BorderLayout());
-        pathList.setModel(pathListModel);
+//        pathList.setModel(pathListModel);
         JLabel dragNDropInfo = new JLabel(" or drag and drop it into the button.");
 //        JComboBox<String> serverSelection = new JComboBox<>();
-
+        selectedServerTxt.setText(selServPrefix + ConfigStuffPanel.getServName());
         JButton startCopying = new JButton("Start Copying");
         JButton button = new JButton("Open Folder");
         button.addActionListener(e -> {
@@ -53,10 +58,10 @@ public class AddWorldsPanel extends JPanel {
                 String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
                 if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                     worldToAdd = filePath;
-                    pathListModel.addElement(filePath.toString());
+//                    pathListModel.addElement(filePath.toString());
                 } else {
                     worldToAdd = new File(folderPath);
-                    pathListModel.addElement(folderPath);
+//                    pathListModel.addElement(folderPath);
                     }
                 }
             System.out.println(worldToAdd);
@@ -85,10 +90,10 @@ public class AddWorldsPanel extends JPanel {
 
                         if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                             worldToAdd = fileToAdd;
-                            pathListModel.addElement(fileToAdd.toString());
+//                            pathListModel.addElement(fileToAdd.toString());
                         } else {
                             worldToAdd = new File(fileToAdd.getParent());
-                            pathListModel.addElement(fileToAdd.getParent());
+//                            pathListModel.addElement(fileToAdd.getParent());
                         }
 
                     } catch (UnsupportedFlavorException | IOException e) {
@@ -111,7 +116,7 @@ public class AddWorldsPanel extends JPanel {
             }
         });
 
-        pathList.setPreferredSize(new Dimension(400, 10));
+//        pathList.setPreferredSize(new Dimension(400, 10));
         JPanel emptyPanel2 = new JPanel();
         JPanel copyStuffPanel = new JPanel();
         copyStuffPanel.setLayout(new BorderLayout());
@@ -127,7 +132,14 @@ public class AddWorldsPanel extends JPanel {
         copyStuffPanel.add(progressBar, BorderLayout.PAGE_END);
 
         add(dragAndDropBtnPanel, BorderLayout.PAGE_START);
-        add(pathList, BorderLayout.LINE_START);
+        add(selectedServerTxt, BorderLayout.LINE_START);
+//        add(pathList, BorderLayout.LINE_START);
         add(copyStuffPanel, BorderLayout.PAGE_END);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        selectedServerTxt.setText(selServPrefix + ConfigStuffPanel.getServName());
     }
 }

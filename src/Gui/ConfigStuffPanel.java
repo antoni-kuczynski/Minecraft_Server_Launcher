@@ -13,7 +13,9 @@ public class ConfigStuffPanel extends JPanel {
     private static String servName;
     private static String servPath;
     private static ConfigStuffPanel panel;
+    private static AddWorldsPanel addWorldsPanel;
     private final Preferences preferences;
+    private int comboBoxSelectedIndex;
     public ConfigStuffPanel(Preferences preferences) {
         this.preferences = preferences;
         setLayout(new BorderLayout(10, 10));
@@ -33,11 +35,13 @@ public class ConfigStuffPanel extends JPanel {
         }
         JLabel selServerTitle = new JLabel(" or select server here:");
         JComboBox<String> serverSelection = new JComboBox<>();
+
         JPanel selServerManually = new JPanel();
 
         for(ButtonData btnData : config.getData()) {
             serverSelection.addItem(btnData.getButtonText());
         }
+        serverSelection.setSelectedIndex(preferences.getInt("SELECTED_COMBO_INDEX", 0));
 
         Config finalConfig = config;
         serverSelection.addItemListener(e -> {
@@ -45,6 +49,9 @@ public class ConfigStuffPanel extends JPanel {
                 servName = (String) e.getItem();
                 servPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
                 panel.repaint();
+                addWorldsPanel.repaint();
+                comboBoxSelectedIndex = serverSelection.getSelectedIndex();
+                preferences.putInt("SELECTED_COMBO_INDEX", comboBoxSelectedIndex);
             }
         });
 
@@ -54,7 +61,6 @@ public class ConfigStuffPanel extends JPanel {
         selServerManually.add(serverSelection, BorderLayout.LINE_END);
 
         add(openCfg, BorderLayout.LINE_START);
-//        add(openServerFolder, BorderLayout.CENTER);
         add(selServerManually, BorderLayout.LINE_END);
     }
 
@@ -62,10 +68,12 @@ public class ConfigStuffPanel extends JPanel {
         servName = text;
         servPath = serverPath;
         panel.repaint();
+        addWorldsPanel.repaint();
     }
 
-    public void setPanel(ConfigStuffPanel panel) {
+    public void setPanel(ConfigStuffPanel panel, AddWorldsPanel addWorldsPanel) {
         ConfigStuffPanel.panel = panel;
+        ConfigStuffPanel.addWorldsPanel = addWorldsPanel;
     }
 
     @Override
