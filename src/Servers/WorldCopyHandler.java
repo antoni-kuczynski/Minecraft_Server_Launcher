@@ -7,10 +7,7 @@ import Gui.Frame;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
+import java.io.*;
 import java.util.Objects;
 import java.util.zip.*;
 
@@ -72,6 +69,39 @@ public class WorldCopyHandler extends Thread {
         }
     }
 
+    public static void extractZipFile(String zipFilePath, String destDirectory) throws IOException {
+        File destDir = new File(destDirectory);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+
+        ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
+        ZipEntry entry = zipIn.getNextEntry();
+
+        while (entry != null) {
+            String filePath = destDirectory + File.separator + entry.getName();
+            if (!entry.isDirectory()) {
+                extractFile(zipIn, filePath);
+            } else {
+                File dir = new File(filePath);
+                dir.mkdir();
+            }
+            zipIn.closeEntry();
+            entry = zipIn.getNextEntry();
+        }
+        zipIn.close();
+    }
+
+    private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = zipIn.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+        }
+    }
+
     @Override
     public void run() {
         super.run();
@@ -82,7 +112,11 @@ public class WorldCopyHandler extends Thread {
                 Frame.alert(AlertType.ERROR, e.getMessage());
             }
         } else if(isArchive(originalDir)) {
-            System.out.println(isArchive(originalDir));
+            try {
+                extractZipFile(originalDir.toString(), "");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

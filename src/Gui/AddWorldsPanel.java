@@ -131,8 +131,29 @@ public class AddWorldsPanel extends JPanel {
         copyStuffPanel.add(emptyPanel2, BorderLayout.CENTER);
         copyStuffPanel.add(progressBar, BorderLayout.PAGE_END);
 
+        JPanel separatorPanel = new JPanel();
+        separatorPanel.setLayout(new BorderLayout());
+        separatorPanel.setPreferredSize(new Dimension(50, 100));
+        separatorPanel.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
+
+        JPanel selectedStuffPanel = new JPanel();
+        JLabel selectedWorld = new JLabel("testWorld");
+        JLabel arrow = new JLabel();
+        arrow.setIcon(new ImageIcon("arrow.png"));
+        JLabel selectedServer = new JLabel("testServer");
+        JPanel emptyPanel1 = new JPanel();
+        emptyPanel1.setPreferredSize(new Dimension(10,10));
+
+        selectedStuffPanel.setLayout(new GridLayout(7,1));
+//        selectedStuffPanel.setPreferredSize(new Dimension(100, 50));
+        selectedStuffPanel.add(selectedWorld);
+        selectedStuffPanel.add(arrow);
+        selectedStuffPanel.add(selectedServer);
+
         add(dragAndDropBtnPanel, BorderLayout.PAGE_START);
-        add(selectedServerTxt, BorderLayout.LINE_START);
+//        add(separatorPanel, BorderLayout.LINE_START);
+        add(emptyPanel1, BorderLayout.LINE_START);
+        add(selectedStuffPanel, BorderLayout.LINE_START);
 //        add(pathList, BorderLayout.LINE_START);
         add(copyStuffPanel, BorderLayout.PAGE_END);
     }
