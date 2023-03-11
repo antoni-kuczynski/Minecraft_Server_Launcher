@@ -144,8 +144,9 @@ public class AddWorldsPanel extends JPanel {
         JPanel emptyPanel1 = new JPanel();
         emptyPanel1.setPreferredSize(new Dimension(10,10));
 
-        selectedStuffPanel.setLayout(new GridLayout(7,1));
+        selectedStuffPanel.setLayout(new GridLayout(7,3));
 //        selectedStuffPanel.setPreferredSize(new Dimension(100, 50));
+
         selectedStuffPanel.add(selectedWorld);
         selectedStuffPanel.add(arrow);
         selectedStuffPanel.add(selectedServer);
