@@ -78,10 +78,10 @@ public class Frame extends JFrame implements ActionListener {
         Preferences prefs = Preferences.userNodeForPackage(getClass());
 
         // Create the JPanels
-        AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
         TitlePanel titlePanel = new TitlePanel();
         ButtonPanel buttonPanel = new ButtonPanel(Preferences.userNodeForPackage(getClass()));
         ConfigStuffPanel configStuffPanel = new ConfigStuffPanel(prefs);
+        AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
         configStuffPanel.setPanel(configStuffPanel, addWorldsPanel);
 
         //Empty Panels (one panel doesn't work) WTF!!!

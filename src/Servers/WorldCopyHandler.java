@@ -119,4 +119,16 @@ public class WorldCopyHandler extends Thread {
             }
         }
     }
+
+    public String getServerWorldName() {
+        return serverWorldName;
+    }
+
+    public File getOriginalDir() {
+        return originalDir;
+    }
+
+    public File getServerWorldDir() {
+        return serverWorldDir;
+    }
 }
