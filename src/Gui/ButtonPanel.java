@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
@@ -40,14 +41,16 @@ public class ButtonPanel extends JPanel implements ActionListener {
         setLayout(new GridLayout(10, 5, 10, 10));
         // Add 10 JButtons to the panel
         for (int i = 0; i < config.getData().size(); i++) {
-            JButton button = createButton(config.getData().get(i).getButtonText());
-            setButtonIcon(button, config.getData().get(i).getPathToButtonIcon());
+            if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
+                JButton button = createButton(config.getData().get(i).getButtonText());
+                setButtonIcon(button, config.getData().get(i).getPathToButtonIcon());
 
-            button.setPreferredSize(new Dimension(100, 40)); // Set the preferred size of the button
-            button.setFont(new Font("Arial", Font.PLAIN, 14)); // Set the font and size of the button text
-            button.addActionListener(this); // Add the action listener to the button
-            button.setActionCommand(Integer.toString(i)); // Set the action command to the index of the button
-            add(button);
+                button.setPreferredSize(new Dimension(100, 40)); // Set the preferred size of the button
+                button.setFont(new Font("Arial", Font.PLAIN, 14)); // Set the font and size of the button text
+                button.addActionListener(this); // Add the action listener to the button
+                button.setActionCommand(Integer.toString(i)); // Set the action command to the index of the button
+                add(button);
+            }
         }
     }
 
