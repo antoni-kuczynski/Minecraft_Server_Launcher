@@ -50,7 +50,10 @@ public class Runner extends Thread {
         command.add("cmd");
         command.add("/c");
         command.add("start");
-        command.add("java");
+        command.add("cmd.exe");
+        command.add("@cmd");
+        command.add("/c");
+        command.add("\"C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\javaw.exe\"");
         command.addAll(arguments);
         command.add("-jar");
         command.add(serverPath);

@@ -1,44 +1,51 @@
 [
   {
+    "buttonText": "Test_Server_laptop",
+    "pathToButtonIcon": "",
+    "pathToServerFolder": "C:\\Users\\szkola\\Documents\\mcserver_test",
+    "pathToServerJarFile": "C:\\Users\\szkola\\Documents\\mcserver_test\\paper-1.19.3-445.jar"
+  },
+  {
     "buttonText": "1.18.1",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "H:\\Minecraft_Serwery\\szkola_1.18.1\\",
-    "pathToServerJarFile": ""
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.18.1",
+    "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.18.1\\paper-1.18.1-148.jar"
   },
   {
     "buttonText": "1.17.1",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.17.1\\",
-    "pathToServerJarFile": ""
+    "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.17.1\\paper-1.17.1-388.jar"
   },
   {
     "buttonText": "1.16.5",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.16.5podSyna\\",
-    "pathToServerJarFile": ""
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.16.5\\",
+    "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.16.5\\paper-1.16.5-705.jar",
+    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe"
   },
   {
     "buttonText": "1.11",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.11\\",
-    "pathToServerJarFile": ""
+    "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.11\\spigot-1.11.2.jar"
   },
   {
-    "buttonText": "1.8.9_#1",
+    "buttonText": "1.8.9",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "H:\\Minecraft_Serwery\\[1.8.9]PVP\\",
-    "pathToServerJarFile": ""
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.8.9\\",
+    "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.8.9\\server.jar"
   },
   {
-    "buttonText": "1.8.9_#2",
+    "buttonText": "1.8.8 / 1.8.9 bukkit",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.8.8bukkit\\",
-    "pathToServerJarFile": ""
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.8.8_bukkit\\",
+    "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.8.8_bukkit\\minecraft_server.jar"
   },
   {
-    "buttonText": "Test_Server_laptop",
+    "buttonText": "1.19.3",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "C:\\Users\\szkola\\Documents\\mcserver_test",
-    "pathToServerJarFile": "C:\\Users\\szkola\\Documents\\mcserver_test\\paper-1.19.3-445.jar"
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.19.3",
+    "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.19.3\\paper-1.19.3-420.jar"
   }
 ]

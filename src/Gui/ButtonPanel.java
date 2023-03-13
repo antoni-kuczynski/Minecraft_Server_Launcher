@@ -39,7 +39,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     public ButtonPanel(Preferences preferences) throws IOException {
         ButtonPanel.preferences = preferences;
         setLayout(new GridLayout(10, 5, 10, 10));
-        // Add 10 JButtons to the panel
+        // Add i JButtons to the panel
         for (int i = 0; i < config.getData().size(); i++) {
             if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
                 JButton button = createButton(config.getData().get(i).getButtonText());
