@@ -75,56 +75,50 @@ public class WorldCopyHandler extends Thread {
         }
     }
 
-    private static void unzip(String zipFilePath, String destDir) {
-        File dir = new File(destDir);
-        // create output directory if it doesn't exist
-        if(!dir.exists()) dir.mkdirs();
-        FileInputStream fis;
-        //buffer for read and write data to file
+
+    public static void extractArchive(String archivePath, String destinationPath) throws IOException {
         byte[] buffer = new byte[1024];
-        try {
-            fis = new FileInputStream(zipFilePath);
-            ZipInputStream zis = new ZipInputStream(fis);
-            ZipEntry ze = zis.getNextEntry();
-            while(ze != null){
-                String fileName = ze.getName();
-                File newFile = new File(destDir + File.separator + fileName);
-                System.out.println("Unzipping to "+newFile.getAbsolutePath());
-                //create directories for sub directories in zip
-                new File(newFile.getParent()).mkdirs();
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
+        ZipEntry zipEntry = zis.getNextEntry();
+
+        while (zipEntry != null) {
+            File newFile = new File(destinationPath, zipEntry.getName());
+            if (zipEntry.isDirectory()) {
+                newFile.mkdirs();
+            } else {
+                newFile.getParentFile().mkdirs();
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
                     fos.write(buffer, 0, len);
                 }
                 fos.close();
-                //close this ZipEntry
-                zis.closeEntry();
-                ze = zis.getNextEntry();
             }
-            //close last ZipEntry
-            zis.closeEntry();
-            zis.close();
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            zipEntry = zis.getNextEntry();
         }
-
+        zis.closeEntry();
+        zis.close();
     }
+
 
     @Override
     public void run() {
         super.run();
         System.out.println(originalDir);
-        if(originalDir.isDirectory()) {
+//        if(originalDir.isDirectory()) {
+//            try {
+//                copyDirectory(originalDir, serverWorldDir);
+//            } catch (IOException e) {
+//                Frame.alert(AlertType.ERROR, e.getMessage());
+//            }
+//        } else if(isArchive(originalDir)) {
             try {
-                copyDirectory(originalDir, serverWorldDir);
+                System.out.println(originalDir);
+                extractArchive(originalDir.getAbsolutePath(), serverWorldDir.getAbsolutePath());
             } catch (IOException e) {
-                Frame.alert(AlertType.ERROR, e.getMessage());
+                throw new RuntimeException(e);
             }
-        } else if(isArchive(originalDir)) {
-            unzip(originalDir.toString(), "");
-        }
+//        }
     }
 
     public String getServerWorldName() {
