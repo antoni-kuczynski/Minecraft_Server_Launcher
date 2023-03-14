@@ -17,10 +17,12 @@ import static Gui.Frame.alert;
 public class Runner extends Thread {
     private String pathToServerJar;
     private String pathToServerFolder;
+    private String javaRuntimePath;
     private Run run;
 
-    public Runner(String pathToServerJar, Run run) {
+    public Runner(String pathToServerJar, Run run, String javaRuntimePath) {
         this.pathToServerJar = pathToServerJar;
+        this.javaRuntimePath = javaRuntimePath;
         this.run = run;
     }
 
@@ -45,7 +47,7 @@ public class Runner extends Thread {
         }
     }
 
-    private void launchServer(String serverPath, ArrayList<String> arguments) throws IOException {
+    private void launchServer(String serverPath, ArrayList<String> arguments, String javaPath) throws IOException {
         ArrayList<String> command = new ArrayList<String>();
         command.add("cmd");
         command.add("/c");
@@ -53,7 +55,7 @@ public class Runner extends Thread {
         command.add("cmd.exe");
         command.add("@cmd");
         command.add("/c");
-        command.add("\"C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\javaw.exe\"");
+        command.add("\"" + javaPath + "\"");
         command.addAll(arguments);
         command.add("-jar");
         command.add(serverPath);
@@ -71,6 +73,7 @@ public class Runner extends Thread {
             System.out.println(line);
         }
     }
+
 
     @Override
     public void run() {
@@ -145,7 +148,8 @@ public class Runner extends Thread {
             }
             case SERVER_JAR -> {
                 try {
-                    launchServer(pathToServerJar, new ArrayList<>());
+                    System.out.println(javaRuntimePath);
+                    launchServer(pathToServerJar, new ArrayList<>(), javaRuntimePath);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

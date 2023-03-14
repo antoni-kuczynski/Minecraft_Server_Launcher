@@ -14,17 +14,23 @@ import java.util.zip.*;
 public class WorldCopyHandler extends Thread {
 
     private final String serverWorldName;
-    private final File originalDir;
+    private File originalDir = null;
     private final File serverWorldDir;
-    private final JProgressBar progressBar;
-    public WorldCopyHandler(JProgressBar progressBar) throws IOException {
-        ServerProperties serverProperties = new ServerProperties();
+    private JProgressBar progressBar = null;
+    ServerProperties serverProperties = new ServerProperties();
+    public WorldCopyHandler(JProgressBar progressBar, File originalWorldDir) throws IOException {
+
         this.serverWorldName = serverProperties.getWorldName();
         this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
-        this.originalDir = AddWorldsPanel.getworldToAdd();
+        this.originalDir = originalWorldDir;
         this.progressBar = progressBar;
 
         System.out.println("Original dir: " + originalDir + "\nServer world dir: " + serverWorldDir);
+    }
+
+    public WorldCopyHandler() throws IOException {
+        this.serverWorldName = serverProperties.getWorldName();
+        this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
     }
 
 
@@ -69,42 +75,47 @@ public class WorldCopyHandler extends Thread {
         }
     }
 
-    public static void extractZipFile(String zipFilePath, String destDirectory) throws IOException {
-        File destDir = new File(destDirectory);
-        if (!destDir.exists()) {
-            destDir.mkdir();
-        }
-
-        ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
-        ZipEntry entry = zipIn.getNextEntry();
-
-        while (entry != null) {
-            String filePath = destDirectory + File.separator + entry.getName();
-            if (!entry.isDirectory()) {
-                extractFile(zipIn, filePath);
-            } else {
-                File dir = new File(filePath);
-                dir.mkdir();
+    private static void unzip(String zipFilePath, String destDir) {
+        File dir = new File(destDir);
+        // create output directory if it doesn't exist
+        if(!dir.exists()) dir.mkdirs();
+        FileInputStream fis;
+        //buffer for read and write data to file
+        byte[] buffer = new byte[1024];
+        try {
+            fis = new FileInputStream(zipFilePath);
+            ZipInputStream zis = new ZipInputStream(fis);
+            ZipEntry ze = zis.getNextEntry();
+            while(ze != null){
+                String fileName = ze.getName();
+                File newFile = new File(destDir + File.separator + fileName);
+                System.out.println("Unzipping to "+newFile.getAbsolutePath());
+                //create directories for sub directories in zip
+                new File(newFile.getParent()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+                //close this ZipEntry
+                zis.closeEntry();
+                ze = zis.getNextEntry();
             }
-            zipIn.closeEntry();
-            entry = zipIn.getNextEntry();
+            //close last ZipEntry
+            zis.closeEntry();
+            zis.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        zipIn.close();
-    }
 
-    private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(filePath)) {
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = zipIn.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
-            }
-        }
     }
 
     @Override
     public void run() {
         super.run();
+        System.out.println(originalDir);
         if(originalDir.isDirectory()) {
             try {
                 copyDirectory(originalDir, serverWorldDir);
@@ -112,11 +123,7 @@ public class WorldCopyHandler extends Thread {
                 Frame.alert(AlertType.ERROR, e.getMessage());
             }
         } else if(isArchive(originalDir)) {
-            try {
-                extractZipFile(originalDir.toString(), "");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            unzip(originalDir.toString(), "");
         }
     }
 

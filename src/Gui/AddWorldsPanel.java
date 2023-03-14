@@ -30,7 +30,6 @@ public class AddWorldsPanel extends JPanel {
     private final JLabel arrow = new JLabel();
     private final JLabel selectedServer = new JLabel("testServer");
     private final JProgressBar progressBar = new JProgressBar();
-    private WorldCopyHandler worldCopyHandler = new WorldCopyHandler(progressBar);
 
     private static String getFileExtension(File file) {
         String fileName = file.getName();
@@ -70,6 +69,7 @@ public class AddWorldsPanel extends JPanel {
                         worldToAdd = new File(folderPath);
 //                    pathListModel.addElement(folderPath);
                     }
+                    System.out.println(worldToAdd);
                 }
             }
             repaint();
@@ -117,6 +117,12 @@ public class AddWorldsPanel extends JPanel {
 
 
         startCopying.addActionListener(e -> {
+            WorldCopyHandler worldCopyHandler = null;
+            try {
+                worldCopyHandler = new WorldCopyHandler(progressBar, worldToAdd);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             worldCopyHandler.start();
         });
 
@@ -170,11 +176,12 @@ public class AddWorldsPanel extends JPanel {
         add(copyStuffPanel, BorderLayout.PAGE_END);
     }
 
+    WorldCopyHandler worldCopyText = new WorldCopyHandler();
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if(worldToAdd != null)
             selectedWorld.setText(worldToAdd.getName());
-        selectedServer.setText(ConfigStuffPanel.getServName() +"\\" + worldCopyHandler.getServerWorldName());
+        selectedServer.setText(ConfigStuffPanel.getServName() +"\\" + worldCopyText.getServerWorldName());
     }
 }

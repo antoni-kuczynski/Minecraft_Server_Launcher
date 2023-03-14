@@ -40,13 +40,15 @@ public class Config {
                         "buttonText": "Put your values here",
                         "pathToButtonIcon": "",
                         "pathToServerFolder": "",
-                        "pathToServerJarFile": ""
+                        "pathToServerJarFile": "",
+                        "pathToJavaExecutable": ""
                       },
                       {
                         "buttonText": "If you want to add more servers, just copy paste this whole block",
                         "pathToButtonIcon": "",
                         "pathToServerFolder": "",
-                        "pathToServerJarFile": ""
+                        "pathToServerJarFile": "",
+                        "pathToJavaExecutable": ""
                       }
                     ]""");
             writer.close();
@@ -58,7 +60,8 @@ public class Config {
             String pathToButtonIcon = jsonObject.getString("pathToButtonIcon");
             String pathToServerFolder = jsonObject.getString("pathToServerFolder");
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
-            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile));
+            String pathToJavaRuntime = jsonObject.getString("pathToJavaExecutable");
+            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime));
         }
     }
 }
