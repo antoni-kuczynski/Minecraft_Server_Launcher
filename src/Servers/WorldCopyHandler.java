@@ -7,7 +7,10 @@ import Gui.Frame;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.*;
 
@@ -18,14 +21,13 @@ public class WorldCopyHandler extends Thread {
     private final File serverWorldDir;
     private JProgressBar progressBar = null;
     ServerProperties serverProperties = new ServerProperties();
+
     public WorldCopyHandler(JProgressBar progressBar, File originalWorldDir) throws IOException {
 
         this.serverWorldName = serverProperties.getWorldName();
         this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
         this.originalDir = originalWorldDir;
         this.progressBar = progressBar;
-
-        System.out.println("Original dir: " + originalDir + "\nServer world dir: " + serverWorldDir);
     }
 
     public WorldCopyHandler() throws IOException {
@@ -76,15 +78,21 @@ public class WorldCopyHandler extends Thread {
     }
 
 
-    public static void extractArchive(String archivePath, String destinationPath) throws IOException {
+    public static String extractArchive(String archivePath, String destinationPath) throws IOException {
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
+
+        String extractedDirectory = null; // Initialize variable to hold the extracted directory
 
         while (zipEntry != null) {
             File newFile = new File(destinationPath, zipEntry.getName());
             if (zipEntry.isDirectory()) {
                 newFile.mkdirs();
+//                if (extractedDirectory == null) {
+                    extractedDirectory = newFile.getAbsolutePath(); // Store the first directory that is extracted
+//                System.out.println("Extracted dir = " + extractedDirectory);
+//                }
             } else {
                 newFile.getParentFile().mkdirs();
                 FileOutputStream fos = new FileOutputStream(newFile);
@@ -98,38 +106,65 @@ public class WorldCopyHandler extends Thread {
         }
         zis.closeEntry();
         zis.close();
+
+        return extractedDirectory;
     }
+
 
 
     @Override
     public void run() {
         super.run();
-        System.out.println(originalDir);
-//        if(originalDir.isDirectory()) {
-//            try {
-//                copyDirectory(originalDir, serverWorldDir);
-//            } catch (IOException e) {
-//                Frame.alert(AlertType.ERROR, e.getMessage());
-//            }
-//        } else if(isArchive(originalDir)) {
+        if (originalDir.isDirectory()) {
             try {
-                System.out.println(originalDir);
-                extractArchive(originalDir.getAbsolutePath(), serverWorldDir.getAbsolutePath());
+                copyDirectory(originalDir, serverWorldDir);
+            } catch (IOException e) {
+                Frame.alert(AlertType.ERROR, e.getMessage());
+            }
+        } else if (isArchive(originalDir)) {
+            String extractedDirectory = null;
+            try {
+                extractedDirectory = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-//        }
+            File dir = new File(extractedDirectory);
+//            if(dir.getParent())
+            System.out.println("Dir: " + dir);
+            System.out.println("Parent: " + dir.getParent());
+            System.out.println(findWorldDirectory(dir.getParent()));
+        }
     }
 
-    public String getServerWorldName() {
+    private String findWorldDirectory(String dir) {
+        ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
+        ArrayList<String> filenames = new ArrayList<>();
+        for (File f : arr)
+            filenames.add(f.getName());
+        if (filenames.contains("level.dat")) {
+            return dir;
+        } else {
+            String nextDir = null;
+            for(File f : arr) {
+                if(f.isDirectory()) {
+                    nextDir = f.getAbsolutePath();
+                    break;
+                }
+            }
+            findWorldDirectory(nextDir);
+        }
+        return null;
+    }
+    public String getServerWorldName () {
         return serverWorldName;
     }
 
-    public File getOriginalDir() {
+    public File getOriginalDir () {
         return originalDir;
     }
 
-    public File getServerWorldDir() {
+    public File getServerWorldDir () {
         return serverWorldDir;
     }
 }
