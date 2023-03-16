@@ -134,6 +134,11 @@ public class WorldCopyHandler extends Thread {
             System.out.println("Dir: " + dir);
             System.out.println("Parent: " + dir.getParent());
             System.out.println(findWorldDirectory(dir.getParent()));
+            try {
+                copyDirectory(new File(Objects.requireNonNull(findWorldDirectory(dir.getParent()))), serverWorldDir);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
