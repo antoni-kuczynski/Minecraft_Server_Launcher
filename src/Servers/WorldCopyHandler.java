@@ -162,6 +162,8 @@ public class WorldCopyHandler extends Thread {
         return null;
     }
     public String getServerWorldName () {
+        if(serverWorldName == null)
+            return "world";
         return serverWorldName;
     }
 

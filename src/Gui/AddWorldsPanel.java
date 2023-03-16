@@ -49,6 +49,7 @@ public class AddWorldsPanel extends JPanel {
 //        JComboBox<String> serverSelection = new JComboBox<>();
         selectedServerTxt.setText(selServPrefix + ConfigStuffPanel.getServName());
         JButton startCopying = new JButton("Start Copying");
+        startCopying.setEnabled(false);
         JButton button = new JButton("Open Folder");
         button.addActionListener(e -> {
             FileDialog fileDialog = new FileDialog((Frame)null, "Select Folder");
@@ -72,6 +73,7 @@ public class AddWorldsPanel extends JPanel {
                     System.out.println(worldToAdd);
                 }
             }
+            startCopying.setEnabled(true);
             repaint();
             System.out.println(worldToAdd);
         });
@@ -104,6 +106,7 @@ public class AddWorldsPanel extends JPanel {
                             worldToAdd = new File(fileToAdd.getParent());
 //                            pathListModel.addElement(fileToAdd.getParent());
                         }
+                        startCopying.setEnabled(true);
                         repaint();
                     } catch (UnsupportedFlavorException | IOException e) {
                         return false;
@@ -180,8 +183,9 @@ public class AddWorldsPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(worldToAdd != null)
+        if(worldToAdd != null) {
             selectedWorld.setText(worldToAdd.getName());
+        }
         selectedServer.setText(ConfigStuffPanel.getServName() +"\\" + worldCopyText.getServerWorldName());
     }
 }

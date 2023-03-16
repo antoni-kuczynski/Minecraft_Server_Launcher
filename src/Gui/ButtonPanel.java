@@ -45,6 +45,8 @@ public class ButtonPanel extends JPanel implements ActionListener {
                 JButton button = createButton(config.getData().get(i).getButtonText());
                 setButtonIcon(button, config.getData().get(i).getPathToButtonIcon());
 
+                button.setToolTipText("Server path: " + config.getData().get(i).getPathToServerFolder() + "\nServer executable: " +
+                        config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime());
                 button.setPreferredSize(new Dimension(100, 40)); // Set the preferred size of the button
                 button.setFont(new Font("Arial", Font.PLAIN, 14)); // Set the font and size of the button text
                 button.addActionListener(this); // Add the action listener to the button

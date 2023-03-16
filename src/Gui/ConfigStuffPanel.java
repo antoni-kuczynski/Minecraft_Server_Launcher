@@ -5,7 +5,9 @@ import Servers.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 public class ConfigStuffPanel extends JPanel {
@@ -38,10 +40,15 @@ public class ConfigStuffPanel extends JPanel {
 
         JPanel selServerManually = new JPanel();
 
-        for(ButtonData btnData : config.getData()) {
-            serverSelection.addItem(btnData.getButtonText());
+
+        for(int i = 0; i < Objects.requireNonNull(config).getData().size(); i++) {
+            if(new File(config.getData().get(i).getPathToServerFolder()).exists())
+                serverSelection.addItem(config.getData().get(i).getButtonText());
         }
-        serverSelection.setSelectedIndex(preferences.getInt("SELECTED_COMBO_INDEX", 0));
+        if(serverSelection.getItemCount() > preferences.getInt("SELECTED_COMBO_INDEX", 0))
+            serverSelection.setSelectedIndex(preferences.getInt("SELECTED_COMBO_INDEX", 0));
+        else
+            serverSelection.setSelectedIndex(0);
 
         Config finalConfig = config;
         serverSelection.addItemListener(e -> {
