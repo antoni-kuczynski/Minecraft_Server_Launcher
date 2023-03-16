@@ -1,12 +1,15 @@
 package Gui;
 
 import Servers.ServerProperties;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 public class Frame extends JFrame implements ActionListener {
@@ -165,6 +168,18 @@ public class Frame extends JFrame implements ActionListener {
                 prefs.putInt(PREFS_KEY_WIDTH, bounds.width);
                 prefs.putInt(PREFS_KEY_HEIGHT, bounds.height);
                 prefs.put(PREFS_KEY_LOOK_AND_FEEL, lookAndFeel);
+
+
+                File dir = new File(".\\world_temp");
+                File[] files = dir.listFiles();
+                assert files != null;
+                for (File file : files) {
+                    try {
+                        FileUtils.deleteDirectory(file);
+                    } catch (IOException e) {
+                        alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder.");
+                    }
+                }
             }
         });
     }

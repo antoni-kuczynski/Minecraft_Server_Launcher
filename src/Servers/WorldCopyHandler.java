@@ -78,27 +78,30 @@ public class WorldCopyHandler extends Thread {
     }
 
 
-    public static String extractArchive(String archivePath, String destinationPath) throws IOException {
+    private String extractArchive(String archivePath, String destinationPath) throws IOException {
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
 
-        String extractedDirectory = null; // Initialize variable to hold the extracted directory
+        String extractedDirectory = null;
+        long totalSize = getTotalSize(archivePath);
+        long extractedSize = 0;
 
         while (zipEntry != null) {
             File newFile = new File(destinationPath, zipEntry.getName());
             if (zipEntry.isDirectory()) {
                 newFile.mkdirs();
-//                if (extractedDirectory == null) {
-                    extractedDirectory = newFile.getAbsolutePath(); // Store the first directory that is extracted
-//                System.out.println("Extracted dir = " + extractedDirectory);
-//                }
+                if (extractedDirectory == null) {
+                    extractedDirectory = newFile.getAbsolutePath();
+                }
             } else {
                 newFile.getParentFile().mkdirs();
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
                     fos.write(buffer, 0, len);
+                    extractedSize += len;
+                    progressBar.setValue((int) (extractedSize * 100 / totalSize)); // Set progress bar value based on the extracted size
                 }
                 fos.close();
             }
@@ -109,6 +112,21 @@ public class WorldCopyHandler extends Thread {
 
         return extractedDirectory;
     }
+
+    private long getTotalSize(String archivePath) throws IOException {
+        long totalSize = 0;
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
+        ZipEntry zipEntry = zis.getNextEntry();
+        while (zipEntry != null) {
+            if (!zipEntry.isDirectory()) {
+                totalSize += zipEntry.getSize();
+            }
+            zipEntry = zis.getNextEntry();
+        }
+        zis.close();
+        return totalSize;
+    }
+
 
 
 
@@ -142,7 +160,7 @@ public class WorldCopyHandler extends Thread {
         }
     }
 
-    private String findWorldDirectory(String dir) {
+    private String findWorldDirectory(String dir) { //TODO: fixme
         ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
         ArrayList<String> filenames = new ArrayList<>();
         for (File f : arr)
