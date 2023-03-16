@@ -41,18 +41,25 @@ public class ButtonPanel extends JPanel implements ActionListener {
         setLayout(new GridLayout(10, 5, 10, 10));
         // Add i JButtons to the panel
         for (int i = 0; i < config.getData().size(); i++) {
-            if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
                 JButton button = createButton(config.getData().get(i).getButtonText());
+
+                button.setEnabled(false);
+                if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
+                    button.setEnabled(true);
+                    button.setToolTipText("Server path: " + config.getData().get(i).getPathToServerFolder() + "\nServer executable: " +
+                            config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime());
+                } else {
+                    button.setToolTipText("Server files not found." + "\nServer path: " + config.getData().get(i).getPathToServerFolder() + "\nServer executable: " +
+                            config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime());
+                }
                 setButtonIcon(button, config.getData().get(i).getPathToButtonIcon());
 
-                button.setToolTipText("Server path: " + config.getData().get(i).getPathToServerFolder() + "\nServer executable: " +
-                        config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime());
+
                 button.setPreferredSize(new Dimension(100, 40)); // Set the preferred size of the button
                 button.setFont(new Font("Arial", Font.PLAIN, 14)); // Set the font and size of the button text
                 button.addActionListener(this); // Add the action listener to the button
                 button.setActionCommand(Integer.toString(i)); // Set the action command to the index of the button
                 add(button);
-            }
         }
     }
 
