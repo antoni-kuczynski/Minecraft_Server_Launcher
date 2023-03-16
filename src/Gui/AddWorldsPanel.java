@@ -1,6 +1,5 @@
 package Gui;
 
-import Servers.ServerProperties;
 import Servers.WorldCopyHandler;
 
 import javax.swing.*;
@@ -14,39 +13,17 @@ import java.io.IOException;
 import java.io.Serial;
 
 public class AddWorldsPanel extends JPanel {
-
-    public JPanel getPanel() {
-        return this;
-    }
-    public static File getworldToAdd() {
-        return worldToAdd;
-    }
     private static File worldToAdd;
-//    private final JList<String> pathList = new JList<>();
-//    private final DefaultListModel<String> pathListModel = new DefaultListModel<>();
-    private JLabel selectedServerTxt = new JLabel();
+    private final JLabel selectedServerTxt = new JLabel();
     private final String selServPrefix = "Selected server: ";
     private final JLabel selectedWorld = new JLabel("testWorld");
     private final JLabel arrow = new JLabel();
     private final JLabel selectedServer = new JLabel("testServer");
     private final JProgressBar progressBar = new JProgressBar();
 
-    private static String getFileExtension(File file) {
-        String fileName = file.getName();
-        int lastDotIndex = fileName.lastIndexOf('.');
-        if (lastDotIndex == -1) {
-            return "";
-        } else {
-            return fileName.substring(lastDotIndex + 1);
-        }
-    }
-
     public AddWorldsPanel() throws IOException {
-//        setLayout(new BorderLayout());
         super(new BorderLayout());
-//        pathList.setModel(pathListModel);
         JLabel dragNDropInfo = new JLabel(" or drag and drop it into the button.");
-//        JComboBox<String> serverSelection = new JComboBox<>();
         selectedServerTxt.setText(selServPrefix + ConfigStuffPanel.getServName());
         JButton startCopying = new JButton("Start Copying");
         startCopying.setEnabled(false);
@@ -65,15 +42,13 @@ public class AddWorldsPanel extends JPanel {
                     String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
                     if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                         worldToAdd = filePath;
-//                    pathListModel.addElement(filePath.toString());
                     } else {
                         worldToAdd = new File(folderPath);
-//                    pathListModel.addElement(folderPath);
                     }
-                    System.out.println(worldToAdd);
+                    startCopying.setEnabled(true);
                 }
             }
-            startCopying.setEnabled(true);
+
             repaint();
             System.out.println(worldToAdd);
         });
@@ -94,17 +69,14 @@ public class AddWorldsPanel extends JPanel {
                     Transferable t = support.getTransferable();
                     try {
                         List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
-//                        worldToAdd.addAll(l);
                         File fileToAdd = l.get(l.size() - 1);
                         String fileExtension = fileToAdd.toString().split("\\.")[fileToAdd.toString().split("\\.").length - 1];
                         System.out.println(fileToAdd);
 
                         if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                             worldToAdd = fileToAdd;
-//                            pathListModel.addElement(fileToAdd.toString());
                         } else {
                             worldToAdd = new File(fileToAdd.getParent());
-//                            pathListModel.addElement(fileToAdd.getParent());
                         }
                         startCopying.setEnabled(true);
                         repaint();
@@ -120,7 +92,7 @@ public class AddWorldsPanel extends JPanel {
 
 
         startCopying.addActionListener(e -> {
-            WorldCopyHandler worldCopyHandler = null;
+            WorldCopyHandler worldCopyHandler;
             try {
                 worldCopyHandler = new WorldCopyHandler(progressBar, worldToAdd);
             } catch (IOException ex) {
@@ -129,7 +101,6 @@ public class AddWorldsPanel extends JPanel {
             worldCopyHandler.start();
         });
 
-//        pathList.setPreferredSize(new Dimension(400, 10));
         JPanel emptyPanel2 = new JPanel();
         JPanel copyStuffPanel = new JPanel();
         copyStuffPanel.setLayout(new BorderLayout());
@@ -140,9 +111,18 @@ public class AddWorldsPanel extends JPanel {
         dragAndDropBtnPanel.add(button);
         dragAndDropBtnPanel.add(dragNDropInfo);
 
+        JPanel emptyPanel4 = new JPanel();
+        emptyPanel4.setPreferredSize(new Dimension(10, 10));
+
+        JPanel copyPanelBottom = new JPanel();
+        copyPanelBottom.setLayout(new BorderLayout());
+        copyPanelBottom.add(progressBar, BorderLayout.PAGE_START);
+        copyPanelBottom.add(emptyPanel4, BorderLayout.PAGE_END);
+
+        startCopying.setPreferredSize(new Dimension(75, 35));
         copyStuffPanel.add(startCopying, BorderLayout.PAGE_START);
         copyStuffPanel.add(emptyPanel2, BorderLayout.CENTER);
-        copyStuffPanel.add(progressBar, BorderLayout.PAGE_END);
+        copyStuffPanel.add(copyPanelBottom, BorderLayout.PAGE_END);
 
         JPanel separatorPanel = new JPanel();
         separatorPanel.setLayout(new BorderLayout());
@@ -157,7 +137,6 @@ public class AddWorldsPanel extends JPanel {
         emptyPanel1.setPreferredSize(new Dimension(10,10));
 
         selectedStuffPanel.setLayout(new GridLayout(7,3));
-//        selectedStuffPanel.setPreferredSize(new Dimension(100, 50));
 
         selectedStuffPanel.add(selectedWorld);
         selectedStuffPanel.add(arrow);
@@ -172,10 +151,8 @@ public class AddWorldsPanel extends JPanel {
 
 
         add(dragAndDropBtnPanel, BorderLayout.PAGE_START);
-//        add(separatorPanel, BorderLayout.LINE_START);
         add(emptyPanel1, BorderLayout.LINE_START);
         add(selectedStuffAndSpacePanel, BorderLayout.LINE_START);
-//        add(pathList, BorderLayout.LINE_START);
         add(copyStuffPanel, BorderLayout.PAGE_END);
     }
 

@@ -1,13 +1,11 @@
 package Servers;
 
-import Gui.AddWorldsPanel;
 import Gui.AlertType;
 import Gui.ConfigStuffPanel;
 import Gui.Frame;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,10 +18,10 @@ public class WorldCopyHandler extends Thread {
     private File originalDir = null;
     private final File serverWorldDir;
     private JProgressBar progressBar = null;
-    ServerProperties serverProperties = new ServerProperties();
+
 
     public WorldCopyHandler(JProgressBar progressBar, File originalWorldDir) throws IOException {
-
+        ServerProperties serverProperties = new ServerProperties();
         this.serverWorldName = serverProperties.getWorldName();
         this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
         this.originalDir = originalWorldDir;
@@ -31,7 +29,7 @@ public class WorldCopyHandler extends Thread {
     }
 
     public WorldCopyHandler() throws IOException {
-        this.serverWorldName = serverProperties.getWorldName();
+        this.serverWorldName = new ServerProperties().getWorldName();
         this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
     }
 
@@ -50,7 +48,7 @@ public class WorldCopyHandler extends Thread {
             File destFile = new File(destDir, sourceFile.getName());
 
             if (sourceFile.isDirectory()) {
-                // Recursively copy sub-directories
+                // Recursively copy subdirectories
                 copyDirectory(sourceFile, destFile);
             } else {
                 // Copy files and update progress bar
@@ -140,7 +138,7 @@ public class WorldCopyHandler extends Thread {
                 Frame.alert(AlertType.ERROR, e.getMessage());
             }
         } else if (isArchive(originalDir)) {
-            String extractedDirectory = null;
+            String extractedDirectory;
             try {
                 extractedDirectory = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
 
@@ -149,9 +147,10 @@ public class WorldCopyHandler extends Thread {
             }
             File dir = new File(extractedDirectory);
 //            if(dir.getParent())
-            System.out.println("Dir: " + dir);
-            System.out.println("Parent: " + dir.getParent());
-            System.out.println(findWorldDirectory(dir.getParent()));
+//            System.out.println("Dir: " + dir);
+//            System.out.println("Parent: " + dir.getParent());
+//            System.out.println(findWorldDirectory(dir.getParent()));
+            System.out.println(serverWorldDir);
             try {
                 copyDirectory(new File(Objects.requireNonNull(findWorldDirectory(dir.getParent()))), serverWorldDir);
             } catch (IOException e) {
@@ -181,15 +180,7 @@ public class WorldCopyHandler extends Thread {
     }
     public String getServerWorldName () {
         if(serverWorldName == null)
-            return "world";
+            return "world_name_not_found";
         return serverWorldName;
-    }
-
-    public File getOriginalDir () {
-        return originalDir;
-    }
-
-    public File getServerWorldDir () {
-        return serverWorldDir;
     }
 }

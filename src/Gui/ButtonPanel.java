@@ -14,10 +14,6 @@ public class ButtonPanel extends JPanel implements ActionListener {
     private final Config config = new Config();
     private static Preferences preferences;
 
-    public static Preferences getPreferences() {
-        return preferences;
-    }
-
     public void setButtonIcon(JButton button, String iconPath) {
         ImageIcon icon = new ImageIcon(iconPath);
         Image image = icon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
@@ -74,10 +70,5 @@ public class ButtonPanel extends JPanel implements ActionListener {
         String index = e.getActionCommand(); // Get the action command (i.e., the index of the button)
         new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile(), Run.SERVER_JAR, config.getData().get(Integer.parseInt(index)).getPathToJavaRuntime()).start();
         ConfigStuffPanel.setServerVariables(config.getData().get(Integer.parseInt(index)).getButtonText(), config.getData().get(Integer.parseInt(index)).getPathToServerFolder());
-//        try {
-//            new WorldCopyHandler();
-//        } catch (IOException ex) {
-//            throw new RuntimeException(ex);
-//        }
     }
 }

@@ -1,6 +1,5 @@
 package Gui;
 
-import Servers.ServerProperties;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -9,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.prefs.Preferences;
 
 public class Frame extends JFrame implements ActionListener {
@@ -30,12 +28,13 @@ public class Frame extends JFrame implements ActionListener {
         }
     }
 
-    private JMenuItem darculaMenuItem;
-    private JMenuItem githubDarkMenuItem;
-    private JMenuItem windowsMenuItem;
-    private JMenuItem inteliijLightMenuItem;
-    private JMenuItem githubLightMenuItem;
-    private JMenuItem draculaMenuItem;
+    private final JMenuItem darculaMenuItem;
+    private final JMenuItem githubDarkMenuItem;
+    private final JMenuItem oneDarkMenuItem;
+    private final JMenuItem inteliijLightMenuItem;
+    private final JMenuItem xCodeDarkMenuItem;
+    private final JMenuItem draculaMenuItem;
+    private final JMenuItem nordMenuItem;
     private static String lookAndFeel;
     public Frame() throws IOException {
 
@@ -43,30 +42,37 @@ public class Frame extends JFrame implements ActionListener {
 
         JMenu lookAndFeelMenu = new JMenu("Change Theme");
 
-        darculaMenuItem = new JMenuItem("Darcula");
+        darculaMenuItem = new JMenuItem("Darcula (Inteliij Dark)");
         darculaMenuItem.addActionListener(this);
         lookAndFeelMenu.add(darculaMenuItem);
 
-        githubDarkMenuItem = new JMenuItem("GitHub Dark");
-        githubDarkMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(githubDarkMenuItem);
+        nordMenuItem = new JMenuItem("Nord");
+        nordMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(nordMenuItem);
 
         draculaMenuItem = new JMenuItem("Dracula");
         draculaMenuItem.addActionListener(this);
         lookAndFeelMenu.add(draculaMenuItem);
 
+        oneDarkMenuItem = new JMenuItem("One Dark");
+        oneDarkMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(oneDarkMenuItem);
+
+        githubDarkMenuItem = new JMenuItem("GitHub Dark");
+        githubDarkMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(githubDarkMenuItem);
+
+        xCodeDarkMenuItem = new JMenuItem("Xcode Dark");
+        xCodeDarkMenuItem.addActionListener(this);
+        lookAndFeelMenu.add(xCodeDarkMenuItem);
+
         inteliijLightMenuItem = new JMenuItem("Inteliij Light");
         inteliijLightMenuItem.addActionListener(this);
         lookAndFeelMenu.add(inteliijLightMenuItem);
 
-        githubLightMenuItem = new JMenuItem("Github Light");
-        githubLightMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(githubLightMenuItem);
 
-        windowsMenuItem = new JMenuItem("Windows");
-        windowsMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(windowsMenuItem);
-        darculaMenuItem.setSelected(true);
+
+//        darculaMenuItem.setSelected(true);
 
         menuBar.add(lookAndFeelMenu);
 
@@ -127,16 +133,8 @@ public class Frame extends JFrame implements ActionListener {
         // Add the JPanel to the JFrame's BorderLayout.CENTER
         add(titlePanel, BorderLayout.PAGE_START);
         add(emptyPanel1, BorderLayout.LINE_START);
-//        add(buttonPanel, BorderLayout.CENTER);
         add(testPanel, BorderLayout.CENTER);
-//        add(addWorldsPanel, BorderLayout.LINE_END);
-       // add(emptyPanel2, BorderLayout.LINE_END);
-//        add(emptyPanel3, BorderLayout.PAGE_END);
         add(configPanel, BorderLayout.PAGE_END);
-
-        // Set the JFrame size and make it visible
-
-//        setSize(900, 700);
         setVisible(true);
 
         // Set the initial size and position of the JFrame
@@ -190,14 +188,16 @@ public class Frame extends JFrame implements ActionListener {
             setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
         } else if (e.getSource() == githubDarkMenuItem) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme");
-        } else if (e.getSource() == windowsMenuItem) {
-            setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } else if (e.getSource() == oneDarkMenuItem) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme");
         } else if (e.getSource() == inteliijLightMenuItem) {
             setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
-        } else if (e.getSource() == githubLightMenuItem) {
-            setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme");
+        } else if (e.getSource() == xCodeDarkMenuItem) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme");
         } else if (e.getSource() == draculaMenuItem) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme");
+        } else if (e.getSource() == nordMenuItem) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
         }
     }
 

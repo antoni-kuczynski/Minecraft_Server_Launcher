@@ -1,16 +1,13 @@
 package Servers;
 
 import Gui.AlertType;
-import Gui.Frame;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static Gui.Frame.alert;
 
@@ -18,7 +15,7 @@ public class Runner extends Thread {
     private String pathToServerJar;
     private String pathToServerFolder;
     private String javaRuntimePath;
-    private Run run;
+    private final Run run;
 
     public Runner(String pathToServerJar, Run run, String javaRuntimePath) {
         this.pathToServerJar = pathToServerJar;
@@ -35,20 +32,8 @@ public class Runner extends Thread {
         pathToServerFolder = serverPath;
     }
 
-    private final SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss:SSS");
-
-    private void executeCommand(String command) {
-        try {
-            System.out.println(format.format(new Date()) + ": " + command + "\n");
-            Process process = Runtime.getRuntime().exec(command);
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            Frame.alert(AlertType.ERROR, e.getMessage());
-        }
-    }
-
     private void launchServer(String serverPath, ArrayList<String> arguments, String javaPath) throws IOException {
-        ArrayList<String> command = new ArrayList<String>();
+        ArrayList<String> command = new ArrayList<>();
         command.add("cmd");
         command.add("/c");
         command.add("start");
@@ -155,6 +140,5 @@ public class Runner extends Thread {
                 }
             }
         }
-
     }
 }
