@@ -7,7 +7,9 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
 
 public class ConfigStuffPanel extends JPanel {
@@ -18,6 +20,7 @@ public class ConfigStuffPanel extends JPanel {
     private static AddWorldsPanel addWorldsPanel;
     private final Preferences preferences;
     private int comboBoxSelectedIndex;
+    private final JComboBox<String> serverSelection = new JComboBox<>();
     public ConfigStuffPanel(Preferences preferences) {
         this.preferences = preferences;
         setLayout(new BorderLayout(10, 10));
@@ -36,29 +39,41 @@ public class ConfigStuffPanel extends JPanel {
             Frame.alert(AlertType.FATAL, e.getMessage());
         }
         JLabel selServerTitle = new JLabel(" or select server here:");
-        JComboBox<String> serverSelection = new JComboBox<>();
+
 
         JPanel selServerManually = new JPanel();
 
-
+        ArrayList<Integer> disabledIndexes = new ArrayList<>();
         for(int i = 0; i < Objects.requireNonNull(config).getData().size(); i++) {
-            if(new File(config.getData().get(i).getPathToServerFolder()).exists())
+            if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
                 serverSelection.addItem(config.getData().get(i).getButtonText());
+            } else {
+                serverSelection.addItem(config.getData().get(i).getButtonText() + " (MISSING FILES)");
+                disabledIndexes.add(i);
+            }
         }
+
         if(serverSelection.getItemCount() > preferences.getInt("SELECTED_COMBO_INDEX", 0))
             serverSelection.setSelectedIndex(preferences.getInt("SELECTED_COMBO_INDEX", 0));
         else
             serverSelection.setSelectedIndex(0);
 
         Config finalConfig = config;
+        AtomicInteger lastSelectedIndex = new AtomicInteger();
         serverSelection.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.DESELECTED)
+                lastSelectedIndex.set(serverSelection.getSelectedIndex());
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                servName = (String) e.getItem();
-                servPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
-                panel.repaint();
-                addWorldsPanel.repaint();
-                comboBoxSelectedIndex = serverSelection.getSelectedIndex();
-                preferences.putInt("SELECTED_COMBO_INDEX", comboBoxSelectedIndex);
+                if(disabledIndexes.contains(serverSelection.getSelectedIndex())) {
+                    serverSelection.setSelectedIndex(1); //fuck that
+                } else {
+                    servName = (String) e.getItem();
+                    servPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
+                    panel.repaint();
+                    addWorldsPanel.repaint();
+                    comboBoxSelectedIndex = serverSelection.getSelectedIndex();
+                    preferences.putInt("SELECTED_COMBO_INDEX", comboBoxSelectedIndex);
+                }
             }
         });
 
@@ -96,6 +111,7 @@ public class ConfigStuffPanel extends JPanel {
         preferences.put("SELECTED_SERVER_NAME", servName);
         preferences.put("SELECTED_SERVER_PATH", servPath);
         openServerFolder.setText("Open " + servName + "'s Server Folder");
+//        serverSelection.se
     }
 
     public static String getServName() {

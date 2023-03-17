@@ -11,7 +11,7 @@
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.18.1",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.18.1\\paper-1.18.1-148.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.1.12-hotspot\\bin\\java.exe"
   },
   {
     "buttonText": "1.17.1",
@@ -53,6 +53,6 @@
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.19.3",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.19.3\\paper-1.19.3-420.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.2.7-hotspot\\bin\\java.exe"
   }
 ]

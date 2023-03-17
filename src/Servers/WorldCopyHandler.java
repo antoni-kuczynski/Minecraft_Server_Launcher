@@ -151,6 +151,15 @@ public class WorldCopyHandler extends Thread {
 //            System.out.println("Parent: " + dir.getParent());
 //            System.out.println(findWorldDirectory(dir.getParent()));
             System.out.println(serverWorldDir);
+            System.out.println(Arrays.stream(serverWorldDir.list()).toList());
+            if(Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
+                try {
+                    FileUtils.deleteDirectory(serverWorldDir);
+                } catch (IOException e) {
+                    Frame.alert(AlertType.ERROR, e.getMessage());
+                }
+            }
+
             try {
                 copyDirectory(new File(Objects.requireNonNull(findWorldDirectory(dir.getParent()))), serverWorldDir);
             } catch (IOException e) {
