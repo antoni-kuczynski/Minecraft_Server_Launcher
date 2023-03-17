@@ -126,9 +126,19 @@ public class Frame extends JFrame implements ActionListener {
         addWorldsPanel.add(emptyPanel2);
 
 
-        JPanel testPanel = new JPanel();
+
+//        buttonPanel.setPreferredSize(new Dimension(400, 100));
+        JPanel testPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                System.out.println(getWidth());
+                buttonPanel.setSize(new Dimension(getWidth() / 2, getHeight()));
+            }
+        };
         testPanel.setLayout(new BorderLayout(10, 10));
-        testPanel.add(buttonPanel, BorderLayout.CENTER);
+        testPanel.add(buttonPanel, BorderLayout.LINE_START);
+        testPanel.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.CENTER);
         testPanel.add(addWorldsPanel, BorderLayout.LINE_END);
 
         // Add the JPanel to the JFrame's BorderLayout.CENTER

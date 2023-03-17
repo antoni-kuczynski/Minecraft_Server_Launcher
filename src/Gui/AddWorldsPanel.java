@@ -50,7 +50,6 @@ public class AddWorldsPanel extends JPanel {
             }
 
             repaint();
-            System.out.println(worldToAdd);
         });
         button.setTransferHandler(new TransferHandler() {
             @Serial
