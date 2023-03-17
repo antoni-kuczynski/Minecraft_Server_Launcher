@@ -79,6 +79,7 @@ public class Frame extends JFrame implements ActionListener {
         setJMenuBar(menuBar);
 
         // Set up the JFrame
+//        setFocusableWindowState(false);
         setIconImage(new ImageIcon("app_icon.png").getImage());
         setTitle("Minecraft Server Server Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -132,10 +132,25 @@ public class WorldCopyHandler extends Thread {
     public void run() {
         super.run();
         if (originalDir.isDirectory()) {
+            if(Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
+                try {
+                    FileUtils.deleteDirectory(serverWorldDir);
+                } catch (IOException e) {
+                    Frame.alert(AlertType.ERROR, e.getMessage());
+                }
+            }
+//            System.out.println("dir: " + serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end");
+            try {
+                FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
+                FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
+            } catch (IOException e) {
+                Frame.alert(AlertType.ERROR, e.getMessage());
+            }
+
             try {
                 copyDirectory(originalDir, serverWorldDir);
             } catch (IOException e) {
-                Frame.alert(AlertType.ERROR, e.getMessage());
+                throw new RuntimeException(e);
             }
         } else if (isArchive(originalDir)) {
             String extractedDirectory;
@@ -158,6 +173,13 @@ public class WorldCopyHandler extends Thread {
                 } catch (IOException e) {
                     Frame.alert(AlertType.ERROR, e.getMessage());
                 }
+            }
+//            System.out.println("dir: " + serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end");
+            try {
+                FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
+                FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
+            } catch (IOException e) {
+                Frame.alert(AlertType.ERROR, e.getMessage());
             }
 
             try {
