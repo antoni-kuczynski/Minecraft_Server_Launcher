@@ -2,7 +2,6 @@ package Servers;
 
 import Gui.AlertType;
 import Gui.ConfigStuffPanel;
-import Gui.Frame;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -11,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.*;
+
+import static Gui.Frame.alert;
+import static Gui.Frame.exStackTraceToString;
 
 public class WorldCopyHandler extends Thread {
 
@@ -40,7 +42,8 @@ public class WorldCopyHandler extends Thread {
 
         // Create the destination directory if it doesn't exist
         if (!destDir.exists()) {
-            destDir.mkdir();
+            if(!destDir.mkdir())
+                alert(AlertType.ERROR, "Cannot create destination directory.\nAt line " + getStackTrace()[1].getLineNumber());
         }
 
         // Iterate through all files and directories in the source directory
@@ -88,12 +91,14 @@ public class WorldCopyHandler extends Thread {
         while (zipEntry != null) {
             File newFile = new File(destinationPath, zipEntry.getName());
             if (zipEntry.isDirectory()) {
-                newFile.mkdirs();
+                if(!newFile.mkdirs())
+                    alert(AlertType.ERROR, "Cannot create some directory.\nAt line " + getStackTrace()[1].getLineNumber());
                 if (extractedDirectory == null) {
                     extractedDirectory = newFile.getAbsolutePath();
                 }
             } else {
-                newFile.getParentFile().mkdirs();
+                if(!newFile.getParentFile().mkdirs())
+                    alert(AlertType.ERROR, "Cannot create directory.\nAt line " + getStackTrace()[1].getLineNumber());
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
@@ -132,52 +137,62 @@ public class WorldCopyHandler extends Thread {
     public void run() {
         super.run();
         if (originalDir.isDirectory()) {
+            if(!serverWorldDir.exists()) {
+                if(!serverWorldDir.mkdirs())
+                    alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
+            }
             if(Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                 try {
                     FileUtils.deleteDirectory(serverWorldDir);
                 } catch (IOException e) {
-                    Frame.alert(AlertType.ERROR, e.getMessage());
+                    alert(AlertType.ERROR, "Cannot delete server world directory.\n"  + exStackTraceToString(e.getStackTrace()));
                 }
             }
             try {
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
             } catch (IOException e) {
-                Frame.alert(AlertType.ERROR, e.getMessage());
+                alert(AlertType.ERROR, "Cannot delete nether and end directories.\n"  + exStackTraceToString(e.getStackTrace()));
             }
 
             try {
                 copyDirectory(originalDir, serverWorldDir);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n"  + exStackTraceToString(e.getStackTrace()));
             }
         } else if (isArchive(originalDir)) {
             String extractedDirectory;
             try {
                 extractedDirectory = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
-
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n"  + exStackTraceToString(e.getStackTrace()));
+                throw new RuntimeException(); //this line's stayin for some reason
             }
+
+            if(!serverWorldDir.exists()) {
+                if(!serverWorldDir.mkdirs())
+                    alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
+            }
+
             File dir = new File(extractedDirectory);
             if(Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                 try {
                     FileUtils.deleteDirectory(serverWorldDir);
                 } catch (IOException e) {
-                    Frame.alert(AlertType.ERROR, e.getMessage());
+                    alert(AlertType.ERROR, "Cannot delete server world directory.\n"  + exStackTraceToString(e.getStackTrace()));
                 }
             }
             try {
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
             } catch (IOException e) {
-                Frame.alert(AlertType.ERROR, e.getMessage());
+                alert(AlertType.ERROR, "Cannot delete server's nether and end direcories.\n"  + exStackTraceToString(e.getStackTrace()));
             }
 
             try {
                 copyDirectory(new File(Objects.requireNonNull(findWorldDirectory(dir.getParent()))), serverWorldDir);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n"  + exStackTraceToString(e.getStackTrace()));
             }
         }
     }

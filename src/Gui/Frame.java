@@ -19,6 +19,16 @@ public class Frame extends JFrame implements ActionListener {
     private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
 
 
+    public static String exStackTraceToString(StackTraceElement[] elements) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Caused by:\n");
+        for (StackTraceElement e : elements) {
+            sb.append(e.toString());
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     public static void alert(AlertType alertType, String message) {
         switch(alertType) {
             case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
@@ -89,7 +99,7 @@ public class Frame extends JFrame implements ActionListener {
 
         // Create the JPanels
         TitlePanel titlePanel = new TitlePanel();
-        ButtonPanel buttonPanel = new ButtonPanel(Preferences.userNodeForPackage(getClass()));
+        ButtonPanel buttonPanel = new ButtonPanel();
         ConfigStuffPanel configStuffPanel = new ConfigStuffPanel(prefs);
         AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
         configStuffPanel.setPanel(configStuffPanel, addWorldsPanel);
@@ -191,7 +201,7 @@ public class Frame extends JFrame implements ActionListener {
                     try {
                         FileUtils.deleteDirectory(file);
                     } catch (IOException e) {
-                        alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder.");
+                        alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
                     }
                 }
             }
@@ -224,7 +234,7 @@ public class Frame extends JFrame implements ActionListener {
             SwingUtilities.updateComponentTreeUI(this);
         } catch (ClassNotFoundException | InstantiationException |
                 IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
+            alert(AlertType.ERROR, "Cannot set look and feel.\n" + exStackTraceToString(ex.getStackTrace()));
         }
     }
 
@@ -234,7 +244,7 @@ public class Frame extends JFrame implements ActionListener {
         try {
             UIManager.setLookAndFeel(lookAndFeel);
         } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
+            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + exStackTraceToString(ex.getStackTrace()));
         }
         new Frame();
     }

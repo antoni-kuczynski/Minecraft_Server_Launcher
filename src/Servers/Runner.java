@@ -3,15 +3,14 @@ package Servers;
 import Gui.AlertType;
 
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static Gui.Frame.alert;
+import static Gui.Frame.exStackTraceToString;
 
 public class Runner extends Thread {
     private String pathToServerJar;
@@ -54,9 +53,7 @@ public class Runner extends Thread {
         pb.directory(new File(serverPath).getParentFile());
         pb.redirectErrorStream(true);
 
-        Process process = pb.start();
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        pb.start();
     }
 
 
@@ -96,7 +93,7 @@ public class Runner extends Thread {
                 try {
                     desktop.open(file);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    alert(AlertType.ERROR, "Cannot open \"servers.json\" file.\n"  + exStackTraceToString(e.getStackTrace()));
                 }
             }
             case SERVER_FOLDER -> {
@@ -127,14 +124,14 @@ public class Runner extends Thread {
                 try {
                     desktop.open(directory);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    alert(AlertType.ERROR, "Cannot open server's directory.\n"  + exStackTraceToString(e.getStackTrace()));
                 }
             }
             case SERVER_JAR -> {
                 try {
                     launchServer(pathToServerJar, javaRuntimePath);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    alert(AlertType.ERROR, "Cannot start new Process pb. Cannot launch server.\n"  + exStackTraceToString(e.getStackTrace()));
                 }
             }
         }

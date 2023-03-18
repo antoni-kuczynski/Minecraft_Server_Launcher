@@ -12,6 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 
+import static Gui.Frame.alert;
+import static Gui.Frame.exStackTraceToString;
+
 public class AddWorldsPanel extends JPanel {
     private static File worldToAdd;
     private final JLabel selectedServerTxt = new JLabel();
@@ -79,6 +82,7 @@ public class AddWorldsPanel extends JPanel {
                         startCopying.setEnabled(true);
                         repaint();
                     } catch (UnsupportedFlavorException | IOException e) {
+                            alert(AlertType.ERROR, exStackTraceToString(e.getStackTrace()));
                         return false;
                     }
                 return true;
@@ -94,7 +98,8 @@ public class AddWorldsPanel extends JPanel {
             try {
                 worldCopyHandler = new WorldCopyHandler(progressBar, worldToAdd);
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
+                throw new RuntimeException(); //idk why but this line needs to stay here or i need to deal with another nullpointerexception
             }
             worldCopyHandler.start();
         });

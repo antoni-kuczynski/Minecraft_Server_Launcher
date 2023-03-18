@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
 
+import static Gui.Frame.exStackTraceToString;
+
 public class ConfigStuffPanel extends JPanel {
     private final JButton openServerFolder;
     private static String servName;
@@ -36,7 +38,7 @@ public class ConfigStuffPanel extends JPanel {
         try {
             config = new Config();
         } catch(IOException e) {
-            Frame.alert(AlertType.FATAL, e.getMessage());
+            Frame.alert(AlertType.FATAL, exStackTraceToString(e.getStackTrace()));
         }
         JLabel selServerTitle = new JLabel(" or select server here:");
 
@@ -59,7 +61,7 @@ public class ConfigStuffPanel extends JPanel {
             serverSelection.setSelectedIndex(0);
 
         Config finalConfig = config;
-        AtomicInteger lastSelectedIndex = new AtomicInteger();
+        AtomicInteger lastSelectedIndex = new AtomicInteger(); //wtf is an atomic integer
         serverSelection.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.DESELECTED)
                 lastSelectedIndex.set(serverSelection.getSelectedIndex());

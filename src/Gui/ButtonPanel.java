@@ -8,11 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.prefs.Preferences;
 
 public class ButtonPanel extends JPanel implements ActionListener {
     private final Config config = new Config();
-    private static Preferences preferences;
 
     public void setButtonIcon(JButton button, String iconPath) {
         ImageIcon icon = new ImageIcon(iconPath);
@@ -32,8 +30,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
 
 
-    public ButtonPanel(Preferences preferences) throws IOException {
-        ButtonPanel.preferences = preferences;
+    public ButtonPanel() throws IOException {
         setLayout(new GridLayout(10, 5, 10, 10));
         // Add i JButtons to the panel
         for (int i = 0; i < config.getData().size(); i++) {

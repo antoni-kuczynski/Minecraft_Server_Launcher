@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
+import static Gui.Frame.exStackTraceToString;
+
 public class ServerProperties {
     private String worldName;
     public ServerProperties() throws IOException {
@@ -20,7 +22,7 @@ public class ServerProperties {
         try {
             fileContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
         } catch (NoSuchFileException e) {
-            Frame.alert(AlertType.FATAL, "\"" + e.getMessage() + "\"" + " file not found.");
+            Frame.alert(AlertType.FATAL, "\"" + e.getMessage() + "\"" + " file not found.\n"  + exStackTraceToString(e.getStackTrace()));
             System.exit(1);
         }
 
