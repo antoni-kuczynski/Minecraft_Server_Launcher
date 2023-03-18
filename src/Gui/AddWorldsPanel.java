@@ -3,6 +3,7 @@ package Gui;
 import Servers.WorldCopyHandler;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -30,8 +31,8 @@ public class AddWorldsPanel extends JPanel {
         selectedServerTxt.setText(selServPrefix + ConfigStuffPanel.getServName());
         JButton startCopying = new JButton("Start Copying");
         startCopying.setEnabled(false);
-        JButton button = new JButton("Open Folder");
-        button.addActionListener(e -> {
+        JButton openButton = new JButton("Open Folder");
+        openButton.addActionListener(e -> {
             FileDialog fileDialog = new FileDialog((Frame)null, "Select Folder");
             fileDialog.setMode(FileDialog.LOAD);
             fileDialog.setFile("level.dat");
@@ -104,78 +105,134 @@ public class AddWorldsPanel extends JPanel {
             worldCopyHandler.start();
         });
 
-        JPanel emptyPanel2 = new JPanel();
-        JPanel copyStuffPanel = new JPanel();
-        copyStuffPanel.setLayout(new BorderLayout());
 
-        emptyPanel2.setPreferredSize(new Dimension(50, 10));
-        JPanel dragAndDropBtnPanel = new JPanel();
-        button.setPreferredSize(new Dimension(130, 50));
-        dragAndDropBtnPanel.add(button);
-        dragAndDropBtnPanel.add(dragNDropInfo);
-
-        JPanel emptyPanel4 = new JPanel();
-        emptyPanel4.setPreferredSize(new Dimension(10, 10));
-        JPanel emptyPanel5 = new JPanel();
-        emptyPanel5.setPreferredSize(new Dimension(10, 5));
-        JPanel emptyPanel6 = new JPanel();
-        emptyPanel6.setPreferredSize(new Dimension(10, 5));
-
-        JPanel copyPanelBottom = new JPanel();
-
-        copyPanelBottom.setLayout(new BorderLayout());
-        copyPanelBottom.add(emptyPanel5, BorderLayout.LINE_START);
-        copyPanelBottom.add(progressBar, BorderLayout.CENTER);
-        copyPanelBottom.add(emptyPanel6, BorderLayout.LINE_END);
-        copyPanelBottom.add(emptyPanel4, BorderLayout.PAGE_END);
-
-
+        //Empty Panels
         JPanel emptyPanel7 = new JPanel();
-        emptyPanel7.setPreferredSize(new Dimension(10, 10));
-        JPanel emptyPanel8 = new JPanel();
-        emptyPanel8.setPreferredSize(new Dimension(10, 5));
+        JPanel emptyPanel8 = new JPanel(); //lmao im definetely doing this wrong, surely no one could be this fucking dumb to want to become a frontend dev
 
-        startCopying.setPreferredSize(new Dimension(75, 35));
-        JPanel copyPanelUp = new JPanel(new BorderLayout());
-        copyPanelUp.add(emptyPanel7, BorderLayout.LINE_START);
-        copyPanelUp.add(startCopying, BorderLayout.CENTER);
-        copyPanelUp.add(emptyPanel8, BorderLayout.LINE_END);
+        //Set sizes
+        emptyPanel7.setPreferredSize(new Dimension(10,5));
+        emptyPanel8.setPreferredSize(new Dimension(10,5));
 
+        ArrayList<JPanel> emptyPanels = new ArrayList<>(); //lmfao
+        for(int i = 0; i < 25; i++) {
+            JPanel panel = new JPanel();
+            panel.setPreferredSize(new Dimension(10,10));
+            emptyPanels.add(panel);
+        }
 
-        copyStuffPanel.add(copyPanelUp, BorderLayout.PAGE_START);
-        copyStuffPanel.add(emptyPanel2, BorderLayout.CENTER);
-        copyStuffPanel.add(copyPanelBottom, BorderLayout.PAGE_END);
-
-        JPanel separatorPanel = new JPanel();
-        separatorPanel.setLayout(new BorderLayout());
-        separatorPanel.setPreferredSize(new Dimension(50, 100));
-        separatorPanel.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
-
-        JPanel selectedStuffPanel = new JPanel();
-
-        arrow.setIcon(new ImageIcon("arrow.png"));
-
-        JPanel emptyPanel1 = new JPanel();
-        emptyPanel1.setPreferredSize(new Dimension(10,10));
-
-        selectedStuffPanel.setLayout(new GridLayout(7,3));
-
-        selectedStuffPanel.add(selectedWorld);
-        selectedStuffPanel.add(arrow);
-        selectedStuffPanel.add(selectedServer);
-
-        JPanel selectedStuffAndSpacePanel = new JPanel();
-        JPanel emptyPanel3 = new JPanel();
-        emptyPanel3.setPreferredSize(new Dimension(50, 10));
-        selectedStuffAndSpacePanel.setLayout(new BorderLayout());
-        selectedStuffAndSpacePanel.add(emptyPanel3, BorderLayout.LINE_START);
-        selectedStuffAndSpacePanel.add(selectedStuffPanel, BorderLayout.CENTER);
+        //Panels
+        JPanel buttonAndText = new JPanel(new BorderLayout());
+        JPanel separatorBtnTextKinda = new JPanel(new BorderLayout());
+        JPanel startCopyingPanel = new JPanel(new BorderLayout());
+        JPanel copyingProgress = new JPanel(new BorderLayout());
+        JPanel startCopyingBtnPanel = new JPanel(new BorderLayout());
 
 
-        add(dragAndDropBtnPanel, BorderLayout.PAGE_START);
-        add(emptyPanel1, BorderLayout.LINE_START);
-        add(selectedStuffAndSpacePanel, BorderLayout.LINE_START);
-        add(copyStuffPanel, BorderLayout.PAGE_END);
+        openButton.setPreferredSize(new Dimension(130, 40));
+        separatorBtnTextKinda.add(openButton, BorderLayout.LINE_START);
+        separatorBtnTextKinda.add(dragNDropInfo, BorderLayout.CENTER);
+        separatorBtnTextKinda.add(emptyPanels.get(0), BorderLayout.LINE_END);
+
+        buttonAndText.add(emptyPanels.get(1), BorderLayout.PAGE_START);
+        buttonAndText.add(emptyPanels.get(2), BorderLayout.LINE_START);
+        buttonAndText.add(separatorBtnTextKinda, BorderLayout.CENTER);
+//        buttonAndText.add(separatorBtnTextKinda, BorderLayout.LINE);
+
+        copyingProgress.add(emptyPanels.get(3), BorderLayout.PAGE_START);
+        copyingProgress.add(emptyPanel7, BorderLayout.LINE_START);
+        copyingProgress.add(progressBar, BorderLayout.CENTER);
+        copyingProgress.add(emptyPanel8, BorderLayout.LINE_END);
+        copyingProgress.add(emptyPanels.get(4), BorderLayout.PAGE_END);
+
+
+        startCopyingBtnPanel.add(startCopying, BorderLayout.CENTER);
+        startCopyingBtnPanel.add(emptyPanels.get(5), BorderLayout.LINE_END);
+
+        startCopyingPanel.add(emptyPanels.get(6), BorderLayout.LINE_START);
+//        startCopyingPanel.add(startCopying, BorderLayout.CENTER);
+        startCopyingPanel.add(startCopyingBtnPanel, BorderLayout.LINE_END);
+        startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
+
+        add(buttonAndText, BorderLayout.PAGE_START);
+        add(selectedServer, BorderLayout.LINE_START);
+        add(startCopyingPanel, BorderLayout.PAGE_END);
+//        JPanel emptyPanel2 = new JPanel();
+//        JPanel copyStuffPanel = new JPanel();
+//        copyStuffPanel.setLayout(new BorderLayout());
+//
+//        emptyPanel2.setPreferredSize(new Dimension(50, 10));
+//        JPanel dragAndDropBtnPanel = new JPanel();
+//        openButton.setPreferredSize(new Dimension(130, 50));
+//
+//        JPanel emptyPanel8 = new JPanel();
+//        emptyPanel8.setPreferredSize(new Dimension(10, 10));
+//        dragAndDropBtnPanel.add(emptyPanel8);
+//        dragAndDropBtnPanel.add(openButton);
+//        dragAndDropBtnPanel.add(dragNDropInfo);
+//
+//        JPanel emptyPanel4 = new JPanel();
+//        emptyPanel4.setPreferredSize(new Dimension(10, 10));
+//        JPanel emptyPanel5 = new JPanel();
+//        emptyPanel5.setPreferredSize(new Dimension(10, 5));
+//        JPanel emptyPanel6 = new JPanel();
+//        emptyPanel6.setPreferredSize(new Dimension(10, 5));
+//
+//        JPanel copyPanelBottom = new JPanel();
+//
+//        copyPanelBottom.setLayout(new BorderLayout());
+//        copyPanelBottom.add(emptyPanel5, BorderLayout.LINE_START);
+//        copyPanelBottom.add(progressBar, BorderLayout.CENTER);
+//        copyPanelBottom.add(emptyPanel6, BorderLayout.LINE_END);
+//        copyPanelBottom.add(emptyPanel4, BorderLayout.PAGE_END);
+//
+//
+//        JPanel emptyPanel7 = new JPanel();
+//        emptyPanel7.setPreferredSize(new Dimension(10, 10));
+//        JPanel emptyPanel9 = new JPanel();
+//        emptyPanel9.setPreferredSize(new Dimension(10, 5));
+//
+//        startCopying.setPreferredSize(new Dimension(75, 35));
+//        JPanel copyPanelUp = new JPanel(new BorderLayout());
+//        copyPanelUp.add(emptyPanel7, BorderLayout.LINE_START);
+//        copyPanelUp.add(startCopying, BorderLayout.CENTER);
+//        copyPanelUp.add(emptyPanel8, BorderLayout.LINE_END);
+//
+//
+//        copyStuffPanel.add(copyPanelUp, BorderLayout.LINE_START);
+//        copyStuffPanel.add(emptyPanel2, BorderLayout.CENTER);
+//        copyStuffPanel.add(copyPanelBottom, BorderLayout.PAGE_END);
+//
+//        JPanel separatorPanel = new JPanel();
+//        separatorPanel.setLayout(new BorderLayout());
+//        separatorPanel.setPreferredSize(new Dimension(50, 100));
+//        separatorPanel.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
+//
+//        JPanel selectedStuffPanel = new JPanel();
+//
+//        arrow.setIcon(new ImageIcon("arrow.png"));
+//
+//        JPanel emptyPanel1 = new JPanel();
+//        emptyPanel1.setPreferredSize(new Dimension(10,10));
+//
+//        selectedStuffPanel.setLayout(new GridLayout(7,3));
+//
+////        selectedStuffPanel.add(selectedWorld);
+////        selectedStuffPanel.add(arrow);
+//        selectedStuffPanel.add(selectedServer);
+//
+//        JPanel selectedStuffAndSpacePanel = new JPanel();
+//        JPanel emptyPanel3 = new JPanel();
+//        emptyPanel3.setPreferredSize(new Dimension(50, 10));
+//        selectedStuffAndSpacePanel.setLayout(new BorderLayout());
+//        selectedStuffAndSpacePanel.add(emptyPanel3, BorderLayout.LINE_START);
+//        selectedStuffAndSpacePanel.add(selectedStuffPanel, BorderLayout.CENTER);
+//
+//
+//        add(dragAndDropBtnPanel, BorderLayout.LINE_START);
+////        add(emptyPanel1, BorderLayout.LINE_START);
+////        add(selectedStuffAndSpacePanel, BorderLayout.LINE_START);
+//        add(copyStuffPanel, BorderLayout.PAGE_END);
     }
 
     WorldCopyHandler worldCopyText = new WorldCopyHandler();
