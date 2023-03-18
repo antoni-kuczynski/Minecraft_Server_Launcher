@@ -24,6 +24,7 @@ public class AddWorldsPanel extends JPanel {
     private final JLabel arrow = new JLabel();
     private final JLabel selectedServer = new JLabel("testServer");
     private final JProgressBar progressBar = new JProgressBar();
+    private String extractedWorldDir;
 
     public AddWorldsPanel() throws IOException {
         super(new BorderLayout());
@@ -77,9 +78,11 @@ public class AddWorldsPanel extends JPanel {
 
                         if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                             worldToAdd = fileToAdd;
+                            new WorldCopyHandler(progressBar, worldToAdd, false).start();
                         } else {
                             worldToAdd = new File(fileToAdd.getParent());
                         }
+                        System.out.println(extractedWorldDir);
                         startCopying.setEnabled(true);
                         repaint();
                     } catch (UnsupportedFlavorException | IOException e) {
@@ -97,7 +100,7 @@ public class AddWorldsPanel extends JPanel {
         startCopying.addActionListener(e -> {
             WorldCopyHandler worldCopyHandler;
             try {
-                worldCopyHandler = new WorldCopyHandler(progressBar, worldToAdd);
+                worldCopyHandler = new WorldCopyHandler(progressBar, worldToAdd, true);
             } catch (IOException ex) {
                 alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                 throw new RuntimeException(); //idk why but this line needs to stay here or i need to deal with another nullpointerexception
@@ -154,8 +157,20 @@ public class AddWorldsPanel extends JPanel {
         startCopyingPanel.add(startCopyingBtnPanel, BorderLayout.LINE_END);
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
+
+        JPanel addingWorld = new JPanel(new BorderLayout());
+        JLabel serverWorldIcon = new JLabel();
+        JLabel worldIcon = new JLabel();
+
+        serverWorldIcon.setIcon(new ImageIcon(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png"));
+
+//        worldIcon.setIcon(new ImageIcon(worl));
+
+        addingWorld.add(serverWorldIcon, BorderLayout.LINE_START);
+        addingWorld.add(selectedServer, BorderLayout.CENTER);
+
         add(buttonAndText, BorderLayout.PAGE_START);
-        add(selectedServer, BorderLayout.LINE_START);
+        add(addingWorld, BorderLayout.LINE_START);
         add(startCopyingPanel, BorderLayout.PAGE_END);
 //        JPanel emptyPanel2 = new JPanel();
 //        JPanel copyStuffPanel = new JPanel();
@@ -239,9 +254,10 @@ public class AddWorldsPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        System.out.println(extractedWorldDir);
         if(worldToAdd != null)
-            selectedServer.setText(worldToAdd.getName() + " ⟶ " + ConfigStuffPanel.getServName() +"\\" + worldCopyText.getServerWorldName());
+            selectedServer.setText(worldToAdd.getName());
         else
-            selectedServer.setText("Select world to copy it to " + ConfigStuffPanel.getServName() +"\\" + worldCopyText.getServerWorldName());
+            selectedServer.setText("");
     }
 }
