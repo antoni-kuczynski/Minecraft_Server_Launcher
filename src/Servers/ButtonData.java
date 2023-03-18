@@ -6,13 +6,15 @@ public class ButtonData {
     private final String pathToServerFolder;
     private final String pathToServerJarFile;
     private final String pathToJavaRuntime;
+    private final String serverLaunchArguments;
 
-    public ButtonData(String buttonText, String pathToButtonIcon, String pathToServerFolder, String pathToServerJarFile, String pathToJavaRuntime) {
+    public ButtonData(String buttonText, String pathToButtonIcon, String pathToServerFolder, String pathToServerJarFile, String pathToJavaRuntime, String serverLaunchArguments) {
         this.buttonText = buttonText;
         this.pathToButtonIcon = pathToButtonIcon;
         this.pathToServerFolder = pathToServerFolder;
         this.pathToServerJarFile = pathToServerJarFile;
         this.pathToJavaRuntime = pathToJavaRuntime;
+        this.serverLaunchArguments = serverLaunchArguments;
     }
 
     public String getButtonText() {
@@ -33,5 +35,9 @@ public class ButtonData {
 
     public String getPathToJavaRuntime() {
         return pathToJavaRuntime;
+    }
+
+    public String getServerLaunchArguments() {
+        return serverLaunchArguments;
     }
 }

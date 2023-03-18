@@ -27,7 +27,6 @@ public class ServerProperties {
         for(String s : fileContent) {
             if(s.contains("level-name")) {
                 worldName = s.split("=")[1];
-                System.out.println("World Name: " + worldName);
                 break;
             }
         }

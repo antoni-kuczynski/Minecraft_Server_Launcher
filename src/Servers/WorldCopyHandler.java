@@ -139,7 +139,6 @@ public class WorldCopyHandler extends Thread {
                     Frame.alert(AlertType.ERROR, e.getMessage());
                 }
             }
-//            System.out.println("dir: " + serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end");
             try {
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
@@ -161,12 +160,6 @@ public class WorldCopyHandler extends Thread {
                 throw new RuntimeException(e);
             }
             File dir = new File(extractedDirectory);
-//            if(dir.getParent())
-//            System.out.println("Dir: " + dir);
-//            System.out.println("Parent: " + dir.getParent());
-//            System.out.println(findWorldDirectory(dir.getParent()));
-            System.out.println(serverWorldDir);
-            System.out.println(Arrays.stream(serverWorldDir.list()).toList());
             if(Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                 try {
                     FileUtils.deleteDirectory(serverWorldDir);
@@ -174,7 +167,6 @@ public class WorldCopyHandler extends Thread {
                     Frame.alert(AlertType.ERROR, e.getMessage());
                 }
             }
-//            System.out.println("dir: " + serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end");
             try {
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));

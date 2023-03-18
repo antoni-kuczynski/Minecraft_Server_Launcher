@@ -1,65 +1,78 @@
 [
   {
+    "globalLaunchArgs": "-Xmx16G -Xms2G -XX:+UseG1GC -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=1 -XX:ParallelGCThreads=4 -XX:+OptimizeStringConcat"
+  },
+  {
     "buttonText": "Test_Server_laptop",
     "pathToButtonIcon": "",
     "pathToServerFolder": "C:\\Users\\szkola\\Documents\\mcserver_test",
     "pathToServerJarFile": "C:\\Users\\szkola\\Documents\\mcserver_test\\paper-1.19.3-445.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.1.10-hotspot\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.1.10-hotspot\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": true,
+    "launchArgs": "-Xmx4G -Xms256M"
   },
   {
     "buttonText": "1.19.3",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.19.3",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.19.3\\paper-1.19.3-420.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.2.7-hotspot\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.2.7-hotspot\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
   },
   {
     "buttonText": "1.19.3 DEBUG",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\Debug_Server",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\Debug_Server\\paper-1.19.3-420.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.2.7-hotspot\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.2.7-hotspot\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
   },
   {
     "buttonText": "1.18.1",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.18.1",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.18.1\\paper-1.18.1-148.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.1.12-hotspot\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.1.12-hotspot\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
   },
   {
     "buttonText": "1.17.1",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.17.1\\",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.17.1\\paper-1.17.1-388.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
   },
   {
     "buttonText": "1.16.5",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.16.5\\",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.16.5\\paper-1.16.5-705.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
   },
   {
     "buttonText": "1.11",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.11\\",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.11\\spigot-1.11.2.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
   },
   {
     "buttonText": "1.8.9",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.8.9\\",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.8.9\\server.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
   },
   {
     "buttonText": "1.8.8 / 1.8.9 bukkit",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.8.8_bukkit\\",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.8.8_bukkit\\minecraft_server.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe"
+    "pathToJavaExecutable": "C:\\Program Files\\AdoptOpenJDK\\jdk-16.0.0.36-openj9\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
   }
 ]

@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static Gui.Frame.alert;
 
@@ -16,11 +18,13 @@ public class Runner extends Thread {
     private String pathToServerFolder;
     private String javaRuntimePath;
     private final Run run;
+    private ArrayList<String> arguments;
 
-    public Runner(String pathToServerJar, Run run, String javaRuntimePath) {
+    public Runner(String pathToServerJar, Run run, String javaRuntimePath, String launchArgs) {
         this.pathToServerJar = pathToServerJar;
         this.javaRuntimePath = javaRuntimePath;
         this.run = run;
+        arguments = Arrays.stream(launchArgs.split(" ")).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Runner(Run run) {
@@ -32,7 +36,7 @@ public class Runner extends Thread {
         pathToServerFolder = serverPath;
     }
 
-    private void launchServer(String serverPath, ArrayList<String> arguments, String javaPath) throws IOException {
+    private void launchServer(String serverPath, String javaPath) throws IOException {
         ArrayList<String> command = new ArrayList<>();
         command.add("cmd");
         command.add("/c");
@@ -53,10 +57,6 @@ public class Runner extends Thread {
         Process process = pb.start();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
     }
 
 
@@ -83,7 +83,6 @@ public class Runner extends Thread {
 
                 // check if the file is a directory
                 if (file.isDirectory()) {
-                    System.out.println("File is a directory: " + file.getAbsolutePath());
                     return;
                 }
 
@@ -133,8 +132,7 @@ public class Runner extends Thread {
             }
             case SERVER_JAR -> {
                 try {
-                    System.out.println(javaRuntimePath);
-                    launchServer(pathToServerJar, new ArrayList<>(), javaRuntimePath);
+                    launchServer(pathToServerJar, javaRuntimePath);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

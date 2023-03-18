@@ -43,10 +43,12 @@ public class ButtonPanel extends JPanel implements ActionListener {
                 if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
                     button.setEnabled(true);
                     button.setToolTipText("Server path: " + config.getData().get(i).getPathToServerFolder() + "\nServer executable: " +
-                            config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime());
+                            config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime() + "\nLaunch arguments: " +
+                            config.getData().get(i).getServerLaunchArguments());
                 } else {
                     button.setToolTipText("Server files not found." + "\nServer path: " + config.getData().get(i).getPathToServerFolder() + "\nServer executable: " +
-                            config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime());
+                            config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime() + "\nLaunch arguments: " +
+                            config.getData().get(i).getServerLaunchArguments());
                 }
                 setButtonIcon(button, config.getData().get(i).getPathToButtonIcon());
 
@@ -68,7 +70,12 @@ public class ButtonPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String index = e.getActionCommand(); // Get the action command (i.e., the index of the button)
-        new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile(), Run.SERVER_JAR, config.getData().get(Integer.parseInt(index)).getPathToJavaRuntime()).start();
-        ConfigStuffPanel.setServerVariables(config.getData().get(Integer.parseInt(index)).getButtonText(), config.getData().get(Integer.parseInt(index)).getPathToServerFolder());
+
+        new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile(), //holy fuck
+                Run.SERVER_JAR, config.getData().get(Integer.parseInt(index)).getPathToJavaRuntime(),
+                config.getData().get(Integer.parseInt(index)).getServerLaunchArguments()).start();
+
+        ConfigStuffPanel.setServerVariables(config.getData().get(Integer.parseInt(index)).getButtonText(),
+                config.getData().get(Integer.parseInt(index)).getPathToServerFolder());
     }
 }

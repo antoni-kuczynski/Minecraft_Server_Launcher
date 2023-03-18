@@ -54,14 +54,24 @@ public class Config {
             writer.close();
         }
         JSONArray jsonArray = new JSONArray(readFileString(new File("servers.json")));
-        for (int i = 0; i < jsonArray.length(); i++) {
+        JSONObject globalVariables = jsonArray.getJSONObject(0);
+        System.out.println(globalVariables.keySet());
+        String javaArguments = globalVariables.getString("globalLaunchArgs");
+
+        for (int i = 1; i < jsonArray.length(); i++) { //start on index 1 because index 0 are global variables
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             String buttonText = jsonObject.getString("buttonText");
             String pathToButtonIcon = jsonObject.getString("pathToButtonIcon");
             String pathToServerFolder = jsonObject.getString("pathToServerFolder");
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
             String pathToJavaRuntime = jsonObject.getString("pathToJavaExecutable");
-            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime));
+            boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");
+            String serverLaunchArgs;
+            if(overrideGloballaunchArgs)
+                serverLaunchArgs = jsonObject.getString("launchArgs");
+            else
+                serverLaunchArgs = javaArguments;
+            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs));
         }
     }
 }
