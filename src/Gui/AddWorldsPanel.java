@@ -1,6 +1,8 @@
 package Gui;
 
 import Servers.WorldCopyHandler;
+import com.formdev.flatlaf.ui.FlatRoundBorder;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -173,6 +175,7 @@ public class AddWorldsPanel extends JPanel {
         JPanel worldPanelUpper = new JPanel(new BorderLayout());
 
         worldNameAndStuffText.setEditable(false);
+        worldNameAndStuffText.setText("World File name will appear here.");
 
 //        worldPanelUpper.setBorder(new MatteBorder(1,1,1,1, new Color(0,0,0)));
         worldPanelUpper.add(emptyPanels.get(7), BorderLayout.PAGE_START);
@@ -182,11 +185,17 @@ public class AddWorldsPanel extends JPanel {
 
 
         JPanel serverPanelBottom = new JPanel(new BorderLayout());
+        serverPanelBottom.setBorder(new FlatRoundBorder());
+        JPanel serverNameAndStuff = new JPanel(new BorderLayout());
 
-//        serverPanelBottom.add(emptyPanels.get(9), BorderLayout.PAGE_START);
-        serverPanelBottom.add(emptyPanels.get(10), BorderLayout.LINE_START);
-        serverPanelBottom.add(serverWorldIcon, BorderLayout.CENTER);
-        serverPanelBottom.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
+        serverWorldNameAndStuff.setEditable(false);
+
+        serverNameAndStuff.add(emptyPanels.get(9), BorderLayout.LINE_START);
+        serverNameAndStuff.add(serverWorldIcon, BorderLayout.CENTER);
+        serverNameAndStuff.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
+
+        serverPanelBottom.add(serverNameAndStuff, BorderLayout.LINE_START);
+//        serverPanelBottom.add(serverWorldNameAndStuff, BorderLayout.CENTER);
 
         addingWorld.add(worldPanelUpper, BorderLayout.PAGE_START);
         addingWorld.add(serverPanelBottom, BorderLayout.PAGE_END);
@@ -200,25 +209,32 @@ public class AddWorldsPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("extracted dir: " + extractedWorldDir);
-        if(worldToAdd != null)
-            worldNameAndStuffText.setText(worldToAdd.getName());
-        serverWorldNameAndStuff.setText(worldCopyText.getServerWorldName());
-//        else
-//            selectedServer.setText("");
+
+        if(worldToAdd != null) {
+            worldNameAndStuffText.setText("File: " + worldToAdd.getName() + "\nWorld Name: " + "TODO");
+        }
 
         if(extractedWorldDir != null) {
             startCopying.setEnabled(true);
+
+            //this is the worst fucking solution ever lol
             if(new File(extractedWorldDir + "\\icon.png").exists())
                 worldIcon.setIcon(new ImageIcon(new ImageIcon(new File(extractedWorldDir) + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
-            else //this is the worst fucking solution ever lol
+            else
                 worldIcon.setIcon(new ImageIcon(new ImageIcon(new File(extractedWorldDir).getParent() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
 
         } else {
             worldIcon.setIcon(new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
         }
-        serverWorldIcon.setIcon(new ImageIcon(new ImageIcon(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
 
+        if(!new File(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png").exists()) {
+            serverWorldIcon.setIcon(new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+        } else {
+            serverWorldIcon.setIcon(new ImageIcon(new ImageIcon(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+        }
+
+        //size is in bytes
+        serverWorldNameAndStuff.setText("Folder: " + worldCopyText.getServerWorldName() + "\nWorld Name: " + "TODO" + "\nSize: " + FileUtils.sizeOfDirectory(new File(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName())));
     }
 
     public static void setExtractedWorldDir(String extractedWorldDir) {
