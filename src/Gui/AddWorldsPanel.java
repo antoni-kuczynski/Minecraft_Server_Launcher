@@ -24,7 +24,9 @@ public class AddWorldsPanel extends JPanel {
     private final JLabel arrow = new JLabel();
     private final JLabel selectedServer = new JLabel("testServer");
     private final JProgressBar progressBar = new JProgressBar();
-    private String extractedWorldDir;
+    private static String extractedWorldDir;
+    private final JLabel worldIcon = new JLabel();
+    private final JLabel serverWorldIcon = new JLabel();
 
     public AddWorldsPanel() throws IOException {
         super(new BorderLayout());
@@ -47,6 +49,11 @@ public class AddWorldsPanel extends JPanel {
                     String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
                     if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                         worldToAdd = filePath;
+                        try {
+                            new WorldCopyHandler(this, progressBar, worldToAdd, false).start();
+                        } catch (IOException ex) {
+                            alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
+                        }
                     } else {
                         worldToAdd = new File(folderPath);
                     }
@@ -56,6 +63,7 @@ public class AddWorldsPanel extends JPanel {
 
             repaint();
         });
+        final JPanel tempPanel = this;
         this.setTransferHandler(new TransferHandler() {
             @Serial
             private static final long serialVersionUID = 1L;
@@ -78,7 +86,7 @@ public class AddWorldsPanel extends JPanel {
 
                         if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                             worldToAdd = fileToAdd;
-                            new WorldCopyHandler(progressBar, worldToAdd, false).start();
+                            new WorldCopyHandler(tempPanel, progressBar, worldToAdd, false).start();
                         } else {
                             worldToAdd = new File(fileToAdd.getParent());
                         }
@@ -100,7 +108,7 @@ public class AddWorldsPanel extends JPanel {
         startCopying.addActionListener(e -> {
             WorldCopyHandler worldCopyHandler;
             try {
-                worldCopyHandler = new WorldCopyHandler(progressBar, worldToAdd, true);
+                worldCopyHandler = new WorldCopyHandler(this, progressBar, worldToAdd, true);
             } catch (IOException ex) {
                 alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                 throw new RuntimeException(); //idk why but this line needs to stay here or i need to deal with another nullpointerexception
@@ -159,8 +167,8 @@ public class AddWorldsPanel extends JPanel {
 
 
         JPanel addingWorld = new JPanel(new BorderLayout());
-        JLabel serverWorldIcon = new JLabel();
-        JLabel worldIcon = new JLabel();
+
+
 
         serverWorldIcon.setIcon(new ImageIcon(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png"));
 
@@ -254,10 +262,22 @@ public class AddWorldsPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println(extractedWorldDir);
+        System.out.println("extracted dir: " + extractedWorldDir);
         if(worldToAdd != null)
             selectedServer.setText(worldToAdd.getName());
         else
             selectedServer.setText("");
+
+        if(extractedWorldDir != null) {
+            serverWorldIcon.setIcon(new ImageIcon(new ImageIcon(new File(extractedWorldDir).getParent() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+        }
+    }
+
+    public static void setExtractedWorldDir(String extractedWorldDir) {
+        AddWorldsPanel.extractedWorldDir = extractedWorldDir;
+    }
+
+    public static String getExtractedWorldDir() {
+        return extractedWorldDir;
     }
 }

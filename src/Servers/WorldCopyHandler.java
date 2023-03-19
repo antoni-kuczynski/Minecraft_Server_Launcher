@@ -1,5 +1,6 @@
 package Servers;
 
+import Gui.AddWorldsPanel;
 import Gui.AlertType;
 import Gui.ConfigStuffPanel;
 import org.apache.commons.io.FileUtils;
@@ -21,9 +22,10 @@ public class WorldCopyHandler extends Thread {
     private final File serverWorldDir;
     private JProgressBar progressBar = null;
     private boolean copyFilesToServerDir;
+    private JPanel panel;
 
-
-    public WorldCopyHandler(JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir) throws IOException {
+    public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir) throws IOException {
+        this.panel = panel;
         ServerProperties serverProperties = new ServerProperties();
         this.serverWorldName = serverProperties.getWorldName();
         this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
@@ -135,6 +137,7 @@ public class WorldCopyHandler extends Thread {
     }
 
 
+    private File extractedDirectory;
     @Override
     public void run() {
         super.run();
@@ -163,21 +166,25 @@ public class WorldCopyHandler extends Thread {
                 alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n"  + exStackTraceToString(e.getStackTrace()));
             }
         } else if (isArchive(originalDir)) {
-            String extractedDirectory;
-            try {
-                extractedDirectory = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
-            } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
-                throw new RuntimeException(); //this line's stayin for some reason
+            if(!copyFilesToServerDir) {
+                String extractedDirTemp;
+                try {
+                    extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+                    AddWorldsPanel.setExtractedWorldDir(extractedDirTemp);
+                } catch (IOException e) {
+                    alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
+                    throw new RuntimeException(); //this line's stayin for some reason
+                }
+                panel.repaint();
             }
-
             if (copyFilesToServerDir) {
                 if (!serverWorldDir.exists()) {
                     if (!serverWorldDir.mkdirs())
                         alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
                 }
 
-                File dir = new File(extractedDirectory);
+                System.out.println("Hi! " + AddWorldsPanel.getExtractedWorldDir());
+                File dir = new File(AddWorldsPanel.getExtractedWorldDir());
                 if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                     try {
                         FileUtils.deleteDirectory(serverWorldDir);

@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
@@ -38,6 +39,18 @@ public class Frame extends JFrame implements ActionListener {
         }
     }
 
+    private static void clearTempDir() {
+        File dir = new File(".\\world_temp");
+        File[] files = dir.listFiles();
+        assert files != null;
+        for (File file : files) {
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
+            }
+        }
+    }
     private final JMenuItem darculaMenuItem;
     private final JMenuItem githubDarkMenuItem;
     private final JMenuItem oneDarkMenuItem;
@@ -193,17 +206,13 @@ public class Frame extends JFrame implements ActionListener {
                 prefs.putInt(PREFS_KEY_HEIGHT, bounds.height);
                 prefs.put(PREFS_KEY_LOOK_AND_FEEL, lookAndFeel);
 
+                clearTempDir();
+            }
 
-                File dir = new File(".\\world_temp");
-                File[] files = dir.listFiles();
-                assert files != null;
-                for (File file : files) {
-                    try {
-                        FileUtils.deleteDirectory(file);
-                    } catch (IOException e) {
-                        alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
-                    }
-                }
+            @Override
+            public void windowOpened(WindowEvent e) {
+                super.windowOpened(e);
+                clearTempDir();
             }
         });
     }
