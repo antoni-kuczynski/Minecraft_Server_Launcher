@@ -206,6 +206,7 @@ public class WorldCopyHandler extends Thread {
                 }
             }
         }
+        panel.repaint();
     }
 
     private String findWorldDirectory(String dir) { //TODO: fixme

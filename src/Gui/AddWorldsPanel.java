@@ -3,6 +3,8 @@ package Gui;
 import Servers.WorldCopyHandler;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
@@ -20,19 +22,18 @@ public class AddWorldsPanel extends JPanel {
     private static File worldToAdd;
     private final JLabel selectedServerTxt = new JLabel();
     private final String selServPrefix = "Selected server: ";
-    private final JLabel selectedWorld = new JLabel("testWorld");
-    private final JLabel arrow = new JLabel();
-    private final JLabel selectedServer = new JLabel("testServer");
     private final JProgressBar progressBar = new JProgressBar();
     private static String extractedWorldDir;
     private final JLabel worldIcon = new JLabel();
     private final JLabel serverWorldIcon = new JLabel();
+    private final JButton startCopying = new JButton("Start Copying");
+    private final JTextArea worldNameAndStuffText = new JTextArea();
+    private final JTextArea serverWorldNameAndStuff = new JTextArea();
 
     public AddWorldsPanel() throws IOException {
         super(new BorderLayout());
         JLabel dragNDropInfo = new JLabel(" or drag and drop it here.");
         selectedServerTxt.setText(selServPrefix + ConfigStuffPanel.getServName());
-        JButton startCopying = new JButton("Start Copying");
         startCopying.setEnabled(false);
         JButton openButton = new JButton("Open Folder");
         openButton.addActionListener(e -> {
@@ -57,7 +58,7 @@ public class AddWorldsPanel extends JPanel {
                     } else {
                         worldToAdd = new File(folderPath);
                     }
-                    startCopying.setEnabled(true);
+//                    startCopying.setEnabled(true);
                 }
             }
 
@@ -91,7 +92,7 @@ public class AddWorldsPanel extends JPanel {
                             worldToAdd = new File(fileToAdd.getParent());
                         }
                         System.out.println(extractedWorldDir);
-                        startCopying.setEnabled(true);
+//                        startCopying.setEnabled(true);
                         repaint();
                     } catch (UnsupportedFlavorException | IOException e) {
                             alert(AlertType.ERROR, exStackTraceToString(e.getStackTrace()));
@@ -120,10 +121,12 @@ public class AddWorldsPanel extends JPanel {
         //Empty Panels
         JPanel emptyPanel7 = new JPanel();
         JPanel emptyPanel8 = new JPanel(); //lmao im definetely doing this wrong, surely no one could be this fucking dumb to want to become a frontend dev
+        JPanel emptyPanel9 = new JPanel();
 
         //Set sizes
         emptyPanel7.setPreferredSize(new Dimension(10,5));
         emptyPanel8.setPreferredSize(new Dimension(10,5));
+        emptyPanel9.setPreferredSize(new Dimension(10,100));
 
         ArrayList<JPanel> emptyPanels = new ArrayList<>(); //lmfao
         for(int i = 0; i < 25; i++) {
@@ -167,95 +170,30 @@ public class AddWorldsPanel extends JPanel {
 
 
         JPanel addingWorld = new JPanel(new BorderLayout());
+        JPanel worldPanelUpper = new JPanel(new BorderLayout());
+
+        worldNameAndStuffText.setEditable(false);
+
+//        worldPanelUpper.setBorder(new MatteBorder(1,1,1,1, new Color(0,0,0)));
+        worldPanelUpper.add(emptyPanels.get(7), BorderLayout.PAGE_START);
+        worldPanelUpper.add(emptyPanels.get(8), BorderLayout.LINE_START);
+        worldPanelUpper.add(worldIcon, BorderLayout.CENTER);
+        worldPanelUpper.add(worldNameAndStuffText, BorderLayout.LINE_END);
 
 
+        JPanel serverPanelBottom = new JPanel(new BorderLayout());
 
-        serverWorldIcon.setIcon(new ImageIcon(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png"));
+//        serverPanelBottom.add(emptyPanels.get(9), BorderLayout.PAGE_START);
+        serverPanelBottom.add(emptyPanels.get(10), BorderLayout.LINE_START);
+        serverPanelBottom.add(serverWorldIcon, BorderLayout.CENTER);
+        serverPanelBottom.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
 
-//        worldIcon.setIcon(new ImageIcon(worl));
-
-        addingWorld.add(serverWorldIcon, BorderLayout.LINE_START);
-        addingWorld.add(selectedServer, BorderLayout.CENTER);
+        addingWorld.add(worldPanelUpper, BorderLayout.PAGE_START);
+        addingWorld.add(serverPanelBottom, BorderLayout.PAGE_END);
 
         add(buttonAndText, BorderLayout.PAGE_START);
         add(addingWorld, BorderLayout.LINE_START);
         add(startCopyingPanel, BorderLayout.PAGE_END);
-//        JPanel emptyPanel2 = new JPanel();
-//        JPanel copyStuffPanel = new JPanel();
-//        copyStuffPanel.setLayout(new BorderLayout());
-//
-//        emptyPanel2.setPreferredSize(new Dimension(50, 10));
-//        JPanel dragAndDropBtnPanel = new JPanel();
-//        openButton.setPreferredSize(new Dimension(130, 50));
-//
-//        JPanel emptyPanel8 = new JPanel();
-//        emptyPanel8.setPreferredSize(new Dimension(10, 10));
-//        dragAndDropBtnPanel.add(emptyPanel8);
-//        dragAndDropBtnPanel.add(openButton);
-//        dragAndDropBtnPanel.add(dragNDropInfo);
-//
-//        JPanel emptyPanel4 = new JPanel();
-//        emptyPanel4.setPreferredSize(new Dimension(10, 10));
-//        JPanel emptyPanel5 = new JPanel();
-//        emptyPanel5.setPreferredSize(new Dimension(10, 5));
-//        JPanel emptyPanel6 = new JPanel();
-//        emptyPanel6.setPreferredSize(new Dimension(10, 5));
-//
-//        JPanel copyPanelBottom = new JPanel();
-//
-//        copyPanelBottom.setLayout(new BorderLayout());
-//        copyPanelBottom.add(emptyPanel5, BorderLayout.LINE_START);
-//        copyPanelBottom.add(progressBar, BorderLayout.CENTER);
-//        copyPanelBottom.add(emptyPanel6, BorderLayout.LINE_END);
-//        copyPanelBottom.add(emptyPanel4, BorderLayout.PAGE_END);
-//
-//
-//        JPanel emptyPanel7 = new JPanel();
-//        emptyPanel7.setPreferredSize(new Dimension(10, 10));
-//        JPanel emptyPanel9 = new JPanel();
-//        emptyPanel9.setPreferredSize(new Dimension(10, 5));
-//
-//        startCopying.setPreferredSize(new Dimension(75, 35));
-//        JPanel copyPanelUp = new JPanel(new BorderLayout());
-//        copyPanelUp.add(emptyPanel7, BorderLayout.LINE_START);
-//        copyPanelUp.add(startCopying, BorderLayout.CENTER);
-//        copyPanelUp.add(emptyPanel8, BorderLayout.LINE_END);
-//
-//
-//        copyStuffPanel.add(copyPanelUp, BorderLayout.LINE_START);
-//        copyStuffPanel.add(emptyPanel2, BorderLayout.CENTER);
-//        copyStuffPanel.add(copyPanelBottom, BorderLayout.PAGE_END);
-//
-//        JPanel separatorPanel = new JPanel();
-//        separatorPanel.setLayout(new BorderLayout());
-//        separatorPanel.setPreferredSize(new Dimension(50, 100));
-//        separatorPanel.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
-//
-//        JPanel selectedStuffPanel = new JPanel();
-//
-//        arrow.setIcon(new ImageIcon("arrow.png"));
-//
-//        JPanel emptyPanel1 = new JPanel();
-//        emptyPanel1.setPreferredSize(new Dimension(10,10));
-//
-//        selectedStuffPanel.setLayout(new GridLayout(7,3));
-//
-////        selectedStuffPanel.add(selectedWorld);
-////        selectedStuffPanel.add(arrow);
-//        selectedStuffPanel.add(selectedServer);
-//
-//        JPanel selectedStuffAndSpacePanel = new JPanel();
-//        JPanel emptyPanel3 = new JPanel();
-//        emptyPanel3.setPreferredSize(new Dimension(50, 10));
-//        selectedStuffAndSpacePanel.setLayout(new BorderLayout());
-//        selectedStuffAndSpacePanel.add(emptyPanel3, BorderLayout.LINE_START);
-//        selectedStuffAndSpacePanel.add(selectedStuffPanel, BorderLayout.CENTER);
-//
-//
-//        add(dragAndDropBtnPanel, BorderLayout.LINE_START);
-////        add(emptyPanel1, BorderLayout.LINE_START);
-////        add(selectedStuffAndSpacePanel, BorderLayout.LINE_START);
-//        add(copyStuffPanel, BorderLayout.PAGE_END);
     }
 
     WorldCopyHandler worldCopyText = new WorldCopyHandler();
@@ -264,13 +202,23 @@ public class AddWorldsPanel extends JPanel {
         super.paintComponent(g);
         System.out.println("extracted dir: " + extractedWorldDir);
         if(worldToAdd != null)
-            selectedServer.setText(worldToAdd.getName());
-        else
-            selectedServer.setText("");
+            worldNameAndStuffText.setText(worldToAdd.getName());
+        serverWorldNameAndStuff.setText(worldCopyText.getServerWorldName());
+//        else
+//            selectedServer.setText("");
 
         if(extractedWorldDir != null) {
-            serverWorldIcon.setIcon(new ImageIcon(new ImageIcon(new File(extractedWorldDir).getParent() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+            startCopying.setEnabled(true);
+            if(new File(extractedWorldDir + "\\icon.png").exists())
+                worldIcon.setIcon(new ImageIcon(new ImageIcon(new File(extractedWorldDir) + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+            else //this is the worst fucking solution ever lol
+                worldIcon.setIcon(new ImageIcon(new ImageIcon(new File(extractedWorldDir).getParent() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+
+        } else {
+            worldIcon.setIcon(new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
         }
+        serverWorldIcon.setIcon(new ImageIcon(new ImageIcon(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+
     }
 
     public static void setExtractedWorldDir(String extractedWorldDir) {
