@@ -22,7 +22,7 @@ public class ConfigStuffPanel extends JPanel {
     private static AddWorldsPanel addWorldsPanel;
     private final Preferences preferences;
     private int comboBoxSelectedIndex;
-    private final JComboBox<String> serverSelection = new JComboBox<>();
+    private static final JComboBox<String> serverSelection = new JComboBox<>();
     public ConfigStuffPanel(Preferences preferences) {
         this.preferences = preferences;
         setLayout(new BorderLayout(10, 10));
@@ -122,5 +122,9 @@ public class ConfigStuffPanel extends JPanel {
 
     public static String getServPath() {
         return servPath;
+    }
+
+    public static JComboBox<String> getServerSelection() {
+        return serverSelection;
     }
 }

@@ -74,5 +74,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
         ConfigStuffPanel.setServerVariables(config.getData().get(Integer.parseInt(index)).getButtonText(),
                 config.getData().get(Integer.parseInt(index)).getPathToServerFolder());
+
+        ConfigStuffPanel.getServerSelection().setSelectedIndex(Integer.parseInt(index)); //issue #13 fix
     }
 }

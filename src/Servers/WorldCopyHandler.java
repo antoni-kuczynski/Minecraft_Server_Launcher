@@ -169,7 +169,11 @@ public class WorldCopyHandler extends Thread {
             if(!copyFilesToServerDir) {
                 String extractedDirTemp;
                 try {
-                    extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+                    if(new File(".\\world_temp\\" + originalDir.getName()).exists()) { //fixed issue
+                        extractedDirTemp = new File(".\\world_temp\\" + originalDir.getName()).getAbsolutePath();
+                    } else {
+                        extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+                    }
                     AddWorldsPanel.setExtractedWorldDir(extractedDirTemp);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
