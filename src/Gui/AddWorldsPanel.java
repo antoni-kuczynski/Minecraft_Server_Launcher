@@ -5,8 +5,6 @@ import com.formdev.flatlaf.ui.FlatRoundBorder;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
@@ -33,6 +31,8 @@ public class AddWorldsPanel extends JPanel {
     private final JTextArea serverWorldNameAndStuff = new JTextArea();
     private final JPanel worldPanelUpper = new JPanel(new BorderLayout());
     private final JPanel serverPanelBottom = new JPanel(new BorderLayout());
+    private boolean isArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
+    private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
 
     public AddWorldsPanel() throws IOException {
         super(new BorderLayout());
@@ -54,13 +54,29 @@ public class AddWorldsPanel extends JPanel {
                     String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
                     if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                         worldToAdd = filePath;
+                        isArchiveMode = true;
                         try {
                             new WorldCopyHandler(this, progressBar, worldToAdd, false).start();
                         } catch (IOException ex) {
                             alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                         }
                     } else {
-                        worldToAdd = new File(folderPath);
+                        isArchiveMode = false;
+                        File folder = new File(folderPath);
+                        //issue #16 fix adding a warning to check for folder's size
+                        if(FileUtils.sizeOfDirectory(folder) > 1000000000) { //greater than 1GB
+                            if (JOptionPane.showConfirmDialog(null, "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                                worldToAdd = folder; //yes option
+                            } else { //no option
+                                // no option
+                            }
+
+                        } else { //if file is less than 1gb
+                            worldToAdd = folder;
+                        }
+
+//                        worldToAdd = folder;
                     }
 //                    startCopying.setEnabled(true);
                 }
@@ -90,9 +106,11 @@ public class AddWorldsPanel extends JPanel {
                         String fileExtension = fileToAdd.toString().split("\\.")[fileToAdd.toString().split("\\.").length - 1];
 
                         if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
+                            isArchiveMode = true;
                             worldToAdd = fileToAdd;
                             new WorldCopyHandler(tempPanel, progressBar, worldToAdd, false).start();
                         } else {
+                            isArchiveMode = false;
                             //issue #16 fix adding a warning to check for folder's size
                             if(FileUtils.sizeOfDirectory(new File(fileToAdd.getParent())) > 1000000000) { //greater than 1GB
                                 if (JOptionPane.showConfirmDialog(null, "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
@@ -133,6 +151,7 @@ public class AddWorldsPanel extends JPanel {
             worldCopyHandler.start();
         });
 
+        worldIcon.setIcon(defaultWorldIcon);
 
         //Empty Panels
         JPanel emptyPanel7 = new JPanel();
@@ -224,32 +243,35 @@ public class AddWorldsPanel extends JPanel {
         worldPanelUpper.setBorder(new FlatRoundBorder()); //issue #5 fixed
         serverPanelBottom.setBorder(new FlatRoundBorder());
 
-        if(worldToAdd != null) {
+        if(worldToAdd != null && isArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("File: " + worldToAdd.getName() + "\nWorld Name: " + "TODO");
+        } else if(!isArchiveMode && worldToAdd != null) {
+            worldNameAndStuffText.setText("Folder: " + worldToAdd.getName() + "\nWorld Name: " + "TODO");
         }
 
-        System.out.println(worldToAdd);
-        if(worldToAdd != null && worldToAdd.exists()) {
-            worldIcon.setIcon(new ImageIcon(new ImageIcon(worldToAdd + "\\icon.png").getImage().getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-        }
-        if(extractedWorldDir != null) {
+        if(isArchiveMode && extractedWorldDir != null) {
             startCopying.setEnabled(true);
-
             //this is the worst fucking solution ever lol
-            if(new File(extractedWorldDir + "\\icon.png").exists())
-                worldIcon.setIcon(new ImageIcon(new ImageIcon(new File(extractedWorldDir) + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
-            else {
-                if(new File(new File(extractedWorldDir).getParent() + "\\icon.png").exists())
-                    worldIcon.setIcon(new ImageIcon(new ImageIcon(new File(extractedWorldDir).getParent() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
-                else //issue #6 shity solution
-                    worldIcon.setIcon(new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+            File extractedDir = new File(extractedWorldDir);
+            if(!new File(extractedWorldDir + "\\icon.png").exists()) {
+                boolean doesIconInParentExist = new File(extractedDir.getParent() + "\\icon.png").exists();
+                ImageIcon parentImg = new ImageIcon(new ImageIcon(extractedDir.getParent() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+                worldIcon.setIcon(doesIconInParentExist ? parentImg : defaultWorldIcon);
+            } else {
+                worldIcon.setIcon(new ImageIcon(new ImageIcon(extractedDir + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
             }
-        } else {
-            worldIcon.setIcon(new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+        } else if(worldToAdd != null && worldToAdd.exists()) { //issue #8 fix
+            worldIcon.setIcon(new ImageIcon(new ImageIcon(worldToAdd + "\\icon.png").getImage().getScaledInstance(96,96, Image.SCALE_SMOOTH)));
+        } else if(extractedWorldDir == null) {
+            worldIcon.setIcon(defaultWorldIcon);
         }
+
+
+
+
 
         if(!new File(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png").exists()) {
-            serverWorldIcon.setIcon(new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+            serverWorldIcon.setIcon(defaultWorldIcon);
         } else {
             serverWorldIcon.setIcon(new ImageIcon(new ImageIcon(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
         }
