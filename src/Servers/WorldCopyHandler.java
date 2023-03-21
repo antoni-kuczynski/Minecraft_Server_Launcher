@@ -137,7 +137,6 @@ public class WorldCopyHandler extends Thread {
     }
 
 
-    private File extractedDirectory;
     @Override
     public void run() {
         super.run();
