@@ -118,7 +118,6 @@ public class AddWorldsPanel extends JPanel {
 
                         }
                         System.out.println(extractedWorldDir);
-//                        startCopying.setEnabled(true);
                         repaint();
                     } catch (UnsupportedFlavorException | IOException e) {
                             alert(AlertType.ERROR, exStackTraceToString(e.getStackTrace()));
@@ -127,9 +126,6 @@ public class AddWorldsPanel extends JPanel {
                 return true;
             }
         });
-
-
-
 
 
         startCopying.addActionListener(e -> {
@@ -144,6 +140,7 @@ public class AddWorldsPanel extends JPanel {
         });
 
         worldIcon.setIcon(defaultWorldIcon);
+//        worldNameAndStuffText.setLineWrap(true);
 
         //Empty Panels
         JPanel emptyPanel7 = new JPanel();
@@ -231,9 +228,9 @@ public class AddWorldsPanel extends JPanel {
         serverPanelBottom.setBorder(new FlatRoundBorder());
 
         if(worldToAdd != null && isArchiveMode) { //issue #7 fix
-            worldNameAndStuffText.setText("File: " + worldToAdd.getName() + "\nWorld Name: " + "TODO");
+            worldNameAndStuffText.setText("File: " + worldToAdd.getAbsolutePath() + "\nWorld Name: " + "TODO");
         } else if(!isArchiveMode && worldToAdd != null) {
-            worldNameAndStuffText.setText("Folder: " + worldToAdd.getName() + "\nWorld Name: " + "TODO");
+            worldNameAndStuffText.setText("Folder: " + worldToAdd.getAbsolutePath() + "\nWorld Name: " + "TODO");
         }
 
         if(isArchiveMode && extractedWorldDir != null) {
@@ -248,6 +245,7 @@ public class AddWorldsPanel extends JPanel {
                 worldIcon.setIcon(new ImageIcon(new ImageIcon(extractedDir + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
             }
         } else if(worldToAdd != null && worldToAdd.exists()) { //issue #8 fix
+            startCopying.setEnabled(true);
             worldIcon.setIcon(new ImageIcon(new ImageIcon(worldToAdd + "\\icon.png").getImage().getScaledInstance(96,96, Image.SCALE_SMOOTH)));
         } else if(extractedWorldDir == null) {
             worldIcon.setIcon(defaultWorldIcon);

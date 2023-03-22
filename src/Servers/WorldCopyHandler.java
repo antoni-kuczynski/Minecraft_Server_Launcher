@@ -3,6 +3,7 @@ package Servers;
 import Gui.AddWorldsPanel;
 import Gui.AlertType;
 import Gui.ConfigStuffPanel;
+import Gui.Frame;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -136,11 +137,32 @@ public class WorldCopyHandler extends Thread {
         return totalSize;
     }
 
+    public boolean isFolderInFolder(File folder, File parentFolder) {
+
+        // If the folder is null or not a directory, return false
+        if (folder == null || !folder.isDirectory()) {
+            return false;
+        }
+
+        // If the parent folder is null or not a directory, return false
+        if (parentFolder == null || !parentFolder.isDirectory()) {
+            return false;
+        }
+
+        // Check if the folder is directly contained within the parent folder
+        if (folder.getParentFile().equals(parentFolder)) {
+            return true;
+        }
+
+        // Recursively check if the parent folder is contained within another folder
+        return isFolderInFolder(parentFolder.getParentFile(), folder);
+    }
+
 
     @Override
     public void run() {
         super.run();
-        if (originalDir.isDirectory()) {
+        if (originalDir.isDirectory() && isFolderInFolder(originalDir, new File(serverWorldDir.getParent()))) {
             if(!serverWorldDir.exists()) {
                 if(!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -208,6 +230,8 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
                 }
             }
+        } else if (isFolderInFolder(originalDir, new File(serverWorldDir.getParent()))) {
+            Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         panel.repaint();
     }
