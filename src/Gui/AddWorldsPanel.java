@@ -2,6 +2,7 @@ package Gui;
 
 import Servers.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
+import dev.dewy.nbt.Nbt;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -31,7 +32,6 @@ public class AddWorldsPanel extends JPanel {
     private final JPanel serverPanelBottom = new JPanel(new BorderLayout());
     private boolean isArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
     private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-
     public AddWorldsPanel() throws IOException {
         super(new BorderLayout());
         JLabel dragNDropInfo = new JLabel(" or drag and drop it here.");
@@ -242,11 +242,16 @@ public class AddWorldsPanel extends JPanel {
                 ImageIcon parentImg = new ImageIcon(new ImageIcon(extractedDir.getParent() + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
                 worldIcon.setIcon(doesIconInParentExist ? parentImg : defaultWorldIcon);
             } else {
-                worldIcon.setIcon(new ImageIcon(new ImageIcon(extractedDir + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+                if(new File(extractedDir + "\\icon.png").exists()) //issue #22 fixed by adding another check
+                    worldIcon.setIcon(new ImageIcon(new ImageIcon(extractedDir + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+                else
+                    worldIcon.setIcon(defaultWorldIcon);
             }
         } else if(worldToAdd != null && worldToAdd.exists()) { //issue #8 fix
             startCopying.setEnabled(true);
-            worldIcon.setIcon(new ImageIcon(new ImageIcon(worldToAdd + "\\icon.png").getImage().getScaledInstance(96,96, Image.SCALE_SMOOTH)));
+            if(new File(worldToAdd + "\\icon.png").exists()) //issue #24 fix
+                worldIcon.setIcon(new ImageIcon(new ImageIcon(worldToAdd + "\\icon.png").getImage().getScaledInstance(96,96, Image.SCALE_SMOOTH)));
+            else worldIcon.setIcon(defaultWorldIcon);
         } else if(extractedWorldDir == null) {
             worldIcon.setIcon(defaultWorldIcon);
         }
@@ -262,10 +267,12 @@ public class AddWorldsPanel extends JPanel {
         }
 
         //size is in bytes
-        if(new File(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName()).exists())
+        if(new File(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName()).exists()) {
+            Nbt nbt = new Nbt();
             serverWorldNameAndStuff.setText("Folder: " + worldCopyText.getServerWorldName() + "\nWorld Name: " + "TODO" + "\nSize: " + FileUtils.sizeOfDirectory(new File(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName())));
-        else
+        } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
+        }
     }
 
     public static void setExtractedWorldDir(String extractedWorldDir) {

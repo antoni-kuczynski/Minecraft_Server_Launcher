@@ -190,8 +190,8 @@ public class WorldCopyHandler extends Thread {
             if(!copyFilesToServerDir) {
                 String extractedDirTemp;
                 try {
-                    if(new File(".\\world_temp\\" + originalDir.getName()).exists()) { //fixed issue
-                        extractedDirTemp = new File(".\\world_temp\\" + originalDir.getName()).getAbsolutePath();
+                    if(new File(".\\world_temp\\" + originalDir.getName()).exists()) { //fixed issue (the wrong way)
+                        extractedDirTemp = new File(".\\world_temp\\" + originalDir.getName()).getAbsolutePath(); //TODO: issue #23 HERE the directory write is wrong is thould go one folder deeper
                     } else {
                         extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
                     }
