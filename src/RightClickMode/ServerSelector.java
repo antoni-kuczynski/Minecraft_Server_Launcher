@@ -1,2 +1,7 @@
-package RightClickMode;public class ServerSelector {
+package RightClickMode;
+
+import javax.swing.*;
+
+public class ServerSelector extends JFrame {
+    //TODO
 }

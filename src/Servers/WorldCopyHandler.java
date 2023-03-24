@@ -24,8 +24,9 @@ public class WorldCopyHandler extends Thread {
     private JProgressBar progressBar = null;
     private boolean copyFilesToServerDir;
     private JPanel panel;
+    private JButton button;
 
-    public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir) throws IOException {
+    public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton button) throws IOException {
         this.panel = panel;
         ServerProperties serverProperties = new ServerProperties();
         this.serverWorldName = serverProperties.getWorldName();
@@ -33,6 +34,7 @@ public class WorldCopyHandler extends Thread {
         this.originalDir = originalWorldDir;
         this.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
+        this.button = button;
     }
 
     public WorldCopyHandler() throws IOException {
@@ -85,6 +87,7 @@ public class WorldCopyHandler extends Thread {
 
 
     private String extractArchive(String archivePath, String destinationPath) throws IOException {
+        button.setEnabled(false);
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
@@ -120,6 +123,7 @@ public class WorldCopyHandler extends Thread {
         zis.closeEntry();
         zis.close();
 
+        button.setEnabled(true);
         return extractedDirectory;
     }
 
@@ -190,11 +194,12 @@ public class WorldCopyHandler extends Thread {
             if(!copyFilesToServerDir) {
                 String extractedDirTemp;
                 try {
-                    if(new File(".\\world_temp\\" + originalDir.getName()).exists()) { //fixed issue (the wrong way)
-                        extractedDirTemp = new File(".\\world_temp\\" + originalDir.getName()).getAbsolutePath(); //TODO: issue #23 HERE the directory write is wrong is thould go one folder deeper
-                    } else {
+                    System.out.println("original dir " + originalDir);
+                    File dirToDelete = new File(".\\world_temp\\" + originalDir.getName());
+                    if(dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
+                        FileUtils.deleteDirectory(dirToDelete);
+
                         extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
-                    }
                     AddWorldsPanel.setExtractedWorldDir(extractedDirTemp);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
@@ -203,6 +208,7 @@ public class WorldCopyHandler extends Thread {
                 panel.repaint();
             }
             if (copyFilesToServerDir) {
+                button.setEnabled(false); //issue #15 fix
                 if (!serverWorldDir.exists()) {
                     if (!serverWorldDir.mkdirs())
                         alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -225,7 +231,9 @@ public class WorldCopyHandler extends Thread {
                 }
 
                 try {
-                    copyDirectory(new File(Objects.requireNonNull(findWorldDirectory(dir.getParent()))), serverWorldDir);
+                    File predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
+                    if(predictedWorldDir != null)
+                        copyDirectory(predictedWorldDir, serverWorldDir);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
                 }
@@ -233,6 +241,7 @@ public class WorldCopyHandler extends Thread {
         } else if (isFolderInFolder(originalDir, new File(serverWorldDir.getParent()))) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
+        button.setEnabled(true); //issue #15 fix
         panel.repaint();
     }
 

@@ -1,5 +1,6 @@
 package Gui;
 
+import RightClickMode.ServerSelector;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -255,6 +256,10 @@ public class Frame extends JFrame implements ActionListener {
         } catch( Exception ex ) {
             alert(AlertType.ERROR, "Cannot initialize look and feel\n" + exStackTraceToString(ex.getStackTrace()));
         }
-        new Frame();
+        if(args.length == 0) {
+            new Frame();
+        } else {
+            new ServerSelector();
+        }
     }
 }
