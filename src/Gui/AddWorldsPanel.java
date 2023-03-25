@@ -40,6 +40,8 @@ public class AddWorldsPanel extends JPanel {
     private final double ONE_MEGABYTE = 1048576;
     private final double ONE_KILOBYTE = 1024;
     private final DecimalFormat unitRound = new DecimalFormat("###.##");
+    private final Dimension dimension = new Dimension(10,10);
+    private final FlatRoundBorder border = new FlatRoundBorder();
 
     private ArrayList<String> sizeOfDirectory(File directory) {
         long BYTE_SIZE = FileUtils.sizeOfDirectory(directory);
@@ -173,22 +175,6 @@ public class AddWorldsPanel extends JPanel {
         worldIcon.setIcon(defaultWorldIcon);
 //        worldNameAndStuffText.setLineWrap(true);
 
-        //Empty Panels
-        JPanel emptyPanel7 = new JPanel();
-        JPanel emptyPanel8 = new JPanel(); //lmao im definetely doing this wrong, surely no one could be this fucking dumb to want to become a frontend dev
-        JPanel emptyPanel9 = new JPanel();
-
-        //Set sizes
-        emptyPanel7.setPreferredSize(new Dimension(10,5));
-        emptyPanel8.setPreferredSize(new Dimension(10,5));
-        emptyPanel9.setPreferredSize(new Dimension(10,100));
-
-        ArrayList<JPanel> emptyPanels = new ArrayList<>(); //lmfao
-        for(int i = 0; i < 25; i++) {
-            JPanel panel = new JPanel();
-            panel.setPreferredSize(new Dimension(10,10));
-            emptyPanels.add(panel);
-        }
 
         //Panels
         JPanel buttonAndText = new JPanel(new BorderLayout());
@@ -201,23 +187,23 @@ public class AddWorldsPanel extends JPanel {
         openButton.setPreferredSize(new Dimension(130, 40));
         separatorBtnTextKinda.add(openButton, BorderLayout.LINE_START);
         separatorBtnTextKinda.add(dragNDropInfo, BorderLayout.CENTER);
-        separatorBtnTextKinda.add(emptyPanels.get(0), BorderLayout.LINE_END);
+        separatorBtnTextKinda.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
-        buttonAndText.add(emptyPanels.get(1), BorderLayout.PAGE_START);
-        buttonAndText.add(emptyPanels.get(2), BorderLayout.LINE_START);
+        buttonAndText.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
+        buttonAndText.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         buttonAndText.add(separatorBtnTextKinda, BorderLayout.CENTER);
 
-        copyingProgress.add(emptyPanels.get(3), BorderLayout.PAGE_START);
-        copyingProgress.add(emptyPanel7, BorderLayout.LINE_START);
+        copyingProgress.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
+        copyingProgress.add(Box.createRigidArea(new Dimension(10,5)), BorderLayout.LINE_START);
         copyingProgress.add(progressBar, BorderLayout.CENTER);
-        copyingProgress.add(emptyPanel8, BorderLayout.LINE_END);
-        copyingProgress.add(emptyPanels.get(4), BorderLayout.PAGE_END);
+        copyingProgress.add(Box.createRigidArea(new Dimension(10,5)), BorderLayout.LINE_END);
+        copyingProgress.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
 
         startCopyingBtnPanel.add(startCopying, BorderLayout.CENTER);
-        startCopyingBtnPanel.add(emptyPanels.get(5), BorderLayout.LINE_END);
+        startCopyingBtnPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
-        startCopyingPanel.add(emptyPanels.get(6), BorderLayout.LINE_START);
+        startCopyingPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         startCopyingPanel.add(startCopyingBtnPanel, BorderLayout.LINE_END);
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
@@ -228,8 +214,8 @@ public class AddWorldsPanel extends JPanel {
         worldNameAndStuffText.setEditable(false);
         worldNameAndStuffText.setText("World File name will appear here.");
 
-        worldPanelUpper.add(emptyPanels.get(7), BorderLayout.PAGE_START);
-        worldPanelUpper.add(emptyPanels.get(8), BorderLayout.LINE_START);
+        worldPanelUpper.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
+        worldPanelUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         worldPanelUpper.add(worldIcon, BorderLayout.CENTER);
         worldPanelUpper.add(worldNameAndStuffText, BorderLayout.LINE_END);
 
@@ -238,7 +224,7 @@ public class AddWorldsPanel extends JPanel {
         serverWorldNameAndStuff.setEditable(false);
 
 
-        serverNameAndStuff.add(emptyPanels.get(9), BorderLayout.LINE_START);
+        serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         serverNameAndStuff.add(serverWorldIcon, BorderLayout.CENTER);
         serverNameAndStuff.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
 
@@ -257,8 +243,8 @@ public class AddWorldsPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        worldPanelUpper.setBorder(new FlatRoundBorder()); //issue #5 fixed
-        serverPanelBottom.setBorder(new FlatRoundBorder());
+        worldPanelUpper.setBorder(border); //issue #5 fixed
+        serverPanelBottom.setBorder(border);
 
         directoryTree.setDirectory(ConfigStuffPanel.getServPath(), ConfigStuffPanel.getServPath());
         if(worldToAdd != null && isArchiveMode) { //issue #7 fix

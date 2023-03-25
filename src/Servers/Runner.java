@@ -13,10 +13,10 @@ import static Gui.Frame.alert;
 import static Gui.Frame.exStackTraceToString;
 
 public class Runner extends Thread {
+    private final Run run;
     private String pathToServerJar;
     private String pathToServerFolder;
     private String javaRuntimePath;
-    private final Run run;
     private ArrayList<String> arguments;
 
     public Runner(String pathToServerJar, Run run, String javaRuntimePath, String launchArgs) {
@@ -93,7 +93,7 @@ public class Runner extends Thread {
                 try {
                     desktop.open(file);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot open \"servers.json\" file.\n"  + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot open \"servers.json\" file.\n" + exStackTraceToString(e.getStackTrace()));
                 }
             }
             case SERVER_FOLDER -> {
@@ -124,14 +124,14 @@ public class Runner extends Thread {
                 try {
                     desktop.open(directory);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot open server's directory.\n"  + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot open server's directory.\n" + exStackTraceToString(e.getStackTrace()));
                 }
             }
             case SERVER_JAR -> {
                 try {
                     launchServer(pathToServerJar, javaRuntimePath);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot start new Process pb. Cannot launch server.\n"  + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot start new Process pb. Cannot launch server.\n" + exStackTraceToString(e.getStackTrace()));
                 }
             }
         }

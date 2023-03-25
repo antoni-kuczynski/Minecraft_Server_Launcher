@@ -23,6 +23,8 @@ public class ConfigStuffPanel extends JPanel {
     private final Preferences preferences;
     private int comboBoxSelectedIndex;
     private static final JComboBox<String> serverSelection = new JComboBox<>();
+    private final Dimension dimension = new Dimension(10,1);
+
     public ConfigStuffPanel(Preferences preferences) {
         this.preferences = preferences;
         setLayout(new BorderLayout(10, 10));
@@ -84,15 +86,10 @@ public class ConfigStuffPanel extends JPanel {
         selServerManually.add(selServerTitle, BorderLayout.CENTER);
         selServerManually.add(serverSelection, BorderLayout.LINE_END);
 
-        JPanel emptyPanel1 = new JPanel();
-        JPanel emptyPanel2 = new JPanel();
-        emptyPanel1.setPreferredSize(new Dimension(10,1));
-        emptyPanel2.setPreferredSize(new Dimension(10,1));
-
-        add(emptyPanel1, BorderLayout.PAGE_START);
+        add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         add(openCfg, BorderLayout.LINE_START);
         add(selServerManually, BorderLayout.LINE_END);
-        add(emptyPanel2, BorderLayout.PAGE_END);
+        add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
     }
 
     public static void setServerVariables(String text, String serverPath) {

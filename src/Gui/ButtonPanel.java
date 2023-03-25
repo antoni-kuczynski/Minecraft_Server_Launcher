@@ -8,9 +8,36 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class ButtonPanel extends JPanel implements ActionListener {
     private final Config config = new Config();
+    private static final int BUTTON_WIDTH_PADDING = 20;
+    private static final int BUTTON_HEIGHT_PADDING = 10;
+
+    public ButtonPanel() throws IOException {
+        setLayout(new GridLayout(10, 5, 10, 10));
+        List<ButtonData> serverConfigs = config.getData();
+        for (int i = 0; i < serverConfigs.size(); i++) {
+            JButton button = createButton(serverConfigs.get(i).getButtonText());
+            boolean serverFilesExist = new File(serverConfigs.get(i).getPathToServerFolder()).exists();
+            button.setEnabled(serverFilesExist);
+            String toolTipText = "Server path: " + serverConfigs.get(i).getPathToServerFolder()
+                    + "\nServer executable: " + serverConfigs.get(i).getPathToServerJarFile()
+                    + "\nJava executable: " + serverConfigs.get(i).getPathToJavaRuntime()
+                    + "\nLaunch arguments: " + serverConfigs.get(i).getServerLaunchArguments();
+            if (!serverFilesExist) {
+                toolTipText = "Server files not found." + "\n" + toolTipText;
+            }
+            button.setToolTipText(toolTipText);
+            setButtonIcon(button, serverConfigs.get(i).getPathToButtonIcon());
+            button.setPreferredSize(new Dimension(100, 40));
+            button.setFont(new Font("Arial", Font.PLAIN, 14));
+            button.addActionListener(this);
+            button.setActionCommand(Integer.toString(i));
+            add(button);
+        }
+    }
 
     public void setButtonIcon(JButton button, String iconPath) {
         ImageIcon icon = new ImageIcon(iconPath);
@@ -22,40 +49,10 @@ public class ButtonPanel extends JPanel implements ActionListener {
     public JButton createButton(String label) {
         JButton button = new JButton(label);
         FontMetrics metrics = button.getFontMetrics(button.getFont());
-        int width = metrics.stringWidth(label) + 20; // Add padding to the width
-        int height = metrics.getHeight() + 10; // Add padding to the height
+        int width = metrics.stringWidth(label) + BUTTON_WIDTH_PADDING;
+        int height = metrics.getHeight() + BUTTON_HEIGHT_PADDING;
         button.setPreferredSize(new Dimension(width, height));
         return button;
-    }
-
-
-
-    public ButtonPanel() throws IOException {
-        setLayout(new GridLayout(10, 5, 10, 10));
-        // Add i JButtons to the panel
-        for (int i = 0; i < config.getData().size(); i++) {
-                JButton button = createButton(config.getData().get(i).getButtonText());
-
-                button.setEnabled(false);
-                if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
-                    button.setEnabled(true);
-                    button.setToolTipText("Server path: " + config.getData().get(i).getPathToServerFolder() + "\nServer executable: " +
-                            config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime() + "\nLaunch arguments: " +
-                            config.getData().get(i).getServerLaunchArguments());
-                } else {
-                    button.setToolTipText("Server files not found." + "\nServer path: " + config.getData().get(i).getPathToServerFolder() + "\nServer executable: " +
-                            config.getData().get(i).getPathToServerJarFile() + "\nJava executable: " + config.getData().get(i).getPathToJavaRuntime() + "\nLaunch arguments: " +
-                            config.getData().get(i).getServerLaunchArguments());
-                }
-                setButtonIcon(button, config.getData().get(i).getPathToButtonIcon());
-
-
-                button.setPreferredSize(new Dimension(100, 40)); // Set the preferred size of the button
-                button.setFont(new Font("Arial", Font.PLAIN, 14)); // Set the font and size of the button text
-                button.addActionListener(this); // Add the action listener to the button
-                button.setActionCommand(Integer.toString(i)); // Set the action command to the index of the button
-                add(button);
-        }
     }
 
     @Override
@@ -66,15 +63,11 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String index = e.getActionCommand(); // Get the action command (i.e., the index of the button)
-
-        new Runner(config.getData().get(Integer.parseInt(index)).getPathToServerJarFile(), //holy fuck
-                Run.SERVER_JAR, config.getData().get(Integer.parseInt(index)).getPathToJavaRuntime(),
-                config.getData().get(Integer.parseInt(index)).getServerLaunchArguments()).start();
-
-        ConfigStuffPanel.setServerVariables(config.getData().get(Integer.parseInt(index)).getButtonText(),
-                config.getData().get(Integer.parseInt(index)).getPathToServerFolder());
-
-        ConfigStuffPanel.getServerSelection().setSelectedIndex(Integer.parseInt(index)); //issue #13 fix
+        int index = Integer.parseInt(e.getActionCommand());
+        ButtonData serverConfig = config.getData().get(index);
+        new Runner(serverConfig.getPathToServerJarFile(), Run.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
+                serverConfig.getServerLaunchArguments()).start();
+        ConfigStuffPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder());
+        ConfigStuffPanel.getServerSelection().setSelectedIndex(index);
     }
 }

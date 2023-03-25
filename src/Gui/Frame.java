@@ -20,6 +20,8 @@ public class Frame extends JFrame implements ActionListener {
     private final String PREFS_KEY_HEIGHT = "window_height";
     private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
 
+    private final Dimension dimension = new Dimension(10,10);
+
 
     public static String exStackTraceToString(StackTraceElement[] elements) {
         StringBuilder sb = new StringBuilder();
@@ -118,17 +120,6 @@ public class Frame extends JFrame implements ActionListener {
         AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
         configStuffPanel.setPanel(configStuffPanel, addWorldsPanel);
 
-        //Empty Panels (one panel doesn't work) WTF!!!
-        JPanel emptyPanel1 = new JPanel();
-        JPanel emptyPanel2 = new JPanel();
-        JPanel emptyPanel3 = new JPanel();
-        JPanel emptyPanel4 = new JPanel();
-        JPanel emptyPanel5 = new JPanel();
-        emptyPanel1.setPreferredSize(new Dimension(10, 50));
-        emptyPanel2.setPreferredSize(new Dimension(10, 50));
-        emptyPanel3.setPreferredSize(new Dimension(10, 50));
-        emptyPanel4.setPreferredSize(new Dimension(10, 50));
-        emptyPanel5.setPreferredSize(new Dimension(15, 5));
 
         //JPanel containing empty panels & config panel
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
@@ -141,17 +132,19 @@ public class Frame extends JFrame implements ActionListener {
         JPanel configPanel = new JPanel();
         configPanel.setLayout(new BorderLayout());
         configPanel.add(separatorPanel, BorderLayout.PAGE_START);
-        configPanel.add(emptyPanel3, BorderLayout.LINE_START);
+        configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         configPanel.add(configStuffPanel, BorderLayout.CENTER);
-        configPanel.add(emptyPanel4, BorderLayout.LINE_END);
-        configPanel.add(emptyPanel5, BorderLayout.PAGE_END);
+        configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
+        configPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
         //Add the world add JPanel to the frame
-        addWorldsPanel.add(emptyPanel2);
+        addWorldsPanel.add(Box.createRigidArea(dimension));
 
 
+        JPanel testPanel2 = new JPanel(new BorderLayout());
+        testPanel2.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
+        testPanel2.add(addWorldsPanel, BorderLayout.CENTER);
 
-//        buttonPanel.setPreferredSize(new Dimension(400, 100));
         JPanel testPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -160,22 +153,25 @@ public class Frame extends JFrame implements ActionListener {
 //                addWorldsPanel.setSize(new Dimension(getWidth() / 2, getHeight()));
             }
         };
-        JPanel testPanel2 = new JPanel(new BorderLayout());
-        testPanel2.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
-        testPanel2.add(addWorldsPanel, BorderLayout.CENTER);
 
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() {
+                testPanel.setLayout(new BorderLayout(10, 10));
+                testPanel.add(buttonPanel, BorderLayout.LINE_START);
+                testPanel.add(testPanel2, BorderLayout.CENTER);
+                add(testPanel, BorderLayout.CENTER);
+                add(titlePanel, BorderLayout.PAGE_START);
+                setVisible(true);
+                return null;
+            }
+        }.execute();
 
-        testPanel.setLayout(new BorderLayout(10, 10));
-        testPanel.add(buttonPanel, BorderLayout.LINE_START);
-        testPanel.add(testPanel2, BorderLayout.CENTER);
-//        testPanel.add(testPanel2, BorderLayout.LINE_END);
 
         // Add the JPanel to the JFrame's BorderLayout.CENTER
-        add(titlePanel, BorderLayout.PAGE_START);
-        add(emptyPanel1, BorderLayout.LINE_START);
-        add(testPanel, BorderLayout.CENTER);
+        add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         add(configPanel, BorderLayout.PAGE_END);
-        setVisible(true);
+
 
         // Set the initial size and position of the JFrame
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -257,7 +253,14 @@ public class Frame extends JFrame implements ActionListener {
             alert(AlertType.ERROR, "Cannot initialize look and feel\n" + exStackTraceToString(ex.getStackTrace()));
         }
         if(args.length == 0) {
-            new Frame();
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    new Frame().setVisible(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+//            new Frame();
         } else {
             new ServerSelector();
         }

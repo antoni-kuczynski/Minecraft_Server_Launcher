@@ -246,23 +246,33 @@ public class WorldCopyHandler extends Thread {
     }
 
     private String findWorldDirectory(String dir) { //TODO: fixme
-        ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
-        ArrayList<String> filenames = new ArrayList<>();
-        for (File f : arr)
-            filenames.add(f.getName());
-        if (filenames.contains("level.dat")) {
-            return dir;
-        } else {
-            String nextDir = null;
-            for(File f : arr) {
-                if(f.isDirectory()) {
-                    nextDir = f.getAbsolutePath();
-                    break;
+        System.out.println("dir passed to function: " + dir);
+//        if(dir != null) {
+            ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
+            ArrayList<String> filenames = new ArrayList<>();
+            for (File f : arr)
+                filenames.add(f.getName());
+            if (filenames.contains("level.dat")) {
+                return dir;
+            } else {
+                String nextDir = null;
+                for (File f : arr) {
+                    if (f.isDirectory()) {
+                        nextDir = f.getAbsolutePath();
+                        break;
+                    }
                 }
+                findWorldDirectory(nextDir);
             }
-            findWorldDirectory(nextDir);
-        }
-        return null;
+//        }
+//        else {
+//            if (JOptionPane.showConfirmDialog(null,
+//                    "Folder that you're trying to copy is not a minecraft world. Copying this file can result in world save corruption. Do you still want to prooced?", "Warning",
+//                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.NO_OPTION) {
+//                return null;
+//            }
+//        }
+        return dir;
     }
     public String getServerWorldName () {
         if(serverWorldName == null)
