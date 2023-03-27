@@ -165,41 +165,40 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        super.run();
         if (originalDir.isDirectory() && isFolderInFolder(originalDir, new File(serverWorldDir.getParent()))) {
-            if(!serverWorldDir.exists()) {
-                if(!serverWorldDir.mkdirs())
+            if (!serverWorldDir.exists()) {
+                if (!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
             }
-            if(Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
+            if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                 try {
                     FileUtils.deleteDirectory(serverWorldDir);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot delete server world directory.\n"  + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot delete server world directory.\n" + exStackTraceToString(e.getStackTrace()));
                 }
             }
             try {
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot delete nether and end directories.\n"  + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot delete nether and end directories.\n" + exStackTraceToString(e.getStackTrace()));
             }
 
             try {
                 copyDirectory(originalDir, serverWorldDir);
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n"  + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
             }
         } else if (isArchive(originalDir)) {
-            if(!copyFilesToServerDir) {
+            if (!copyFilesToServerDir) {
                 String extractedDirTemp;
                 try {
                     System.out.println("original dir " + originalDir);
                     File dirToDelete = new File(".\\world_temp\\" + originalDir.getName());
-                    if(dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
+                    if (dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
                         FileUtils.deleteDirectory(dirToDelete);
 
-                        extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+                    extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
                     AddWorldsPanel.setExtractedWorldDir(extractedDirTemp);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
@@ -231,8 +230,9 @@ public class WorldCopyHandler extends Thread {
                 }
 
                 try {
-                    File predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
-                    if(predictedWorldDir != null)
+                    File predictedWorldDir;
+                    predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
+                    if(!isInterrupted())
                         copyDirectory(predictedWorldDir, serverWorldDir);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
@@ -245,9 +245,9 @@ public class WorldCopyHandler extends Thread {
         panel.repaint();
     }
 
-    private String findWorldDirectory(String dir) { //TODO: fixme
+    private String findWorldDirectory(String dir) {
         System.out.println("dir passed to function: " + dir);
-//        if(dir != null) {
+        if(dir != null) {
             ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
             ArrayList<String> filenames = new ArrayList<>();
             for (File f : arr)
@@ -264,16 +264,15 @@ public class WorldCopyHandler extends Thread {
                 }
                 findWorldDirectory(nextDir);
             }
-//        }
-//        else {
-//            if (JOptionPane.showConfirmDialog(null,
-//                    "Folder that you're trying to copy is not a minecraft world. Copying this file can result in world save corruption. Do you still want to prooced?", "Warning",
-//                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.NO_OPTION) {
-//                return null;
-//            }
-//        }
+        } else{
+                JOptionPane.showConfirmDialog(null,
+                        "Folder that you're trying to copy is not a minecraft world. Copying this file can result in world save corruption. Do you still want to prooced?", "Warning",
+                        JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
+                    return null; //yes
+            }
         return dir;
     }
+
     public String getServerWorldName () {
         if(serverWorldName == null)
             return "world_name_not_found";
