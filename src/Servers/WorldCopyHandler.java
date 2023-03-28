@@ -165,7 +165,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        if (originalDir.isDirectory() && isFolderInFolder(originalDir, new File(serverWorldDir.getParent()))) {
+        if (originalDir.isDirectory() && !originalDir.toString().contains(ConfigStuffPanel.getServPath())) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -193,12 +193,12 @@ public class WorldCopyHandler extends Thread {
             if (!copyFilesToServerDir) {
                 String extractedDirTemp;
                 try {
-                    System.out.println("original dir " + originalDir);
                     File dirToDelete = new File(".\\world_temp\\" + originalDir.getName());
                     if (dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
                         FileUtils.deleteDirectory(dirToDelete);
 
                     extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+                    File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp));
                     AddWorldsPanel.setExtractedWorldDir(extractedDirTemp);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
@@ -213,7 +213,6 @@ public class WorldCopyHandler extends Thread {
                         alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
                 }
 
-                System.out.println("Hi! " + AddWorldsPanel.getExtractedWorldDir());
                 File dir = new File(AddWorldsPanel.getExtractedWorldDir());
                 if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                     try {
@@ -238,39 +237,41 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
                 }
             }
-        } else if (isFolderInFolder(originalDir, new File(serverWorldDir.getParent()))) {
+        } else if (originalDir.toString().contains(ConfigStuffPanel.getServPath())) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         button.setEnabled(true); //issue #15 fix
         panel.repaint();
     }
 
-    private String findWorldDirectory(String dir) {
-        System.out.println("dir passed to function: " + dir);
-        if(dir != null) {
-            ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
-            ArrayList<String> filenames = new ArrayList<>();
-            for (File f : arr)
-                filenames.add(f.getName());
-            if (filenames.contains("level.dat")) {
-                return dir;
-            } else {
-                String nextDir = null;
-                for (File f : arr) {
-                    if (f.isDirectory()) {
-                        nextDir = f.getAbsolutePath();
-                        break;
-                    }
+    private String findWorldDirectory(String dir) { //function should now work most of the times
+        ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
+        ArrayList<String> filenames = new ArrayList<>();
+        for (File f : arr) {
+            filenames.add(f.getName());
+        }
+        File foundLevelDat = new File(dir);
+        boolean containsLevelDat = false;
+        for (File f : arr) {
+            if (f.getName().equals("level.dat")) {
+                containsLevelDat = true;
+                foundLevelDat = new File(f.getAbsolutePath());
+            }
+        }
+        if (containsLevelDat) {
+            return foundLevelDat.getParent();
+        } else {
+            String nextDir = null;
+            for (File f : arr) {
+                if (f.isDirectory()) {
+                    nextDir = f.getAbsolutePath();
+                    break;
+                } else {
+                    nextDir = new File(f.getParent()).getParent(); //for the name of fuck, i dont understand how does that work
                 }
-                findWorldDirectory(nextDir);
             }
-        } else{
-                JOptionPane.showConfirmDialog(null,
-                        "Folder that you're trying to copy is not a minecraft world. Copying this file can result in world save corruption. Do you still want to prooced?", "Warning",
-                        JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
-                    return null; //yes
-            }
-        return dir;
+            return findWorldDirectory(nextDir); //fixed the function
+        }
     }
 
     public String getServerWorldName () {

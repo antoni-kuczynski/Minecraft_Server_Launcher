@@ -55,7 +55,6 @@ public class Config {
         }
         JSONArray jsonArray = new JSONArray(readFileString(new File("servers.json")));
         JSONObject globalVariables = jsonArray.getJSONObject(0);
-        System.out.println(globalVariables.keySet());
         String javaArguments = globalVariables.getString("globalLaunchArgs");
 
         for (int i = 1; i < jsonArray.length(); i++) { //start on index 1 because index 0 are global variables

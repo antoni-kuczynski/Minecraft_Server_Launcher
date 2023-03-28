@@ -147,7 +147,6 @@ public class AddWorldsPanel extends JPanel {
                             }
 
                         }
-                        System.out.println(extractedWorldDir);
                         repaint();
                     } catch (UnsupportedFlavorException | IOException e) {
                             alert(AlertType.ERROR, exStackTraceToString(e.getStackTrace()));
