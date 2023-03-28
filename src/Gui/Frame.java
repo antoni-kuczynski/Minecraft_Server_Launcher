@@ -260,7 +260,7 @@ public class Frame extends JFrame implements ActionListener {
                     e.printStackTrace();
                 }
             });
-            new Frame();
+//            new Frame();
         } else {
             new ServerSelector(args);
         }
