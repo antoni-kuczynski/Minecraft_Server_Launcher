@@ -252,7 +252,7 @@ public class Frame extends JFrame implements ActionListener {
         } catch( Exception ex ) {
             alert(AlertType.ERROR, "Cannot initialize look and feel\n" + exStackTraceToString(ex.getStackTrace()));
         }
-        //if(args.length == 0) {
+        if(args.length == 0) {
             SwingUtilities.invokeLater(() -> {
                 try {
                     new Frame().setVisible(true);
@@ -260,9 +260,9 @@ public class Frame extends JFrame implements ActionListener {
                     e.printStackTrace();
                 }
             });
-//            new Frame();
-       // } else {
-          //  new ServerSelector();
-        //}
+            new Frame();
+        } else {
+            new ServerSelector(args);
+        }
     }
 }
