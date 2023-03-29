@@ -67,10 +67,17 @@ public class ServerSelector extends JFrame {
         });
         //TODO: handle file names with spaces
         startCopying.addActionListener(e -> {
+            System.out.println(new File(worldpath.toString()));
             try {
-                WorldCopyHandler worldCopyHandler =
-                        new WorldCopyHandler(parentPanel, progressBar, new File(worldpath.toString()), true, startCopying);
-                worldCopyHandler.start();
+                new WorldCopyHandler(parentPanel, progressBar, new File("C:\\Users\\szkola\\Downloads\\Parkour Spiral.zip"), false, startCopying, selectorServer.getSelectedIndex()).start();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        cancel.addActionListener(e -> {
+            try {
+                new WorldCopyHandler(parentPanel, progressBar, new File("C:\\Users\\szkola\\Downloads\\Parkour Spiral.zip"), true, startCopying, selectorServer.getSelectedIndex()).start();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

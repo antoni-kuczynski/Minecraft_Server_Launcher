@@ -24,6 +24,7 @@ public class ConfigStuffPanel extends JPanel {
     private int comboBoxSelectedIndex;
     private static final JComboBox<String> serverSelection = new JComboBox<>();
     private final Dimension dimension = new Dimension(10,1);
+    private static int selectedIndex;
 
     public ConfigStuffPanel(Preferences preferences) {
         this.preferences = preferences;
