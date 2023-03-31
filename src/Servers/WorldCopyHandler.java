@@ -27,6 +27,7 @@ public class WorldCopyHandler extends Thread {
     private JButton button;
     private final Config config = new Config();
     private int configIndex;
+    public static boolean isInRightClickMode = false;
 
     public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton button, int configIndex) throws IOException {
         this.panel = panel;
@@ -194,7 +195,7 @@ public class WorldCopyHandler extends Thread {
                 alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
             }
         } else if (isArchive(originalDir)) {
-            if (!copyFilesToServerDir) {
+            if (!copyFilesToServerDir || isInRightClickMode) {
                 String extractedDirTemp;
                 try {
                     File dirToDelete = new File(".\\world_temp\\" + originalDir.getName());
