@@ -196,9 +196,14 @@ public class WorldCopyHandler extends Thread {
                     File dirToDelete = new File(".\\world_temp\\" + originalDir.getName());
                     if (dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
                         FileUtils.deleteDirectory(dirToDelete);
-
-                    extractedDirTemp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
-                    File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp));
+                    String temp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+                    if(temp != null)
+                        extractedDirTemp = new File(temp).getParent(); //issue #34 fix by starting at correct directory
+                    else {
+                        alert(AlertType.ERROR, "File is not a minecraft world."); //checking if a file is a minecraft world
+                        throw new RuntimeException();
+                    }
+                    File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
                     AddWorldsPanel.setExtractedWorldDir(extractedDirTemp);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
