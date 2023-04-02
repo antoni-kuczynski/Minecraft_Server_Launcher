@@ -25,21 +25,26 @@ public class WorldCopyHandler extends Thread {
     private boolean copyFilesToServerDir;
     private JPanel panel;
     private JButton button;
+    private final Config config = new Config();
+    private int configIndex;
+    public static boolean isInRightClickMode = false;
 
-    public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton button) throws IOException {
+    public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton button, int configIndex) throws IOException {
         this.panel = panel;
-        ServerProperties serverProperties = new ServerProperties();
+        ServerProperties serverProperties = new ServerProperties(configIndex);
         this.serverWorldName = serverProperties.getWorldName();
-        this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
+        this.serverWorldDir = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\" + serverWorldName);
         this.originalDir = originalWorldDir;
         this.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
         this.button = button;
+        this.configIndex = configIndex;
     }
 
-    public WorldCopyHandler() throws IOException {
-        this.serverWorldName = new ServerProperties().getWorldName();
-        this.serverWorldDir = new File(ConfigStuffPanel.getServPath() + "\\" + serverWorldName);
+    public WorldCopyHandler(int configIndex) throws IOException {
+        this.serverWorldName = new ServerProperties(configIndex).getWorldName();
+        this.serverWorldDir = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\" + serverWorldName);
+        this.configIndex = configIndex;
     }
 
 
@@ -165,7 +170,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        if (originalDir.isDirectory() && !originalDir.toString().contains(ConfigStuffPanel.getServPath())) {
+        if (originalDir.isDirectory() && !originalDir.toString().contains(config.getData().get(configIndex).getPathToServerFolder())) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -190,7 +195,7 @@ public class WorldCopyHandler extends Thread {
                 alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
             }
         } else if (isArchive(originalDir)) {
-            if (!copyFilesToServerDir) {
+            if (!copyFilesToServerDir || isInRightClickMode) {
                 String extractedDirTemp;
                 try {
                     File dirToDelete = new File(".\\world_temp\\" + originalDir.getName());
@@ -236,13 +241,14 @@ public class WorldCopyHandler extends Thread {
                 try {
                     File predictedWorldDir;
                     predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
-                    if(!isInterrupted())
-                        copyDirectory(predictedWorldDir, serverWorldDir);
+                    System.out.println(predictedWorldDir);
+                    System.out.println("server world dir=" + serverWorldDir);
+                    copyDirectory(predictedWorldDir, serverWorldDir);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
                 }
             }
-        } else if (originalDir.toString().contains(ConfigStuffPanel.getServPath())) {
+        } else if (originalDir.toString().contains(config.getData().get(configIndex).getPathToServerFolder())) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         button.setEnabled(true); //issue #15 fix

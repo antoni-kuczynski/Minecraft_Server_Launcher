@@ -85,7 +85,7 @@ public class AddWorldsPanel extends JPanel {
                     worldToAdd = filePath;
                     isArchiveMode = true;
                     try {
-                        new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying).start();
+                        new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex()).start();
                     } catch (IOException ex) {
                         alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                     }
@@ -132,7 +132,7 @@ public class AddWorldsPanel extends JPanel {
                         if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
                             isArchiveMode = true;
                             worldToAdd = fileToAdd;
-                            new WorldCopyHandler(tempPanel, progressBar, worldToAdd, false, startCopying).start();
+                            new WorldCopyHandler(tempPanel, progressBar, worldToAdd, false, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex()).start();
                         } else {
                             isArchiveMode = false;
                             //issue #16 fix adding a warning to check for folder's size
@@ -160,7 +160,7 @@ public class AddWorldsPanel extends JPanel {
         startCopying.addActionListener(e -> {
             WorldCopyHandler worldCopyHandler;
             try {
-                worldCopyHandler = new WorldCopyHandler(this, progressBar, worldToAdd, true, startCopying);
+                worldCopyHandler = new WorldCopyHandler(this, progressBar, worldToAdd, true, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex());
             } catch (IOException ex) {
                 alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                 throw new RuntimeException(); //idk why but this line needs to stay here or i need to deal with another nullpointerexception
@@ -238,7 +238,7 @@ public class AddWorldsPanel extends JPanel {
         add(startCopyingPanel, BorderLayout.PAGE_END);
     }
 
-    WorldCopyHandler worldCopyText = new WorldCopyHandler();
+    WorldCopyHandler worldCopyText = new WorldCopyHandler(ConfigStuffPanel.getServerSelection().getSelectedIndex());
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

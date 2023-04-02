@@ -14,8 +14,9 @@ import static Gui.Frame.exStackTraceToString;
 
 public class ServerProperties {
     private String worldName;
-    public ServerProperties() throws IOException {
-        File serverProperties = new File(ConfigStuffPanel.getServPath() + "\\server.properties");
+    private final Config config = new Config();
+    public ServerProperties(int configIndex) throws IOException {
+        File serverProperties = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\server.properties");
         if(!serverProperties.exists())
             serverProperties = new File("server_properties_error");
         ArrayList<String> fileContent = null;
