@@ -3,6 +3,7 @@ package Gui;
 import Servers.DirectoryTree;
 import Servers.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
+import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -68,44 +69,50 @@ public class AddWorldsPanel extends JPanel {
         selectedServerTxt.setText(selServPrefix + ConfigStuffPanel.getServName());
         startCopying.setEnabled(false);
         JButton openButton = new JButton("Open Folder");
+        boolean debugMode = true;
         openButton.addActionListener(e -> {
-            FileDialog fileDialog = new FileDialog((Frame)null, "Select Folder");
-            fileDialog.setMode(FileDialog.LOAD);
-            fileDialog.setFile("level.dat");
-            fileDialog.setVisible(true);
+            if(debugMode) {
+                JnaFileChooser fileChooser = new JnaFileChooser(); //this is a test whether a system styled fc is going to work
+                fileChooser.showOpenDialog(null);
+            } else {
+                FileDialog fileDialog = new FileDialog((Frame) null, "Select Folder");
+                fileDialog.setMode(FileDialog.LOAD);
+                fileDialog.setFile("level.dat");
+                fileDialog.setVisible(true);
 
-            File[] filePaths = fileDialog.getFiles();
-            String folderPath = fileDialog.getDirectory();
+                File[] filePaths = fileDialog.getFiles();
+                String folderPath = fileDialog.getDirectory();
 
-            if(fileDialog.getFiles().length > 0 && filePaths != null && folderPath != null) {
-                File filePath = filePaths[0];
-                String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
+                if (fileDialog.getFiles().length > 0 && filePaths != null && folderPath != null) {
+                    File filePath = filePaths[0];
+                    String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
 
-                if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
-                    worldToAdd = filePath;
-                    isArchiveMode = true;
-                    try {
-                        new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex()).start();
-                    } catch (IOException ex) {
-                        alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
-                    }
-                } else {
-                    isArchiveMode = false;
-                    File folder = new File(folderPath);
-                    //issue #16 fix adding a warning to check for folder's size
-                    if(FileUtils.sizeOfDirectory(folder) > 1000000000) { //greater than 1GB
-                        if (JOptionPane.showConfirmDialog(null,
-                                "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
-                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                            worldToAdd = folder; //yes option
+                    if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
+                        worldToAdd = filePath;
+                        isArchiveMode = true;
+                        try {
+                            new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex()).start();
+                        } catch (IOException ex) {
+                            alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                         }
-                    } else { //if file is less than 1gb
-                        worldToAdd = folder;
+                    } else {
+                        isArchiveMode = false;
+                        File folder = new File(folderPath);
+                        //issue #16 fix adding a warning to check for folder's size
+                        if (FileUtils.sizeOfDirectory(folder) > 1000000000) { //greater than 1GB
+                            if (JOptionPane.showConfirmDialog(null,
+                                    "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                                worldToAdd = folder; //yes option
+                            }
+                        } else { //if file is less than 1gb
+                            worldToAdd = folder;
+                        }
                     }
                 }
-            }
 
-            repaint();
+                repaint();
+            }
         });
 
         final JPanel tempPanel = this;

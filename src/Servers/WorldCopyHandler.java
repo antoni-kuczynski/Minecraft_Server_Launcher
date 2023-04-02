@@ -263,10 +263,17 @@ public class WorldCopyHandler extends Thread {
         }
         File foundLevelDat = new File(dir);
         boolean containsLevelDat = false;
+        boolean hasDirectory = false;
+        for(File f : arr)
+            if(f.isDirectory())
+                hasDirectory = true;
         for (File f : arr) {
-            if (f.getName().equals("level.dat")) {
+            if (f.getName().equals("level.dat") || !hasDirectory) {
                 containsLevelDat = true;
                 foundLevelDat = new File(f.getAbsolutePath());
+            }
+            if(!hasDirectory) {
+                alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
             }
         }
         if (containsLevelDat) {
@@ -281,7 +288,12 @@ public class WorldCopyHandler extends Thread {
                     nextDir = new File(f.getParent()).getParent(); //for the name of fuck, i dont understand how does that work
                 }
             }
-            return findWorldDirectory(nextDir); //fixed the function
+            System.out.println("Dir: " + dir);
+            System.out.println("NextDir: " + nextDir);
+            if(!nextDir.equals(dir))
+                return findWorldDirectory(nextDir); //fixed the function
+            else
+                return dir;
         }
     }
 

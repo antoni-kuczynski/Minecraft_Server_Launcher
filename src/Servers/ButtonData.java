@@ -1,21 +1,9 @@
 package Servers;
 
-public class ButtonData {
-    private final String buttonText;
-    private final String pathToButtonIcon;
-    private final String pathToServerFolder;
-    private final String pathToServerJarFile;
-    private final String pathToJavaRuntime;
-    private final String serverLaunchArguments;
-
-    public ButtonData(String buttonText, String pathToButtonIcon, String pathToServerFolder, String pathToServerJarFile, String pathToJavaRuntime, String serverLaunchArguments) {
-        this.buttonText = buttonText;
-        this.pathToButtonIcon = pathToButtonIcon;
-        this.pathToServerFolder = pathToServerFolder;
-        this.pathToServerJarFile = pathToServerJarFile;
-        this.pathToJavaRuntime = pathToJavaRuntime;
-        this.serverLaunchArguments = serverLaunchArguments;
-    }
+//class is now a record
+public record ButtonData(String buttonText, String pathToButtonIcon,
+                         String pathToServerFolder, String pathToServerJarFile,
+                         String pathToJavaRuntime, String serverLaunchArguments) {
 
     public String getButtonText() {
         return buttonText;
