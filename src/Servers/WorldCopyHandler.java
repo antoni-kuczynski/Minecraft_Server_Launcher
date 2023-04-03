@@ -241,8 +241,6 @@ public class WorldCopyHandler extends Thread {
                 try {
                     File predictedWorldDir;
                     predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
-                    System.out.println(predictedWorldDir);
-                    System.out.println("server world dir=" + serverWorldDir);
                     copyDirectory(predictedWorldDir, serverWorldDir);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
@@ -274,6 +272,7 @@ public class WorldCopyHandler extends Thread {
             }
             if(!hasDirectory) {
                 alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
+                AddWorldsPanel.worldToAddWithWarning = "test";
             }
         }
         if (containsLevelDat) {
@@ -288,8 +287,6 @@ public class WorldCopyHandler extends Thread {
                     nextDir = new File(f.getParent()).getParent(); //for the name of fuck, i dont understand how does that work
                 }
             }
-            System.out.println("Dir: " + dir);
-            System.out.println("NextDir: " + nextDir);
             if(!nextDir.equals(dir))
                 return findWorldDirectory(nextDir); //fixed the function
             else

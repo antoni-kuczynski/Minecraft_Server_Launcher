@@ -8,15 +8,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ButtonPanel extends JPanel implements ActionListener {
-    private final Config config = new Config();
     private static final int BUTTON_WIDTH_PADDING = 20;
     private static final int BUTTON_HEIGHT_PADDING = 10;
+    private final ArrayList<JButton> buttons = new ArrayList<>();
 
-    public ButtonPanel() throws IOException {
-        setLayout(new GridLayout(10, 5, 10, 10));
+    public void initialize() throws IOException {
+        buttons.clear();
+        Config config = new Config();
         List<ButtonData> serverConfigs = config.getData();
         for (int i = 0; i < serverConfigs.size(); i++) {
             JButton button = createButton(serverConfigs.get(i).getButtonText());
@@ -35,8 +37,21 @@ public class ButtonPanel extends JPanel implements ActionListener {
             button.setFont(new Font("Arial", Font.PLAIN, 14));
             button.addActionListener(this);
             button.setActionCommand(Integer.toString(i));
+            buttons.add(button);
             add(button);
         }
+    }
+    public void clearAllButtons() throws IOException {
+        for(JButton button : buttons)
+            remove(button);
+//        repaint();
+        initialize();
+        repaint();
+    }
+
+    public ButtonPanel() throws IOException {
+        setLayout(new GridLayout(10, 5, 10, 10));
+        initialize();
     }
 
     public void setButtonIcon(JButton button, String iconPath) {
@@ -63,6 +78,12 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Config config = null;
+        try {
+            config = new Config();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
         int index = Integer.parseInt(e.getActionCommand());
         ButtonData serverConfig = config.getData().get(index);
         new Runner(serverConfig.getPathToServerJarFile(), Run.SERVER_JAR, serverConfig.getPathToJavaRuntime(),

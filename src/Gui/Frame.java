@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 public class Frame extends JFrame implements ActionListener {
 
@@ -69,6 +72,17 @@ public class Frame extends JFrame implements ActionListener {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu lookAndFeelMenu = new JMenu("Change Theme");
+        JButton test = new JButton("Refresh Server List");
+        JButton openServer = new JButton("Add server");
+        test.setBorderPainted(false);
+        test.setRequestFocusEnabled(false);
+        test.setContentAreaFilled(false);
+
+        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("themeswitchericon.png")
+                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
+
+        test.setIcon(new ImageIcon(new ImageIcon("reloadicon.png").getImage()
+                .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
 
         darculaMenuItem = new JMenuItem("Darcula (Inteliij Dark)");
         darculaMenuItem.addActionListener(this);
@@ -100,11 +114,15 @@ public class Frame extends JFrame implements ActionListener {
 
 
 
+
 //        darculaMenuItem.setSelected(true);
 
         menuBar.add(lookAndFeelMenu);
+        menuBar.add(test);
+        menuBar.add(openServer);
 
         setJMenuBar(menuBar);
+
 
         // Set up the JFrame
 //        setFocusableWindowState(false);
@@ -214,6 +232,15 @@ public class Frame extends JFrame implements ActionListener {
                 clearTempDir();
             }
         });
+
+        test.addActionListener(e -> {
+            try {
+                buttonPanel.clearAllButtons();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        repaint();
     }
 
 
@@ -245,7 +272,6 @@ public class Frame extends JFrame implements ActionListener {
             alert(AlertType.ERROR, "Cannot set look and feel.\n" + exStackTraceToString(ex.getStackTrace()));
         }
     }
-
     public static void main(String[] args) throws IOException {
         Preferences prefs = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = prefs.get("look_and_feel", "com.formdev.flatlaf.FlatDarculaLaf");

@@ -36,6 +36,14 @@
     "overrideDefaultLaunchArgs": false
   },
   {
+    "buttonText": "1.19.3 DEBUG3",
+    "pathToButtonIcon": "",
+    "pathToServerFolder": "H:\\Minecraft_Serwery\\Debug_Server2",
+    "pathToServerJarFile": "H:\\Minecraft_Serwery\\Debug_Server2\\paper-1.19.3-420.jar",
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.2.7-hotspot\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": false
+  },
+  {
     "buttonText": "1.18.1",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\1.18.1",
