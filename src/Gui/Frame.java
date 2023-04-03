@@ -78,8 +78,11 @@ public class Frame extends JFrame implements ActionListener {
         test.setRequestFocusEnabled(false);
         test.setContentAreaFilled(false);
 
-        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("themeswitchericon.png")
-                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
+        //Temporary, until next version
+        test.setVisible(false);
+        openServer.setVisible(false);
+//        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("themeswitchericon.png")
+//                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
 
         test.setIcon(new ImageIcon(new ImageIcon("reloadicon.png").getImage()
                 .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
@@ -240,7 +243,6 @@ public class Frame extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
         });
-        repaint();
     }
 
 

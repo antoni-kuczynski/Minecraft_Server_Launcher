@@ -71,6 +71,7 @@ public class AddWorldsPanel extends JPanel {
         JButton openButton = new JButton("Open Folder");
         openButton.addActionListener(e -> { //jna file chooser implementation here - issue #42 fixed
                 JnaFileChooser fileDialog = new JnaFileChooser();
+                fileDialog.addFilter("Archive Files or Folders (.zip, .rar, .7z, .tar)", "*.zip *.7z");
                 fileDialog.showOpenDialog(null);
 
                 File[] filePaths = fileDialog.getSelectedFiles();
@@ -78,7 +79,7 @@ public class AddWorldsPanel extends JPanel {
                 if(fileDialog.getCurrentDirectory() != null)
                     folderPath = fileDialog.getCurrentDirectory().getAbsolutePath();
 
-                if (fileDialog.getSelectedFiles().length > 0 && filePaths != null && folderPath != null && filePaths[0] != null) { //issue #43 fixed
+                if (fileDialog.getSelectedFiles().length > 0 && filePaths != null && filePaths[0] != null) { //issue #43 fixed
                     File filePath = filePaths[0];
                     String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
 

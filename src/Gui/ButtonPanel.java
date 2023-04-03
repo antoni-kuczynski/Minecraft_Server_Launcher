@@ -47,6 +47,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
 //        repaint();
         initialize();
         repaint();
+
     }
 
     public ButtonPanel() throws IOException {

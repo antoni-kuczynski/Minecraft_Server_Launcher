@@ -205,7 +205,7 @@ public class WorldCopyHandler extends Thread {
                     if(temp != null)
                         extractedDirTemp = new File(temp).getParent(); //issue #34 fix by starting at correct directory
                     else {
-                        alert(AlertType.ERROR, "File is not a minecraft world."); //checking if a file is a minecraft world
+                        alert(AlertType.WARNING, "File is probably not a minecraft world. Continue at your own risk."); //checking if a file is a minecraft world
                         throw new RuntimeException();
                     }
                     File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
@@ -272,7 +272,6 @@ public class WorldCopyHandler extends Thread {
             }
             if(!hasDirectory) {
                 alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
-                AddWorldsPanel.worldToAddWithWarning = "test";
             }
         }
         if (containsLevelDat) {
