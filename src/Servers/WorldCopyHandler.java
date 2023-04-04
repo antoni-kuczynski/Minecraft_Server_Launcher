@@ -245,8 +245,10 @@ public class WorldCopyHandler extends Thread {
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
                 }
+                System.out.println("original dir: " + originalDir.toString());
+                System.out.println("checking dir: " + ConfigStuffPanel.getServPath());
             }
-        } else if (originalDir.toString().contains(config.getData().get(configIndex).getPathToServerFolder())) {
+        } else if (originalDir.toString().contains(ConfigStuffPanel.getServPath())) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         button.setEnabled(true); //issue #15 fix
@@ -270,9 +272,10 @@ public class WorldCopyHandler extends Thread {
                 containsLevelDat = true;
                 foundLevelDat = new File(f.getAbsolutePath());
             }
-            if(!hasDirectory) {
-                alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
-            }
+
+        }
+        if(!hasDirectory && !copyFilesToServerDir) {
+            alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
         }
         if (containsLevelDat) {
             return foundLevelDat.getParent();

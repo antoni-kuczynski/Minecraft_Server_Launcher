@@ -8,6 +8,7 @@ import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
@@ -25,6 +26,8 @@ public class ConfigStuffPanel extends JPanel {
     private static final JComboBox<String> serverSelection = new JComboBox<>();
     private final Dimension dimension = new Dimension(10,1);
     private static int selectedIndex;
+    private final ArrayList<Integer> disabledIndexes = new ArrayList<>();
+
 
     public ConfigStuffPanel(Preferences preferences) {
         this.preferences = preferences;
@@ -48,12 +51,13 @@ public class ConfigStuffPanel extends JPanel {
 
         JPanel selServerManually = new JPanel();
 
-        ArrayList<Integer> disabledIndexes = new ArrayList<>();
+
         for(int i = 0; i < Objects.requireNonNull(config).getData().size(); i++) {
             if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
                 serverSelection.addItem(config.getData().get(i).getButtonText());
             } else {
                 serverSelection.addItem(config.getData().get(i).getButtonText() + " (MISSING FILES)");
+
                 disabledIndexes.add(i);
             }
         }
@@ -70,7 +74,11 @@ public class ConfigStuffPanel extends JPanel {
                 lastSelectedIndex.set(serverSelection.getSelectedIndex());
             if(e.getStateChange() == ItemEvent.SELECTED) {
                 if(disabledIndexes.contains(serverSelection.getSelectedIndex())) {
-                    serverSelection.setSelectedIndex(1); //fuck that
+                    ArrayList<Integer> temp = new ArrayList<>(disabledIndexes);
+                    Collections.sort(temp);
+                    for(int i = 0; i < temp.get(0); i++) {
+
+                    }
                 } else {
                     servName = (String) e.getItem();
                     servPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
