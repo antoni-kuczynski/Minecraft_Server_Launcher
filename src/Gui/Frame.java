@@ -13,9 +13,6 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 public class Frame extends JFrame implements ActionListener {
 
@@ -24,8 +21,6 @@ public class Frame extends JFrame implements ActionListener {
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
     private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
-
-    private final Dimension dimension = new Dimension(10,10);
 
 
     public static String exStackTraceToString(StackTraceElement[] elements) {
@@ -155,6 +150,7 @@ public class Frame extends JFrame implements ActionListener {
         JPanel configPanel = new JPanel();
         configPanel.setLayout(new BorderLayout());
         configPanel.add(separatorPanel, BorderLayout.PAGE_START);
+        Dimension dimension = new Dimension(10, 10);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         configPanel.add(configStuffPanel, BorderLayout.CENTER);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);

@@ -8,9 +8,7 @@ import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
 
 import static Gui.Frame.exStackTraceToString;
@@ -23,10 +21,10 @@ public class ConfigStuffPanel extends JPanel {
     private static AddWorldsPanel addWorldsPanel;
     private final Preferences preferences;
     private int comboBoxSelectedIndex;
-    private static final JComboBox<String> serverSelection = new JComboBox<>();
-    private final Dimension dimension = new Dimension(10,1);
-    private static int selectedIndex;
+    private static final DefaultComboBoxModel<String> serverSelectionModel = new DefaultComboBoxModel<>();
+    private static final JComboBox<String> serverSelection = new JComboBox<>(serverSelectionModel);
     private final ArrayList<Integer> disabledIndexes = new ArrayList<>();
+    private int previouslySelectedIndex;
 
 
     public ConfigStuffPanel(Preferences preferences) {
@@ -68,33 +66,36 @@ public class ConfigStuffPanel extends JPanel {
             serverSelection.setSelectedIndex(0);
 
         Config finalConfig = config;
-        AtomicInteger lastSelectedIndex = new AtomicInteger(); //wtf is an atomic integer
         serverSelection.addItemListener(e -> {
-            if(e.getStateChange() == ItemEvent.DESELECTED)
-                lastSelectedIndex.set(serverSelection.getSelectedIndex());
+            if(e.getStateChange() == ItemEvent.DESELECTED) { //part of issue #49's fix
+                previouslySelectedIndex = serverSelectionModel.getIndexOf(e.getItem());
+            }
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                if(disabledIndexes.contains(serverSelection.getSelectedIndex())) {
-                    ArrayList<Integer> temp = new ArrayList<>(disabledIndexes);
-                    Collections.sort(temp);
-                    for(int i = 0; i < temp.get(0); i++) {
-
-                    }
-                } else {
-                    servName = (String) e.getItem();
-                    servPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
-                    panel.repaint();
-                    addWorldsPanel.repaint();
-                    comboBoxSelectedIndex = serverSelection.getSelectedIndex();
-                    preferences.putInt("SELECTED_COMBO_INDEX", comboBoxSelectedIndex);
-                }
+                servName = (String) e.getItem();
+                servPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
+                panel.repaint();
+                addWorldsPanel.repaint();
+                comboBoxSelectedIndex = serverSelection.getSelectedIndex();
+                preferences.putInt("SELECTED_COMBO_INDEX", comboBoxSelectedIndex);
             }
         });
+        DefaultListSelectionModel model = new DefaultListSelectionModel();
+        for(int i = 0; i < config.getData().size(); i++) {
+            if(!disabledIndexes.contains(i)) {
+                model.addSelectionInterval(i, i);
+            }
+        } //issue #50 fix - custom (totaly mine) renderer to gray out the items
+        EnabledComboBoxRenderer enabledComboBoxRenderer = new EnabledComboBoxRenderer();
+        enabledComboBoxRenderer.setDisabledColor(Color.GRAY);
+        enabledComboBoxRenderer.setEnabledItems(model);
+        serverSelection.setRenderer(enabledComboBoxRenderer);
 
         selServerManually.setLayout(new BorderLayout());
         selServerManually.add(openServerFolder, BorderLayout.LINE_START);
         selServerManually.add(selServerTitle, BorderLayout.CENTER);
         selServerManually.add(serverSelection, BorderLayout.LINE_END);
 
+        Dimension dimension = new Dimension(10, 1);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         add(openCfg, BorderLayout.LINE_START);
         add(selServerManually, BorderLayout.LINE_END);
@@ -119,7 +120,9 @@ public class ConfigStuffPanel extends JPanel {
         preferences.put("SELECTED_SERVER_NAME", servName);
         preferences.put("SELECTED_SERVER_PATH", servPath);
         openServerFolder.setText("Open " + servName + "'s Server Folder");
-//        serverSelection.se
+        if(disabledIndexes.contains(serverSelection.getSelectedIndex())) { //just select previous index
+            serverSelection.setSelectedIndex(previouslySelectedIndex);
+        }
     }
 
     public static String getServName() {

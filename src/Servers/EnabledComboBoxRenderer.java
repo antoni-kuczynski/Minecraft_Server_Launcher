@@ -15,11 +15,6 @@ public class EnabledComboBoxRenderer extends BasicComboBoxRenderer {
 
     public EnabledComboBoxRenderer() {}
 
-    public EnabledComboBoxRenderer(ListSelectionModel enabled) {
-        super();
-        this.enabledItems = enabled;
-    }
-
     public void setEnabledItems(ListSelectionModel enabled) {
         this.enabledItems = enabled;
     }

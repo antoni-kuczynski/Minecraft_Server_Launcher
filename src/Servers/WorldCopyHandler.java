@@ -26,7 +26,7 @@ public class WorldCopyHandler extends Thread {
     private JPanel panel;
     private JButton button;
     private final Config config = new Config();
-    private int configIndex;
+    private final int configIndex;
     public static boolean isInRightClickMode = false;
 
     public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton button, int configIndex) throws IOException {
@@ -144,27 +144,6 @@ public class WorldCopyHandler extends Thread {
         }
         zis.close();
         return totalSize;
-    }
-
-    public boolean isFolderInFolder(File folder, File parentFolder) {
-
-        // If the folder is null or not a directory, return false
-        if (folder == null || !folder.isDirectory()) {
-            return false;
-        }
-
-        // If the parent folder is null or not a directory, return false
-        if (parentFolder == null || !parentFolder.isDirectory()) {
-            return false;
-        }
-
-        // Check if the folder is directly contained within the parent folder
-        if (folder.getParentFile().equals(parentFolder)) {
-            return true;
-        }
-
-        // Recursively check if the parent folder is contained within another folder
-        return isFolderInFolder(parentFolder.getParentFile(), folder);
     }
 
 

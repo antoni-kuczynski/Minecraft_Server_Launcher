@@ -37,22 +37,30 @@ public class Config {
             writer.write("""
                     [
                     {
+                        "globalLaunchArgs": "-Xmx16G -Xms2G -XX:+UseG1GC -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=1 -XX:ParallelGCThreads=4 -XX:+OptimizeStringConcat"
+                    },
+                    {
                         "buttonText": "Put your values here",
                         "pathToButtonIcon": "",
                         "pathToServerFolder": "",
                         "pathToServerJarFile": "",
-                        "pathToJavaExecutable": ""
+                        "pathToJavaExecutable": "",
+                        "overrideDefaultLaunchArgs": false,
+                        "launchArgs": "-Xmx4G -Xms256M"
                       },
                       {
                         "buttonText": "If you want to add more servers, just copy paste this whole block",
                         "pathToButtonIcon": "",
                         "pathToServerFolder": "",
                         "pathToServerJarFile": "",
-                        "pathToJavaExecutable": ""
+                        "pathToJavaExecutable": "",
+                        "overrideDefaultLaunchArgs": false,
+                        "launchArgs": "-Xmx4G -Xms256M"
                       }
                     ]""");
             writer.close();
         }
+
         JSONArray jsonArray = new JSONArray(readFileString(new File("servers.json")));
         JSONObject globalVariables = jsonArray.getJSONObject(0);
         String javaArguments = globalVariables.getString("globalLaunchArgs");

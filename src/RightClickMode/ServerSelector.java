@@ -37,7 +37,7 @@ public class ServerSelector extends JFrame {
         Preferences preferences = Preferences.userNodeForPackage(ServerSelector.class);
         StringBuilder worldpath = new StringBuilder();
         for(String s : args)
-            worldpath.append(s + " ");
+            worldpath.append(s).append(" ");
         System.out.println(worldpath);
         setTitle("Select Server");
         setIconImage(new ImageIcon("app_icon.png").getImage());

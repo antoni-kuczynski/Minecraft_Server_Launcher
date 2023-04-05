@@ -79,7 +79,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Config config = null;
+        Config config;
         try {
             config = new Config();
         } catch (IOException ex) {

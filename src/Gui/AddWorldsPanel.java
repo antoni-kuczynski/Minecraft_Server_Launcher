@@ -141,8 +141,6 @@ public class AddWorldsPanel extends JPanel {
                                     "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                                 worldToAdd = new File(fileToAdd.getParent()); //yes option
-                            } else {
-
                             }
                         } else { //if file is less than 1gb
                             worldToAdd = new File(fileToAdd.getParent());
@@ -253,9 +251,9 @@ public class AddWorldsPanel extends JPanel {
 
         directoryTree.setDirectory(ConfigStuffPanel.getServPath(), ConfigStuffPanel.getServPath());
         if(worldToAdd != null && isArchiveMode) { //issue #7 fix
-            worldNameAndStuffText.setText("File: " + worldToAdd.getAbsolutePath() + "\nWorld Name: " + "TODO");
+            worldNameAndStuffText.setText("File: " + worldToAdd.getAbsolutePath()); //world name todo here
         } else if(!isArchiveMode && worldToAdd != null) {
-            worldNameAndStuffText.setText("Folder: " + worldToAdd.getAbsolutePath() + "\nWorld Name: " + "TODO");
+            worldNameAndStuffText.setText("Folder: " + worldToAdd.getAbsolutePath()); //world name todo here
         }
 
         if(isArchiveMode && extractedWorldDir != null) {
@@ -297,7 +295,7 @@ public class AddWorldsPanel extends JPanel {
         //size is in bytes
         if(new File(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName()).exists()) {
             ArrayList<String> arr = sizeOfDirectory(new File(ConfigStuffPanel.getServPath() + "\\" + worldCopyText.getServerWorldName()));
-            serverWorldNameAndStuff.setText("Folder: " + worldCopyText.getServerWorldName() + "\nWorld Name: " + "TODO" + "\nSize: " + arr.get(0) + arr.get(1));
+            serverWorldNameAndStuff.setText("Folder Name: " + worldCopyText.getServerWorldName() + "\nSize: " + arr.get(0) + arr.get(1)); //world name todo here
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }
