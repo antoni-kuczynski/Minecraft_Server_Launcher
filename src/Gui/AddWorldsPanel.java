@@ -34,7 +34,7 @@ public class AddWorldsPanel extends JPanel {
     private final JPanel worldPanelUpper = new JPanel(new BorderLayout());
     private final JPanel serverPanelBottom = new JPanel(new BorderLayout());
     private boolean isArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
-    private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+    private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("resources/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
     private final DirectoryTree directoryTree = new DirectoryTree();
 
     private final DecimalFormat unitRound = new DecimalFormat("###.##");

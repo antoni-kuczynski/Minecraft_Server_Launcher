@@ -76,10 +76,10 @@ public class Frame extends JFrame implements ActionListener {
         //Temporary, until next version
         test.setVisible(false);
         openServer.setVisible(false);
-//        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("themeswitchericon.png")
+//        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("resources/themeswitchericon.png")
 //                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
 
-        test.setIcon(new ImageIcon(new ImageIcon("reloadicon.png").getImage()
+        test.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
                 .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
 
         darculaMenuItem = new JMenuItem("Darcula (Inteliij Dark)");
@@ -124,7 +124,7 @@ public class Frame extends JFrame implements ActionListener {
 
         // Set up the JFrame
 //        setFocusableWindowState(false);
-        setIconImage(new ImageIcon("app_icon.png").getImage());
+        setIconImage(new ImageIcon("resources/app_icon.png").getImage());
         setTitle("Minecraft Server Server Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -222,12 +222,22 @@ public class Frame extends JFrame implements ActionListener {
                 prefs.putInt(PREFS_KEY_HEIGHT, bounds.height);
                 prefs.put(PREFS_KEY_LOOK_AND_FEEL, lookAndFeel);
 
-                clearTempDir();
+                File worldTempDir = new File("world_temp");
+                if(!worldTempDir.exists()) //issue #55 fix by checking if the folder exitst and creating it (if somehow it doesn't exist here)
+                    worldTempDir.mkdirs();
+
+                if(worldTempDir.exists()) //another issue #55 check for some reason
+                    clearTempDir();
+                else
+                    System.exit(1);
             }
 
             @Override
             public void windowOpened(WindowEvent e) {
                 super.windowOpened(e);
+                File worldTempDir = new File("world_temp");
+                if(!worldTempDir.exists()) //issue #55 fix by checking if the folder exitst and creating it
+                    worldTempDir.mkdirs();
                 clearTempDir();
             }
         });
