@@ -19,25 +19,25 @@ import static Gui.Frame.exStackTraceToString;
 public class WorldCopyHandler extends Thread {
 
     private final String serverWorldName;
-    private File originalDir = null;
+    private File selectedWorld = null;
     private final File serverWorldDir;
     private JProgressBar progressBar = null;
     private boolean copyFilesToServerDir;
-    private JPanel panel;
-    private JButton button;
+    private JPanel jPanelToRepaint;
+    private JButton jButtonToDisable;
     private final Config config = new Config();
     private final int configIndex;
     public static boolean isInRightClickMode = false;
 
-    public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton button, int configIndex) throws IOException {
-        this.panel = panel;
+    public WorldCopyHandler(JPanel jPanelToRepaint, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton jButtonToDisable, int configIndex) throws IOException {
+        this.jPanelToRepaint = jPanelToRepaint;
         ServerProperties serverProperties = new ServerProperties(configIndex);
         this.serverWorldName = serverProperties.getWorldName();
         this.serverWorldDir = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\" + serverWorldName);
-        this.originalDir = originalWorldDir;
+        this.selectedWorld = originalWorldDir;
         this.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
-        this.button = button;
+        this.jButtonToDisable = jButtonToDisable;
         this.configIndex = configIndex;
     }
 
@@ -92,7 +92,7 @@ public class WorldCopyHandler extends Thread {
 
 
     private String extractArchive(String archivePath, String destinationPath) throws IOException {
-        button.setEnabled(false);
+        jButtonToDisable.setEnabled(false);
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
@@ -128,7 +128,7 @@ public class WorldCopyHandler extends Thread {
         zis.closeEntry();
         zis.close();
 
-        button.setEnabled(true);
+        jButtonToDisable.setEnabled(true);
         return extractedDirectory;
     }
 
@@ -149,7 +149,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        if (originalDir.isDirectory() && !originalDir.toString().contains(config.getData().get(configIndex).getPathToServerFolder())) {
+        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(config.getData().get(configIndex).getPathToServerFolder())) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -169,18 +169,18 @@ public class WorldCopyHandler extends Thread {
             }
 
             try {
-                copyDirectory(originalDir, serverWorldDir);
+                copyDirectory(selectedWorld, serverWorldDir);
             } catch (IOException e) {
                 alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
             }
-        } else if (isArchive(originalDir)) {
+        } else if (isArchive(selectedWorld)) {
             if (!copyFilesToServerDir || isInRightClickMode) {
                 String extractedDirTemp;
                 try {
-                    File dirToDelete = new File(".\\world_temp\\" + originalDir.getName());
+                    File dirToDelete = new File(".\\world_temp\\" + selectedWorld.getName());
                     if (dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
                         FileUtils.deleteDirectory(dirToDelete);
-                    String temp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+                    String temp = extractArchive(selectedWorld.getAbsolutePath(), ".\\world_temp\\" + selectedWorld.getName());
                     if(temp != null)
                         extractedDirTemp = new File(temp).getParent(); //issue #34 fix by starting at correct directory
                     else {
@@ -193,10 +193,10 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
                     throw new RuntimeException(); //this line's stayin for some reason
                 }
-                panel.repaint();
+                jPanelToRepaint.repaint();
             }
             if (copyFilesToServerDir) {
-                button.setEnabled(false); //issue #15 fix
+                jButtonToDisable.setEnabled(false); //issue #15 fix
                 if (!serverWorldDir.exists()) {
                     if (!serverWorldDir.mkdirs())
                         alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -224,14 +224,14 @@ public class WorldCopyHandler extends Thread {
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
                 }
-                System.out.println("original dir: " + originalDir.toString());
+                System.out.println("original dir: " + selectedWorld.toString());
                 System.out.println("checking dir: " + ConfigStuffPanel.getServPath());
             }
-        } else if (originalDir.toString().contains(ConfigStuffPanel.getServPath())) {
+        } else if (selectedWorld.toString().contains(ConfigStuffPanel.getServPath())) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
-        button.setEnabled(true); //issue #15 fix
-        panel.repaint();
+        jButtonToDisable.setEnabled(true); //issue #15 fix
+        jPanelToRepaint.repaint();
     }
 
     private String findWorldDirectory(String dir) { //function should now work most of the times

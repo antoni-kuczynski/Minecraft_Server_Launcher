@@ -19,22 +19,22 @@ public class ServerProperties {
         Config config = new Config();
         File serverProperties = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\server.properties");
 
-        File servPropertiesError = new File("server_properties_error");
-        if(!servPropertiesError.exists())
+        File serverPropertiesError = new File("server_properties_error");
+        if(!serverPropertiesError.exists())
             if(!serverProperties.createNewFile())
                 alert(AlertType.ERROR, "Cannot create server_properties_error file.\n" + exStackTraceToString(new Throwable().getStackTrace()));
 
         if(!serverProperties.exists())
             serverProperties = new File("server_properties_error");
-        ArrayList<String> fileContent = null;
+        ArrayList<String> serverPropertiesContent = null;
         try {
-            fileContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
+            serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
         } catch (NoSuchFileException e) {
             Frame.alert(AlertType.FATAL, "\"" + e.getMessage() + "\"" + " file not found.\n"  + exStackTraceToString(e.getStackTrace()));
             System.exit(1);
         }
 
-        for(String s : fileContent) {
+        for(String s : serverPropertiesContent) {
             if(s.contains("level-name")) {
                 worldName = s.split("=")[1];
                 break;

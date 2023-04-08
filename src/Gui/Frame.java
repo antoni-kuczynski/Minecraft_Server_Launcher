@@ -45,7 +45,8 @@ public class Frame extends JFrame implements ActionListener {
     private static void clearTempDir() {
         File dir = new File(".\\world_temp");
         File[] files = dir.listFiles();
-        assert files != null;
+        if(files == null)
+            return;
         for (File file : files) {
             try {
                 FileUtils.deleteDirectory(file);
@@ -54,13 +55,13 @@ public class Frame extends JFrame implements ActionListener {
             }
         }
     }
-    private final JMenuItem darculaMenuItem;
-    private final JMenuItem githubDarkMenuItem;
-    private final JMenuItem oneDarkMenuItem;
+    private final JMenuItem darculaTheme;
+    private final JMenuItem githubDarkTheme;
+    private final JMenuItem oneDarkTheme;
     private final JMenuItem inteliijLightMenuItem;
-    private final JMenuItem xCodeDarkMenuItem;
-    private final JMenuItem draculaMenuItem;
-    private final JMenuItem nordMenuItem;
+    private final JMenuItem xCodeDarkTheme;
+    private final JMenuItem draculaTheme;
+    private final JMenuItem nordTheme;
     private static String lookAndFeel;
     public Frame() throws IOException {
 
@@ -82,59 +83,52 @@ public class Frame extends JFrame implements ActionListener {
         test.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
                 .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
 
-        darculaMenuItem = new JMenuItem("Darcula (Inteliij Dark)");
-        darculaMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(darculaMenuItem);
+        darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
+        darculaTheme.addActionListener(this);
+        lookAndFeelMenu.add(darculaTheme);
 
-        nordMenuItem = new JMenuItem("Nord");
-        nordMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(nordMenuItem);
+        nordTheme = new JMenuItem("Nord");
+        nordTheme.addActionListener(this);
+        lookAndFeelMenu.add(nordTheme);
 
-        draculaMenuItem = new JMenuItem("Dracula");
-        draculaMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(draculaMenuItem);
+        draculaTheme = new JMenuItem("Dracula");
+        draculaTheme.addActionListener(this);
+        lookAndFeelMenu.add(draculaTheme);
 
-        oneDarkMenuItem = new JMenuItem("One Dark");
-        oneDarkMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(oneDarkMenuItem);
+        oneDarkTheme = new JMenuItem("One Dark");
+        oneDarkTheme.addActionListener(this);
+        lookAndFeelMenu.add(oneDarkTheme);
 
-        githubDarkMenuItem = new JMenuItem("GitHub Dark");
-        githubDarkMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(githubDarkMenuItem);
+        githubDarkTheme = new JMenuItem("GitHub Dark");
+        githubDarkTheme.addActionListener(this);
+        lookAndFeelMenu.add(githubDarkTheme);
 
-        xCodeDarkMenuItem = new JMenuItem("Xcode Dark");
-        xCodeDarkMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(xCodeDarkMenuItem);
+        xCodeDarkTheme = new JMenuItem("Xcode Dark");
+        xCodeDarkTheme.addActionListener(this);
+        lookAndFeelMenu.add(xCodeDarkTheme);
 
         inteliijLightMenuItem = new JMenuItem("Inteliij Light");
         inteliijLightMenuItem.addActionListener(this);
         lookAndFeelMenu.add(inteliijLightMenuItem);
 
-
-
-
-//        darculaMenuItem.setSelected(true);
-
         menuBar.add(lookAndFeelMenu);
         menuBar.add(test);
         menuBar.add(openServer);
-
         setJMenuBar(menuBar);
 
 
         // Set up the JFrame
-//        setFocusableWindowState(false);
         setIconImage(new ImageIcon("resources/app_icon.png").getImage());
         setTitle("Minecraft Server Server Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        Preferences userValues = Preferences.userNodeForPackage(getClass());
 
         // Create the JPanels
         TitlePanel titlePanel = new TitlePanel();
         ButtonPanel buttonPanel = new ButtonPanel();
-        ConfigStuffPanel configStuffPanel = new ConfigStuffPanel(prefs);
+        ConfigStuffPanel configStuffPanel = new ConfigStuffPanel(userValues);
         AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
         configStuffPanel.setPanel(configStuffPanel, addWorldsPanel);
 
@@ -160,26 +154,25 @@ public class Frame extends JFrame implements ActionListener {
         addWorldsPanel.add(Box.createRigidArea(dimension));
 
 
-        JPanel testPanel2 = new JPanel(new BorderLayout());
-        testPanel2.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
-        testPanel2.add(addWorldsPanel, BorderLayout.CENTER);
+        JPanel worldsPanelAndSpacing = new JPanel(new BorderLayout());
+        worldsPanelAndSpacing.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
+        worldsPanelAndSpacing.add(addWorldsPanel, BorderLayout.CENTER);
 
-        JPanel testPanel = new JPanel() {
+        JPanel buttonAndWorldsPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 buttonPanel.setSize(new Dimension(getWidth() / 2, getHeight()));
-//                addWorldsPanel.setSize(new Dimension(getWidth() / 2, getHeight()));
             }
         };
 
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                testPanel.setLayout(new BorderLayout(10, 10));
-                testPanel.add(buttonPanel, BorderLayout.LINE_START);
-                testPanel.add(testPanel2, BorderLayout.CENTER);
-                add(testPanel, BorderLayout.CENTER);
+                buttonAndWorldsPanel.setLayout(new BorderLayout(10, 10));
+                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
+                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
+                add(buttonAndWorldsPanel, BorderLayout.CENTER);
                 add(titlePanel, BorderLayout.PAGE_START);
                 setVisible(true);
                 return null;
@@ -201,11 +194,10 @@ public class Frame extends JFrame implements ActionListener {
         setBounds(x, y, width, height);
 
         // Load the window position from user preferences
-
-        int savedX = prefs.getInt(PREFS_KEY_X, Integer.MIN_VALUE);
-        int savedY = prefs.getInt(PREFS_KEY_Y, Integer.MIN_VALUE);
-        int savedWidth = prefs.getInt(PREFS_KEY_WIDTH, Integer.MIN_VALUE);
-        int savedHeight = prefs.getInt(PREFS_KEY_HEIGHT, Integer.MIN_VALUE);
+        int savedX = userValues.getInt(PREFS_KEY_X, Integer.MIN_VALUE);
+        int savedY = userValues.getInt(PREFS_KEY_Y, Integer.MIN_VALUE);
+        int savedWidth = userValues.getInt(PREFS_KEY_WIDTH, Integer.MIN_VALUE);
+        int savedHeight = userValues.getInt(PREFS_KEY_HEIGHT, Integer.MIN_VALUE);
         if (savedX != Integer.MIN_VALUE && savedY != Integer.MIN_VALUE && savedWidth != Integer.MIN_VALUE && savedHeight != Integer.MIN_VALUE) {
             setBounds(savedX, savedY, savedWidth, savedHeight);
         }
@@ -253,19 +245,19 @@ public class Frame extends JFrame implements ActionListener {
 
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == darculaMenuItem) {
+        if (e.getSource() == darculaTheme) {
             setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
-        } else if (e.getSource() == githubDarkMenuItem) {
+        } else if (e.getSource() == githubDarkTheme) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme");
-        } else if (e.getSource() == oneDarkMenuItem) {
+        } else if (e.getSource() == oneDarkTheme) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme");
         } else if (e.getSource() == inteliijLightMenuItem) {
             setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
-        } else if (e.getSource() == xCodeDarkMenuItem) {
+        } else if (e.getSource() == xCodeDarkTheme) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme");
-        } else if (e.getSource() == draculaMenuItem) {
+        } else if (e.getSource() == draculaTheme) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme");
-        } else if (e.getSource() == nordMenuItem) {
+        } else if (e.getSource() == nordTheme) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
         }
     }
@@ -296,7 +288,6 @@ public class Frame extends JFrame implements ActionListener {
                     e.printStackTrace();
                 }
             });
-//            new Frame();
         } else {
             new ServerSelector(args);
         }

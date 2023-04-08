@@ -69,43 +69,46 @@ public class AddWorldsPanel extends JPanel {
         startCopying.setEnabled(false);
         JButton openButton = new JButton("Open Folder");
         openButton.addActionListener(e -> { //jna file chooser implementation here - issue #42 fixed
-                JnaFileChooser fileDialog = new JnaFileChooser();
-//                fileDialog.addFilter("Archive files", "*.7z", "*.zip", "*.rar", "*.tar"); its bugged
-                fileDialog.showOpenDialog(null);
+            JnaFileChooser fileDialog = new JnaFileChooser();
+            fileDialog.showOpenDialog(null);
 
-                File[] filePaths = fileDialog.getSelectedFiles();
-                String folderPath = "";
-                if(fileDialog.getCurrentDirectory() != null)
-                    folderPath = fileDialog.getCurrentDirectory().getAbsolutePath();
+            File[] filePaths = fileDialog.getSelectedFiles();
+            String folderPath = "";
+            if(fileDialog.getCurrentDirectory() != null)
+                folderPath = fileDialog.getCurrentDirectory().getAbsolutePath();
 
-                if (fileDialog.getSelectedFiles().length > 0 && filePaths != null && filePaths[0] != null) { //issue #43 fixed
-                    File filePath = filePaths[0];
-                    String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
-
-                    if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
-                        worldToAdd = filePath;
-                        isArchiveMode = true;
-                        try {
-                            new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex()).start();
-                        } catch (IOException ex) {
-                            alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
-                        }
-                    } else {
-                        isArchiveMode = false;
-                        File folder = new File(folderPath);
-                        //issue #16 fix adding a warning to check for folder's size
-                        if (FileUtils.sizeOfDirectory(folder) > 1000000000) { //greater than 1GB
-                            if (JOptionPane.showConfirmDialog(null,
-                                    "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
-                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                                worldToAdd = folder; //yes option
-                            }
-                        } else { //if file is less than 1gb
-                            worldToAdd = folder;
-                        }
-                    }
-                repaint();
+            if (fileDialog.getSelectedFiles().length <= 0 || filePaths == null || filePaths[0] == null) {
+                return;
             }
+
+            File filePath = filePaths[0];
+            String fileExtension = filePath.toString().split("\\.")[filePath.toString().split("\\.").length - 1];
+
+            if (fileExtension.equals("zip") || fileExtension.equals("rar") || fileExtension.equals("7z") || fileExtension.equals("tar")) {
+                worldToAdd = filePath;
+                isArchiveMode = true;
+                try {
+                    new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex()).start();
+                } catch (IOException ex) {
+                    alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
+                }
+            } else {
+                isArchiveMode = false;
+                File folder = new File(folderPath);
+                //issue #16 fix adding a warning to check for folder's size
+
+                if (FileUtils.sizeOfDirectory(folder) < 1000000000) {
+                    worldToAdd = folder;
+                }
+                if (FileUtils.sizeOfDirectory(folder) >= 1000000000) { //greater than 1GB
+                    if (JOptionPane.showConfirmDialog(null,
+                            "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        worldToAdd = folder; //yes option
+                    }
+                }
+            }
+            repaint();
         });
 
         final JPanel tempPanel = this;
@@ -166,7 +169,7 @@ public class AddWorldsPanel extends JPanel {
                 worldCopyHandler = new WorldCopyHandler(this, progressBar, worldToAdd, true, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex());
             } catch (IOException ex) {
                 alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
-                throw new RuntimeException(); //idk why but this line needs to stay here or i need to deal with another nullpointerexception
+                return;
             }
             worldCopyHandler.start();
         });
@@ -257,8 +260,6 @@ public class AddWorldsPanel extends JPanel {
         }
 
         if(isArchiveMode && extractedWorldDir != null) {
-            System.out.println(extractedWorldDir);
-//            startCopying.setEnabled(true);
             //this is the worst fucking solution ever lol
             File extractedDir = new File(extractedWorldDir);
             if(!new File(extractedWorldDir + "\\icon.png").exists()) {
@@ -308,6 +309,4 @@ public class AddWorldsPanel extends JPanel {
     public static String getExtractedWorldDir() {
         return extractedWorldDir;
     }
-
-
 }

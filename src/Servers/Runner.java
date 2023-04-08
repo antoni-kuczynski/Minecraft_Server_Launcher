@@ -13,25 +13,25 @@ import static Gui.Frame.alert;
 import static Gui.Frame.exStackTraceToString;
 
 public class Runner extends Thread {
-    private final Run run;
+    private final RunMode runMode;
     private String pathToServerJar;
     private String pathToServerFolder;
     private String javaRuntimePath;
     private ArrayList<String> arguments;
 
-    public Runner(String pathToServerJar, Run run, String javaRuntimePath, String launchArgs) {
+    public Runner(String pathToServerJar, RunMode runMode, String javaRuntimePath, String launchArgs) {
         this.pathToServerJar = pathToServerJar;
         this.javaRuntimePath = javaRuntimePath;
-        this.run = run;
+        this.runMode = runMode;
         arguments = Arrays.stream(launchArgs.split(" ")).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public Runner(Run run) {
-        this.run = run;
+    public Runner(RunMode runMode) {
+        this.runMode = runMode;
     }
 
-    public Runner(Run run, String serverPath) {
-        this.run = run;
+    public Runner(RunMode runMode, String serverPath) {
+        this.runMode = runMode;
         pathToServerFolder = serverPath;
     }
 
@@ -59,7 +59,7 @@ public class Runner extends Thread {
 
     @Override
     public void run() {
-        switch (run) {
+        switch (runMode) {
             case CONFIG_FILE -> {
                 File file = new File("servers.json");
 
