@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ButtonPanel extends JPanel implements ActionListener {
     private static final int BUTTON_WIDTH_PADDING = 20;
@@ -19,16 +18,16 @@ public class ButtonPanel extends JPanel implements ActionListener {
     public void initialize() throws IOException {
         buttons.clear();
         Config config = new Config();
-        List<ButtonData> serverConfigs = config.getData();
+        ArrayList<ButtonData> serverConfigs = config.getData();
         for (int i = 0; i < serverConfigs.size(); i++) {
             JButton button = createButton(serverConfigs.get(i).getButtonText());
-            boolean serverFilesExist = new File(serverConfigs.get(i).getPathToServerFolder()).exists();
-            button.setEnabled(serverFilesExist);
+            boolean doServerFilesExist = new File(serverConfigs.get(i).getPathToServerFolder()).exists();
+            button.setEnabled(doServerFilesExist);
             String toolTipText = "Server path: " + serverConfigs.get(i).getPathToServerFolder()
                     + "\nServer executable: " + serverConfigs.get(i).getPathToServerJarFile()
                     + "\nJava executable: " + serverConfigs.get(i).getPathToJavaRuntime()
                     + "\nLaunch arguments: " + serverConfigs.get(i).getServerLaunchArguments();
-            if (!serverFilesExist) {
+            if (!doServerFilesExist) {
                 toolTipText = "Server files not found." + "\n" + toolTipText;
             }
             button.setToolTipText(toolTipText);

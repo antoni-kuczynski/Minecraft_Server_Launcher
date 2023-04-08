@@ -74,14 +74,13 @@ public class Frame extends JFrame implements ActionListener {
         test.setRequestFocusEnabled(false);
         test.setContentAreaFilled(false);
 
-        //Temporary, until next version
-        test.setVisible(false);
-        openServer.setVisible(false);
+        test.setVisible(true);
+        openServer.setVisible(true);
 //        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("resources/themeswitchericon.png")
 //                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
 
-        test.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
-                .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
+//        test.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
+//                .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
 
         darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
         darculaTheme.addActionListener(this);

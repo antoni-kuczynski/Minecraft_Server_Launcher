@@ -15,8 +15,6 @@ import static Gui.Frame.exStackTraceToString;
 
 public class ConfigStuffPanel extends JPanel {
     private final JButton openServerFolder;
-    private static String servName;
-    private static String servPath;
     private static ConfigStuffPanel panel;
     private static AddWorldsPanel addWorldsPanel;
     private final Preferences userValues;
@@ -31,13 +29,13 @@ public class ConfigStuffPanel extends JPanel {
         this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
         JButton openCfg = new JButton("Open App's Config File");
-        servName = userValues.get("SELECTED_SERVER_NAME", "ERROR");
-        servPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
+        ServerDetails.serverName = userValues.get("SELECTED_SERVER_NAME", "ERROR");
+        ServerDetails.serverPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
         openServerFolder = new JButton("Open " + userValues.get("SELECTED_SERVER_NAME", "ERROR") + "'s Server Folder");
 
         openCfg.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
 
-        openServerFolder.addActionListener(e -> new Runner(RunMode.SERVER_FOLDER, servPath).start());
+        openServerFolder.addActionListener(e -> new Runner(RunMode.SERVER_FOLDER, ServerDetails.serverPath).start());
         Config config = null;
         try {
             config = new Config();
@@ -72,8 +70,8 @@ public class ConfigStuffPanel extends JPanel {
                 previouslySelectedComboBoxIndex = serverSelectionModel.getIndexOf(e.getItem());
             }
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                servName = (String) e.getItem();
-                servPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
+                ServerDetails.serverName = (String) e.getItem();
+                ServerDetails.serverPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
                 panel.repaint();
                 addWorldsPanel.repaint();
                 selectedIndexInComboBox = serverSelection.getSelectedIndex();
@@ -104,8 +102,8 @@ public class ConfigStuffPanel extends JPanel {
     }
 
     public static void setServerVariables(String text, String serverPath) {
-        servName = text;
-        servPath = serverPath;
+        ServerDetails.serverName = text;
+        ServerDetails.serverPath = serverPath;
         panel.repaint();
         addWorldsPanel.repaint();
     }
@@ -118,21 +116,21 @@ public class ConfigStuffPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        userValues.put("SELECTED_SERVER_NAME", servName);
-        userValues.put("SELECTED_SERVER_PATH", servPath);
-        openServerFolder.setText("Open " + servName + "'s Server Folder");
+        userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
+        userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath);
+        openServerFolder.setText("Open " + ServerDetails.serverName + "'s Server Folder");
         if(disabledComboBoxIndexes.contains(serverSelection.getSelectedIndex())) { //just select previous index
             serverSelection.setSelectedIndex(previouslySelectedComboBoxIndex);
         }
     }
 
-    public static String getServName() {
-        return servName;
-    }
-
-    public static String getServPath() {
-        return servPath;
-    }
+//    public static String getServerDetails.serverName() {
+//        return ServerDetails.serverName;
+//    }
+//
+//    public static String getServerDetails.serverPath() {
+//        return ServerDetails.serverPath;
+//    }
 
     public static JComboBox<String> getServerSelection() {
         return serverSelection;

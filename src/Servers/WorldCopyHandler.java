@@ -17,21 +17,23 @@ import static Gui.Frame.alert;
 import static Gui.Frame.exStackTraceToString;
 
 public class WorldCopyHandler extends Thread {
+    private JProgressBar progressBar = null;
+    private JPanel jPanelToRepaint;
+    private JButton jButtonToDisable;
 
     private final String serverWorldName;
     private File selectedWorld = null;
     private final File serverWorldDir;
-    private JProgressBar progressBar = null;
     private boolean copyFilesToServerDir;
-    private JPanel jPanelToRepaint;
-    private JButton jButtonToDisable;
     private final Config config = new Config();
     private final int configIndex;
     public static boolean isInRightClickMode = false;
 
-    public WorldCopyHandler(JPanel jPanelToRepaint, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton jButtonToDisable, int configIndex) throws IOException {
-        this.jPanelToRepaint = jPanelToRepaint;
+
+    public WorldCopyHandler(JPanel jPanelToRepaint, JProgressBar progressBar,
+                            File originalWorldDir, boolean copyFilesToServerDir, JButton jButtonToDisable, int configIndex) throws IOException {
         ServerProperties serverProperties = new ServerProperties(configIndex);
+        this.jPanelToRepaint = jPanelToRepaint;
         this.serverWorldName = serverProperties.getWorldName();
         this.serverWorldDir = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\" + serverWorldName);
         this.selectedWorld = originalWorldDir;
@@ -113,7 +115,6 @@ public class WorldCopyHandler extends Thread {
                 }
             } else {
                 newFile.getParentFile().mkdirs();
-//                    alert(AlertType.ERROR, "Cannot create directory.\nAt line " + getStackTrace()[1].getLineNumber() + " Class WorldCopyHandler.java");
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
@@ -225,9 +226,9 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
                 }
                 System.out.println("original dir: " + selectedWorld.toString());
-                System.out.println("checking dir: " + ConfigStuffPanel.getServPath());
+                System.out.println("checking dir: " + ServerDetails.serverPath);
             }
-        } else if (selectedWorld.toString().contains(ConfigStuffPanel.getServPath())) {
+        } else if (selectedWorld.toString().contains(ServerDetails.serverPath)) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         jButtonToDisable.setEnabled(true); //issue #15 fix
