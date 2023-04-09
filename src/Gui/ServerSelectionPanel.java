@@ -1,5 +1,6 @@
 package Gui;
 
+import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
 import Server.*;
 
@@ -102,9 +103,13 @@ public class ServerSelectionPanel extends JPanel {
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
     }
 
-    public static void setServerVariables(String text, String serverPath) {
+    public static void setServerVariables(String text, String serverPath) throws InterruptedException {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
+        NBTParser nbtParser = new NBTParser();
+        nbtParser.start();
+        nbtParser.join();
+        ServerDetails.serverLevelName = nbtParser.getLevelName();
         panel.repaint();
         addWorldsPanel.repaint();
     }

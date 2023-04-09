@@ -39,6 +39,8 @@ public class ServerPropertiesFile {
                 break;
             }
         }
+        ServerDetails.serverWorldPath = ServerDetails.serverPath + "\\" + worldName;
+        ServerDetails.serverLevelDatFile = ServerDetails.serverPath + "\\" + worldName + "\\" + "level.dat";
     }
 
     public String getWorldName() {

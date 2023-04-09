@@ -291,7 +291,7 @@ public class AddWorldsPanel extends JPanel {
         //size is in bytes
         if(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()).exists()) {
             ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()));
-            serverWorldNameAndStuff.setText("Folder Name: " + serverDetails.getServerWorldName() + "\nSize: " + serverWorldConvertedSize.getText()); //world name todo here
+            serverWorldNameAndStuff.setText("Folder Name: " + serverDetails.getServerWorldName() +"\nLevel name: " + ServerDetails.serverLevelName + "\nSize: " + serverWorldConvertedSize.getText()); //world name todo here
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }

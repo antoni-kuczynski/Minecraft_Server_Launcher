@@ -18,9 +18,9 @@ import static Gui.Frame.alert;
 import static Gui.Frame.exStackTraceToString;
 
 public class WorldCopyHandler extends Thread {
-    private JProgressBar progressBar = null;
+    private static JProgressBar progressBar = null;
     private JPanel jPanelToRepaint;
-    private JButton jButtonToDisable;
+    private static JButton jButtonToDisable;
 
     private final String serverWorldName;
     private File selectedWorld = null;
@@ -90,7 +90,7 @@ public class WorldCopyHandler extends Thread {
     }
 
 
-    private String extractArchive(String archivePath, String destinationPath) throws IOException {
+    public static String extractArchive(String archivePath, String destinationPath) throws IOException {
         jButtonToDisable.setEnabled(false);
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
@@ -104,7 +104,7 @@ public class WorldCopyHandler extends Thread {
             File newFile = new File(destinationPath, zipEntry.getName());
             if (zipEntry.isDirectory()) {
                 if(!newFile.mkdirs()) {
-                    alert(AlertType.ERROR, "Cannot create some directory.\nAt line " + getStackTrace()[1].getLineNumber());
+                    alert(AlertType.ERROR, "Cannot create a directory.\nWorldCopyHandler.java extractingArchive()");
                     break;
                 }
                 if (extractedDirectory == null) {
@@ -130,7 +130,7 @@ public class WorldCopyHandler extends Thread {
         return extractedDirectory;
     }
 
-    private long getTotalSize(String archivePath) throws IOException {
+    private static long getTotalSize(String archivePath) throws IOException {
         long totalSize = 0;
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();

@@ -36,7 +36,7 @@
     "overrideDefaultLaunchArgs": false
   },
   {
-    "buttonText": "1.19.3 DEBUG3",
+    "buttonText": "1.19.3",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\Debug_Server2",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\Debug_Server2\\paper-1.19.3-420.jar",
