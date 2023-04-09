@@ -1,9 +1,9 @@
 package Gui;
 
-import Servers.DirectoryTree;
-import Servers.ConvertedSize;
-import Servers.ServerDetails;
-import Servers.WorldCopyHandler;
+import Server.DirectoryTree;
+import Server.ConvertedSize;
+import SelectedServer.ServerDetails;
+import Server.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
@@ -35,33 +35,13 @@ public class AddWorldsPanel extends JPanel {
     private final JButton startCopying = new JButton("Start Copying");
     private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("resources/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
 
-    private final WorldCopyHandler serverDetails = new WorldCopyHandler(ConfigStuffPanel.getServerSelection().getSelectedIndex());
+    private final WorldCopyHandler serverDetails = new WorldCopyHandler();
     private static File worldToAdd;
     private static String extractedWorldDir;
     private boolean isArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
     private final DecimalFormat unitRound = new DecimalFormat("###.##");
 
     private final double ONE_GIGABYTE = 1073741824;
-
-    private ConvertedSize directorySizeWithConverion(File directory) {
-        long SIZE_IN_BYTES = FileUtils.sizeOfDirectory(directory);
-        double ONE_KILOBYTE = 1024;
-        double ONE_MEGABYTE = 1048576;
-
-        double finalSize = SIZE_IN_BYTES;
-        String unitSymbol = "b";
-        if (SIZE_IN_BYTES >= ONE_KILOBYTE && SIZE_IN_BYTES < ONE_MEGABYTE) {
-            finalSize = SIZE_IN_BYTES / ONE_KILOBYTE;
-            unitSymbol = "kb";
-        } else if (SIZE_IN_BYTES >= ONE_MEGABYTE && SIZE_IN_BYTES < ONE_GIGABYTE) {
-            finalSize = SIZE_IN_BYTES / ONE_MEGABYTE;
-            unitSymbol = "mb";
-        } else if (SIZE_IN_BYTES >= ONE_GIGABYTE) {
-            finalSize = SIZE_IN_BYTES / ONE_GIGABYTE;
-            unitSymbol = "gb";
-        }
-        return new ConvertedSize(unitRound.format(finalSize), unitSymbol);
-    }
 
     public AddWorldsPanel() throws IOException {
         super(new BorderLayout());
@@ -90,7 +70,7 @@ public class AddWorldsPanel extends JPanel {
                 worldToAdd = selectedFile;
                 isArchiveMode = true;
                 try {
-                    new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex()).start();
+                    new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying).start();
                 } catch (IOException ex) {
                     alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                 }
@@ -136,7 +116,7 @@ public class AddWorldsPanel extends JPanel {
                     if (WorldCopyHandler.isArchive(fileToAdd)) {
                         isArchiveMode = true;
                         worldToAdd = fileToAdd;
-                        new WorldCopyHandler(tempPanel, progressBar, worldToAdd, false, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex()).start();
+                        new WorldCopyHandler(tempPanel, progressBar, worldToAdd, false, startCopying).start();
                     } else {
                         isArchiveMode = false;
                         //issue #16 fix adding a warning to check for folder's size
@@ -167,7 +147,7 @@ public class AddWorldsPanel extends JPanel {
         startCopying.addActionListener(e -> {
             WorldCopyHandler worldCopyHandler;
             try {
-                worldCopyHandler = new WorldCopyHandler(this, progressBar, worldToAdd, true, startCopying, ConfigStuffPanel.getServerSelection().getSelectedIndex());
+                worldCopyHandler = new WorldCopyHandler(this, progressBar, worldToAdd, true, startCopying);
             } catch (IOException ex) {
                 alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                 return;
@@ -242,6 +222,26 @@ public class AddWorldsPanel extends JPanel {
         add(buttonAndText, BorderLayout.PAGE_START);
         add(addingWorld, BorderLayout.LINE_START);
         add(startCopyingPanel, BorderLayout.PAGE_END);
+    }
+
+    private ConvertedSize directorySizeWithConverion(File directory) {
+        long SIZE_IN_BYTES = FileUtils.sizeOfDirectory(directory);
+        double ONE_KILOBYTE = 1024;
+        double ONE_MEGABYTE = 1048576;
+
+        double finalSize = SIZE_IN_BYTES;
+        String unitSymbol = "b";
+        if (SIZE_IN_BYTES >= ONE_KILOBYTE && SIZE_IN_BYTES < ONE_MEGABYTE) {
+            finalSize = SIZE_IN_BYTES / ONE_KILOBYTE;
+            unitSymbol = "kb";
+        } else if (SIZE_IN_BYTES >= ONE_MEGABYTE && SIZE_IN_BYTES < ONE_GIGABYTE) {
+            finalSize = SIZE_IN_BYTES / ONE_MEGABYTE;
+            unitSymbol = "mb";
+        } else if (SIZE_IN_BYTES >= ONE_GIGABYTE) {
+            finalSize = SIZE_IN_BYTES / ONE_GIGABYTE;
+            unitSymbol = "gb";
+        }
+        return new ConvertedSize(unitRound.format(finalSize), unitSymbol);
     }
 
 

@@ -1,6 +1,6 @@
 package Gui;
 
-import Servers.*;
+import Server.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,7 +88,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
         ButtonData serverConfig = config.getData().get(index);
         new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
                 serverConfig.getServerLaunchArguments()).start();
-        ConfigStuffPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder());
-        ConfigStuffPanel.getServerSelection().setSelectedIndex(index);
+        ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder());
+        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
     }
 }

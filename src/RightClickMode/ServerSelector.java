@@ -1,9 +1,9 @@
 package RightClickMode;
 
 import Gui.AlertType;
-import Servers.ButtonData;
-import Servers.Config;
-import Servers.WorldCopyHandler;
+import Server.ButtonData;
+import Server.Config;
+import Server.WorldCopyHandler;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -91,7 +91,7 @@ public class ServerSelector extends JFrame {
             System.out.println(new File(worldpath.toString()));
             WorldCopyHandler.isInRightClickMode = true;
             try {
-                new WorldCopyHandler(parentPanel, progressBar, new File("C:\\Users\\szkola\\Downloads\\Parkour Spiral.zip"), true, startCopying, selectorServer.getSelectedIndex()).start();
+                new WorldCopyHandler(parentPanel, progressBar, new File("C:\\Users\\szkola\\Downloads\\Parkour Spiral.zip"), true, startCopying).start();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

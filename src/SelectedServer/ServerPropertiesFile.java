@@ -1,4 +1,4 @@
-package Servers;
+package SelectedServer;
 
 import Gui.AlertType;
 import Gui.Frame;
@@ -12,12 +12,11 @@ import java.util.ArrayList;
 import static Gui.Frame.alert;
 import static Gui.Frame.exStackTraceToString;
 
-public class ServerProperties {
+public class ServerPropertiesFile {
     private String worldName;
 
-    public ServerProperties(int configIndex) throws IOException {
-        Config config = new Config();
-        File serverProperties = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\server.properties");
+    public ServerPropertiesFile() throws IOException {
+        File serverProperties = new File(ServerDetails.serverPath + "\\server.properties");
 
         File serverPropertiesError = new File("server_properties_error");
         if(!serverPropertiesError.exists())

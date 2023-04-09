@@ -1,4 +1,4 @@
-package Servers;
+package Server;
 
 public enum RunMode {
     SERVER_FOLDER,

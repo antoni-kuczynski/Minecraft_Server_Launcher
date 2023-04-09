@@ -1,4 +1,4 @@
-package Servers;
+package Server;
 
 import Gui.AlertType;
 import Gui.Frame;

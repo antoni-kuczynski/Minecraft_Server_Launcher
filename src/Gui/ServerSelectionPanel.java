@@ -1,6 +1,7 @@
 package Gui;
 
-import Servers.*;
+import SelectedServer.ServerDetails;
+import Server.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +14,9 @@ import java.util.prefs.Preferences;
 
 import static Gui.Frame.exStackTraceToString;
 
-public class ConfigStuffPanel extends JPanel {
+public class ServerSelectionPanel extends JPanel {
     private final JButton openServerFolder;
-    private static ConfigStuffPanel panel;
+    private static ServerSelectionPanel panel;
     private static AddWorldsPanel addWorldsPanel;
     private final Preferences userValues;
     private int selectedIndexInComboBox;
@@ -25,7 +26,7 @@ public class ConfigStuffPanel extends JPanel {
     private int previouslySelectedComboBoxIndex;
 
 
-    public ConfigStuffPanel(Preferences userValues) {
+    public ServerSelectionPanel(Preferences userValues) {
         this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
         JButton openCfg = new JButton("Open App's Config File");
@@ -108,9 +109,9 @@ public class ConfigStuffPanel extends JPanel {
         addWorldsPanel.repaint();
     }
 
-    public void setPanel(ConfigStuffPanel panel, AddWorldsPanel addWorldsPanel) {
-        ConfigStuffPanel.panel = panel;
-        ConfigStuffPanel.addWorldsPanel = addWorldsPanel;
+    public void setPanel(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {
+        ServerSelectionPanel.panel = panel;
+        ServerSelectionPanel.addWorldsPanel = addWorldsPanel;
     }
 
     @Override
@@ -124,13 +125,6 @@ public class ConfigStuffPanel extends JPanel {
         }
     }
 
-//    public static String getServerDetails.serverName() {
-//        return ServerDetails.serverName;
-//    }
-//
-//    public static String getServerDetails.serverPath() {
-//        return ServerDetails.serverPath;
-//    }
 
     public static JComboBox<String> getServerSelection() {
         return serverSelection;

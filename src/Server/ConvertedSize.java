@@ -1,4 +1,4 @@
-package Servers;
+package Server;
 
 public record ConvertedSize(String size, String unit) {
 

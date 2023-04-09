@@ -9,14 +9,14 @@ public class TitlePanel extends JPanel {
 
     public TitlePanel() {
         setLayout(new BorderLayout());
-
-        JLabel title = new JLabel("Select server below:");
+        //Spaces as indentation - congratulations (you are an idiot)!!!
+        JLabel title = new JLabel("  Select server below:");
         title.setFont(TITLE_FONT);
         JPanel serversTitlePanel = new JPanel();
         serversTitlePanel.add(title, BorderLayout.CENTER);
         serversTitlePanel.add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.LINE_START);
 
-        JLabel titleAddWorlds = new JLabel("Or add a world to existing server:");
+        JLabel titleAddWorlds = new JLabel("Or add a world to existing server:   ");
         titleAddWorlds.setFont(TITLE_FONT);
 
         add(serversTitlePanel, BorderLayout.LINE_START);

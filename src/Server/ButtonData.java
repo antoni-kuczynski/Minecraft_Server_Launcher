@@ -1,6 +1,5 @@
-package Servers;
+package Server;
 
-//class is now a record
 public record ButtonData(String buttonText, String pathToButtonIcon,
                          String pathToServerFolder, String pathToServerJarFile,
                          String pathToJavaRuntime, String serverLaunchArguments) {

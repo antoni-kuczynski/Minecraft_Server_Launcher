@@ -1,4 +1,4 @@
-package Servers;
+package SelectedServer;
 
 public class ServerDetails {
     public static String serverName;

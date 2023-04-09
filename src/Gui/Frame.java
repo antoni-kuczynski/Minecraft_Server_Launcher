@@ -15,46 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class Frame extends JFrame implements ActionListener {
-
-    private final String PREFS_KEY_X = "window_x";
-    private final String PREFS_KEY_Y = "window_y";
-    private final String PREFS_KEY_WIDTH = "window_width";
-    private final String PREFS_KEY_HEIGHT = "window_height";
-    private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
-
-
-    public static String exStackTraceToString(StackTraceElement[] elements) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Caused by:\n");
-        for (StackTraceElement e : elements) {
-            sb.append(e.toString());
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    public static void alert(AlertType alertType, String message) {
-        switch(alertType) {
-            case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
-            case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-            case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-            case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private static void clearTempDir() {
-        File dir = new File(".\\world_temp");
-        File[] files = dir.listFiles();
-        if(files == null)
-            return;
-        for (File file : files) {
-            try {
-                FileUtils.deleteDirectory(file);
-            } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
-            }
-        }
-    }
     private final JMenuItem darculaTheme;
     private final JMenuItem githubDarkTheme;
     private final JMenuItem oneDarkTheme;
@@ -63,23 +23,27 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem draculaTheme;
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
+
+    private final String PREFS_KEY_X = "window_x";
+    private final String PREFS_KEY_Y = "window_y";
+    private final String PREFS_KEY_WIDTH = "window_width";
+    private final String PREFS_KEY_HEIGHT = "window_height";
+    private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
+
     public Frame() throws IOException {
-
         JMenuBar menuBar = new JMenuBar();
-
         JMenu lookAndFeelMenu = new JMenu("Change Theme");
-        JButton test = new JButton("Refresh Server List");
+        JButton refreshServerList = new JButton("Refresh Server List");
         JButton openServer = new JButton("Add server");
-        test.setBorderPainted(false);
-        test.setRequestFocusEnabled(false);
-        test.setContentAreaFilled(false);
-
-        test.setVisible(true);
+        refreshServerList.setBorderPainted(false);
+        refreshServerList.setRequestFocusEnabled(false);
+        refreshServerList.setContentAreaFilled(false);
+        refreshServerList.setVisible(true);
         openServer.setVisible(true);
 //        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("resources/themeswitchericon.png")
 //                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
 
-//        test.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
+//        refreshServerList.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
 //                .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
 
         darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
@@ -111,7 +75,7 @@ public class Frame extends JFrame implements ActionListener {
         lookAndFeelMenu.add(inteliijLightMenuItem);
 
         menuBar.add(lookAndFeelMenu);
-        menuBar.add(test);
+        menuBar.add(refreshServerList);
         menuBar.add(openServer);
         setJMenuBar(menuBar);
 
@@ -127,9 +91,9 @@ public class Frame extends JFrame implements ActionListener {
         // Create the JPanels
         TitlePanel titlePanel = new TitlePanel();
         ButtonPanel buttonPanel = new ButtonPanel();
-        ConfigStuffPanel configStuffPanel = new ConfigStuffPanel(userValues);
+        ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
         AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
-        configStuffPanel.setPanel(configStuffPanel, addWorldsPanel);
+        serverSelectionPanel.setPanel(serverSelectionPanel, addWorldsPanel);
 
 
         //JPanel containing empty panels & config panel
@@ -145,7 +109,7 @@ public class Frame extends JFrame implements ActionListener {
         configPanel.add(separatorPanel, BorderLayout.PAGE_START);
         Dimension dimension = new Dimension(10, 10);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        configPanel.add(configStuffPanel, BorderLayout.CENTER);
+        configPanel.add(serverSelectionPanel, BorderLayout.CENTER);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
@@ -233,7 +197,7 @@ public class Frame extends JFrame implements ActionListener {
             }
         });
 
-        test.addActionListener(e -> {
+        refreshServerList.addActionListener(e -> {
             try {
                 buttonPanel.clearAllButtons();
             } catch (IOException ex) {
@@ -242,6 +206,49 @@ public class Frame extends JFrame implements ActionListener {
         });
     }
 
+    public static String exStackTraceToString(StackTraceElement[] elements) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Caused by:\n");
+        for (StackTraceElement e : elements) {
+            sb.append(e.toString());
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static void alert(AlertType alertType, String message) {
+        switch(alertType) {
+            case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+            case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+            case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+            case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private static void clearTempDir() {
+        File dir = new File(".\\world_temp");
+        File[] files = dir.listFiles();
+        if(files == null)
+            return;
+        for (File file : files) {
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
+            }
+        }
+    }
+
+    private void setLookAndFeel(String className) {
+        lookAndFeel = className;
+        try {
+            UIManager.setLookAndFeel(className);
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            alert(AlertType.ERROR, "Cannot set look and feel.\n" + exStackTraceToString(ex.getStackTrace()));
+        }
+    }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == darculaTheme) {
@@ -261,16 +268,6 @@ public class Frame extends JFrame implements ActionListener {
         }
     }
 
-    private void setLookAndFeel(String className) {
-        lookAndFeel = className;
-        try {
-            UIManager.setLookAndFeel(className);
-            SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException |
-                IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            alert(AlertType.ERROR, "Cannot set look and feel.\n" + exStackTraceToString(ex.getStackTrace()));
-        }
-    }
     public static void main(String[] args) throws IOException {
         Preferences prefs = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = prefs.get("look_and_feel", "com.formdev.flatlaf.FlatDarculaLaf");

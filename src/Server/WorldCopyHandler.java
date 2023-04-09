@@ -1,9 +1,10 @@
-package Servers;
+package Server;
 
 import Gui.AddWorldsPanel;
 import Gui.AlertType;
-import Gui.ConfigStuffPanel;
 import Gui.Frame;
+import SelectedServer.ServerPropertiesFile;
+import SelectedServer.ServerDetails;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -25,28 +26,24 @@ public class WorldCopyHandler extends Thread {
     private File selectedWorld = null;
     private final File serverWorldDir;
     private boolean copyFilesToServerDir;
-    private final Config config = new Config();
-    private final int configIndex;
     public static boolean isInRightClickMode = false;
 
 
     public WorldCopyHandler(JPanel jPanelToRepaint, JProgressBar progressBar,
-                            File originalWorldDir, boolean copyFilesToServerDir, JButton jButtonToDisable, int configIndex) throws IOException {
-        ServerProperties serverProperties = new ServerProperties(configIndex);
+                            File originalWorldDir, boolean copyFilesToServerDir, JButton jButtonToDisable) throws IOException {
+        ServerPropertiesFile serverPropertiesFile = new ServerPropertiesFile();
         this.jPanelToRepaint = jPanelToRepaint;
-        this.serverWorldName = serverProperties.getWorldName();
-        this.serverWorldDir = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\" + serverWorldName);
+        this.serverWorldName = serverPropertiesFile.getWorldName();
+        this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
         this.selectedWorld = originalWorldDir;
         this.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
         this.jButtonToDisable = jButtonToDisable;
-        this.configIndex = configIndex;
     }
 
-    public WorldCopyHandler(int configIndex) throws IOException {
-        this.serverWorldName = new ServerProperties(configIndex).getWorldName();
-        this.serverWorldDir = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\" + serverWorldName);
-        this.configIndex = configIndex;
+    public WorldCopyHandler() throws IOException {
+        this.serverWorldName = new ServerPropertiesFile().getWorldName();
+        this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
     }
 
 
@@ -150,7 +147,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(config.getData().get(configIndex).getPathToServerFolder())) {
+        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(ServerDetails.serverPath)) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
