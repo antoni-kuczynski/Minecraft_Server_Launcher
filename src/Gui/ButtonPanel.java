@@ -90,7 +90,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
                 serverConfig.getServerLaunchArguments()).start();
         try {
             ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder());
-        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
             Frame.alert(AlertType.ERROR, Frame.exStackTraceToString(ex.getStackTrace()));
         }
         ServerSelectionPanel.getServerSelection().setSelectedIndex(index);

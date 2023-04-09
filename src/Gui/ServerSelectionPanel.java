@@ -2,6 +2,7 @@ package Gui;
 
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
+import SelectedServer.ServerPropertiesFile;
 import Server.*;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.prefs.Preferences;
 
+import static Gui.Frame.alert;
 import static Gui.Frame.exStackTraceToString;
 
 public class ServerSelectionPanel extends JPanel {
@@ -27,7 +29,7 @@ public class ServerSelectionPanel extends JPanel {
     private int previouslySelectedComboBoxIndex;
 
 
-    public ServerSelectionPanel(Preferences userValues) {
+    public ServerSelectionPanel(Preferences userValues) throws IOException, InterruptedException {
         this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
         JButton openCfg = new JButton("Open App's Config File");
@@ -74,6 +76,16 @@ public class ServerSelectionPanel extends JPanel {
             if(e.getStateChange() == ItemEvent.SELECTED) {
                 ServerDetails.serverName = (String) e.getItem();
                 ServerDetails.serverPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
+                NBTParser nbtParserComboBox = new NBTParser(); //added reading NBT level.dat file for level name to jcombobox
+                try {
+                    new ServerPropertiesFile();
+                    nbtParserComboBox.start();
+                    nbtParserComboBox.join();
+                } catch (Exception ex) {
+                    alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
+                }
+                ServerDetails.serverLevelName = nbtParserComboBox.getLevelName();
+
                 panel.repaint();
                 addWorldsPanel.repaint();
                 selectedIndexInComboBox = serverSelection.getSelectedIndex();
@@ -101,12 +113,19 @@ public class ServerSelectionPanel extends JPanel {
         add(openCfg, BorderLayout.LINE_START);
         add(selServerManually, BorderLayout.LINE_END);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
+
+        new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
+        NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
+        nbtParser.start();
+        nbtParser.join();
+        ServerDetails.serverLevelName = nbtParser.getLevelName();
     }
 
-    public static void setServerVariables(String text, String serverPath) throws InterruptedException {
+    public static void setServerVariables(String text, String serverPath) throws InterruptedException, IOException {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
-        NBTParser nbtParser = new NBTParser();
+        new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
+        NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
         nbtParser.start();
         nbtParser.join();
         ServerDetails.serverLevelName = nbtParser.getLevelName();
@@ -114,7 +133,7 @@ public class ServerSelectionPanel extends JPanel {
         addWorldsPanel.repaint();
     }
 
-    public void setPanel(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {
+    public void setPanels(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {
         ServerSelectionPanel.panel = panel;
         ServerSelectionPanel.addWorldsPanel = addWorldsPanel;
     }

@@ -21,7 +21,7 @@ public class ServerPropertiesFile {
         File serverPropertiesError = new File("server_properties_error");
         if(!serverPropertiesError.exists())
             if(!serverProperties.createNewFile())
-                alert(AlertType.ERROR, "Cannot create server_properties_error file.\n" + exStackTraceToString(new Throwable().getStackTrace()));
+//                alert(AlertType.ERROR, "Cannot create server_properties_error file.\n" + exStackTraceToString(new Throwable().getStackTrace()));
 
         if(!serverProperties.exists())
             serverProperties = new File("server_properties_error");

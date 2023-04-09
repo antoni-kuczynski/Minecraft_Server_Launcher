@@ -30,7 +30,7 @@ public class Frame extends JFrame implements ActionListener {
     private final String PREFS_KEY_HEIGHT = "window_height";
     private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
 
-    public Frame() throws IOException {
+    public Frame() throws IOException, InterruptedException {
         JMenuBar menuBar = new JMenuBar();
         JMenu lookAndFeelMenu = new JMenu("Change Theme");
         JButton refreshServerList = new JButton("Refresh Server List");
@@ -93,8 +93,7 @@ public class Frame extends JFrame implements ActionListener {
         ButtonPanel buttonPanel = new ButtonPanel();
         ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
         AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
-        serverSelectionPanel.setPanel(serverSelectionPanel, addWorldsPanel);
-
+        serverSelectionPanel.setPanels(serverSelectionPanel, addWorldsPanel);
 
         //JPanel containing empty panels & config panel
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
@@ -217,6 +216,7 @@ public class Frame extends JFrame implements ActionListener {
     }
 
     public static void alert(AlertType alertType, String message) {
+        System.out.println("this fucker did it: " + message);
         switch(alertType) {
             case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
             case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
@@ -280,7 +280,7 @@ public class Frame extends JFrame implements ActionListener {
             SwingUtilities.invokeLater(() -> {
                 try {
                     new Frame().setVisible(true);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });

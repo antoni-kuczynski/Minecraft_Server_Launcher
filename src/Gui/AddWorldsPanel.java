@@ -9,6 +9,10 @@ import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.awt.*;
@@ -27,7 +31,7 @@ public class AddWorldsPanel extends JPanel {
     private final JLabel selectedWorldIconLabel = new JLabel();
     private final JLabel serverWorldIconLabel = new JLabel();
     private final JTextArea worldNameAndStuffText = new JTextArea();
-    private final JTextArea serverWorldNameAndStuff = new JTextArea();
+    private final JLabel serverWorldNameAndStuff = new JLabel();
     private final JPanel worldPanelUpper = new JPanel(new BorderLayout());
     private final JPanel serverPanelBottom = new JPanel(new BorderLayout());
     private final DirectoryTree directoryTree = new DirectoryTree();
@@ -206,8 +210,8 @@ public class AddWorldsPanel extends JPanel {
 
         JPanel serverNameAndStuff = new JPanel(new BorderLayout());
 
-        serverWorldNameAndStuff.setEditable(false);
-
+//        serverWorldNameAndStuff.setEditable(false);
+//        appendToPane(serverWorldNameAndStuff, "test", Color.BLUE);
 
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         serverNameAndStuff.add(serverWorldIconLabel, BorderLayout.CENTER);
@@ -222,6 +226,19 @@ public class AddWorldsPanel extends JPanel {
         add(buttonAndText, BorderLayout.PAGE_START);
         add(addingWorld, BorderLayout.LINE_START);
         add(startCopyingPanel, BorderLayout.PAGE_END);
+    }
+
+    private void appendToPane(JTextPane tp, String msg, Color c) {
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+
+        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+        int len = tp.getDocument().getLength();
+        tp.setCaretPosition(len);
+        tp.setCharacterAttributes(aset, false);
+        tp.replaceSelection(msg);
     }
 
     private ConvertedSize directorySizeWithConverion(File directory) {
@@ -291,7 +308,7 @@ public class AddWorldsPanel extends JPanel {
         //size is in bytes
         if(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()).exists()) {
             ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()));
-            serverWorldNameAndStuff.setText("Folder Name: " + serverDetails.getServerWorldName() +"\nLevel name: " + ServerDetails.serverLevelName + "\nSize: " + serverWorldConvertedSize.getText()); //world name todo here
+            serverWorldNameAndStuff.setText("<html> Folder Name: " + serverDetails.getServerWorldName() +"<br> Level name: " + "" + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }
