@@ -24,6 +24,8 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
 
+    public static boolean isFrameInitialized = false;
+
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
     private final String PREFS_KEY_WIDTH = "window_width";
@@ -203,6 +205,7 @@ public class Frame extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
         });
+        isFrameInitialized = true;
     }
 
     public static String exStackTraceToString(StackTraceElement[] elements) {
@@ -231,8 +234,12 @@ public class Frame extends JFrame implements ActionListener {
         if(files == null)
             return;
         for (File file : files) {
+            System.out.println(file);
             try {
-                FileUtils.deleteDirectory(file);
+                if(file.isDirectory())
+                    FileUtils.deleteDirectory(file);
+                else
+                    System.out.println(file.delete());
             } catch (IOException e) {
                 alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
             }
