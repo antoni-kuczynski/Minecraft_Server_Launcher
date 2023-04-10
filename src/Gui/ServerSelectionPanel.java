@@ -1,6 +1,5 @@
 package Gui;
 
-import SelectedServer.LevelNameColorConverter;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
 import SelectedServer.ServerPropertiesFile;
@@ -16,12 +15,12 @@ import java.util.Objects;
 import java.util.prefs.Preferences;
 
 import static Gui.Frame.alert;
-import static Gui.Frame.exStackTraceToString;
+import static Gui.Frame.getErrorDialogMessage;
 
 public class ServerSelectionPanel extends JPanel {
     private final JButton openServerFolder;
     private static ServerSelectionPanel panel;
-    private static AddWorldsPanel addWorldsPanel;
+    public static AddWorldsPanel addWorldsPanel;
     private final Preferences userValues;
     private int selectedIndexInComboBox;
     private static final DefaultComboBoxModel<String> serverSelectionModel = new DefaultComboBoxModel<>();
@@ -45,7 +44,7 @@ public class ServerSelectionPanel extends JPanel {
         try {
             config = new Config();
         } catch(IOException e) {
-            Frame.alert(AlertType.FATAL, exStackTraceToString(e.getStackTrace()));
+            Frame.alert(AlertType.FATAL, getErrorDialogMessage(e));
         }
         JLabel selServerTitle = new JLabel(" or select server here:");
 
@@ -83,14 +82,14 @@ public class ServerSelectionPanel extends JPanel {
                     nbtParserComboBox.start();
                     nbtParserComboBox.join();
                 } catch (Exception ex) {
-                    alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
+                    alert(AlertType.ERROR, getErrorDialogMessage(ex));
                 }
                 ServerDetails.serverLevelName = nbtParserComboBox.getLevelName();
-                LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
                 panel.repaint();
                 addWorldsPanel.repaint();
                 selectedIndexInComboBox = serverSelection.getSelectedIndex();
                 userValues.putInt("SELECTED_COMBO_INDEX", selectedIndexInComboBox);
+                addWorldsPanel.setIcons();
             }
         });
         DefaultListSelectionModel model = new DefaultListSelectionModel();
@@ -119,7 +118,8 @@ public class ServerSelectionPanel extends JPanel {
         NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
         nbtParser.start();
         nbtParser.join();
-        ServerDetails.serverLevelName = nbtParser.getLevelName();
+        ServerDetails.serverLevelName = nbtParser.getLevelName(); //issue #64 fix
+//        addWorldsPanel.setIcons();
     }
 
     public static void setServerVariables(String text, String serverPath) throws InterruptedException, IOException {
@@ -137,6 +137,7 @@ public class ServerSelectionPanel extends JPanel {
     public void setPanels(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {
         ServerSelectionPanel.panel = panel;
         ServerSelectionPanel.addWorldsPanel = addWorldsPanel;
+        addWorldsPanel.setIcons();
     }
 
     @Override

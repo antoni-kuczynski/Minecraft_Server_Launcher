@@ -1,6 +1,8 @@
 package Gui;
 
 import RightClickMode.ServerSelector;
+import SelectedServer.LevelNameColorConverter;
+import SelectedServer.ServerDetails;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -36,12 +38,14 @@ public class Frame extends JFrame implements ActionListener {
         JMenuBar menuBar = new JMenuBar();
         JMenu lookAndFeelMenu = new JMenu("Change Theme");
         JButton refreshServerList = new JButton("Refresh Server List");
-        JButton openServer = new JButton("Add server");
+        JButton openServer = new JButton("Debug Color Converter");
         refreshServerList.setBorderPainted(false);
         refreshServerList.setRequestFocusEnabled(false);
         refreshServerList.setContentAreaFilled(false);
         refreshServerList.setVisible(true);
         openServer.setVisible(true);
+
+        openServer.addActionListener(e -> LevelNameColorConverter.convertColors("§lParkour Paradise §e§l2§r"));
 //        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("resources/themeswitchericon.png")
 //                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
 
@@ -208,18 +212,20 @@ public class Frame extends JFrame implements ActionListener {
         isFrameInitialized = true;
     }
 
-    public static String exStackTraceToString(StackTraceElement[] elements) {
+    public static String getErrorDialogMessage(Exception e) {
+        Toolkit.getDefaultToolkit().beep();
         StringBuilder sb = new StringBuilder();
+        sb.append(e).append("\n");
         sb.append("Caused by:\n");
-        for (StackTraceElement e : elements) {
-            sb.append(e.toString());
+        StackTraceElement[] elements = e.getStackTrace();
+        for (StackTraceElement element : elements) {
+            sb.append(element.toString());
             sb.append("\n");
         }
         return sb.toString();
     }
 
     public static void alert(AlertType alertType, String message) {
-        System.out.println("this fucker did it: " + message);
         switch(alertType) {
             case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
             case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
@@ -241,7 +247,7 @@ public class Frame extends JFrame implements ActionListener {
                 else
                     System.out.println(file.delete());
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }
     }
@@ -253,7 +259,7 @@ public class Frame extends JFrame implements ActionListener {
             SwingUtilities.updateComponentTreeUI(this);
         } catch (ClassNotFoundException | InstantiationException |
                 IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            alert(AlertType.ERROR, "Cannot set look and feel.\n" + exStackTraceToString(ex.getStackTrace()));
+            alert(AlertType.ERROR, "Cannot set look and feel.\n" + getErrorDialogMessage(ex));
         }
     }
 
@@ -275,24 +281,32 @@ public class Frame extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Preferences prefs = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = prefs.get("look_and_feel", "com.formdev.flatlaf.FlatDarculaLaf");
         try {
             UIManager.setLookAndFeel(lookAndFeel);
         } catch( Exception ex ) {
-            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + exStackTraceToString(ex.getStackTrace()));
+            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
         }
-        if(args.length == 0) {
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    new Frame().setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        } else {
-            new ServerSelector(args);
-        }
+//        if(args[0].equals("DebugColorParser")) {
+//            LevelNameColorConverter.convertColors("§lParkour Paradise §e§l2§r");
+//            System.exit(1);
+//        }
+//        else
+        new Frame();
+//        ServerDetails.serverLevelName = "§k§01§12§23§34§45§56§67§78§89§910§a11§b12§c13§d14§e15§f16";
+
+        //        if(args.length == 0) {
+//            SwingUtilities.invokeLater(() -> {
+//                try {
+//                    new Frame().setVisible(true);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//        } else {
+//            new ServerSelector(args);
+//        }
     }
 }

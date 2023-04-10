@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 
 import static Gui.Frame.alert;
-import static Gui.Frame.exStackTraceToString;
+import static Gui.Frame.getErrorDialogMessage;
 
 public class ServerSelector extends JFrame {
     private ButtonData selectedServer;
@@ -29,7 +29,7 @@ public class ServerSelector extends JFrame {
             try {
                 FileUtils.deleteDirectory(file);
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }
     }

@@ -25,20 +25,21 @@ import java.io.IOException;
 import java.io.Serial;
 
 import static Gui.Frame.alert;
-import static Gui.Frame.exStackTraceToString;
+import static Gui.Frame.getErrorDialogMessage;
 
 public class AddWorldsPanel extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
     private final JLabel selectedWorldIconLabel = new JLabel();
     private final JLabel serverWorldIconLabel = new JLabel();
-    private final JTextArea worldNameAndStuffText = new JTextArea();
+    private final JLabel worldNameAndStuffText = new JLabel();
     private final JLabel serverWorldNameAndStuff = new JLabel();
-    private final JPanel worldPanelUpper = new JPanel(new BorderLayout());
+    private final JPanel worldPanel = new JPanel(new BorderLayout());
     private final JPanel serverPanelBottom = new JPanel(new BorderLayout());
     private final DirectoryTree directoryTree = new DirectoryTree();
     private final FlatRoundBorder border = new FlatRoundBorder();
     private final JButton startCopying = new JButton("Start Copying");
     private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("resources/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+    private final JPanel serverNameAndStuff = new JPanel(new BorderLayout());
 
     private final WorldCopyHandler serverDetails = new WorldCopyHandler();
     private static File worldToAdd;
@@ -77,7 +78,7 @@ public class AddWorldsPanel extends JPanel {
                 try {
                     new WorldCopyHandler(this, progressBar, worldToAdd, false, startCopying).start();
                 } catch (IOException ex) {
-                    alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
+                    alert(AlertType.ERROR, getErrorDialogMessage(ex));
                 }
             } else {
                 isArchiveMode = false;
@@ -138,7 +139,7 @@ public class AddWorldsPanel extends JPanel {
                     }
                     repaint();
                 } catch (UnsupportedFlavorException | IOException e) {
-                    alert(AlertType.ERROR, exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, getErrorDialogMessage(e));
                     return false;
                 }
                 return true;
@@ -154,7 +155,7 @@ public class AddWorldsPanel extends JPanel {
             try {
                 worldCopyHandler = new WorldCopyHandler(this, progressBar, worldToAdd, true, startCopying);
             } catch (IOException ex) {
-                alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
+                alert(AlertType.ERROR, getErrorDialogMessage(ex));
                 return;
             }
             worldCopyHandler.start();
@@ -201,26 +202,51 @@ public class AddWorldsPanel extends JPanel {
         JPanel addingWorld = new JPanel(new BorderLayout());
 
 
-        worldNameAndStuffText.setEditable(false);
+//        worldNameAndStuffText.setEditable(false);
         worldNameAndStuffText.setText("World File name will appear here.");
 
-        worldPanelUpper.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
-        worldPanelUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        worldPanelUpper.add(selectedWorldIconLabel, BorderLayout.CENTER);
-        worldPanelUpper.add(worldNameAndStuffText, BorderLayout.LINE_END);
+        JPanel iHateFrontendPanel2 = new JPanel(new BorderLayout());
+        iHateFrontendPanel2.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+        iHateFrontendPanel2.add(selectedWorldIconLabel, BorderLayout.CENTER);
 
-        JPanel serverNameAndStuff = new JPanel(new BorderLayout());
+        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
+        worldPanel.add(iHateFrontendPanel2, BorderLayout.LINE_START);
+//        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+//        worldPanel.add(selectedWorldIconLabel, BorderLayout.CENTER);
+        worldPanel.add(worldNameAndStuffText, BorderLayout.CENTER);
+        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
+
+        JPanel worldPaneUpper = new JPanel(new BorderLayout());
+        worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+        worldPaneUpper.add(worldPanel, BorderLayout.CENTER);
+        worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
+
 
 //        serverWorldNameAndStuff.setEditable(false);
 //        appendToPane(serverWorldNameAndStuff, "test", Color.BLUE);
 
+        JPanel serverIconWithSpacing = new JPanel(new BorderLayout());
+        serverIconWithSpacing.add(serverWorldIconLabel, BorderLayout.LINE_START);
+        serverIconWithSpacing.add(Box.createRigidArea(new Dimension(3,3)), BorderLayout.CENTER);
+        serverIconWithSpacing.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
+
+        serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        serverNameAndStuff.add(serverWorldIconLabel, BorderLayout.CENTER);
-        serverNameAndStuff.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
+        serverNameAndStuff.add(serverIconWithSpacing, BorderLayout.LINE_END);
+//        serverNameAndStuff.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
+        serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
-        serverPanelBottom.add(serverNameAndStuff, BorderLayout.LINE_START);
+        JPanel iHateFrontendPanel = new JPanel(new BorderLayout());
+        iHateFrontendPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+        iHateFrontendPanel.add(serverNameAndStuff, BorderLayout.CENTER);
 
-        addingWorld.add(worldPanelUpper, BorderLayout.PAGE_START);
+        serverPanelBottom.add(iHateFrontendPanel, BorderLayout.LINE_START);
+//        serverPanelBottom.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+//        serverPanelBottom.add(serverNameAndStuff, BorderLayout.CENTER);
+        serverPanelBottom.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
+
+        addingWorld.add(worldPaneUpper, BorderLayout.PAGE_START);
+        addingWorld.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         addingWorld.add(directoryTreeScroll, BorderLayout.CENTER);
         addingWorld.add(serverPanelBottom, BorderLayout.PAGE_END);
 
@@ -261,14 +287,7 @@ public class AddWorldsPanel extends JPanel {
         }
         return new ConvertedSize(unitRound.format(finalSize), unitSymbol);
     }
-
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        worldPanelUpper.setBorder(border); //issue #5 fixed
-        serverPanelBottom.setBorder(border);
-
+    public void setIcons() {
         directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
         if(worldToAdd != null && isArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("File: " + worldToAdd.getAbsolutePath()); //world name todo here
@@ -294,10 +313,12 @@ public class AddWorldsPanel extends JPanel {
             startCopying.setEnabled(true);
             if(new File(worldToAdd + "\\icon.png").exists()) //issue #24 fix
                 selectedWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(worldToAdd + "\\icon.png").getImage().getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-            else selectedWorldIconLabel.setIcon(defaultWorldIcon);
+            else
+                selectedWorldIconLabel.setIcon(defaultWorldIcon);
         } else if(extractedWorldDir == null) {
             selectedWorldIconLabel.setIcon(defaultWorldIcon);
         }
+
 
         if(!new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName() + "\\icon.png").exists()) {
             serverWorldIconLabel.setIcon(defaultWorldIcon);
@@ -310,10 +331,69 @@ public class AddWorldsPanel extends JPanel {
         if(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()).exists()) {
             ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()));
 //            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
+            if(ServerDetails.serverLevelName == null)
+                ServerDetails.serverLevelName = "Level.dat file not found.";
             serverWorldNameAndStuff.setText("<html> Folder Name: " + serverDetails.getServerWorldName() +"<br> Level name: " + "" + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }
+    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        worldPanel.setBorder(border); //issue #5 fixed
+        serverNameAndStuff.setBorder(border);
+//        setIcons();
+//        directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
+//        if(worldToAdd != null && isArchiveMode) { //issue #7 fix
+//            worldNameAndStuffText.setText("File: " + worldToAdd.getAbsolutePath()); //world name todo here
+//        } else if(!isArchiveMode && worldToAdd != null) {
+//            worldNameAndStuffText.setText("Folder: " + worldToAdd.getAbsolutePath()); //world name todo here
+//        }
+//
+//        if(isArchiveMode && extractedWorldDir != null) {
+//            //this is the worst fucking solution ever lol
+//            File extractedDir = new File(extractedWorldDir);
+//            if(!new File(extractedWorldDir + "\\icon.png").exists()) {
+//                boolean doesIconInParentExist = new File(extractedDir.getParent() + "\\icon.png").exists();
+//                ImageIcon parentImg = new ImageIcon(new ImageIcon(extractedDir.getParent() +
+//                        "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+//                selectedWorldIconLabel.setIcon(doesIconInParentExist ? parentImg : defaultWorldIcon);
+//            } else {
+//                if(new File(extractedDir + "\\icon.png").exists()) //issue #22 fixed by adding another check
+//                    selectedWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(extractedDir + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+//                else
+//                    selectedWorldIconLabel.setIcon(defaultWorldIcon);
+//            }
+//        } else if(worldToAdd != null && worldToAdd.exists()) { //issue #8 fix
+//            startCopying.setEnabled(true);
+//            if(new File(worldToAdd + "\\icon.png").exists()) //issue #24 fix
+//                selectedWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(worldToAdd + "\\icon.png").getImage().getScaledInstance(96,96, Image.SCALE_SMOOTH)));
+//            else
+//                selectedWorldIconLabel.setIcon(defaultWorldIcon);
+//        } else if(extractedWorldDir == null) {
+//            selectedWorldIconLabel.setIcon(defaultWorldIcon);
+//        }
+//
+//
+//        if(!new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName() + "\\icon.png").exists()) {
+//            if(!serverWorldIconLabel.getIcon().equals(defaultWorldIcon))
+//                serverWorldIconLabel.setIcon(defaultWorldIcon);
+//        } else {
+//            serverWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName() + "\\icon.png")
+//                    .getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
+//        }
+//
+//        //size is in bytes
+//        if(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()).exists()) {
+//            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()));
+////            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
+//            if(ServerDetails.serverLevelName == null)
+//                ServerDetails.serverLevelName = "Level.dat file not found.";
+//            serverWorldNameAndStuff.setText("<html> Folder Name: " + serverDetails.getServerWorldName() +"<br> Level name: " + "" + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
+//        } else {
+//            serverWorldNameAndStuff.setText("Server world folder does not exist.");
+//        }
     }
 
     public static void setExtractedWorldDir(String extractedWorldDir) {

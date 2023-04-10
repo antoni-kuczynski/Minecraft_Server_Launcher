@@ -9,8 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
-import static Gui.Frame.alert;
-import static Gui.Frame.exStackTraceToString;
+import static Gui.Frame.getErrorDialogMessage;
 
 public class ServerPropertiesFile {
     private String worldName;
@@ -29,7 +28,7 @@ public class ServerPropertiesFile {
         try {
             serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
         } catch (NoSuchFileException e) {
-            Frame.alert(AlertType.FATAL, "\"" + e.getMessage() + "\"" + " file not found.\n"  + exStackTraceToString(e.getStackTrace()));
+            Frame.alert(AlertType.FATAL, "\"" + e.getMessage() + "\"" + " file not found.\n"  + getErrorDialogMessage(e));
             System.exit(1);
         }
 

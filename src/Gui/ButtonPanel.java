@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static Gui.ServerSelectionPanel.addWorldsPanel;
+
 public class ButtonPanel extends JPanel implements ActionListener {
     private static final int BUTTON_WIDTH_PADDING = 20;
     private static final int BUTTON_HEIGHT_PADDING = 10;
@@ -86,13 +88,15 @@ public class ButtonPanel extends JPanel implements ActionListener {
         }
         int index = Integer.parseInt(e.getActionCommand());
         ButtonData serverConfig = config.getData().get(index);
-        new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
-                serverConfig.getServerLaunchArguments()).start();
         try {
             ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder());
         } catch (Exception ex) {
-            Frame.alert(AlertType.ERROR, Frame.exStackTraceToString(ex.getStackTrace()));
+            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
         }
         ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
+
+        new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
+                serverConfig.getServerLaunchArguments()).start();
+        addWorldsPanel.setIcons();
     }
 }

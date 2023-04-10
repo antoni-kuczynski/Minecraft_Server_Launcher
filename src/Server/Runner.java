@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static Gui.Frame.alert;
-import static Gui.Frame.exStackTraceToString;
+import static Gui.Frame.getErrorDialogMessage;
 
 public class Runner extends Thread {
     private final RunMode runMode;
@@ -93,7 +93,7 @@ public class Runner extends Thread {
                 try {
                     desktop.open(file);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot open \"servers.json\" file.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot open \"servers.json\" file.\n" + getErrorDialogMessage(e));
                 }
             }
             case SERVER_FOLDER -> {
@@ -124,14 +124,14 @@ public class Runner extends Thread {
                 try {
                     desktop.open(directory);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot open server's directory.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot open server's directory.\n" + getErrorDialogMessage(e));
                 }
             }
             case SERVER_JAR -> {
                 try {
                     launchServer(pathToServerJar, javaRuntimePath);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot start new Process pb. Cannot launch server.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot start new Process pb. Cannot launch server.\n" + getErrorDialogMessage(e));
                 }
             }
         }

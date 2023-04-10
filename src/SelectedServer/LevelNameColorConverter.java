@@ -1,11 +1,8 @@
 package SelectedServer;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-import static java.util.Map.entry;
-
-public class LevelNameColorConverter {
+public final class LevelNameColorConverter {
     private static final LinkedHashMap<String, String> MC_CODES = new LinkedHashMap<>();
     static {
         MC_CODES.put("§0", "<font color=\"#000000\">");    // black
@@ -29,46 +26,19 @@ public class LevelNameColorConverter {
         MC_CODES.put("§m", "<strike>");    // strikethrough
         MC_CODES.put("§n", "<u>");    // underline
         MC_CODES.put("§o", "<i>");    // italic
-        MC_CODES.put("§r", "<RESET>");    // reset
+        MC_CODES.put("§r", "</font></i></u></strike></b>");    // reset
     }
 
-    private static final LinkedHashMap<String, String> MC_CODES_DEBUG = new LinkedHashMap<String, String>() {{
-        put("§0", "\u001b[30m"); // black
-        put("§1", "\u001b[34m"); // dark_blue
-        put("§2", "\u001b[32m"); // dark_green
-        put("§3", "\u001b[36m"); // dark_aqua
-        put("§4", "\u001b[31m"); // dark_red
-        put("§5", "\u001b[35m"); // dark_purple
-        put("§6", "\u001b[33m"); // gold
-        put("§7", "\u001b[37m"); // gray
-        put("§8", "\u001b[90m"); // dark_gray
-        put("§9", "\u001b[94m"); // blue
-        put("§a", "\u001b[92m"); // green
-        put("§b", "\u001b[96m"); // aqua
-        put("§c", "\u001b[91m"); // red
-        put("§d", "\u001b[95m"); // light_purple
-        put("§e", "\u001b[93m"); // yellow
-        put("§f", "\u001b[97m"); // white
-        put("§k", "\u001b[5m");  // obfuscated
-        put("§l", "\u001b[1m");  // bold
-        put("§m", "\u001b[9m");  // strikethrough
-        put("§n", "\u001b[4m");  // underline
-        put("§o", "\u001b[3m");  // italic
-        put("§r", "\u001b[0m");  // reset
-    }};
-
-
-
-    public static void convertColors(String levelName) {
-        StringBuilder finalLevelName = new StringBuilder(levelName);
-        boolean isParagraph = false;
-        for(int i = 1; i < levelName.length(); i++) {
-            if(levelName.charAt(i - 1) == '§') {
-                System.out.println("Replacing " + levelName.charAt(i-1) + levelName.charAt(i) + " with \"" + MC_CODES_DEBUG.get("§" + levelName.charAt(i)));
-                finalLevelName.replace(i-1, i, MC_CODES.get("§" + levelName.charAt(i)));
-            }
-
+    public static String convertColors(String levelName) {
+        for(String s : MC_CODES.keySet()) {
+            levelName = levelName.replace(s, MC_CODES.get(s));
         }
-        System.out.println("Final level name: " + finalLevelName);
+        levelName = levelName + "</font></i></u></strike></b>";
+        System.out.println("Final level name: " + levelName);
+        return levelName;
+    }
+
+    private LevelNameColorConverter() {
+
     }
 }

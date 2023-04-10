@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.zip.*;
 
 import static Gui.Frame.alert;
-import static Gui.Frame.exStackTraceToString;
+import static Gui.Frame.getErrorDialogMessage;
 
 public class WorldCopyHandler extends Thread {
     private static JProgressBar progressBar = null;
@@ -156,20 +156,20 @@ public class WorldCopyHandler extends Thread {
                 try {
                     FileUtils.deleteDirectory(serverWorldDir);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot delete server world directory.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot delete server world directory.\n" + getErrorDialogMessage(e));
                 }
             }
             try {
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot delete nether and end directories.\n" + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot delete nether and end directories.\n" + getErrorDialogMessage(e));
             }
 
             try {
                 copyDirectory(selectedWorld, serverWorldDir);
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
             }
         } else if (isArchive(selectedWorld)) {
             if (!copyFilesToServerDir || isInRightClickMode) {
@@ -188,7 +188,7 @@ public class WorldCopyHandler extends Thread {
                     File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
                     AddWorldsPanel.setExtractedWorldDir(extractedDirTemp);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + getErrorDialogMessage(e));
                     throw new RuntimeException(); //this line's stayin for some reason
                 }
                 jPanelToRepaint.repaint();
@@ -205,14 +205,14 @@ public class WorldCopyHandler extends Thread {
                     try {
                         FileUtils.deleteDirectory(serverWorldDir);
                     } catch (IOException e) {
-                        alert(AlertType.ERROR, "Cannot delete server world directory.\n" + exStackTraceToString(e.getStackTrace()));
+                        alert(AlertType.ERROR, "Cannot delete server world directory.\n" + getErrorDialogMessage(e));
                     }
                 }
                 try {
                     FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                     FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot delete server's nether and end direcories.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot delete server's nether and end direcories.\n" + getErrorDialogMessage(e));
                 }
 
                 try {
@@ -220,7 +220,7 @@ public class WorldCopyHandler extends Thread {
                     predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
                     copyDirectory(predictedWorldDir, serverWorldDir);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
                 }
                 System.out.println("original dir: " + selectedWorld.toString());
                 System.out.println("checking dir: " + ServerDetails.serverPath);
