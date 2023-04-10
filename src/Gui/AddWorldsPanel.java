@@ -1,5 +1,6 @@
 package Gui;
 
+import SelectedServer.LevelNameColorConverter;
 import Server.DirectoryTree;
 import Server.ConvertedSize;
 import SelectedServer.ServerDetails;
@@ -308,6 +309,7 @@ public class AddWorldsPanel extends JPanel {
         //size is in bytes
         if(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()).exists()) {
             ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()));
+//            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
             serverWorldNameAndStuff.setText("<html> Folder Name: " + serverDetails.getServerWorldName() +"<br> Level name: " + "" + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");

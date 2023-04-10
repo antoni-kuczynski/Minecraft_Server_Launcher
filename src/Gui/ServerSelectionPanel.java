@@ -1,5 +1,6 @@
 package Gui;
 
+import SelectedServer.LevelNameColorConverter;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
 import SelectedServer.ServerPropertiesFile;
@@ -85,7 +86,7 @@ public class ServerSelectionPanel extends JPanel {
                     alert(AlertType.ERROR, exStackTraceToString(ex.getStackTrace()));
                 }
                 ServerDetails.serverLevelName = nbtParserComboBox.getLevelName();
-
+                LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
                 panel.repaint();
                 addWorldsPanel.repaint();
                 selectedIndexInComboBox = serverSelection.getSelectedIndex();
