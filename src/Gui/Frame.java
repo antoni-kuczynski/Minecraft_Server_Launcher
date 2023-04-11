@@ -26,6 +26,7 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
 
+    private AddWorldsPanel addWorldsPanel;
     public static boolean isFrameInitialized = false;
 
     private final String PREFS_KEY_X = "window_x";
@@ -43,8 +44,9 @@ public class Frame extends JFrame implements ActionListener {
         refreshServerList.setRequestFocusEnabled(false);
         refreshServerList.setContentAreaFilled(false);
         refreshServerList.setVisible(true);
-        openServer.setVisible(true);
+//        openServer.setVisible(true);
 
+        openServer.setVisible(false);
         openServer.addActionListener(e -> LevelNameColorConverter.convertColors("§lParkour Paradise §e§l2§r"));
 //        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("resources/themeswitchericon.png")
 //                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
@@ -125,23 +127,17 @@ public class Frame extends JFrame implements ActionListener {
         JPanel worldsPanelAndSpacing = new JPanel(new BorderLayout());
         worldsPanelAndSpacing.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
         worldsPanelAndSpacing.add(addWorldsPanel, BorderLayout.CENTER);
+        worldsPanelAndSpacing.add(Box.createRigidArea(new Dimension(200, 10)), BorderLayout.LINE_END);
 
-        JPanel buttonAndWorldsPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                buttonPanel.setSize(new Dimension(getWidth() / 2, getHeight()));
-            }
-        };
+        JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
 
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                buttonAndWorldsPanel.setLayout(new BorderLayout(10, 10));
-                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
-                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
-                add(buttonAndWorldsPanel, BorderLayout.CENTER);
+                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.CENTER);
+                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.LINE_END);
                 add(titlePanel, BorderLayout.PAGE_START);
+                add(buttonAndWorldsPanel, BorderLayout.CENTER);
                 setVisible(true);
                 return null;
             }
@@ -209,6 +205,8 @@ public class Frame extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
         });
+        this.addWorldsPanel = addWorldsPanel;
+        addWorldsPanel.reloadBorders();
         isFrameInitialized = true;
     }
 
@@ -279,6 +277,7 @@ public class Frame extends JFrame implements ActionListener {
         } else if (e.getSource() == nordTheme) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
         }
+        addWorldsPanel.reloadBorders();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

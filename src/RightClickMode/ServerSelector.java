@@ -90,12 +90,12 @@ public class ServerSelector extends JFrame {
         startCopying.addActionListener(e -> {
             System.out.println(new File(worldpath.toString()));
             WorldCopyHandler.isInRightClickMode = true;
-            try {
-                new WorldCopyHandler(parentPanel, progressBar, new File("C:\\Users\\szkola\\Downloads\\Parkour Spiral.zip"), true, startCopying).start();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+//            try {
+////                new WorldCopyHandler(parentPanel, progressBar, new File("C:\\Users\\szkola\\Downloads\\Parkour Spiral.zip"), true, startCopying).start();
+//            } catch (IOException ex) {
+//                throw new RuntimeException(ex);
+//            }
+        }); //commented cuz im not working on this and its causing errors
 
         cancel.addActionListener(e -> System.exit(1));
 

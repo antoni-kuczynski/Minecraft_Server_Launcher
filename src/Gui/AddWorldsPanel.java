@@ -1,6 +1,6 @@
 package Gui;
 
-import SelectedServer.LevelNameColorConverter;
+import SelectedServer.NBTParser;
 import Server.DirectoryTree;
 import Server.ConvertedSize;
 import SelectedServer.ServerDetails;
@@ -10,10 +10,6 @@ import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.awt.*;
@@ -41,7 +37,7 @@ public class AddWorldsPanel extends JPanel {
     private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("resources/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
     private final JPanel serverNameAndStuff = new JPanel(new BorderLayout());
 
-    private final WorldCopyHandler serverDetails = new WorldCopyHandler();
+    private final WorldCopyHandler serverInformation = new WorldCopyHandler();
     private static File worldToAdd;
     private static String extractedWorldDir;
     private boolean isArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
@@ -96,10 +92,10 @@ public class AddWorldsPanel extends JPanel {
                     }
                 }
             }
-            repaint();
+            setIcons();
         });
 
-        final JPanel tempPanel = this;
+        final AddWorldsPanel tempPanel = this;
         TransferHandler transferHandler = new TransferHandler() {
             @Serial
             private static final long serialVersionUID = 1L;
@@ -137,7 +133,7 @@ public class AddWorldsPanel extends JPanel {
                         }
 
                     }
-                    repaint();
+                    setIcons();
                 } catch (UnsupportedFlavorException | IOException e) {
                     alert(AlertType.ERROR, getErrorDialogMessage(e));
                     return false;
@@ -255,19 +251,6 @@ public class AddWorldsPanel extends JPanel {
         add(startCopyingPanel, BorderLayout.PAGE_END);
     }
 
-    private void appendToPane(JTextPane tp, String msg, Color c) {
-        StyleContext sc = StyleContext.getDefaultStyleContext();
-        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
-
-        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
-        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-
-        int len = tp.getDocument().getLength();
-        tp.setCaretPosition(len);
-        tp.setCharacterAttributes(aset, false);
-        tp.replaceSelection(msg);
-    }
-
     private ConvertedSize directorySizeWithConverion(File directory) {
         long SIZE_IN_BYTES = FileUtils.sizeOfDirectory(directory);
         double ONE_KILOBYTE = 1024;
@@ -320,80 +303,29 @@ public class AddWorldsPanel extends JPanel {
         }
 
 
-        if(!new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName() + "\\icon.png").exists()) {
+        if(!new File(ServerDetails.serverPath + "\\" + serverInformation.getServerWorldName() + "\\icon.png").exists()) {
             serverWorldIconLabel.setIcon(defaultWorldIcon);
         } else {
-            serverWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName() + "\\icon.png")
+            serverWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(ServerDetails.serverPath + "\\" + serverInformation.getServerWorldName() + "\\icon.png")
                     .getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
         }
 
         //size is in bytes
-        if(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()).exists()) {
-            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()));
+        if(new File(ServerDetails.serverPath + "\\" + serverInformation.getServerWorldName()).exists()) {
+            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverPath + "\\" + serverInformation.getServerWorldName()));
 //            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
             if(ServerDetails.serverLevelName == null)
                 ServerDetails.serverLevelName = "Level.dat file not found.";
-            serverWorldNameAndStuff.setText("<html> Folder Name: " + serverDetails.getServerWorldName() +"<br> Level name: " + "" + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
+
+            serverWorldNameAndStuff.setText("<html> Folder Name: " + serverInformation.getServerWorldName() +"<br> Level name: " + "" + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }
     }
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+
+    public void reloadBorders() {
         worldPanel.setBorder(border); //issue #5 fixed
         serverNameAndStuff.setBorder(border);
-//        setIcons();
-//        directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
-//        if(worldToAdd != null && isArchiveMode) { //issue #7 fix
-//            worldNameAndStuffText.setText("File: " + worldToAdd.getAbsolutePath()); //world name todo here
-//        } else if(!isArchiveMode && worldToAdd != null) {
-//            worldNameAndStuffText.setText("Folder: " + worldToAdd.getAbsolutePath()); //world name todo here
-//        }
-//
-//        if(isArchiveMode && extractedWorldDir != null) {
-//            //this is the worst fucking solution ever lol
-//            File extractedDir = new File(extractedWorldDir);
-//            if(!new File(extractedWorldDir + "\\icon.png").exists()) {
-//                boolean doesIconInParentExist = new File(extractedDir.getParent() + "\\icon.png").exists();
-//                ImageIcon parentImg = new ImageIcon(new ImageIcon(extractedDir.getParent() +
-//                        "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-//                selectedWorldIconLabel.setIcon(doesIconInParentExist ? parentImg : defaultWorldIcon);
-//            } else {
-//                if(new File(extractedDir + "\\icon.png").exists()) //issue #22 fixed by adding another check
-//                    selectedWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(extractedDir + "\\icon.png").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
-//                else
-//                    selectedWorldIconLabel.setIcon(defaultWorldIcon);
-//            }
-//        } else if(worldToAdd != null && worldToAdd.exists()) { //issue #8 fix
-//            startCopying.setEnabled(true);
-//            if(new File(worldToAdd + "\\icon.png").exists()) //issue #24 fix
-//                selectedWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(worldToAdd + "\\icon.png").getImage().getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-//            else
-//                selectedWorldIconLabel.setIcon(defaultWorldIcon);
-//        } else if(extractedWorldDir == null) {
-//            selectedWorldIconLabel.setIcon(defaultWorldIcon);
-//        }
-//
-//
-//        if(!new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName() + "\\icon.png").exists()) {
-//            if(!serverWorldIconLabel.getIcon().equals(defaultWorldIcon))
-//                serverWorldIconLabel.setIcon(defaultWorldIcon);
-//        } else {
-//            serverWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName() + "\\icon.png")
-//                    .getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
-//        }
-//
-//        //size is in bytes
-//        if(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()).exists()) {
-//            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverPath + "\\" + serverDetails.getServerWorldName()));
-////            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
-//            if(ServerDetails.serverLevelName == null)
-//                ServerDetails.serverLevelName = "Level.dat file not found.";
-//            serverWorldNameAndStuff.setText("<html> Folder Name: " + serverDetails.getServerWorldName() +"<br> Level name: " + "" + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
-//        } else {
-//            serverWorldNameAndStuff.setText("Server world folder does not exist.");
-//        }
     }
 
     public static void setExtractedWorldDir(String extractedWorldDir) {

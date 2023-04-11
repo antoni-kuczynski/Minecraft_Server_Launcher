@@ -30,6 +30,8 @@ public final class LevelNameColorConverter {
     }
 
     public static String convertColors(String levelName) {
+        if(levelName == null) //issue #72 fix
+            return "Level.dat file does not exist";
         for(String s : MC_CODES.keySet()) {
             levelName = levelName.replace(s, MC_CODES.get(s));
         }

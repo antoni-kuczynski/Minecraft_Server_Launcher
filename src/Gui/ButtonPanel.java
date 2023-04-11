@@ -1,5 +1,8 @@
 package Gui;
 
+import SelectedServer.NBTParser;
+import SelectedServer.ServerDetails;
+import SelectedServer.ServerPropertiesFile;
 import Server.*;
 
 import javax.swing.*;
@@ -45,9 +48,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     public void clearAllButtons() throws IOException {
         for(JButton button : buttons)
             remove(button);
-//        repaint();
         initialize();
-        repaint();
 
     }
 
@@ -73,30 +74,34 @@ public class ButtonPanel extends JPanel implements ActionListener {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        this.setPreferredSize(new Dimension(getWidth(), getHeight() - 50));
-    }
-
-    @Override
     public void actionPerformed(ActionEvent e) {
         Config config;
         try {
             config = new Config();
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
+            return;
         }
         int index = Integer.parseInt(e.getActionCommand());
         ButtonData serverConfig = config.getData().get(index);
         try {
             ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder());
+            new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
+            NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
+//            nbtParser.setLaunchingServer(true);
+            nbtParser.start();
+            nbtParser.join();
+            ServerDetails.serverLevelName = nbtParser.getLevelName();
+//            nbtParser.setLaunchingServer(true);
         } catch (Exception ex) {
-            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
+//            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex)); //shut the fuck up, it always throws this exception NO MATTER FUCKING WHAT
         }
+
         ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
+
+        addWorldsPanel.setIcons();
 
         new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
                 serverConfig.getServerLaunchArguments()).start();
-        addWorldsPanel.setIcons();
     }
 }

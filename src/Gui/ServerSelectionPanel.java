@@ -85,8 +85,7 @@ public class ServerSelectionPanel extends JPanel {
                     alert(AlertType.ERROR, getErrorDialogMessage(ex));
                 }
                 ServerDetails.serverLevelName = nbtParserComboBox.getLevelName();
-                panel.repaint();
-                addWorldsPanel.repaint();
+                panel.reloadButtonText();
                 selectedIndexInComboBox = serverSelection.getSelectedIndex();
                 userValues.putInt("SELECTED_COMBO_INDEX", selectedIndexInComboBox);
                 addWorldsPanel.setIcons();
@@ -125,13 +124,7 @@ public class ServerSelectionPanel extends JPanel {
     public static void setServerVariables(String text, String serverPath) throws InterruptedException, IOException {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
-        new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
-        NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
-        nbtParser.start();
-        nbtParser.join();
-        ServerDetails.serverLevelName = nbtParser.getLevelName();
-        panel.repaint();
-        addWorldsPanel.repaint();
+        panel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
     }
 
     public void setPanels(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {
@@ -140,9 +133,7 @@ public class ServerSelectionPanel extends JPanel {
         addWorldsPanel.setIcons();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    private void reloadButtonText() {
         userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
         userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath);
         openServerFolder.setText("Open " + ServerDetails.serverName + "'s Server Folder");

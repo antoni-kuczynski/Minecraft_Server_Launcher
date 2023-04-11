@@ -13,24 +13,30 @@ import static Gui.Frame.alert;
 import static Gui.Frame.getErrorDialogMessage;
 
 public class NBTParser extends Thread {
+    private boolean isLaunchingServer = true;
     private String levelName;
     //contructor for server world
     public NBTParser() {
 
     }
 
+
     @Override
     public void run() {
         System.out.println("Level.dat file location: " + ServerDetails.serverLevelDatFile);
         File pathToCopiedLevelDat = new File("world_temp\\level_" + ServerDetails.serverName + ".dat");
         System.out.println("Path to copied level.dat: " + pathToCopiedLevelDat);
+        if(!new File(ServerDetails.serverLevelDatFile).exists()) {
+            ServerDetails.serverLevelName = "Level.dat file not found";
+            return;
+        }
         try {
-            if(new File(ServerDetails.serverLevelDatFile).exists())
-                FileUtils.copyFile(new File(ServerDetails.serverLevelDatFile), pathToCopiedLevelDat);
-            else
-                ServerDetails.serverLevelName = "Level.dat file not found";
+            File tempLevelDat = new File(ServerDetails.serverLevelDatFile);
+            System.out.println("Can write: " + tempLevelDat.canExecute());
+            FileUtils.copyFile(tempLevelDat, pathToCopiedLevelDat);
         } catch (Exception e) {
-            SwingUtilities.invokeLater(() -> alert(AlertType.ERROR, "Cannot copy level.dat file." + getErrorDialogMessage(e))); //issue #61 fix, it was conflicting with ui dispatch thread
+            if(!e.toString().contains("The process cannot access the file because it is being used by another process")) //fuck this shit - issue #74 and #73 fixed
+                SwingUtilities.invokeLater(() -> alert(AlertType.ERROR, "Cannot copy level.dat file." + getErrorDialogMessage(e))); //issue #61 fix, it was conflicting with ui dispatch thread
         }
         Nbt levelDat = new Nbt();
         CompoundTag layerOne = null;
@@ -45,11 +51,16 @@ public class NBTParser extends Thread {
             CompoundTag levelDatContent = layerOne.get("Data");
             this.levelName = String.valueOf(levelDatContent.get("LevelName")).split("\"")[1];
         }
+
         System.out.println("Level name: " + levelName);
         System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
     }
 
     public String getLevelName() {
         return LevelNameColorConverter.convertColors(levelName);
+    }
+
+    public void setLaunchingServer(boolean launchingServer) {
+        isLaunchingServer = launchingServer;
     }
 }

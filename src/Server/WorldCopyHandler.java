@@ -3,6 +3,7 @@ package Server;
 import Gui.AddWorldsPanel;
 import Gui.AlertType;
 import Gui.Frame;
+import SelectedServer.NBTParser;
 import SelectedServer.ServerPropertiesFile;
 import SelectedServer.ServerDetails;
 import org.apache.commons.io.FileUtils;
@@ -19,7 +20,7 @@ import static Gui.Frame.getErrorDialogMessage;
 
 public class WorldCopyHandler extends Thread {
     private static JProgressBar progressBar = null;
-    private JPanel jPanelToRepaint;
+    private AddWorldsPanel addWorldsPanel;
     private static JButton jButtonToDisable;
 
     private final String serverWorldName;
@@ -29,10 +30,10 @@ public class WorldCopyHandler extends Thread {
     public static boolean isInRightClickMode = false;
 
 
-    public WorldCopyHandler(JPanel jPanelToRepaint, JProgressBar progressBar,
+    public WorldCopyHandler(AddWorldsPanel addWorldsPanel, JProgressBar progressBar,
                             File originalWorldDir, boolean copyFilesToServerDir, JButton jButtonToDisable) throws IOException {
         ServerPropertiesFile serverPropertiesFile = new ServerPropertiesFile();
-        this.jPanelToRepaint = jPanelToRepaint;
+        this.addWorldsPanel = addWorldsPanel;
         this.serverWorldName = serverPropertiesFile.getWorldName();
         this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
         this.selectedWorld = originalWorldDir;
@@ -191,7 +192,7 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + getErrorDialogMessage(e));
                     throw new RuntimeException(); //this line's stayin for some reason
                 }
-                jPanelToRepaint.repaint();
+                addWorldsPanel.setIcons();
             }
             if (copyFilesToServerDir) {
                 jButtonToDisable.setEnabled(false); //issue #15 fix
@@ -214,9 +215,8 @@ public class WorldCopyHandler extends Thread {
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot delete server's nether and end direcories.\n" + getErrorDialogMessage(e));
                 }
-
+                File predictedWorldDir = null;
                 try {
-                    File predictedWorldDir;
                     predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
                     copyDirectory(predictedWorldDir, serverWorldDir);
                 } catch (IOException e) {
@@ -224,12 +224,24 @@ public class WorldCopyHandler extends Thread {
                 }
                 System.out.println("original dir: " + selectedWorld.toString());
                 System.out.println("checking dir: " + ServerDetails.serverPath);
+
+                String temp = ServerDetails.serverLevelDatFile;
+                ServerDetails.serverLevelDatFile = predictedWorldDir.getAbsolutePath() + "\\level.dat"; //trick the NBTParser into using extracted world's level.dat
+                try { //issue #71 fix
+                    NBTParser nbtParser = new NBTParser();
+                    nbtParser.start();
+                    nbtParser.join();
+                    ServerDetails.serverLevelName = nbtParser.getLevelName();
+                } catch (Exception e) {
+                    alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
+                }
+                ServerDetails.serverLevelDatFile = temp; //restore the original level.dat file location for safety
             }
         } else if (selectedWorld.toString().contains(ServerDetails.serverPath)) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         jButtonToDisable.setEnabled(true); //issue #15 fix
-        jPanelToRepaint.repaint();
+        addWorldsPanel.setIcons();
     }
 
     private String findWorldDirectory(String dir) { //function should now work most of the times
