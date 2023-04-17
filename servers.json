@@ -12,6 +12,15 @@
     "launchArgs": "-Xmx4G -Xms256M"
   },
   {
+    "buttonText": "Laptop \"@#$%&^% Debug_Slash",
+    "pathToButtonIcon": "",
+    "pathToServerFolder": "C:\\Users\\szkola\\Documents\\mcserver_test_slash",
+    "pathToServerJarFile": "C:\\Users\\szkola\\Documents\\mcserver_test_slash\\paper-1.19.3-445.jar",
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.1.10-hotspot\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": true,
+    "launchArgs": "-Xmx4G -Xms256M"
+  },
+  {
     "buttonText": "1.19.3 DEBUG",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\Debug_Server",

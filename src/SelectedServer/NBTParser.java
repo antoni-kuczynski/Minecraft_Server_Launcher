@@ -24,7 +24,17 @@ public class NBTParser extends Thread {
     @Override
     public void run() {
         System.out.println("Level.dat file location: " + ServerDetails.serverLevelDatFile);
-        File pathToCopiedLevelDat = new File("world_temp\\level_" + ServerDetails.serverName + ".dat");
+
+        //issue #68 fix by replacing illegal characters with their names
+        String tempServerName = ServerDetails.serverName;
+        if(tempServerName.contains("/")) {
+            tempServerName = tempServerName.replace("/", "{slash}");
+        }
+        if(tempServerName.contains("\\")) {
+            tempServerName = tempServerName.replace("\\", "{backslash}");
+        }
+
+        File pathToCopiedLevelDat = new File("world_temp\\level_" + tempServerName + ".dat");
         System.out.println("Path to copied level.dat: " + pathToCopiedLevelDat);
         if(!new File(ServerDetails.serverLevelDatFile).exists()) {
             ServerDetails.serverLevelName = "Level.dat file not found";
@@ -32,6 +42,7 @@ public class NBTParser extends Thread {
         }
         try {
             File tempLevelDat = new File(ServerDetails.serverLevelDatFile);
+            System.out.println(tempLevelDat);
             System.out.println("Can write: " + tempLevelDat.canExecute());
             FileUtils.copyFile(tempLevelDat, pathToCopiedLevelDat);
         } catch (Exception e) {

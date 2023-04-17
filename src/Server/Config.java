@@ -78,6 +78,8 @@ public class Config {
                 serverLaunchArgs = jsonObject.getString("launchArgs");
             else
                 serverLaunchArgs = javaArguments;
+
+
             data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs));
         }
     }
