@@ -29,8 +29,7 @@ public record ButtonData(String buttonText, String pathToButtonIcon,
         return serverLaunchArguments;
     }
 
-    @Override
-    public int serverId() {
+    public int getServerId() {
         return serverId;
     }
 }

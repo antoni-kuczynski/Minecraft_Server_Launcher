@@ -85,7 +85,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
         int index = Integer.parseInt(e.getActionCommand());
         ButtonData serverConfig = config.getData().get(index);
         try {
-            ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder());
+            ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder(), serverConfig.getServerId());
             new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
             NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
 //            nbtParser.setLaunchingServer(true);

@@ -74,6 +74,7 @@ public class ServerSelectionPanel extends JPanel {
                 previouslySelectedComboBoxIndex = serverSelectionModel.getIndexOf(e.getItem());
             }
             if(e.getStateChange() == ItemEvent.SELECTED) {
+                ServerDetails.serverId = serverSelection.getSelectedIndex() + 1; //ids start at 1
                 ServerDetails.serverName = (String) e.getItem();
                 ServerDetails.serverPath = finalConfig.getData().get(serverSelection.getSelectedIndex()).getPathToServerFolder(); //This is a very awful solution - if SOMEHOW indexes of the buttons won't correspond to the JComboBoxes's indexes, this code is fucked
                 NBTParser nbtParserComboBox = new NBTParser(); //added reading NBT level.dat file for level name to jcombobox
@@ -121,10 +122,11 @@ public class ServerSelectionPanel extends JPanel {
 //        addWorldsPanel.setIcons();
     }
 
-    public static void setServerVariables(String text, String serverPath, String serverId) throws InterruptedException, IOException {
+    public static void setServerVariables(String text, String serverPath, int serverId) throws InterruptedException, IOException {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
         ServerDetails.serverId = serverId;
+        System.out.println("Server id: " + serverId);
         panel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
     }
 

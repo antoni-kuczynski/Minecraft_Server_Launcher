@@ -23,27 +23,14 @@ public class NBTParser extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Level.dat file location: " + ServerDetails.serverLevelDatFile);
-
-        //issue #68 fix by replacing illegal characters with their names
-        String tempServerName = ServerDetails.serverName;
-        if(tempServerName.contains("/")) {
-            tempServerName = tempServerName.replace("/", "{slash}");
-        }
-        if(tempServerName.contains("\\")) {
-            tempServerName = tempServerName.replace("\\", "{backslash}");
-        }
-
-        File pathToCopiedLevelDat = new File("world_temp\\level_" + tempServerName + ".dat");
-        System.out.println("Path to copied level.dat: " + pathToCopiedLevelDat);
+        //even better issue #68, issue #76 and issue #75 fix, now file names use server ids not names
+        File pathToCopiedLevelDat = new File("world_temp\\level_" + "server_id_" + ServerDetails.serverId + "_" + ".dat");
         if(!new File(ServerDetails.serverLevelDatFile).exists()) {
             ServerDetails.serverLevelName = "Level.dat file not found";
             return;
         }
         try {
             File tempLevelDat = new File(ServerDetails.serverLevelDatFile);
-            System.out.println(tempLevelDat);
-            System.out.println("Can write: " + tempLevelDat.canExecute());
             FileUtils.copyFile(tempLevelDat, pathToCopiedLevelDat);
         } catch (Exception e) {
             if(!e.toString().contains("The process cannot access the file because it is being used by another process")) //fuck this shit - issue #74 and #73 fixed
@@ -62,9 +49,6 @@ public class NBTParser extends Thread {
             CompoundTag levelDatContent = layerOne.get("Data");
             this.levelName = String.valueOf(levelDatContent.get("LevelName")).split("\"")[1];
         }
-
-        System.out.println("Level name: " + levelName);
-        System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
     }
 
     public String getLevelName() {

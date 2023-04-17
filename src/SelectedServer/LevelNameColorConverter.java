@@ -36,7 +36,6 @@ public final class LevelNameColorConverter {
             levelName = levelName.replace(s, MC_CODES.get(s));
         }
         levelName = levelName + "</font></i></u></strike></b>";
-        System.out.println("Final level name: " + levelName);
         return levelName;
     }
 
