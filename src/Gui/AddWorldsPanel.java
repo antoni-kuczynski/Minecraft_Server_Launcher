@@ -273,9 +273,9 @@ public class AddWorldsPanel extends JPanel {
     public void setIcons() {
         directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
         if(worldToAdd != null && isArchiveMode) { //issue #7 fix
-            worldNameAndStuffText.setText("File: " + worldToAdd.getAbsolutePath()); //world name todo here
+            worldNameAndStuffText.setText("<html>File: " + worldToAdd.getAbsolutePath() + "<br>File size: TODO<br>" + "Extracted size: TODO" + "</html>");
         } else if(!isArchiveMode && worldToAdd != null) {
-            worldNameAndStuffText.setText("Folder: " + worldToAdd.getAbsolutePath()); //world name todo here
+            worldNameAndStuffText.setText("<html>Folder: " + worldToAdd.getAbsolutePath() + "<br>Folder size: " + directorySizeWithConverion(worldToAdd).getText() + "</html>");
         }
 
         if(isArchiveMode && extractedWorldDir != null) {
@@ -317,7 +317,7 @@ public class AddWorldsPanel extends JPanel {
             if(ServerDetails.serverLevelName == null)
                 ServerDetails.serverLevelName = "Level.dat file not found.";
 
-            serverWorldNameAndStuff.setText("<html> Folder Name: " + serverInformation.getServerWorldName() +"<br> Level name: " + "" + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
+            serverWorldNameAndStuff.setText("<html> Folder Name: " + serverInformation.getServerWorldName() +"<br> Level name: " + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }
