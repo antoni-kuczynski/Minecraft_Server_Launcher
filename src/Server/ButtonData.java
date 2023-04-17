@@ -2,7 +2,8 @@ package Server;
 
 public record ButtonData(String buttonText, String pathToButtonIcon,
                          String pathToServerFolder, String pathToServerJarFile,
-                         String pathToJavaRuntime, String serverLaunchArguments) {
+                         String pathToJavaRuntime, String serverLaunchArguments,
+                         int serverId) {
 
     public String getButtonText() {
         return buttonText;
@@ -26,5 +27,10 @@ public record ButtonData(String buttonText, String pathToButtonIcon,
 
     public String getServerLaunchArguments() {
         return serverLaunchArguments;
+    }
+
+    @Override
+    public int serverId() {
+        return serverId;
     }
 }

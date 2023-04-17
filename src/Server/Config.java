@@ -80,7 +80,7 @@ public class Config {
                 serverLaunchArgs = javaArguments;
 
 
-            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs));
+            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs, i));
         }
     }
 }

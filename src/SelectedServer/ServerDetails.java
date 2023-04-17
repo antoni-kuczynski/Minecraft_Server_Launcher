@@ -6,4 +6,5 @@ public class ServerDetails {
     public static String serverWorldPath;
     public static String serverLevelName;
     public static String serverLevelDatFile;
+    public static int serverId;
 }

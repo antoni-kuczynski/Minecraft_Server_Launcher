@@ -121,9 +121,10 @@ public class ServerSelectionPanel extends JPanel {
 //        addWorldsPanel.setIcons();
     }
 
-    public static void setServerVariables(String text, String serverPath) throws InterruptedException, IOException {
+    public static void setServerVariables(String text, String serverPath, String serverId) throws InterruptedException, IOException {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
+        ServerDetails.serverId = serverId;
         panel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
     }
 
