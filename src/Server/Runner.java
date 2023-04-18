@@ -1,6 +1,7 @@
 package Server;
 
-import Gui.AlertType;
+import Enums.AlertType;
+import Enums.RunMode;
 
 import java.awt.*;
 import java.io.File;

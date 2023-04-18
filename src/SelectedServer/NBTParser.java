@@ -1,6 +1,6 @@
 package SelectedServer;
 
-import Gui.AlertType;
+import Enums.AlertType;
 import dev.dewy.nbt.Nbt;
 import dev.dewy.nbt.tags.collection.CompoundTag;
 import org.apache.commons.io.FileUtils;
@@ -13,7 +13,6 @@ import static Gui.Frame.alert;
 import static Gui.Frame.getErrorDialogMessage;
 
 public class NBTParser extends Thread {
-    private boolean isLaunchingServer = true;
     private String levelName;
     //contructor for server world
     public NBTParser() {
@@ -53,9 +52,5 @@ public class NBTParser extends Thread {
 
     public String getLevelName() {
         return LevelNameColorConverter.convertColors(levelName);
-    }
-
-    public void setLaunchingServer(boolean launchingServer) {
-        isLaunchingServer = launchingServer;
     }
 }

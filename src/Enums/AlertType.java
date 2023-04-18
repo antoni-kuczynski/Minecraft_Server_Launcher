@@ -1,4 +1,4 @@
-package Gui;
+package Enums;
 
 public enum AlertType {
     ERROR,

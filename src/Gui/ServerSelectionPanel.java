@@ -1,6 +1,8 @@
 package Gui;
 
 import CustomJComponents.EnabledComboBoxRenderer;
+import Enums.AlertType;
+import Enums.RunMode;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
 import SelectedServer.ServerPropertiesFile;
@@ -20,7 +22,7 @@ import static Gui.Frame.getErrorDialogMessage;
 
 public class ServerSelectionPanel extends JPanel {
     private final JButton openServerFolder;
-    private static ServerSelectionPanel panel;
+    private static ServerSelectionPanel currentPanel;
     public static AddWorldsPanel addWorldsPanel;
     private final Preferences userValues;
     private int selectedIndexInComboBox;
@@ -48,10 +50,7 @@ public class ServerSelectionPanel extends JPanel {
             Frame.alert(AlertType.FATAL, getErrorDialogMessage(e));
         }
         JLabel selServerTitle = new JLabel(" or select server here:");
-
-
         JPanel selServerManually = new JPanel();
-
 
         for(int i = 0; i < Objects.requireNonNull(config).getData().size(); i++) {
             if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
@@ -95,7 +94,7 @@ public class ServerSelectionPanel extends JPanel {
                     alert(AlertType.ERROR, getErrorDialogMessage(ex));
                 }
                 ServerDetails.serverLevelName = nbtParserComboBox.getLevelName();
-                panel.reloadButtonText();
+                currentPanel.reloadButtonText();
                 selectedIndexInComboBox = serverSelection.getSelectedIndex();
                 userValues.putInt("SELECTED_COMBO_INDEX", selectedIndexInComboBox);
                 addWorldsPanel.setIcons();
@@ -135,11 +134,11 @@ public class ServerSelectionPanel extends JPanel {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
         ServerDetails.serverId = serverId;
-        panel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
+        currentPanel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
     }
 
     public void setPanels(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {
-        ServerSelectionPanel.panel = panel;
+        ServerSelectionPanel.currentPanel = panel;
         ServerSelectionPanel.addWorldsPanel = addWorldsPanel;
         addWorldsPanel.setIcons();
     }

@@ -1,7 +1,7 @@
 package Server;
 
 import Gui.AddWorldsPanel;
-import Gui.AlertType;
+import Enums.AlertType;
 import Gui.Frame;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerPropertiesFile;
@@ -20,13 +20,13 @@ import static Gui.Frame.getErrorDialogMessage;
 
 public class WorldCopyHandler extends Thread {
     private static JProgressBar progressBar = null;
-    private AddWorldsPanel addWorldsPanel;
+    private final AddWorldsPanel addWorldsPanel;
     private static JButton jButtonToDisable;
 
     private final String serverWorldName;
-    private File selectedWorld = null;
+    private final File selectedWorld;
     private final File serverWorldDir;
-    private boolean copyFilesToServerDir;
+    private final boolean copyFilesToServerDir;
     public static boolean isInRightClickMode = false;
 
 
@@ -37,14 +37,9 @@ public class WorldCopyHandler extends Thread {
         this.serverWorldName = serverPropertiesFile.getWorldName();
         this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
         this.selectedWorld = originalWorldDir;
-        this.progressBar = progressBar;
+        WorldCopyHandler.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
-        this.jButtonToDisable = jButtonToDisable;
-    }
-
-    public WorldCopyHandler() throws IOException {
-        this.serverWorldName = new ServerPropertiesFile().getWorldName();
-        this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
+        WorldCopyHandler.jButtonToDisable = jButtonToDisable;
     }
 
 
@@ -281,11 +276,5 @@ public class WorldCopyHandler extends Thread {
             else
                 return dir;
         }
-    }
-
-    public String getServerWorldName () {
-        if(serverWorldName == null)
-            return "world_name_not_found";
-        return serverWorldName;
     }
 }

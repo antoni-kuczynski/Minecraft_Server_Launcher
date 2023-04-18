@@ -1,6 +1,6 @@
 package Server;
 
-import Gui.AlertType;
+import Enums.AlertType;
 import Gui.Frame;
 import SelectedServer.ServerDetails;
 import org.apache.commons.io.FileUtils;

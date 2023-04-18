@@ -1,6 +1,6 @@
 package Server;
 
-import Gui.AlertType;
+import Enums.AlertType;
 import Gui.Frame;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,21 +20,21 @@ public class Config {
 
     public static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
-        for(String s : Files.readAllLines(fileToRead.toPath())) {
-            fileToReadReader.append(s);
+        for(String fileLine : Files.readAllLines(fileToRead.toPath())) {
+            fileToReadReader.append(fileLine);
         }
         return fileToReadReader.toString();
     }
 
     public Config() throws IOException {
-        File serverConfig = new File("servers.json");
-        if(!serverConfig.exists()) {
-            if(!serverConfig.createNewFile()) {
+        File serverConfigFile = new File("servers.json");
+        if(!serverConfigFile.exists()) {
+            if(!serverConfigFile.createNewFile()) {
                 Frame.alert(AlertType.FATAL, "Cannot create config file");
                 System.exit(1);
             }
-            FileWriter writer = new FileWriter(serverConfig);
-            writer.write("""
+            FileWriter configWriter = new FileWriter(serverConfigFile);
+            configWriter.write("""
                     [
                     {
                         "globalLaunchArgs": "-Xmx16G -Xms2G -XX:+UseG1GC -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=1 -XX:ParallelGCThreads=4 -XX:+OptimizeStringConcat"
@@ -58,15 +58,15 @@ public class Config {
                         "launchArgs": "-Xmx4G -Xms256M"
                       }
                     ]""");
-            writer.close();
+            configWriter.close();
         }
 
         JSONArray configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
         JSONObject globalVariables = configJSONObjects.getJSONObject(0);
         String javaArguments = globalVariables.getString("globalLaunchArgs");
 
-        for (int i = 1; i < configJSONObjects.length(); i++) { //start on index 1 because index 0 are global variables
-            JSONObject jsonObject = configJSONObjects.getJSONObject(i);
+        for (int jsonIndex = 1; jsonIndex < configJSONObjects.length(); jsonIndex++) { //start on index 1 because index 0 are global variables
+            JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
             String buttonText = jsonObject.getString("buttonText");
             String pathToButtonIcon = jsonObject.getString("pathToButtonIcon");
             String pathToServerFolder = jsonObject.getString("pathToServerFolder");
@@ -80,7 +80,7 @@ public class Config {
                 serverLaunchArgs = javaArguments;
 
 
-            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs, i));
+            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs, jsonIndex));
         }
     }
 }
