@@ -1,7 +1,6 @@
 package Gui;
 
-import SelectedServer.NBTParser;
-import Server.DirectoryTree;
+import CustomJComponents.DirectoryTree;
 import Server.ConvertedSize;
 import SelectedServer.ServerDetails;
 import Server.WorldCopyHandler;
@@ -209,7 +208,8 @@ public class AddWorldsPanel extends JPanel {
         worldPanel.add(iHateFrontendPanel2, BorderLayout.LINE_START);
 //        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
 //        worldPanel.add(selectedWorldIconLabel, BorderLayout.CENTER);
-        worldPanel.add(worldNameAndStuffText, BorderLayout.CENTER);
+        worldPanel.add(Box.createRigidArea(dimension)); //issue #62 fix
+        worldPanel.add(worldNameAndStuffText, BorderLayout.LINE_END);
         worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
         JPanel worldPaneUpper = new JPanel(new BorderLayout());
@@ -223,7 +223,7 @@ public class AddWorldsPanel extends JPanel {
 
         JPanel serverIconWithSpacing = new JPanel(new BorderLayout());
         serverIconWithSpacing.add(serverWorldIconLabel, BorderLayout.LINE_START);
-        serverIconWithSpacing.add(Box.createRigidArea(new Dimension(3,3)), BorderLayout.CENTER);
+        serverIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.CENTER); //issue #62 fix for servers
         serverIconWithSpacing.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
 
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
@@ -273,9 +273,20 @@ public class AddWorldsPanel extends JPanel {
     public void setIcons() {
         directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
         if(worldToAdd != null && isArchiveMode) { //issue #7 fix
-            worldNameAndStuffText.setText("<html>File: " + worldToAdd.getAbsolutePath() + "<br>File size: TODO<br>" + "Extracted size: TODO" + "</html>");
+            worldNameAndStuffText.setText("<html>File: " + worldToAdd.getAbsolutePath() +
+                    "<br>File size: TODO<br>" + "Extracted size: TODO" + "</html>");
         } else if(!isArchiveMode && worldToAdd != null) {
-            worldNameAndStuffText.setText("<html>Folder: " + worldToAdd.getAbsolutePath() + "<br>Folder size: " + directorySizeWithConverion(worldToAdd).getText() + "</html>");
+            String worldToAddTempText = worldToAdd.getAbsolutePath();
+            if(worldToAddTempText.length() > 50 && worldToAdd.getName().length() < 25) { //issue #77 fix by adding ... to the path
+                worldToAddTempText = worldToAddTempText.substring(0, 9) + "...\\" + worldToAdd.getName();
+            }
+            if(worldToAddTempText.length() > 50 && worldToAdd.getName().length() >= 25) {
+                String tempWorldName = worldToAdd.getName();
+                worldToAddTempText = worldToAddTempText.substring(0, 9) + "...\\" + tempWorldName.substring(0,20) +
+                        "..." + tempWorldName.substring(tempWorldName.length() - 9, tempWorldName.length() - 1);
+            }
+            worldNameAndStuffText.setText("<html>Folder: " + worldToAddTempText +
+                    "<br>Folder size: " + directorySizeWithConverion(worldToAdd).getText() + "</html>");
         }
 
         if(isArchiveMode && extractedWorldDir != null) {

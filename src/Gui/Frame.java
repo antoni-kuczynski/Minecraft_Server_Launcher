@@ -123,11 +123,15 @@ public class Frame extends JFrame implements ActionListener {
         //Add the world add JPanel to the frame
         addWorldsPanel.add(Box.createRigidArea(dimension));
 
-
+        JPanel worldsPanelSpacingAnotherLayer = new JPanel(new BorderLayout());
         JPanel worldsPanelAndSpacing = new JPanel(new BorderLayout());
+
+        worldsPanelSpacingAnotherLayer.add(addWorldsPanel, BorderLayout.LINE_START);
+        worldsPanelSpacingAnotherLayer.add(Box.createRigidArea(new Dimension(100, 50)), BorderLayout.LINE_END);
+
         worldsPanelAndSpacing.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
-        worldsPanelAndSpacing.add(addWorldsPanel, BorderLayout.CENTER);
-        worldsPanelAndSpacing.add(Box.createRigidArea(new Dimension(200, 10)), BorderLayout.LINE_END);
+        worldsPanelAndSpacing.add(worldsPanelSpacingAnotherLayer, BorderLayout.LINE_END);
+//        worldsPanelAndSpacing.add(Box.createRigidArea(new Dimension(200, 10)), BorderLayout.LINE_END);
 
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
 
@@ -238,12 +242,11 @@ public class Frame extends JFrame implements ActionListener {
         if(files == null)
             return;
         for (File file : files) {
-            System.out.println(file);
             try {
                 if(file.isDirectory())
                     FileUtils.deleteDirectory(file);
                 else
-                    System.out.println(file.delete());
+                    file.delete();
             } catch (IOException e) {
                 alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }

@@ -222,8 +222,6 @@ public class WorldCopyHandler extends Thread {
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
                 }
-                System.out.println("original dir: " + selectedWorld.toString());
-                System.out.println("checking dir: " + ServerDetails.serverPath);
 
                 String temp = ServerDetails.serverLevelDatFile;
                 ServerDetails.serverLevelDatFile = predictedWorldDir.getAbsolutePath() + "\\level.dat"; //trick the NBTParser into using extracted world's level.dat

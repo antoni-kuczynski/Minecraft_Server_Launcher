@@ -1,5 +1,6 @@
 package Gui;
 
+import CustomJComponents.EnabledComboBoxRenderer;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
 import SelectedServer.ServerPropertiesFile;
@@ -54,9 +55,17 @@ public class ServerSelectionPanel extends JPanel {
 
         for(int i = 0; i < Objects.requireNonNull(config).getData().size(); i++) {
             if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
-                serverSelection.addItem(config.getData().get(i).getButtonText());
+                String tempServerName = config.getData().get(i).getButtonText();
+                if(tempServerName.length() > 25) {
+                    tempServerName = tempServerName.substring(0, 15) + "...";
+                }
+                serverSelection.addItem(tempServerName);
             } else {
-                serverSelection.addItem(config.getData().get(i).getButtonText() + " (MISSING FILES)");
+                String tempServerName = config.getData().get(i).getButtonText();
+                if(tempServerName.length() > 25) {
+                    tempServerName = tempServerName.substring(0, 15) + "...";
+                }
+                serverSelection.addItem(tempServerName + " (MISSING FILES)");
 
                 disabledComboBoxIndexes.add(i);
             }
@@ -126,7 +135,6 @@ public class ServerSelectionPanel extends JPanel {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
         ServerDetails.serverId = serverId;
-        System.out.println("Server id: " + serverId);
         panel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
     }
 
@@ -139,7 +147,11 @@ public class ServerSelectionPanel extends JPanel {
     private void reloadButtonText() {
         userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
         userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath);
-        openServerFolder.setText("Open " + ServerDetails.serverName + "'s Server Folder");
+        String tempServerName = ServerDetails.serverName;
+        if(tempServerName.length() > 25) {
+            tempServerName = tempServerName.substring(0, 15) + "...";
+        }
+        openServerFolder.setText("Open " + tempServerName + "'s Server Folder");
         if(disabledComboBoxIndexes.contains(serverSelection.getSelectedIndex())) { //just select previous index
             serverSelection.setSelectedIndex(previouslySelectedComboBoxIndex);
         }
