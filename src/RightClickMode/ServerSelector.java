@@ -1,9 +1,9 @@
 package RightClickMode;
 
 import Gui.AlertType;
-import Servers.ButtonData;
-import Servers.Config;
-import Servers.WorldCopyHandler;
+import Server.ButtonData;
+import Server.Config;
+import Server.WorldCopyHandler;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 
 import static Gui.Frame.alert;
-import static Gui.Frame.exStackTraceToString;
+import static Gui.Frame.getErrorDialogMessage;
 
 public class ServerSelector extends JFrame {
     private ButtonData selectedServer;
@@ -29,7 +29,7 @@ public class ServerSelector extends JFrame {
             try {
                 FileUtils.deleteDirectory(file);
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }
     }
@@ -90,12 +90,12 @@ public class ServerSelector extends JFrame {
         startCopying.addActionListener(e -> {
             System.out.println(new File(worldpath.toString()));
             WorldCopyHandler.isInRightClickMode = true;
-            try {
-                new WorldCopyHandler(parentPanel, progressBar, new File("C:\\Users\\szkola\\Downloads\\Parkour Spiral.zip"), true, startCopying, selectorServer.getSelectedIndex()).start();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+//            try {
+////                new WorldCopyHandler(parentPanel, progressBar, new File("C:\\Users\\szkola\\Downloads\\Parkour Spiral.zip"), true, startCopying).start();
+//            } catch (IOException ex) {
+//                throw new RuntimeException(ex);
+//            }
+        }); //commented cuz im not working on this and its causing errors
 
         cancel.addActionListener(e -> System.exit(1));
 

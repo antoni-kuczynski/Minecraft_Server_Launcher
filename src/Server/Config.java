@@ -1,4 +1,4 @@
-package Servers;
+package Server;
 
 import Gui.AlertType;
 import Gui.Frame;
@@ -18,12 +18,12 @@ public class Config {
     }
     private final ArrayList<ButtonData> data = new ArrayList<>();
 
-    public static String readFileString(File f) throws IOException {
-        StringBuilder bobTheBuilder = new StringBuilder();
-        for(String s : Files.readAllLines(f.toPath())) {
-            bobTheBuilder.append(s);
+    public static String readFileString(File fileToRead) throws IOException {
+        StringBuilder fileToReadReader = new StringBuilder();
+        for(String s : Files.readAllLines(fileToRead.toPath())) {
+            fileToReadReader.append(s);
         }
-        return bobTheBuilder.toString();
+        return fileToReadReader.toString();
     }
 
     public Config() throws IOException {
@@ -61,12 +61,12 @@ public class Config {
             writer.close();
         }
 
-        JSONArray jsonArray = new JSONArray(readFileString(new File("servers.json")));
-        JSONObject globalVariables = jsonArray.getJSONObject(0);
+        JSONArray configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
+        JSONObject globalVariables = configJSONObjects.getJSONObject(0);
         String javaArguments = globalVariables.getString("globalLaunchArgs");
 
-        for (int i = 1; i < jsonArray.length(); i++) { //start on index 1 because index 0 are global variables
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
+        for (int i = 1; i < configJSONObjects.length(); i++) { //start on index 1 because index 0 are global variables
+            JSONObject jsonObject = configJSONObjects.getJSONObject(i);
             String buttonText = jsonObject.getString("buttonText");
             String pathToButtonIcon = jsonObject.getString("pathToButtonIcon");
             String pathToServerFolder = jsonObject.getString("pathToServerFolder");
@@ -78,7 +78,9 @@ public class Config {
                 serverLaunchArgs = jsonObject.getString("launchArgs");
             else
                 serverLaunchArgs = javaArguments;
-            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs));
+
+
+            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs, i));
         }
     }
 }

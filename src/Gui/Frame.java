@@ -1,6 +1,8 @@
 package Gui;
 
 import RightClickMode.ServerSelector;
+import SelectedServer.LevelNameColorConverter;
+import SelectedServer.ServerDetails;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -15,6 +17,17 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class Frame extends JFrame implements ActionListener {
+    private final JMenuItem darculaTheme;
+    private final JMenuItem githubDarkTheme;
+    private final JMenuItem oneDarkTheme;
+    private final JMenuItem inteliijLightMenuItem;
+    private final JMenuItem xCodeDarkTheme;
+    private final JMenuItem draculaTheme;
+    private final JMenuItem nordTheme;
+    private static String lookAndFeel;
+
+    private AddWorldsPanel addWorldsPanel;
+    public static boolean isFrameInitialized = false;
 
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
@@ -22,122 +35,73 @@ public class Frame extends JFrame implements ActionListener {
     private final String PREFS_KEY_HEIGHT = "window_height";
     private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
 
-
-    public static String exStackTraceToString(StackTraceElement[] elements) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Caused by:\n");
-        for (StackTraceElement e : elements) {
-            sb.append(e.toString());
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    public static void alert(AlertType alertType, String message) {
-        switch(alertType) {
-            case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
-            case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-            case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-            case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private static void clearTempDir() {
-        File dir = new File(".\\world_temp");
-        File[] files = dir.listFiles();
-        assert files != null;
-        for (File file : files) {
-            try {
-                FileUtils.deleteDirectory(file);
-            } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + exStackTraceToString(e.getStackTrace()));
-            }
-        }
-    }
-    private final JMenuItem darculaMenuItem;
-    private final JMenuItem githubDarkMenuItem;
-    private final JMenuItem oneDarkMenuItem;
-    private final JMenuItem inteliijLightMenuItem;
-    private final JMenuItem xCodeDarkMenuItem;
-    private final JMenuItem draculaMenuItem;
-    private final JMenuItem nordMenuItem;
-    private static String lookAndFeel;
-    public Frame() throws IOException {
-
+    public Frame() throws IOException, InterruptedException {
         JMenuBar menuBar = new JMenuBar();
-
         JMenu lookAndFeelMenu = new JMenu("Change Theme");
-        JButton test = new JButton("Refresh Server List");
-        JButton openServer = new JButton("Add server");
-        test.setBorderPainted(false);
-        test.setRequestFocusEnabled(false);
-        test.setContentAreaFilled(false);
+        JButton refreshServerList = new JButton("Refresh Server List");
+        JButton openServer = new JButton("Debug Color Converter");
+        refreshServerList.setBorderPainted(false);
+        refreshServerList.setRequestFocusEnabled(false);
+        refreshServerList.setContentAreaFilled(false);
+        refreshServerList.setVisible(true);
+//        openServer.setVisible(true);
 
-        //Temporary, until next version
-        test.setVisible(false);
         openServer.setVisible(false);
+        openServer.addActionListener(e -> LevelNameColorConverter.convertColors("§lParkour Paradise §e§l2§r"));
 //        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("resources/themeswitchericon.png")
 //                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
 
-        test.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
-                .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
+//        refreshServerList.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
+//                .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
 
-        darculaMenuItem = new JMenuItem("Darcula (Inteliij Dark)");
-        darculaMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(darculaMenuItem);
+        darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
+        darculaTheme.addActionListener(this);
+        lookAndFeelMenu.add(darculaTheme);
 
-        nordMenuItem = new JMenuItem("Nord");
-        nordMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(nordMenuItem);
+        nordTheme = new JMenuItem("Nord");
+        nordTheme.addActionListener(this);
+        lookAndFeelMenu.add(nordTheme);
 
-        draculaMenuItem = new JMenuItem("Dracula");
-        draculaMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(draculaMenuItem);
+        draculaTheme = new JMenuItem("Dracula");
+        draculaTheme.addActionListener(this);
+        lookAndFeelMenu.add(draculaTheme);
 
-        oneDarkMenuItem = new JMenuItem("One Dark");
-        oneDarkMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(oneDarkMenuItem);
+        oneDarkTheme = new JMenuItem("One Dark");
+        oneDarkTheme.addActionListener(this);
+        lookAndFeelMenu.add(oneDarkTheme);
 
-        githubDarkMenuItem = new JMenuItem("GitHub Dark");
-        githubDarkMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(githubDarkMenuItem);
+        githubDarkTheme = new JMenuItem("GitHub Dark");
+        githubDarkTheme.addActionListener(this);
+        lookAndFeelMenu.add(githubDarkTheme);
 
-        xCodeDarkMenuItem = new JMenuItem("Xcode Dark");
-        xCodeDarkMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(xCodeDarkMenuItem);
+        xCodeDarkTheme = new JMenuItem("Xcode Dark");
+        xCodeDarkTheme.addActionListener(this);
+        lookAndFeelMenu.add(xCodeDarkTheme);
 
         inteliijLightMenuItem = new JMenuItem("Inteliij Light");
         inteliijLightMenuItem.addActionListener(this);
         lookAndFeelMenu.add(inteliijLightMenuItem);
 
-
-
-
-//        darculaMenuItem.setSelected(true);
-
         menuBar.add(lookAndFeelMenu);
-        menuBar.add(test);
+        menuBar.add(refreshServerList);
         menuBar.add(openServer);
-
         setJMenuBar(menuBar);
 
 
         // Set up the JFrame
-//        setFocusableWindowState(false);
         setIconImage(new ImageIcon("resources/app_icon.png").getImage());
         setTitle("Minecraft Server Server Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        Preferences userValues = Preferences.userNodeForPackage(getClass());
 
         // Create the JPanels
         TitlePanel titlePanel = new TitlePanel();
         ButtonPanel buttonPanel = new ButtonPanel();
-        ConfigStuffPanel configStuffPanel = new ConfigStuffPanel(prefs);
+        ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
         AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
-        configStuffPanel.setPanel(configStuffPanel, addWorldsPanel);
-
+        serverSelectionPanel.setPanels(serverSelectionPanel, addWorldsPanel);
 
         //JPanel containing empty panels & config panel
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
@@ -152,35 +116,32 @@ public class Frame extends JFrame implements ActionListener {
         configPanel.add(separatorPanel, BorderLayout.PAGE_START);
         Dimension dimension = new Dimension(10, 10);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        configPanel.add(configStuffPanel, BorderLayout.CENTER);
+        configPanel.add(serverSelectionPanel, BorderLayout.CENTER);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
         //Add the world add JPanel to the frame
         addWorldsPanel.add(Box.createRigidArea(dimension));
 
+        JPanel worldsPanelSpacingAnotherLayer = new JPanel(new BorderLayout());
+        JPanel worldsPanelAndSpacing = new JPanel(new BorderLayout());
 
-        JPanel testPanel2 = new JPanel(new BorderLayout());
-        testPanel2.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
-        testPanel2.add(addWorldsPanel, BorderLayout.CENTER);
+        worldsPanelSpacingAnotherLayer.add(addWorldsPanel, BorderLayout.LINE_START);
+        worldsPanelSpacingAnotherLayer.add(Box.createRigidArea(new Dimension(100, 50)), BorderLayout.LINE_END);
 
-        JPanel testPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                buttonPanel.setSize(new Dimension(getWidth() / 2, getHeight()));
-//                addWorldsPanel.setSize(new Dimension(getWidth() / 2, getHeight()));
-            }
-        };
+        worldsPanelAndSpacing.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
+        worldsPanelAndSpacing.add(worldsPanelSpacingAnotherLayer, BorderLayout.LINE_END);
+//        worldsPanelAndSpacing.add(Box.createRigidArea(new Dimension(200, 10)), BorderLayout.LINE_END);
+
+        JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
 
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                testPanel.setLayout(new BorderLayout(10, 10));
-                testPanel.add(buttonPanel, BorderLayout.LINE_START);
-                testPanel.add(testPanel2, BorderLayout.CENTER);
-                add(testPanel, BorderLayout.CENTER);
+                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.CENTER);
+                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.LINE_END);
                 add(titlePanel, BorderLayout.PAGE_START);
+                add(buttonAndWorldsPanel, BorderLayout.CENTER);
                 setVisible(true);
                 return null;
             }
@@ -201,11 +162,10 @@ public class Frame extends JFrame implements ActionListener {
         setBounds(x, y, width, height);
 
         // Load the window position from user preferences
-
-        int savedX = prefs.getInt(PREFS_KEY_X, Integer.MIN_VALUE);
-        int savedY = prefs.getInt(PREFS_KEY_Y, Integer.MIN_VALUE);
-        int savedWidth = prefs.getInt(PREFS_KEY_WIDTH, Integer.MIN_VALUE);
-        int savedHeight = prefs.getInt(PREFS_KEY_HEIGHT, Integer.MIN_VALUE);
+        int savedX = userValues.getInt(PREFS_KEY_X, Integer.MIN_VALUE);
+        int savedY = userValues.getInt(PREFS_KEY_Y, Integer.MIN_VALUE);
+        int savedWidth = userValues.getInt(PREFS_KEY_WIDTH, Integer.MIN_VALUE);
+        int savedHeight = userValues.getInt(PREFS_KEY_HEIGHT, Integer.MIN_VALUE);
         if (savedX != Integer.MIN_VALUE && savedY != Integer.MIN_VALUE && savedWidth != Integer.MIN_VALUE && savedHeight != Integer.MIN_VALUE) {
             setBounds(savedX, savedY, savedWidth, savedHeight);
         }
@@ -242,31 +202,54 @@ public class Frame extends JFrame implements ActionListener {
             }
         });
 
-        test.addActionListener(e -> {
+        refreshServerList.addActionListener(e -> {
             try {
                 buttonPanel.clearAllButtons();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
+        this.addWorldsPanel = addWorldsPanel;
+        addWorldsPanel.reloadBorders();
+        isFrameInitialized = true;
     }
 
+    public static String getErrorDialogMessage(Exception e) {
+        Toolkit.getDefaultToolkit().beep();
+        StringBuilder sb = new StringBuilder();
+        sb.append(e).append("\n");
+        sb.append("Caused by:\n");
+        StackTraceElement[] elements = e.getStackTrace();
+        for (StackTraceElement element : elements) {
+            sb.append(element.toString());
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == darculaMenuItem) {
-            setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
-        } else if (e.getSource() == githubDarkMenuItem) {
-            setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme");
-        } else if (e.getSource() == oneDarkMenuItem) {
-            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme");
-        } else if (e.getSource() == inteliijLightMenuItem) {
-            setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
-        } else if (e.getSource() == xCodeDarkMenuItem) {
-            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme");
-        } else if (e.getSource() == draculaMenuItem) {
-            setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme");
-        } else if (e.getSource() == nordMenuItem) {
-            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
+    public static void alert(AlertType alertType, String message) {
+        switch(alertType) {
+            case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+            case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+            case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+            case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private static void clearTempDir() {
+        File dir = new File(".\\world_temp");
+        File[] files = dir.listFiles();
+        if(files == null)
+            return;
+        for (File file : files) {
+            try {
+                if(file.isDirectory())
+                    FileUtils.deleteDirectory(file);
+                else
+                    file.delete();
+            } catch (IOException e) {
+                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
+            }
         }
     }
 
@@ -277,28 +260,55 @@ public class Frame extends JFrame implements ActionListener {
             SwingUtilities.updateComponentTreeUI(this);
         } catch (ClassNotFoundException | InstantiationException |
                 IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            alert(AlertType.ERROR, "Cannot set look and feel.\n" + exStackTraceToString(ex.getStackTrace()));
+            alert(AlertType.ERROR, "Cannot set look and feel.\n" + getErrorDialogMessage(ex));
         }
     }
-    public static void main(String[] args) throws IOException {
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == darculaTheme) {
+            setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+        } else if (e.getSource() == githubDarkTheme) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme");
+        } else if (e.getSource() == oneDarkTheme) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme");
+        } else if (e.getSource() == inteliijLightMenuItem) {
+            setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
+        } else if (e.getSource() == xCodeDarkTheme) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme");
+        } else if (e.getSource() == draculaTheme) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme");
+        } else if (e.getSource() == nordTheme) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
+        }
+        addWorldsPanel.reloadBorders();
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
         Preferences prefs = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = prefs.get("look_and_feel", "com.formdev.flatlaf.FlatDarculaLaf");
         try {
             UIManager.setLookAndFeel(lookAndFeel);
         } catch( Exception ex ) {
-            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + exStackTraceToString(ex.getStackTrace()));
+            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
         }
-        if(args.length == 0) {
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    new Frame().setVisible(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-//            new Frame();
-        } else {
-            new ServerSelector(args);
-        }
+//        if(args[0].equals("DebugColorParser")) {
+//            LevelNameColorConverter.convertColors("§lParkour Paradise §e§l2§r");
+//            System.exit(1);
+//        }
+//        else
+        new Frame();
+//        ServerDetails.serverLevelName = "§k§01§12§23§34§45§56§67§78§89§910§a11§b12§c13§d14§e15§f16";
+
+        //        if(args.length == 0) {
+//            SwingUtilities.invokeLater(() -> {
+//                try {
+//                    new Frame().setVisible(true);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//        } else {
+//            new ServerSelector(args);
+//        }
     }
 }

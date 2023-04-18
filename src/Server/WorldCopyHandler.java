@@ -1,9 +1,11 @@
-package Servers;
+package Server;
 
 import Gui.AddWorldsPanel;
 import Gui.AlertType;
-import Gui.ConfigStuffPanel;
 import Gui.Frame;
+import SelectedServer.NBTParser;
+import SelectedServer.ServerPropertiesFile;
+import SelectedServer.ServerDetails;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -14,37 +16,35 @@ import java.util.Objects;
 import java.util.zip.*;
 
 import static Gui.Frame.alert;
-import static Gui.Frame.exStackTraceToString;
+import static Gui.Frame.getErrorDialogMessage;
 
 public class WorldCopyHandler extends Thread {
+    private static JProgressBar progressBar = null;
+    private AddWorldsPanel addWorldsPanel;
+    private static JButton jButtonToDisable;
 
     private final String serverWorldName;
-    private File originalDir = null;
+    private File selectedWorld = null;
     private final File serverWorldDir;
-    private JProgressBar progressBar = null;
     private boolean copyFilesToServerDir;
-    private JPanel panel;
-    private JButton button;
-    private final Config config = new Config();
-    private final int configIndex;
     public static boolean isInRightClickMode = false;
 
-    public WorldCopyHandler(JPanel panel, JProgressBar progressBar, File originalWorldDir, boolean copyFilesToServerDir, JButton button, int configIndex) throws IOException {
-        this.panel = panel;
-        ServerProperties serverProperties = new ServerProperties(configIndex);
-        this.serverWorldName = serverProperties.getWorldName();
-        this.serverWorldDir = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\" + serverWorldName);
-        this.originalDir = originalWorldDir;
+
+    public WorldCopyHandler(AddWorldsPanel addWorldsPanel, JProgressBar progressBar,
+                            File originalWorldDir, boolean copyFilesToServerDir, JButton jButtonToDisable) throws IOException {
+        ServerPropertiesFile serverPropertiesFile = new ServerPropertiesFile();
+        this.addWorldsPanel = addWorldsPanel;
+        this.serverWorldName = serverPropertiesFile.getWorldName();
+        this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
+        this.selectedWorld = originalWorldDir;
         this.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
-        this.button = button;
-        this.configIndex = configIndex;
+        this.jButtonToDisable = jButtonToDisable;
     }
 
-    public WorldCopyHandler(int configIndex) throws IOException {
-        this.serverWorldName = new ServerProperties(configIndex).getWorldName();
-        this.serverWorldDir = new File(config.getData().get(configIndex).getPathToServerFolder() + "\\" + serverWorldName);
-        this.configIndex = configIndex;
+    public WorldCopyHandler() throws IOException {
+        this.serverWorldName = new ServerPropertiesFile().getWorldName();
+        this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
     }
 
 
@@ -91,8 +91,8 @@ public class WorldCopyHandler extends Thread {
     }
 
 
-    private String extractArchive(String archivePath, String destinationPath) throws IOException {
-        button.setEnabled(false);
+    public static String extractArchive(String archivePath, String destinationPath) throws IOException {
+        jButtonToDisable.setEnabled(false);
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
@@ -105,7 +105,7 @@ public class WorldCopyHandler extends Thread {
             File newFile = new File(destinationPath, zipEntry.getName());
             if (zipEntry.isDirectory()) {
                 if(!newFile.mkdirs()) {
-                    alert(AlertType.ERROR, "Cannot create some directory.\nAt line " + getStackTrace()[1].getLineNumber());
+                    alert(AlertType.ERROR, "Cannot create a directory.\nWorldCopyHandler.java extractingArchive()");
                     break;
                 }
                 if (extractedDirectory == null) {
@@ -113,7 +113,6 @@ public class WorldCopyHandler extends Thread {
                 }
             } else {
                 newFile.getParentFile().mkdirs();
-//                    alert(AlertType.ERROR, "Cannot create directory.\nAt line " + getStackTrace()[1].getLineNumber() + " Class WorldCopyHandler.java");
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
@@ -128,11 +127,11 @@ public class WorldCopyHandler extends Thread {
         zis.closeEntry();
         zis.close();
 
-        button.setEnabled(true);
+        jButtonToDisable.setEnabled(true);
         return extractedDirectory;
     }
 
-    private long getTotalSize(String archivePath) throws IOException {
+    private static long getTotalSize(String archivePath) throws IOException {
         long totalSize = 0;
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
@@ -149,7 +148,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        if (originalDir.isDirectory() && !originalDir.toString().contains(config.getData().get(configIndex).getPathToServerFolder())) {
+        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(ServerDetails.serverPath)) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -158,29 +157,29 @@ public class WorldCopyHandler extends Thread {
                 try {
                     FileUtils.deleteDirectory(serverWorldDir);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot delete server world directory.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot delete server world directory.\n" + getErrorDialogMessage(e));
                 }
             }
             try {
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                 FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot delete nether and end directories.\n" + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot delete nether and end directories.\n" + getErrorDialogMessage(e));
             }
 
             try {
-                copyDirectory(originalDir, serverWorldDir);
+                copyDirectory(selectedWorld, serverWorldDir);
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
+                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
             }
-        } else if (isArchive(originalDir)) {
+        } else if (isArchive(selectedWorld)) {
             if (!copyFilesToServerDir || isInRightClickMode) {
                 String extractedDirTemp;
                 try {
-                    File dirToDelete = new File(".\\world_temp\\" + originalDir.getName());
+                    File dirToDelete = new File(".\\world_temp\\" + selectedWorld.getName());
                     if (dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
                         FileUtils.deleteDirectory(dirToDelete);
-                    String temp = extractArchive(originalDir.getAbsolutePath(), ".\\world_temp\\" + originalDir.getName());
+                    String temp = extractArchive(selectedWorld.getAbsolutePath(), ".\\world_temp\\" + selectedWorld.getName());
                     if(temp != null)
                         extractedDirTemp = new File(temp).getParent(); //issue #34 fix by starting at correct directory
                     else {
@@ -190,13 +189,13 @@ public class WorldCopyHandler extends Thread {
                     File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
                     AddWorldsPanel.setExtractedWorldDir(extractedDirTemp);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + getErrorDialogMessage(e));
                     throw new RuntimeException(); //this line's stayin for some reason
                 }
-                panel.repaint();
+                addWorldsPanel.setIcons();
             }
             if (copyFilesToServerDir) {
-                button.setEnabled(false); //issue #15 fix
+                jButtonToDisable.setEnabled(false); //issue #15 fix
                 if (!serverWorldDir.exists()) {
                     if (!serverWorldDir.mkdirs())
                         alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -207,31 +206,40 @@ public class WorldCopyHandler extends Thread {
                     try {
                         FileUtils.deleteDirectory(serverWorldDir);
                     } catch (IOException e) {
-                        alert(AlertType.ERROR, "Cannot delete server world directory.\n" + exStackTraceToString(e.getStackTrace()));
+                        alert(AlertType.ERROR, "Cannot delete server world directory.\n" + getErrorDialogMessage(e));
                     }
                 }
                 try {
                     FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
                     FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot delete server's nether and end direcories.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot delete server's nether and end direcories.\n" + getErrorDialogMessage(e));
                 }
-
+                File predictedWorldDir = null;
                 try {
-                    File predictedWorldDir;
                     predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
                     copyDirectory(predictedWorldDir, serverWorldDir);
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + exStackTraceToString(e.getStackTrace()));
+                    alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
                 }
-                System.out.println("original dir: " + originalDir.toString());
-                System.out.println("checking dir: " + ConfigStuffPanel.getServPath());
+
+                String temp = ServerDetails.serverLevelDatFile;
+                ServerDetails.serverLevelDatFile = predictedWorldDir.getAbsolutePath() + "\\level.dat"; //trick the NBTParser into using extracted world's level.dat
+                try { //issue #71 fix
+                    NBTParser nbtParser = new NBTParser();
+                    nbtParser.start();
+                    nbtParser.join();
+                    ServerDetails.serverLevelName = nbtParser.getLevelName();
+                } catch (Exception e) {
+                    alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
+                }
+                ServerDetails.serverLevelDatFile = temp; //restore the original level.dat file location for safety
             }
-        } else if (originalDir.toString().contains(ConfigStuffPanel.getServPath())) {
+        } else if (selectedWorld.toString().contains(ServerDetails.serverPath)) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
-        button.setEnabled(true); //issue #15 fix
-        panel.repaint();
+        jButtonToDisable.setEnabled(true); //issue #15 fix
+        addWorldsPanel.setIcons();
     }
 
     private String findWorldDirectory(String dir) { //function should now work most of the times

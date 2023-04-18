@@ -1,4 +1,4 @@
-package Servers;
+package CustomJComponents;
 
 import java.awt.Color;
 import java.awt.Component;

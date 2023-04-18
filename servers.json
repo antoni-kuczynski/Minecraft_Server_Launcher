@@ -12,12 +12,13 @@
     "launchArgs": "-Xmx4G -Xms256M"
   },
   {
-    "buttonText": "1.19.3",
+    "buttonText": "Laptop \"@#$%&^% Debug_Slashdpojsaoddddddddddddddddddd;kjadajdjasdja;sdjlllllllllllll;aljsd;lajdajs;ldjalsdja;ldja;djad;laj;la",
     "pathToButtonIcon": "",
-    "pathToServerFolder": "H:\\Minecraft_Serwery\\1.19.3",
-    "pathToServerJarFile": "H:\\Minecraft_Serwery\\1.19.3\\paper-1.19.3-420.jar",
-    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.2.7-hotspot\\bin\\java.exe",
-    "overrideDefaultLaunchArgs": false
+    "pathToServerFolder": "C:\\Users\\szkola\\Documents\\mcserver_test_slash",
+    "pathToServerJarFile": "C:\\Users\\szkola\\Documents\\mcserver_test_slash\\paper-1.19.3-445.jar",
+    "pathToJavaExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-19.0.1.10-hotspot\\bin\\java.exe",
+    "overrideDefaultLaunchArgs": true,
+    "launchArgs": "-Xmx4G -Xms256M"
   },
   {
     "buttonText": "1.19.3 DEBUG",
@@ -28,7 +29,7 @@
     "overrideDefaultLaunchArgs": false
   },
   {
-    "buttonText": "1.19.3 DEBUG2",
+    "buttonText": "1.19.3",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\Debug_Server2",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\Debug_Server2\\paper-1.19.3-420.jar",
@@ -36,7 +37,7 @@
     "overrideDefaultLaunchArgs": false
   },
   {
-    "buttonText": "1.19.3 DEBUG3",
+    "buttonText": "1.19.3",
     "pathToButtonIcon": "",
     "pathToServerFolder": "H:\\Minecraft_Serwery\\Debug_Server2",
     "pathToServerJarFile": "H:\\Minecraft_Serwery\\Debug_Server2\\paper-1.19.3-420.jar",

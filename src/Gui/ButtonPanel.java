@@ -1,6 +1,9 @@
 package Gui;
 
-import Servers.*;
+import SelectedServer.NBTParser;
+import SelectedServer.ServerDetails;
+import SelectedServer.ServerPropertiesFile;
+import Server.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +12,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+
+import static Gui.ServerSelectionPanel.addWorldsPanel;
 
 public class ButtonPanel extends JPanel implements ActionListener {
     private static final int BUTTON_WIDTH_PADDING = 20;
@@ -19,16 +23,16 @@ public class ButtonPanel extends JPanel implements ActionListener {
     public void initialize() throws IOException {
         buttons.clear();
         Config config = new Config();
-        List<ButtonData> serverConfigs = config.getData();
+        ArrayList<ButtonData> serverConfigs = config.getData();
         for (int i = 0; i < serverConfigs.size(); i++) {
             JButton button = createButton(serverConfigs.get(i).getButtonText());
-            boolean serverFilesExist = new File(serverConfigs.get(i).getPathToServerFolder()).exists();
-            button.setEnabled(serverFilesExist);
+            boolean doServerFilesExist = new File(serverConfigs.get(i).getPathToServerFolder()).exists();
+            button.setEnabled(doServerFilesExist);
             String toolTipText = "Server path: " + serverConfigs.get(i).getPathToServerFolder()
                     + "\nServer executable: " + serverConfigs.get(i).getPathToServerJarFile()
                     + "\nJava executable: " + serverConfigs.get(i).getPathToJavaRuntime()
                     + "\nLaunch arguments: " + serverConfigs.get(i).getServerLaunchArguments();
-            if (!serverFilesExist) {
+            if (!doServerFilesExist) {
                 toolTipText = "Server files not found." + "\n" + toolTipText;
             }
             button.setToolTipText(toolTipText);
@@ -44,9 +48,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     public void clearAllButtons() throws IOException {
         for(JButton button : buttons)
             remove(button);
-//        repaint();
         initialize();
-        repaint();
 
     }
 
@@ -72,24 +74,34 @@ public class ButtonPanel extends JPanel implements ActionListener {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        this.setPreferredSize(new Dimension(getWidth(), getHeight() - 50));
-    }
-
-    @Override
     public void actionPerformed(ActionEvent e) {
         Config config;
         try {
             config = new Config();
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
+            return;
         }
         int index = Integer.parseInt(e.getActionCommand());
         ButtonData serverConfig = config.getData().get(index);
-        new Runner(serverConfig.getPathToServerJarFile(), Run.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
+        try {
+            ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder(), serverConfig.getServerId());
+            new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
+            NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
+//            nbtParser.setLaunchingServer(true);
+            nbtParser.start();
+            nbtParser.join();
+            ServerDetails.serverLevelName = nbtParser.getLevelName();
+//            nbtParser.setLaunchingServer(true);
+        } catch (Exception ex) {
+//            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex)); //shut the fuck up, it always throws this exception NO MATTER FUCKING WHAT
+        }
+
+        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
+
+        addWorldsPanel.setIcons();
+
+        new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
                 serverConfig.getServerLaunchArguments()).start();
-        ConfigStuffPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder());
-        ConfigStuffPanel.getServerSelection().setSelectedIndex(index);
     }
 }
