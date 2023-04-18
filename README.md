@@ -9,3 +9,5 @@ Libraries used:
 - flatlaf
 - json
 - jna-filechooser
+- NBT (com.dewy.nbt)
+- gson (NBT's dependency)
