@@ -1,8 +1,7 @@
 package Gui;
 
-import RightClickMode.ServerSelector;
 import SelectedServer.LevelNameColorConverter;
-import SelectedServer.ServerDetails;
+import Server.BackupWorld;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -15,6 +14,8 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 public class Frame extends JFrame implements ActionListener {
     private final JMenuItem darculaTheme;
@@ -26,7 +27,7 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
 
-    private AddWorldsPanel addWorldsPanel;
+    private final AddWorldsPanel addWorldsPanel;
     public static boolean isFrameInitialized = false;
 
     private final String PREFS_KEY_X = "window_x";
@@ -38,21 +39,15 @@ public class Frame extends JFrame implements ActionListener {
     public Frame() throws IOException, InterruptedException {
         JMenuBar menuBar = new JMenuBar();
         JMenu lookAndFeelMenu = new JMenu("Change Theme");
-        JButton refreshServerList = new JButton("Refresh Server List");
-        JButton openServer = new JButton("Debug Color Converter");
+        JMenu refreshServerList = new JMenu("Refresh Server List");
+        JButton openServer = new JButton("Debug");
         refreshServerList.setBorderPainted(false);
         refreshServerList.setRequestFocusEnabled(false);
         refreshServerList.setContentAreaFilled(false);
         refreshServerList.setVisible(true);
-//        openServer.setVisible(true);
 
-        openServer.setVisible(false);
-        openServer.addActionListener(e -> LevelNameColorConverter.convertColors("§lParkour Paradise §e§l2§r"));
-//        lookAndFeelMenu.setIcon(new ImageIcon(new ImageIcon("resources/themeswitchericon.png")
-//                .getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH)));
-
-//        refreshServerList.setIcon(new ImageIcon(new ImageIcon("resources/reloadicon.png").getImage()
-//                .getScaledInstance(16, 16, Image.SCALE_SMOOTH)));
+        openServer.setVisible(true);
+        openServer.addActionListener(e -> new BackupWorld().start());
 
         darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
         darculaTheme.addActionListener(this);
@@ -202,16 +197,31 @@ public class Frame extends JFrame implements ActionListener {
             }
         });
 
-        refreshServerList.addActionListener(e -> {
-            try {
-                buttonPanel.clearAllButtons();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
         this.addWorldsPanel = addWorldsPanel;
         addWorldsPanel.reloadBorders();
         isFrameInitialized = true;
+
+        refreshServerList.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                try {
+                    buttonPanel.clearAllButtons();
+                } catch (IOException ex) {
+                    alert(AlertType.ERROR, getErrorDialogMessage(ex));
+                }
+                refreshServerList.setSelected(false);
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+
+            }
+        });
     }
 
     public static String getErrorDialogMessage(Exception e) {
@@ -291,24 +301,6 @@ public class Frame extends JFrame implements ActionListener {
         } catch( Exception ex ) {
             alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
         }
-//        if(args[0].equals("DebugColorParser")) {
-//            LevelNameColorConverter.convertColors("§lParkour Paradise §e§l2§r");
-//            System.exit(1);
-//        }
-//        else
         new Frame();
-//        ServerDetails.serverLevelName = "§k§01§12§23§34§45§56§67§78§89§910§a11§b12§c13§d14§e15§f16";
-
-        //        if(args.length == 0) {
-//            SwingUtilities.invokeLater(() -> {
-//                try {
-//                    new Frame().setVisible(true);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            });
-//        } else {
-//            new ServerSelector(args);
-//        }
     }
 }

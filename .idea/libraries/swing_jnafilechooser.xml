@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="swing-jnafilechooser">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/swing-jnafilechooser.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

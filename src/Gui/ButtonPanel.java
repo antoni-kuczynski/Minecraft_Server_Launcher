@@ -44,12 +44,17 @@ public class ButtonPanel extends JPanel implements ActionListener {
             buttons.add(button);
             add(button);
         }
+        repaint();
     }
     public void clearAllButtons() throws IOException {
         for(JButton button : buttons)
             remove(button);
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         initialize();
-
     }
 
     public ButtonPanel() throws IOException {

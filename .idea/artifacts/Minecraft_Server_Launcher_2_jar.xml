@@ -3,12 +3,12 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Minecraft_Server_Launcher_2_jar</output-path>
     <root id="archive" name="Minecraft_Server_Launcher_2.jar">
       <element id="module-output" name="Minecraft_Server_Launcher_2" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/flatlaf-3.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/json-20220924.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/nbt-1.5.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/flatlaf-intellij-themes-3.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/commons-io-2.11.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/swing-jnafilechooser.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/flatlaf-3.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/flatlaf-intellij-themes-3.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/json-20220924.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/swing-jnafilechooser.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/nbt-1.5.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-io-2.11.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
