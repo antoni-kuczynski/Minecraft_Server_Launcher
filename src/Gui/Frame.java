@@ -113,14 +113,11 @@ public class Frame extends JFrame implements ActionListener {
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
-        //Add the world add JPanel to the frame
-        addWorldsPanel.add(Box.createRigidArea(dimension));
-
         JPanel worldsPanelSpacingAnotherLayer = new JPanel(new BorderLayout());
         JPanel worldsPanelAndSpacing = new JPanel(new BorderLayout());
 
         worldsPanelSpacingAnotherLayer.add(addWorldsPanel, BorderLayout.LINE_START);
-        worldsPanelSpacingAnotherLayer.add(Box.createRigidArea(new Dimension(100, 50)), BorderLayout.LINE_END);
+//        worldsPanelSpacingAnotherLayer.add(Box.createRigidArea(new Dimension(100, 50)), BorderLayout.LINE_END);
 
         worldsPanelAndSpacing.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
         worldsPanelAndSpacing.add(worldsPanelSpacingAnotherLayer, BorderLayout.LINE_END);

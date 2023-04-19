@@ -35,12 +35,12 @@ public class ServerSelectionPanel extends JPanel {
     public ServerSelectionPanel(Preferences userValues) throws IOException, InterruptedException {
         this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
-        JButton openCfg = new JButton("Open App's Config File");
+        JButton openServersJsonFile = new JButton("Open App's Config File");
         ServerDetails.serverName = userValues.get("SELECTED_SERVER_NAME", "ERROR");
         ServerDetails.serverPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
         openServerFolder = new JButton("Open " + userValues.get("SELECTED_SERVER_NAME", "ERROR") + "'s Server Folder");
 
-        openCfg.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
+        openServersJsonFile.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
 
         openServerFolder.addActionListener(e -> new Runner(RunMode.SERVER_FOLDER, ServerDetails.serverPath).start());
         Config config = null;
@@ -49,7 +49,7 @@ public class ServerSelectionPanel extends JPanel {
         } catch(IOException e) {
             Frame.alert(AlertType.FATAL, getErrorDialogMessage(e));
         }
-        JLabel selServerTitle = new JLabel(" or select server here:");
+        JLabel orSelectServerFromComboBoxText = new JLabel(" or select server here:");
         JPanel selServerManually = new JPanel();
 
         for(int i = 0; i < Objects.requireNonNull(config).getData().size(); i++) {
@@ -113,12 +113,12 @@ public class ServerSelectionPanel extends JPanel {
 
         selServerManually.setLayout(new BorderLayout());
         selServerManually.add(openServerFolder, BorderLayout.LINE_START);
-        selServerManually.add(selServerTitle, BorderLayout.CENTER);
+        selServerManually.add(orSelectServerFromComboBoxText, BorderLayout.CENTER);
         selServerManually.add(serverSelection, BorderLayout.LINE_END);
 
         Dimension dimension = new Dimension(10, 1);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
-        add(openCfg, BorderLayout.LINE_START);
+        add(openServersJsonFile, BorderLayout.LINE_START);
         add(selServerManually, BorderLayout.LINE_END);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
@@ -127,10 +127,9 @@ public class ServerSelectionPanel extends JPanel {
         nbtParser.start();
         nbtParser.join();
         ServerDetails.serverLevelName = nbtParser.getLevelName(); //issue #64 fix
-//        addWorldsPanel.setIcons();
     }
 
-    public static void setServerVariables(String text, String serverPath, int serverId) throws InterruptedException, IOException {
+    public static void setServerVariables(String text, String serverPath, int serverId) {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
         ServerDetails.serverId = serverId;
@@ -155,7 +154,6 @@ public class ServerSelectionPanel extends JPanel {
             serverSelection.setSelectedIndex(previouslySelectedComboBoxIndex);
         }
     }
-
 
     public static JComboBox<String> getServerSelection() {
         return serverSelection;
