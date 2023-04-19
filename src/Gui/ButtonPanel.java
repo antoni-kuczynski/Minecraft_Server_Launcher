@@ -23,7 +23,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     private final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 14);
     private final ArrayList<JButton> buttons = new ArrayList<>();
 
-    public void initialize() throws IOException {
+    public void initializeServerButtons() throws IOException {
         buttons.clear();
         Config config = new Config();
         ArrayList<ButtonData> serverConfig = config.getData();
@@ -55,14 +55,14 @@ public class ButtonPanel extends JPanel implements ActionListener {
         try {
             Thread.sleep(1000);
         } catch (Exception e) {
-            e.printStackTrace();
+            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
         }
-        initialize();
+        initializeServerButtons();
     }
 
     public ButtonPanel() throws IOException {
         setLayout(new GridLayout(10, 5, 10, 10));
-        initialize();
+        initializeServerButtons();
     }
 
     public void setButtonIcon(JButton button, String iconPath) {

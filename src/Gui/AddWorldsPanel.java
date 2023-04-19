@@ -223,7 +223,6 @@ public class AddWorldsPanel extends JPanel {
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         serverNameAndStuff.add(serverIconWithSpacing, BorderLayout.LINE_END);
-//        serverNameAndStuff.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
         JPanel iHateFrontendPanel = new JPanel(new BorderLayout());

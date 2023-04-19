@@ -27,10 +27,7 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem draculaTheme;
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
-
     private final AddWorldsPanel addWorldsPanel;
-    public static boolean isFrameInitialized = false;
-
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
     private final String PREFS_KEY_WIDTH = "window_width";
@@ -38,8 +35,8 @@ public class Frame extends JFrame implements ActionListener {
     private static final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
 
     public Frame() throws IOException, InterruptedException {
-        JMenuBar menuBar = new JMenuBar();
-        JMenu lookAndFeelMenu = new JMenu("Change Theme");
+        JMenuBar optionsBar = new JMenuBar();
+        JMenu changeTheme = new JMenu("Change Theme");
         JMenu refreshServerList = new JMenu("Refresh Server List");
         JButton openServer = new JButton("Debug");
         refreshServerList.setBorderPainted(false);
@@ -52,36 +49,36 @@ public class Frame extends JFrame implements ActionListener {
 
         darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
         darculaTheme.addActionListener(this);
-        lookAndFeelMenu.add(darculaTheme);
+        changeTheme.add(darculaTheme);
 
         nordTheme = new JMenuItem("Nord");
         nordTheme.addActionListener(this);
-        lookAndFeelMenu.add(nordTheme);
+        changeTheme.add(nordTheme);
 
         draculaTheme = new JMenuItem("Dracula");
         draculaTheme.addActionListener(this);
-        lookAndFeelMenu.add(draculaTheme);
+        changeTheme.add(draculaTheme);
 
         oneDarkTheme = new JMenuItem("One Dark");
         oneDarkTheme.addActionListener(this);
-        lookAndFeelMenu.add(oneDarkTheme);
+        changeTheme.add(oneDarkTheme);
 
         githubDarkTheme = new JMenuItem("GitHub Dark");
         githubDarkTheme.addActionListener(this);
-        lookAndFeelMenu.add(githubDarkTheme);
+        changeTheme.add(githubDarkTheme);
 
         xCodeDarkTheme = new JMenuItem("Xcode Dark");
         xCodeDarkTheme.addActionListener(this);
-        lookAndFeelMenu.add(xCodeDarkTheme);
+        changeTheme.add(xCodeDarkTheme);
 
         inteliijLightMenuItem = new JMenuItem("Inteliij Light");
         inteliijLightMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(inteliijLightMenuItem);
+        changeTheme.add(inteliijLightMenuItem);
 
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(refreshServerList);
-        menuBar.add(openServer);
-        setJMenuBar(menuBar);
+        optionsBar.add(changeTheme);
+        optionsBar.add(refreshServerList);
+        optionsBar.add(openServer);
+        setJMenuBar(optionsBar);
 
 
         // Set up the JFrame
@@ -200,7 +197,6 @@ public class Frame extends JFrame implements ActionListener {
 
         this.addWorldsPanel = addWorldsPanel;
         addWorldsPanel.setBorders();
-        isFrameInitialized = true;
 
         refreshServerList.addMenuListener(new MenuListener() {
             @Override
