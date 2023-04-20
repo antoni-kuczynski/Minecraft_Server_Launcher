@@ -30,17 +30,18 @@ public class ServerSelectionPanel extends JPanel {
     private static final JComboBox<String> serverSelection = new JComboBox<>(serverSelectionModel);
     private final ArrayList<Integer> disabledComboBoxIndexes = new ArrayList<>();
     private int previouslySelectedComboBoxIndex;
+    private final JButton backupWorld = new JButton("Backup server's world");
 
 
     public ServerSelectionPanel(Preferences userValues) throws IOException, InterruptedException {
         this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
-        JButton openCfg = new JButton("Open App's Config File");
+        JButton openAppsConfigFile = new JButton("Open App's Config File");
         ServerDetails.serverName = userValues.get("SELECTED_SERVER_NAME", "ERROR");
         ServerDetails.serverPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
         openServerFolder = new JButton("Open " + userValues.get("SELECTED_SERVER_NAME", "ERROR") + "'s Server Folder");
 
-        openCfg.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
+        openAppsConfigFile.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
 
         openServerFolder.addActionListener(e -> new Runner(RunMode.SERVER_FOLDER, ServerDetails.serverPath).start());
         Config config = null;
@@ -100,6 +101,7 @@ public class ServerSelectionPanel extends JPanel {
                 addWorldsPanel.setIcons();
             }
         });
+
         DefaultListSelectionModel model = new DefaultListSelectionModel();
         for(int i = 0; i < config.getData().size(); i++) {
             if(!disabledComboBoxIndexes.contains(i)) {
@@ -116,9 +118,13 @@ public class ServerSelectionPanel extends JPanel {
         selServerManually.add(selServerTitle, BorderLayout.CENTER);
         selServerManually.add(serverSelection, BorderLayout.LINE_END);
 
+        JPanel openConfigAndBackupWorldButtons = new JPanel(new BorderLayout());
+        openConfigAndBackupWorldButtons.add(openAppsConfigFile, BorderLayout.LINE_START);
+        openConfigAndBackupWorldButtons.add(backupWorld, BorderLayout.LINE_END);
+
         Dimension dimension = new Dimension(10, 1);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
-        add(openCfg, BorderLayout.LINE_START);
+        add(openConfigAndBackupWorldButtons, BorderLayout.LINE_START);
         add(selServerManually, BorderLayout.LINE_END);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
