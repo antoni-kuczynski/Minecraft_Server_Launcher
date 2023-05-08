@@ -195,8 +195,6 @@ public class AddWorldsPanel extends JPanel {
 
         JPanel addingWorld = new JPanel(new BorderLayout());
 
-
-//        worldNameAndStuffText.setEditable(false);
         worldNameAndStuffText.setText("World File name will appear here.");
 
         JPanel iHateFrontendPanel2 = new JPanel(new BorderLayout());

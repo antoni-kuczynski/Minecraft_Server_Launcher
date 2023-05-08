@@ -216,6 +216,7 @@ public class Frame extends JFrame implements ActionListener {
 
             }
         });
+//        System.out.println(getWidth());
     }
 
     public static String getErrorDialogMessage(Exception e) {
