@@ -1,5 +1,7 @@
 package Gui;
 
+import Server.Config;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -9,8 +11,11 @@ public class DebugWindow extends JFrame {
     public static final LinkedHashMap<String, String> debugVariables = new LinkedHashMap<>(){
         @Override
         public String put(String key, String value) {
-            window.reloadText();
-            return super.put(key, value);
+            if(Config.isInDevelopperMode) {
+                window.reloadText();
+                return super.put(key, value);
+            }
+            return "";
         }
     };
     private final JLabel debugText = new JLabel();

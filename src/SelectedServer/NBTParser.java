@@ -1,6 +1,7 @@
 package SelectedServer;
 
 import Enums.AlertType;
+import Gui.DebugWindow;
 import dev.dewy.nbt.Nbt;
 import dev.dewy.nbt.tags.collection.CompoundTag;
 import org.apache.commons.io.FileUtils;
@@ -26,6 +27,9 @@ public class NBTParser extends Thread {
         File pathToCopiedLevelDat = new File("world_temp\\level_" + "server_id_" + ServerDetails.serverId + "_" + ".dat");
         if(!new File(ServerDetails.serverLevelDatFile).exists()) {
             ServerDetails.serverLevelName = "Level.dat file not found";
+            DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+            DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+            DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
             return;
         }
         try {
@@ -48,6 +52,9 @@ public class NBTParser extends Thread {
             CompoundTag levelDatContent = layerOne.get("Data");
             this.levelName = String.valueOf(levelDatContent.get("LevelName")).split("\"")[1];
         }
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public String getLevelName() {

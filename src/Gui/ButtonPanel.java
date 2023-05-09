@@ -106,5 +106,8 @@ public class ButtonPanel extends JPanel implements ActionListener {
         addWorldsPanel.setIcons();
         new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
                 serverConfig.getServerLaunchArguments()).start();
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 }

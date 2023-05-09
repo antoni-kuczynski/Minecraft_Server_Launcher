@@ -299,7 +299,5 @@ public class Frame extends JFrame implements ActionListener {
             alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
         }
         new Frame();
-        DebugWindow debugWindow = new DebugWindow();
-        debugWindow.setWindow(debugWindow);
     }
 }

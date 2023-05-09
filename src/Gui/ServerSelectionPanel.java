@@ -134,6 +134,9 @@ public class ServerSelectionPanel extends JPanel {
         nbtParser.join();
         ServerDetails.serverLevelName = nbtParser.getLevelName(); //issue #64 fix
 //        addWorldsPanel.setIcons();
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public static void setServerVariables(String text, String serverPath, int serverId) throws InterruptedException, IOException {
@@ -141,6 +144,9 @@ public class ServerSelectionPanel extends JPanel {
         ServerDetails.serverPath = serverPath;
         ServerDetails.serverId = serverId;
         currentPanel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public void setPanels(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {

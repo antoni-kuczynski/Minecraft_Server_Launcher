@@ -2,6 +2,7 @@ package SelectedServer;
 
 import Enums.AlertType;
 import Gui.AddWorldsPanel;
+import Gui.DebugWindow;
 import Gui.Frame;
 
 import java.io.File;
@@ -25,7 +26,9 @@ public class ServerPropertiesFile {
             ServerDetails.serverWorldPath = ServerDetails.serverPath + "\\world";
             ServerDetails.serverLevelDatFile = ServerDetails.serverPath + "\\" + worldName + "\\" + "level.dat";
             AddWorldsPanel.wasServerPropertiesFound = false;
-
+            DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+            DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+            DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
             return;
         }
         AddWorldsPanel.wasServerPropertiesFound = true;
@@ -46,6 +49,9 @@ public class ServerPropertiesFile {
         ServerDetails.serverWorldPath = ServerDetails.serverPath + "\\" + worldName;
         ServerDetails.serverLevelDatFile = ServerDetails.serverPath + "\\" + worldName + "\\" + "level.dat";
 
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public String getWorldName() {

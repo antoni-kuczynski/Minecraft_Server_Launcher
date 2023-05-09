@@ -2,6 +2,7 @@ package Server;
 
 import Gui.AddWorldsPanel;
 import Enums.AlertType;
+import Gui.DebugWindow;
 import Gui.Frame;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerPropertiesFile;
@@ -108,6 +109,7 @@ public class WorldCopyHandler extends Thread {
                 }
             } else {
                 newFile.getParentFile().mkdirs();
+                DebugWindow.debugVariables.put("newFile_extractArchive", newFile.toString());
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
@@ -143,6 +145,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
+        DebugWindow.debugVariables.put("selected_world", selectedWorld.toString());
         if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(ServerDetails.serverPath)) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
@@ -229,6 +232,9 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
                 }
                 ServerDetails.serverLevelDatFile = temp; //restore the original level.dat file location for safety
+                DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+                DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+                DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
             }
         } else if (selectedWorld.toString().contains(ServerDetails.serverPath)) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
