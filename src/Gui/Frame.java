@@ -45,7 +45,9 @@ public class Frame extends JFrame implements ActionListener {
         refreshServerList.setVisible(true);
 
         openServer.setVisible(true);
-        openServer.addActionListener(e -> new BackupWorld().start());
+        openServer.addActionListener(e -> {
+            DebugWindow.debugVariables.put("test_key" + Math.random() * 100, "test");
+        });
 
         darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
         darculaTheme.addActionListener(this);
@@ -297,5 +299,7 @@ public class Frame extends JFrame implements ActionListener {
             alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
         }
         new Frame();
+        DebugWindow debugWindow = new DebugWindow();
+        debugWindow.setWindow(debugWindow);
     }
 }
