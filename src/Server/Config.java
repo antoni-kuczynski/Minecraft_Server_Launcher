@@ -19,6 +19,7 @@ public class Config {
     }
     private final ArrayList<ButtonData> data = new ArrayList<>();
     public static boolean isInDevelopperMode;
+    public static String globalServerFolder;
 
     public static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
@@ -41,6 +42,7 @@ public class Config {
                     {
                         "globalLaunchArgs": "-Xmx16G -Xms2G -XX:+UseG1GC -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=1 -XX:ParallelGCThreads=4 -XX:+OptimizeStringConcat",
                         "isInDevelopperMode": false
+                        "globalServerFolder": ""
                     },
                     {
                         "buttonText": "Put your values here",
@@ -68,6 +70,7 @@ public class Config {
         JSONObject globalVariables = configJSONObjects.getJSONObject(0);
         String javaArguments = globalVariables.getString("globalLaunchArgs");
         isInDevelopperMode = globalVariables.getBoolean("isInDevelopperMode");
+        globalServerFolder = globalVariables.getString("globalServerFolder");
         if(isInDevelopperMode) {
             DebugWindow debugWindow = new DebugWindow();
             debugWindow.setWindow(debugWindow);

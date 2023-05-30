@@ -41,6 +41,10 @@ public class ServerSelectionPanel extends JPanel {
         ServerDetails.serverPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
         openServerFolder = new JButton("Open " + userValues.get("SELECTED_SERVER_NAME", "ERROR") + "'s Server Folder");
 
+        JButton openGlobalFolder = new JButton("Open global directory");
+        openGlobalFolder.addActionListener(e -> {
+            new Runner(RunMode.GLOBAL_FOLDER).start();
+        });
         openAppsConfigFile.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
 
         openServerFolder.addActionListener(e -> new Runner(RunMode.SERVER_FOLDER, ServerDetails.serverPath).start());
@@ -120,7 +124,8 @@ public class ServerSelectionPanel extends JPanel {
 
         JPanel openConfigAndBackupWorldButtons = new JPanel(new BorderLayout());
         openConfigAndBackupWorldButtons.add(openAppsConfigFile, BorderLayout.LINE_START);
-        openConfigAndBackupWorldButtons.add(backupWorld, BorderLayout.LINE_END);
+        if(!Config.globalServerFolder.equals(""))
+            openConfigAndBackupWorldButtons.add(openGlobalFolder, BorderLayout.LINE_END);
 
         Dimension dimension = new Dimension(10, 1);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
