@@ -44,7 +44,7 @@ public class Frame extends JFrame implements ActionListener {
         refreshServerList.setContentAreaFilled(false);
         refreshServerList.setVisible(true);
 
-        openServer.setVisible(true);
+        openServer.setVisible(false);
         openServer.addActionListener(e -> {
             DebugWindow.debugVariables.put("test_key" + Math.random() * 100, "test");
         });
