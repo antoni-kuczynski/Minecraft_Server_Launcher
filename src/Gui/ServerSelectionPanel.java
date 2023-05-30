@@ -1,6 +1,8 @@
 package Gui;
 
 import CustomJComponents.EnabledComboBoxRenderer;
+import Enums.AlertType;
+import Enums.RunMode;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
 import SelectedServer.ServerPropertiesFile;
@@ -20,7 +22,7 @@ import static Gui.Frame.getErrorDialogMessage;
 
 public class ServerSelectionPanel extends JPanel {
     private final JButton openServerFolder;
-    private static ServerSelectionPanel panel;
+    private static ServerSelectionPanel currentPanel;
     public static AddWorldsPanel addWorldsPanel;
     private final Preferences userValues;
     private int selectedIndexInComboBox;
@@ -28,17 +30,22 @@ public class ServerSelectionPanel extends JPanel {
     private static final JComboBox<String> serverSelection = new JComboBox<>(serverSelectionModel);
     private final ArrayList<Integer> disabledComboBoxIndexes = new ArrayList<>();
     private int previouslySelectedComboBoxIndex;
+    private final JButton backupWorld = new JButton("Backup server's world");
 
 
     public ServerSelectionPanel(Preferences userValues) throws IOException, InterruptedException {
         this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
-        JButton openCfg = new JButton("Open App's Config File");
+        JButton openAppsConfigFile = new JButton("Open App's Config File");
         ServerDetails.serverName = userValues.get("SELECTED_SERVER_NAME", "ERROR");
         ServerDetails.serverPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
         openServerFolder = new JButton("Open " + userValues.get("SELECTED_SERVER_NAME", "ERROR") + "'s Server Folder");
 
-        openCfg.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
+        JButton openGlobalFolder = new JButton("Open global directory");
+        openGlobalFolder.addActionListener(e -> {
+            new Runner(RunMode.GLOBAL_FOLDER).start();
+        });
+        openAppsConfigFile.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
 
         openServerFolder.addActionListener(e -> new Runner(RunMode.SERVER_FOLDER, ServerDetails.serverPath).start());
         Config config = null;
@@ -48,10 +55,7 @@ public class ServerSelectionPanel extends JPanel {
             Frame.alert(AlertType.FATAL, getErrorDialogMessage(e));
         }
         JLabel selServerTitle = new JLabel(" or select server here:");
-
-
         JPanel selServerManually = new JPanel();
-
 
         for(int i = 0; i < Objects.requireNonNull(config).getData().size(); i++) {
             if(new File(config.getData().get(i).getPathToServerFolder()).exists()) {
@@ -95,12 +99,13 @@ public class ServerSelectionPanel extends JPanel {
                     alert(AlertType.ERROR, getErrorDialogMessage(ex));
                 }
                 ServerDetails.serverLevelName = nbtParserComboBox.getLevelName();
-                panel.reloadButtonText();
+                currentPanel.reloadButtonText();
                 selectedIndexInComboBox = serverSelection.getSelectedIndex();
                 userValues.putInt("SELECTED_COMBO_INDEX", selectedIndexInComboBox);
                 addWorldsPanel.setIcons();
             }
         });
+
         DefaultListSelectionModel model = new DefaultListSelectionModel();
         for(int i = 0; i < config.getData().size(); i++) {
             if(!disabledComboBoxIndexes.contains(i)) {
@@ -117,9 +122,14 @@ public class ServerSelectionPanel extends JPanel {
         selServerManually.add(selServerTitle, BorderLayout.CENTER);
         selServerManually.add(serverSelection, BorderLayout.LINE_END);
 
+        JPanel openConfigAndBackupWorldButtons = new JPanel(new BorderLayout());
+        openConfigAndBackupWorldButtons.add(openAppsConfigFile, BorderLayout.LINE_START);
+        if(!Config.globalServerFolder.equals(""))
+            openConfigAndBackupWorldButtons.add(openGlobalFolder, BorderLayout.LINE_END);
+
         Dimension dimension = new Dimension(10, 1);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
-        add(openCfg, BorderLayout.LINE_START);
+        add(openConfigAndBackupWorldButtons, BorderLayout.LINE_START);
         add(selServerManually, BorderLayout.LINE_END);
         add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
@@ -129,17 +139,23 @@ public class ServerSelectionPanel extends JPanel {
         nbtParser.join();
         ServerDetails.serverLevelName = nbtParser.getLevelName(); //issue #64 fix
 //        addWorldsPanel.setIcons();
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public static void setServerVariables(String text, String serverPath, int serverId) throws InterruptedException, IOException {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
         ServerDetails.serverId = serverId;
-        panel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
+        currentPanel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public void setPanels(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {
-        ServerSelectionPanel.panel = panel;
+        ServerSelectionPanel.currentPanel = panel;
         ServerSelectionPanel.addWorldsPanel = addWorldsPanel;
         addWorldsPanel.setIcons();
     }

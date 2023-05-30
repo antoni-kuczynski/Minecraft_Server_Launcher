@@ -1,6 +1,6 @@
 package Gui;
 
-import SelectedServer.LevelNameColorConverter;
+import Enums.AlertType;
 import Server.BackupWorld;
 import org.apache.commons.io.FileUtils;
 
@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
@@ -26,19 +27,16 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem draculaTheme;
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
-
     private final AddWorldsPanel addWorldsPanel;
-    public static boolean isFrameInitialized = false;
-
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
-    private final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
+    private static final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
 
     public Frame() throws IOException, InterruptedException {
-        JMenuBar menuBar = new JMenuBar();
-        JMenu lookAndFeelMenu = new JMenu("Change Theme");
+        JMenuBar optionsBar = new JMenuBar();
+        JMenu changeTheme = new JMenu("Change Theme");
         JMenu refreshServerList = new JMenu("Refresh Server List");
         JButton openServer = new JButton("Debug");
         refreshServerList.setBorderPainted(false);
@@ -46,41 +44,43 @@ public class Frame extends JFrame implements ActionListener {
         refreshServerList.setContentAreaFilled(false);
         refreshServerList.setVisible(true);
 
-        openServer.setVisible(true);
-        openServer.addActionListener(e -> new BackupWorld().start());
+        openServer.setVisible(false);
+        openServer.addActionListener(e -> {
+            DebugWindow.debugVariables.put("test_key" + Math.random() * 100, "test");
+        });
 
         darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
         darculaTheme.addActionListener(this);
-        lookAndFeelMenu.add(darculaTheme);
+        changeTheme.add(darculaTheme);
 
         nordTheme = new JMenuItem("Nord");
         nordTheme.addActionListener(this);
-        lookAndFeelMenu.add(nordTheme);
+        changeTheme.add(nordTheme);
 
         draculaTheme = new JMenuItem("Dracula");
         draculaTheme.addActionListener(this);
-        lookAndFeelMenu.add(draculaTheme);
+        changeTheme.add(draculaTheme);
 
         oneDarkTheme = new JMenuItem("One Dark");
         oneDarkTheme.addActionListener(this);
-        lookAndFeelMenu.add(oneDarkTheme);
+        changeTheme.add(oneDarkTheme);
 
         githubDarkTheme = new JMenuItem("GitHub Dark");
         githubDarkTheme.addActionListener(this);
-        lookAndFeelMenu.add(githubDarkTheme);
+        changeTheme.add(githubDarkTheme);
 
         xCodeDarkTheme = new JMenuItem("Xcode Dark");
         xCodeDarkTheme.addActionListener(this);
-        lookAndFeelMenu.add(xCodeDarkTheme);
+        changeTheme.add(xCodeDarkTheme);
 
         inteliijLightMenuItem = new JMenuItem("Inteliij Light");
         inteliijLightMenuItem.addActionListener(this);
-        lookAndFeelMenu.add(inteliijLightMenuItem);
+        changeTheme.add(inteliijLightMenuItem);
 
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(refreshServerList);
-        menuBar.add(openServer);
-        setJMenuBar(menuBar);
+        optionsBar.add(changeTheme);
+        optionsBar.add(refreshServerList);
+        optionsBar.add(openServer);
+        setJMenuBar(optionsBar);
 
 
         // Set up the JFrame
@@ -115,14 +115,11 @@ public class Frame extends JFrame implements ActionListener {
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
-        //Add the world add JPanel to the frame
-        addWorldsPanel.add(Box.createRigidArea(dimension));
-
         JPanel worldsPanelSpacingAnotherLayer = new JPanel(new BorderLayout());
         JPanel worldsPanelAndSpacing = new JPanel(new BorderLayout());
 
         worldsPanelSpacingAnotherLayer.add(addWorldsPanel, BorderLayout.LINE_START);
-        worldsPanelSpacingAnotherLayer.add(Box.createRigidArea(new Dimension(100, 50)), BorderLayout.LINE_END);
+//        worldsPanelSpacingAnotherLayer.add(Box.createRigidArea(new Dimension(100, 50)), BorderLayout.LINE_END);
 
         worldsPanelAndSpacing.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
         worldsPanelAndSpacing.add(worldsPanelSpacingAnotherLayer, BorderLayout.LINE_END);
@@ -150,39 +147,39 @@ public class Frame extends JFrame implements ActionListener {
 
         // Set the initial size and position of the JFrame
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.getWidth() * 0.5);
-        int height = (int) (screenSize.getHeight() * 0.5);
-        int x = (int) (screenSize.getWidth() * 0.25);
-        int y = (int) (screenSize.getHeight() * 0.25);
-        setBounds(x, y, width, height);
+        int windowWidth = (int) (screenSize.getWidth() * 0.5);
+        int windowHeight = (int) (screenSize.getHeight() * 0.5);
+        int xWindowPosiotion = (int) (screenSize.getWidth() * 0.25);
+        int yWindowPosiotion = (int) (screenSize.getHeight() * 0.25);
+        setBounds(xWindowPosiotion, yWindowPosiotion, windowWidth, windowHeight);
 
         // Load the window position from user preferences
-        int savedX = userValues.getInt(PREFS_KEY_X, Integer.MIN_VALUE);
-        int savedY = userValues.getInt(PREFS_KEY_Y, Integer.MIN_VALUE);
+        int savedXPosition = userValues.getInt(PREFS_KEY_X, Integer.MIN_VALUE);
+        int savedYPosition = userValues.getInt(PREFS_KEY_Y, Integer.MIN_VALUE);
         int savedWidth = userValues.getInt(PREFS_KEY_WIDTH, Integer.MIN_VALUE);
         int savedHeight = userValues.getInt(PREFS_KEY_HEIGHT, Integer.MIN_VALUE);
-        if (savedX != Integer.MIN_VALUE && savedY != Integer.MIN_VALUE && savedWidth != Integer.MIN_VALUE && savedHeight != Integer.MIN_VALUE) {
-            setBounds(savedX, savedY, savedWidth, savedHeight);
+        if (savedXPosition != Integer.MIN_VALUE && savedYPosition != Integer.MIN_VALUE && savedWidth != Integer.MIN_VALUE && savedHeight != Integer.MIN_VALUE) {
+            setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
         }
 
         // Save the window position to user preferences when the JFrame is closed
-        addWindowListener(new java.awt.event.WindowAdapter() {
+        addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                Preferences prefs = Preferences.userNodeForPackage(getClass());
-                Rectangle bounds = getBounds();
-                prefs.putInt(PREFS_KEY_X, bounds.x);
-                prefs.putInt(PREFS_KEY_Y, bounds.y);
-                prefs.putInt(PREFS_KEY_WIDTH, bounds.width);
-                prefs.putInt(PREFS_KEY_HEIGHT, bounds.height);
-                prefs.put(PREFS_KEY_LOOK_AND_FEEL, lookAndFeel);
+            public void windowClosing(WindowEvent windowEvent) {
+                Preferences userSavedValues = Preferences.userNodeForPackage(getClass());
+                Rectangle screenDimensions = getBounds();
+                userSavedValues.putInt(PREFS_KEY_X, screenDimensions.x);
+                userSavedValues.putInt(PREFS_KEY_Y, screenDimensions.y);
+                userSavedValues.putInt(PREFS_KEY_WIDTH, screenDimensions.width);
+                userSavedValues.putInt(PREFS_KEY_HEIGHT, screenDimensions.height);
+                userSavedValues.put(PREFS_KEY_LOOK_AND_FEEL, lookAndFeel);
 
-                File worldTempDir = new File("world_temp");
-                if(!worldTempDir.exists()) //issue #55 fix by checking if the folder exitst and creating it (if somehow it doesn't exist here)
-                    worldTempDir.mkdirs();
+                File temporaryFilesDirectory = new File("world_temp");
+                if(!temporaryFilesDirectory.exists()) //issue #55 fix by checking if the folder exitst and creating it (if somehow it doesn't exist here)
+                    temporaryFilesDirectory.mkdirs();
 
-                if(worldTempDir.exists()) //another issue #55 check for some reason
-                    clearTempDir();
+                if(temporaryFilesDirectory.exists()) //another issue #55 check for some reason
+                    clearTempDirectory();
                 else
                     System.exit(1);
             }
@@ -190,16 +187,15 @@ public class Frame extends JFrame implements ActionListener {
             @Override
             public void windowOpened(WindowEvent e) {
                 super.windowOpened(e);
-                File worldTempDir = new File("world_temp");
-                if(!worldTempDir.exists()) //issue #55 fix by checking if the folder exitst and creating it
-                    worldTempDir.mkdirs();
-                clearTempDir();
+                File temporaryFilesDirectory = new File("world_temp");
+                if(!temporaryFilesDirectory.exists()) //issue #55 fix by checking if the folder exitst and creating it
+                    temporaryFilesDirectory.mkdirs();
+                clearTempDirectory();
             }
         });
 
         this.addWorldsPanel = addWorldsPanel;
-        addWorldsPanel.reloadBorders();
-        isFrameInitialized = true;
+        addWorldsPanel.setBorders();
 
         refreshServerList.addMenuListener(new MenuListener() {
             @Override
@@ -222,19 +218,20 @@ public class Frame extends JFrame implements ActionListener {
 
             }
         });
+//        System.out.println(getWidth());
     }
 
     public static String getErrorDialogMessage(Exception e) {
         Toolkit.getDefaultToolkit().beep();
-        StringBuilder sb = new StringBuilder();
-        sb.append(e).append("\n");
-        sb.append("Caused by:\n");
-        StackTraceElement[] elements = e.getStackTrace();
-        for (StackTraceElement element : elements) {
-            sb.append(element.toString());
-            sb.append("\n");
+        StringBuilder errorMessage = new StringBuilder();
+        errorMessage.append(e).append("\n");
+        errorMessage.append("Caused by:\n");
+        StackTraceElement[] errorStackTrace = e.getStackTrace();
+        for (StackTraceElement element : errorStackTrace) {
+            errorMessage.append(element.toString());
+            errorMessage.append("\n");
         }
-        return sb.toString();
+        return errorMessage.toString();
     }
 
     public static void alert(AlertType alertType, String message) {
@@ -246,17 +243,17 @@ public class Frame extends JFrame implements ActionListener {
         }
     }
 
-    private static void clearTempDir() {
-        File dir = new File(".\\world_temp");
-        File[] files = dir.listFiles();
-        if(files == null)
+    private static void clearTempDirectory() {
+        File tempFilesDirectory = new File(".\\world_temp");
+        File[] filesInTempDir = tempFilesDirectory.listFiles();
+        if(filesInTempDir == null)
             return;
-        for (File file : files) {
+        for (File tempFile : filesInTempDir) {
             try {
-                if(file.isDirectory())
-                    FileUtils.deleteDirectory(file);
+                if(tempFile.isDirectory())
+                    FileUtils.deleteDirectory(tempFile);
                 else
-                    file.delete();
+                    tempFile.delete();
             } catch (IOException e) {
                 alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
@@ -290,12 +287,12 @@ public class Frame extends JFrame implements ActionListener {
         } else if (e.getSource() == nordTheme) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
         }
-        addWorldsPanel.reloadBorders();
+        addWorldsPanel.setBorders();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Preferences prefs = Preferences.userNodeForPackage(Frame.class);
-        lookAndFeel = prefs.get("look_and_feel", "com.formdev.flatlaf.FlatDarculaLaf");
+        Preferences userValues = Preferences.userNodeForPackage(Frame.class);
+        lookAndFeel = userValues.get(PREFS_KEY_LOOK_AND_FEEL, "com.formdev.flatlaf.FlatDarculaLaf");
         try {
             UIManager.setLookAndFeel(lookAndFeel);
         } catch( Exception ex ) {

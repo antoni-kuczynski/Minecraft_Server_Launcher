@@ -1,6 +1,7 @@
 package Server;
 
-import Gui.AlertType;
+import Enums.AlertType;
+import Enums.RunMode;
 
 import java.awt.*;
 import java.io.File;
@@ -132,6 +133,36 @@ public class Runner extends Thread {
                     launchServer(pathToServerJar, javaRuntimePath);
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot start new Process pb. Cannot launch server.\n" + getErrorDialogMessage(e));
+                }
+            }
+            case GLOBAL_FOLDER -> {
+                File directory = new File(Config.globalServerFolder);
+                // check if the directory exists
+                if (!directory.exists()) {
+                    alert(AlertType.ERROR, "Directory not found: " + directory.getAbsolutePath());
+                    return;
+                }
+
+                // check if the Desktop API is supported
+                if (!Desktop.isDesktopSupported()) {
+                    alert(AlertType.ERROR, "Desktop API is not supported on this platform");
+                    return;
+                }
+
+                // get the Desktop instance
+                Desktop desktop = Desktop.getDesktop();
+
+                // check if the directory can be opened
+                if (!desktop.isSupported(Desktop.Action.OPEN)) {
+                    alert(AlertType.ERROR, "Open action is not supported on this platform");
+                    return;
+                }
+
+                // open the directory with the default file manager
+                try {
+                    desktop.open(directory);
+                } catch (IOException e) {
+                    alert(AlertType.ERROR, "Cannot open server's directory.\n" + getErrorDialogMessage(e));
                 }
             }
         }

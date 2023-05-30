@@ -1,5 +1,7 @@
 package Gui;
 
+import Enums.AlertType;
+import Enums.RunMode;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
 import SelectedServer.ServerPropertiesFile;
@@ -18,31 +20,32 @@ import static Gui.ServerSelectionPanel.addWorldsPanel;
 public class ButtonPanel extends JPanel implements ActionListener {
     private static final int BUTTON_WIDTH_PADDING = 20;
     private static final int BUTTON_HEIGHT_PADDING = 10;
+    private final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 14);
     private final ArrayList<JButton> buttons = new ArrayList<>();
 
-    public void initialize() throws IOException {
+    public void initializeServerButtons() throws IOException {
         buttons.clear();
         Config config = new Config();
-        ArrayList<ButtonData> serverConfigs = config.getData();
-        for (int i = 0; i < serverConfigs.size(); i++) {
-            JButton button = createButton(serverConfigs.get(i).getButtonText());
-            boolean doServerFilesExist = new File(serverConfigs.get(i).getPathToServerFolder()).exists();
-            button.setEnabled(doServerFilesExist);
-            String toolTipText = "Server path: " + serverConfigs.get(i).getPathToServerFolder()
-                    + "\nServer executable: " + serverConfigs.get(i).getPathToServerJarFile()
-                    + "\nJava executable: " + serverConfigs.get(i).getPathToJavaRuntime()
-                    + "\nLaunch arguments: " + serverConfigs.get(i).getServerLaunchArguments();
+        ArrayList<ButtonData> serverConfig = config.getData();
+        for (int serverIndex = 0; serverIndex < serverConfig.size(); serverIndex++) {
+            JButton serverLaunchButton = createButton(serverConfig.get(serverIndex).getButtonText());
+            boolean doServerFilesExist = new File(serverConfig.get(serverIndex).getPathToServerFolder()).exists();
+            serverLaunchButton.setEnabled(doServerFilesExist);
+            String buttonToolTipText = "Server path: " + serverConfig.get(serverIndex).getPathToServerFolder()
+                    + "\nServer executable: " + serverConfig.get(serverIndex).getPathToServerJarFile()
+                    + "\nJava executable: " + serverConfig.get(serverIndex).getPathToJavaRuntime()
+                    + "\nLaunch arguments: " + serverConfig.get(serverIndex).getServerLaunchArguments();
             if (!doServerFilesExist) {
-                toolTipText = "Server files not found." + "\n" + toolTipText;
+                buttonToolTipText = "Server files not found." + "\n" + buttonToolTipText;
             }
-            button.setToolTipText(toolTipText);
-            setButtonIcon(button, serverConfigs.get(i).getPathToButtonIcon());
-            button.setPreferredSize(new Dimension(100, 40));
-            button.setFont(new Font("Arial", Font.PLAIN, 14));
-            button.addActionListener(this);
-            button.setActionCommand(Integer.toString(i));
-            buttons.add(button);
-            add(button);
+            serverLaunchButton.setToolTipText(buttonToolTipText);
+            setButtonIcon(serverLaunchButton, serverConfig.get(serverIndex).getPathToButtonIcon());
+            serverLaunchButton.setPreferredSize(new Dimension(100, 40));
+            serverLaunchButton.setFont(BUTTON_FONT);
+            serverLaunchButton.addActionListener(this);
+            serverLaunchButton.setActionCommand(Integer.toString(serverIndex));
+            buttons.add(serverLaunchButton);
+            add(serverLaunchButton);
         }
         repaint();
     }
@@ -52,14 +55,14 @@ public class ButtonPanel extends JPanel implements ActionListener {
         try {
             Thread.sleep(1000);
         } catch (Exception e) {
-            e.printStackTrace();
+            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
         }
-        initialize();
+        initializeServerButtons();
     }
 
     public ButtonPanel() throws IOException {
         setLayout(new GridLayout(10, 5, 10, 10));
-        initialize();
+        initializeServerButtons();
     }
 
     public void setButtonIcon(JButton button, String iconPath) {
@@ -93,20 +96,18 @@ public class ButtonPanel extends JPanel implements ActionListener {
             ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder(), serverConfig.getServerId());
             new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
             NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
-//            nbtParser.setLaunchingServer(true);
             nbtParser.start();
             nbtParser.join();
             ServerDetails.serverLevelName = nbtParser.getLevelName();
-//            nbtParser.setLaunchingServer(true);
         } catch (Exception ex) {
 //            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex)); //shut the fuck up, it always throws this exception NO MATTER FUCKING WHAT
         }
-
         ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
-
         addWorldsPanel.setIcons();
-
         new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
                 serverConfig.getServerLaunchArguments()).start();
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 }

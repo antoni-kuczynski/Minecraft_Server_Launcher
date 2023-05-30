@@ -1,7 +1,8 @@
 package Server;
 
 import Gui.AddWorldsPanel;
-import Gui.AlertType;
+import Enums.AlertType;
+import Gui.DebugWindow;
 import Gui.Frame;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerPropertiesFile;
@@ -20,13 +21,13 @@ import static Gui.Frame.getErrorDialogMessage;
 
 public class WorldCopyHandler extends Thread {
     private static JProgressBar progressBar = null;
-    private AddWorldsPanel addWorldsPanel;
+    private final AddWorldsPanel addWorldsPanel;
     private static JButton jButtonToDisable;
 
     private final String serverWorldName;
-    private File selectedWorld = null;
+    private final File selectedWorld;
     private final File serverWorldDir;
-    private boolean copyFilesToServerDir;
+    private final boolean copyFilesToServerDir;
     public static boolean isInRightClickMode = false;
 
 
@@ -37,14 +38,9 @@ public class WorldCopyHandler extends Thread {
         this.serverWorldName = serverPropertiesFile.getWorldName();
         this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
         this.selectedWorld = originalWorldDir;
-        this.progressBar = progressBar;
+        WorldCopyHandler.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
-        this.jButtonToDisable = jButtonToDisable;
-    }
-
-    public WorldCopyHandler() throws IOException {
-        this.serverWorldName = new ServerPropertiesFile().getWorldName();
-        this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
+        WorldCopyHandler.jButtonToDisable = jButtonToDisable;
     }
 
 
@@ -113,6 +109,7 @@ public class WorldCopyHandler extends Thread {
                 }
             } else {
                 newFile.getParentFile().mkdirs();
+                DebugWindow.debugVariables.put("newFile_extractArchive", newFile.toString());
                 FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
                 while ((len = zis.read(buffer)) > 0) {
@@ -148,6 +145,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
+        DebugWindow.debugVariables.put("selected_world", selectedWorld.toString());
         if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(ServerDetails.serverPath)) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
@@ -234,6 +232,9 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
                 }
                 ServerDetails.serverLevelDatFile = temp; //restore the original level.dat file location for safety
+                DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+                DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+                DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
             }
         } else if (selectedWorld.toString().contains(ServerDetails.serverPath)) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
@@ -281,11 +282,5 @@ public class WorldCopyHandler extends Thread {
             else
                 return dir;
         }
-    }
-
-    public String getServerWorldName () {
-        if(serverWorldName == null)
-            return "world_name_not_found";
-        return serverWorldName;
     }
 }

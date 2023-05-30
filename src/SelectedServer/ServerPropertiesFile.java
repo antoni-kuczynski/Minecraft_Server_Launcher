@@ -1,6 +1,8 @@
 package SelectedServer;
 
-import Gui.AlertType;
+import Enums.AlertType;
+import Gui.AddWorldsPanel;
+import Gui.DebugWindow;
 import Gui.Frame;
 
 import java.io.File;
@@ -9,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
+import static Gui.Frame.alert;
 import static Gui.Frame.getErrorDialogMessage;
 
 public class ServerPropertiesFile {
@@ -16,14 +19,19 @@ public class ServerPropertiesFile {
 
     public ServerPropertiesFile() throws IOException {
         File serverProperties = new File(ServerDetails.serverPath + "\\server.properties");
-
-        File serverPropertiesError = new File("server_properties_error");
-        if(!serverPropertiesError.exists())
-            if(!serverProperties.createNewFile())
-//                alert(AlertType.ERROR, "Cannot create server_properties_error file.\n" + exStackTraceToString(new Throwable().getStackTrace()));
-
-        if(!serverProperties.exists())
-            serverProperties = new File("server_properties_error");
+        if(!serverProperties.exists()) {
+            alert(AlertType.WARNING, "\"" +ServerDetails.serverName + "\" server's \"server.properties\" file does not exist. " +
+                    "Predicted server world folder name was set to \"world\".");
+            worldName = "world";
+            ServerDetails.serverWorldPath = ServerDetails.serverPath + "\\world";
+            ServerDetails.serverLevelDatFile = ServerDetails.serverPath + "\\" + worldName + "\\" + "level.dat";
+            AddWorldsPanel.wasServerPropertiesFound = false;
+            DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+            DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+            DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
+            return;
+        }
+        AddWorldsPanel.wasServerPropertiesFound = true;
         ArrayList<String> serverPropertiesContent = null;
         try {
             serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
@@ -40,6 +48,10 @@ public class ServerPropertiesFile {
         }
         ServerDetails.serverWorldPath = ServerDetails.serverPath + "\\" + worldName;
         ServerDetails.serverLevelDatFile = ServerDetails.serverPath + "\\" + worldName + "\\" + "level.dat";
+
+        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
+        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
+        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public String getWorldName() {

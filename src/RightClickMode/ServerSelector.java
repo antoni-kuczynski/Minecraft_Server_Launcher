@@ -1,6 +1,6 @@
 package RightClickMode;
 
-import Gui.AlertType;
+import Enums.AlertType;
 import Server.ButtonData;
 import Server.Config;
 import Server.WorldCopyHandler;
