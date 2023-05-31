@@ -126,14 +126,18 @@ public class Frame extends JFrame implements ActionListener {
 //        worldsPanelAndSpacing.add(Box.createRigidArea(new Dimension(200, 10)), BorderLayout.LINE_END);
 
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
+        JTabbedPane serverPageSwitcher = new JTabbedPane(JTabbedPane.RIGHT);
+        serverPageSwitcher.addTab("Worlds", addWorldsPanel);
 
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
                 buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
-                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
+//                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
+//                buttonAndWorldsPanel.add(serverPageSwitcher, BorderLayout.LINE_END);
                 add(titlePanel, BorderLayout.PAGE_START);
                 add(buttonAndWorldsPanel, BorderLayout.LINE_START);
+                add(serverPageSwitcher, BorderLayout.CENTER);
                 setVisible(true);
                 return null;
             }

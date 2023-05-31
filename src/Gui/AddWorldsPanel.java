@@ -192,7 +192,6 @@ public class AddWorldsPanel extends JPanel {
         startCopyingPanel.add(startCopyingBtnPanel, BorderLayout.LINE_END);
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
-
         JPanel addingWorld = new JPanel(new BorderLayout());
 
         worldNameAndStuffText.setText("World File name will appear here.");

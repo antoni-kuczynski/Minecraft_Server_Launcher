@@ -51,7 +51,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     }
 
     public ButtonPanel() throws IOException {
-        setPreferredSize(new Dimension(300, getHeight()));
+        setPreferredSize(new Dimension(250, getHeight()));
         // Create the container panel
         JPanel buttonContainer = new JPanel();
         buttonContainer.setLayout(new BoxLayout(buttonContainer, BoxLayout.PAGE_AXIS));
@@ -93,6 +93,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
         button.setPreferredSize(buttonSize);
         button.setMinimumSize(buttonSize);
         button.setMaximumSize(buttonSize);
+        button.setBorderPainted(false);
 
         return button;
     }
@@ -119,10 +120,10 @@ public class ButtonPanel extends JPanel implements ActionListener {
         } catch (Exception ex) {
             // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
         }
-        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
+//        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
         addWorldsPanel.setIcons();
-        new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
-                serverConfig.getServerLaunchArguments()).start();
+//        new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
+//                serverConfig.getServerLaunchArguments()).start();
         DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
         DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
         DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
