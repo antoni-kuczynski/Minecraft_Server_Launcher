@@ -130,10 +130,10 @@ public class Frame extends JFrame implements ActionListener {
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.CENTER);
-                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.LINE_END);
+                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
+                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
                 add(titlePanel, BorderLayout.PAGE_START);
-                add(buttonAndWorldsPanel, BorderLayout.CENTER);
+                add(buttonAndWorldsPanel, BorderLayout.LINE_START);
                 setVisible(true);
                 return null;
             }

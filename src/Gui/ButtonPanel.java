@@ -23,7 +23,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     private final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 14);
     private final ArrayList<JButton> buttons = new ArrayList<>();
 
-    public void initializeServerButtons() throws IOException {
+    public void initializeServerButtons(JPanel buttonContainer) throws IOException {
         buttons.clear();
         Config config = new Config();
         ArrayList<ButtonData> serverConfig = config.getData();
@@ -45,24 +45,26 @@ public class ButtonPanel extends JPanel implements ActionListener {
             serverLaunchButton.addActionListener(this);
             serverLaunchButton.setActionCommand(Integer.toString(serverIndex));
             buttons.add(serverLaunchButton);
-            add(serverLaunchButton);
+            buttonContainer.add(serverLaunchButton);
         }
         repaint();
     }
-    public void clearAllButtons() throws IOException {
-        for(JButton button : buttons)
-            remove(button);
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
-        }
-        initializeServerButtons();
-    }
 
     public ButtonPanel() throws IOException {
-        setLayout(new GridLayout(10, 5, 10, 10));
-        initializeServerButtons();
+        setPreferredSize(new Dimension(300, getHeight()));
+        // Create the container panel
+        JPanel buttonContainer = new JPanel();
+        buttonContainer.setLayout(new BoxLayout(buttonContainer, BoxLayout.PAGE_AXIS));
+
+        // Set the container panel as the content of the JScrollPane
+        JScrollPane scrollPane = new JScrollPane(buttonContainer);
+
+        // Call the method to initialize the server buttons
+        initializeServerButtons(buttonContainer);
+
+        // Add the scroll pane to the ButtonPanel
+        setLayout(new BorderLayout());
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     public void setButtonIcon(JButton button, String iconPath) {
@@ -72,14 +74,29 @@ public class ButtonPanel extends JPanel implements ActionListener {
         button.setIcon(scaledIcon);
     }
 
+    public void clearAllButtons() throws IOException {
+        for(JButton button : buttons)
+            remove(button);
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
+        }
+//        initializeServerButtons();
+    }
+
     public JButton createButton(String label) {
         JButton button = new JButton(label);
-        FontMetrics metrics = button.getFontMetrics(button.getFont());
-        int width = metrics.stringWidth(label) + BUTTON_WIDTH_PADDING;
-        int height = metrics.getHeight() + BUTTON_HEIGHT_PADDING;
-        button.setPreferredSize(new Dimension(width, height));
+
+        // Set the desired width and height for the button
+        Dimension buttonSize = new Dimension(300, 50);
+        button.setPreferredSize(buttonSize);
+        button.setMinimumSize(buttonSize);
+        button.setMaximumSize(buttonSize);
+
         return button;
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -100,7 +117,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
             nbtParser.join();
             ServerDetails.serverLevelName = nbtParser.getLevelName();
         } catch (Exception ex) {
-//            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex)); //shut the fuck up, it always throws this exception NO MATTER FUCKING WHAT
+            // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
         }
         ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
         addWorldsPanel.setIcons();
