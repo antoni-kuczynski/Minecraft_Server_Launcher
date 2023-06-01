@@ -120,7 +120,6 @@ public class ButtonPanel extends JPanel implements ActionListener {
         } catch (Exception ex) {
             // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
         }
-//        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
         addWorldsPanel.setIcons();
 //        new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
 //                serverConfig.getServerLaunchArguments()).start();
