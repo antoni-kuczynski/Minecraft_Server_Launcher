@@ -130,5 +130,10 @@ public class ButtonPanel extends JPanel implements ActionListener {
         DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
         DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
         buttons.get(ServerDetails.serverId - 1).setBackground(Color.RED);
+        for(JButton b : buttons) {
+            if(b.getBackground() == Color.RED && buttons.indexOf(b) != ServerDetails.serverId - 1) {
+                b.setBackground(UIManager.getColor("Button.background"));
+            }
+        }
     }
 }

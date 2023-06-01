@@ -15,13 +15,19 @@ import java.io.IOException;
 
 public class ServerConsoleTab extends JPanel {
     private final JButton startServer = new JButton("Start Server");
+    private final JButton stopServer = new JButton("Stop Server");
+    private final JButton killServer = new JButton("Kill Server");
     public ServerConsoleTab() {
         setLayout(new BorderLayout());
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
 
+
         serverButtons.add(startServer);
+        serverButtons.add(stopServer);
+        serverButtons.add(killServer);
         bottomPanel.add(serverButtons, BorderLayout.PAGE_END);
+        stopServer.setVisible(false);
 
         add(bottomPanel, BorderLayout.PAGE_END);
 
@@ -47,6 +53,13 @@ public class ServerConsoleTab extends JPanel {
             }
             new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
                 serverConfig.getServerLaunchArguments()).start();
+            startServer.setVisible(false);
+            stopServer.setVisible(true);
+        });
+
+        stopServer.addActionListener(e -> {
+            stopServer.setVisible(false);
+            startServer.setVisible(true);
         });
     }
 
