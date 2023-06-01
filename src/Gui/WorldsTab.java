@@ -23,7 +23,7 @@ import java.io.Serial;
 import static Gui.Frame.alert;
 import static Gui.Frame.getErrorDialogMessage;
 
-public class AddWorldsPanel extends JPanel {
+public class WorldsTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
     private final JLabel selectedWorldIconLabel = new JLabel();
     private final JLabel serverWorldIconLabel = new JLabel();
@@ -43,7 +43,7 @@ public class AddWorldsPanel extends JPanel {
 
     private final double ONE_GIGABYTE = 1073741824;
 
-    public AddWorldsPanel() {
+    public WorldsTab() {
         super(new BorderLayout());
         JLabel dragNDropInfo = new JLabel(" or drag and drop it here.");
         JLabel selectedServerTxt = new JLabel();
@@ -93,7 +93,7 @@ public class AddWorldsPanel extends JPanel {
             setIcons();
         });
 
-        final AddWorldsPanel tempPanel = this;
+        final WorldsTab tempPanel = this;
         TransferHandler transferHandler = new TransferHandler() {
             @Serial
             private static final long serialVersionUID = 1L;
@@ -335,7 +335,7 @@ public class AddWorldsPanel extends JPanel {
     }
 
     public static void setExtractedWorldDir(String extractedWorldDir) {
-        AddWorldsPanel.extractedWorldDir = extractedWorldDir;
+        WorldsTab.extractedWorldDir = extractedWorldDir;
     }
 
     public static String getExtractedWorldDir() {

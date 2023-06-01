@@ -1,7 +1,6 @@
 package Gui;
 
 import Enums.AlertType;
-import Enums.RunMode;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
 import SelectedServer.ServerPropertiesFile;
@@ -15,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static Gui.ServerSelectionPanel.addWorldsPanel;
+import static Gui.ServerSelectionPanel.worldsTab;
 
 public class ButtonPanel extends JPanel implements ActionListener {
     private static final int BUTTON_WIDTH_PADDING = 20;
@@ -93,7 +92,9 @@ public class ButtonPanel extends JPanel implements ActionListener {
         button.setPreferredSize(buttonSize);
         button.setMinimumSize(buttonSize);
         button.setMaximumSize(buttonSize);
+
         button.setBorderPainted(false);
+        button.setBorder(null);
 
         return button;
     }
@@ -101,6 +102,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         Config config;
         try {
             config = new Config();
@@ -121,11 +123,12 @@ public class ButtonPanel extends JPanel implements ActionListener {
             // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
         }
 //        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
-        addWorldsPanel.setIcons();
+        worldsTab.setIcons();
 //        new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
 //                serverConfig.getServerLaunchArguments()).start();
         DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
         DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
         DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
+        buttons.get(ServerDetails.serverId - 1).setBackground(Color.RED);
     }
 }

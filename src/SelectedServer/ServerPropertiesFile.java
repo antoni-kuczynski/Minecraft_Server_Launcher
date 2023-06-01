@@ -1,7 +1,7 @@
 package SelectedServer;
 
 import Enums.AlertType;
-import Gui.AddWorldsPanel;
+import Gui.WorldsTab;
 import Gui.DebugWindow;
 import Gui.Frame;
 
@@ -25,13 +25,13 @@ public class ServerPropertiesFile {
             worldName = "world";
             ServerDetails.serverWorldPath = ServerDetails.serverPath + "\\world";
             ServerDetails.serverLevelDatFile = ServerDetails.serverPath + "\\" + worldName + "\\" + "level.dat";
-            AddWorldsPanel.wasServerPropertiesFound = false;
+            WorldsTab.wasServerPropertiesFound = false;
             DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
             DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
             DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
             return;
         }
-        AddWorldsPanel.wasServerPropertiesFound = true;
+        WorldsTab.wasServerPropertiesFound = true;
         ArrayList<String> serverPropertiesContent = null;
         try {
             serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());

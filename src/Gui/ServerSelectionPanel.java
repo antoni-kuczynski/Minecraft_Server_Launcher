@@ -13,7 +13,7 @@ import java.util.prefs.Preferences;
 
 public class ServerSelectionPanel extends JPanel {
     private static ServerSelectionPanel currentPanel;
-    public static AddWorldsPanel addWorldsPanel;
+    public static WorldsTab worldsTab;
     private final Preferences userValues;
 
 
@@ -64,10 +64,10 @@ public class ServerSelectionPanel extends JPanel {
         DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
-    public void setPanels(ServerSelectionPanel panel, AddWorldsPanel addWorldsPanel) {
+    public void setPanels(ServerSelectionPanel panel, WorldsTab worldsTab) {
         ServerSelectionPanel.currentPanel = panel;
-        ServerSelectionPanel.addWorldsPanel = addWorldsPanel;
-        addWorldsPanel.setIcons();
+        ServerSelectionPanel.worldsTab = worldsTab;
+        worldsTab.setIcons();
     }
 
     private void reloadButtonText() {

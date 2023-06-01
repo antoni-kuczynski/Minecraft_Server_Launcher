@@ -1,7 +1,6 @@
 package Gui;
 
 import Enums.AlertType;
-import Server.BackupWorld;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -27,7 +26,7 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem draculaTheme;
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
-    private final AddWorldsPanel addWorldsPanel;
+    private final WorldsTab worldsTab;
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
     private final String PREFS_KEY_WIDTH = "window_width";
@@ -95,8 +94,10 @@ public class Frame extends JFrame implements ActionListener {
         TitlePanel titlePanel = new TitlePanel();
         ButtonPanel buttonPanel = new ButtonPanel();
         ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
-        AddWorldsPanel addWorldsPanel = new AddWorldsPanel();
-        serverSelectionPanel.setPanels(serverSelectionPanel, addWorldsPanel);
+        WorldsTab worldsTab = new WorldsTab();
+        ServerConsoleTab serverConsoleTab = new ServerConsoleTab();
+
+        serverSelectionPanel.setPanels(serverSelectionPanel, worldsTab);
 
         //JPanel containing empty panels & config panel
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
@@ -118,7 +119,7 @@ public class Frame extends JFrame implements ActionListener {
         JPanel worldsPanelSpacingAnotherLayer = new JPanel(new BorderLayout());
         JPanel worldsPanelAndSpacing = new JPanel(new BorderLayout());
 
-        worldsPanelSpacingAnotherLayer.add(addWorldsPanel, BorderLayout.LINE_START);
+        worldsPanelSpacingAnotherLayer.add(worldsTab, BorderLayout.LINE_START);
 //        worldsPanelSpacingAnotherLayer.add(Box.createRigidArea(new Dimension(100, 50)), BorderLayout.LINE_END);
 
         worldsPanelAndSpacing.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.LINE_START);
@@ -127,7 +128,8 @@ public class Frame extends JFrame implements ActionListener {
 
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
         JTabbedPane serverPageSwitcher = new JTabbedPane(JTabbedPane.RIGHT);
-        serverPageSwitcher.addTab("Worlds", addWorldsPanel);
+        serverPageSwitcher.addTab("Console", serverConsoleTab);
+        serverPageSwitcher.addTab("Worlds", worldsTab);
 
         new SwingWorker<Void, Void>() {
             @Override
@@ -198,8 +200,8 @@ public class Frame extends JFrame implements ActionListener {
             }
         });
 
-        this.addWorldsPanel = addWorldsPanel;
-        addWorldsPanel.setBorders();
+        this.worldsTab = worldsTab;
+        worldsTab.setBorders();
 
         refreshServerList.addMenuListener(new MenuListener() {
             @Override
@@ -291,7 +293,7 @@ public class Frame extends JFrame implements ActionListener {
         } else if (e.getSource() == nordTheme) {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
         }
-        addWorldsPanel.setBorders();
+        worldsTab.setBorders();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
