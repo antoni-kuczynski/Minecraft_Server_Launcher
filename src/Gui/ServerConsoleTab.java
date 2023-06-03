@@ -19,9 +19,12 @@ public class ServerConsoleTab extends JPanel {
     private final JButton killServer = new JButton("Kill Server");
     public ServerConsoleTab() {
         setLayout(new BorderLayout());
+        JPanel upperPanel = new JPanel(new BorderLayout());
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
+        ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500,500));
 
+        upperPanel.add(serverConsoleArea, BorderLayout.CENTER);
 
         serverButtons.add(startServer);
         serverButtons.add(stopServer);
@@ -29,6 +32,7 @@ public class ServerConsoleTab extends JPanel {
         bottomPanel.add(serverButtons, BorderLayout.PAGE_END);
         stopServer.setVisible(false);
 
+        add(upperPanel, BorderLayout.PAGE_START);
         add(bottomPanel, BorderLayout.PAGE_END);
 
         startServer.addActionListener(e -> {
@@ -40,21 +44,22 @@ public class ServerConsoleTab extends JPanel {
                 return;
             }
 
-            ButtonData serverConfig = config.getData().get(ServerDetails.serverId);
-            try {
-                ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder(), serverConfig.getServerId());
-                new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
-                NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
-                nbtParser.start();
-                nbtParser.join();
-                ServerDetails.serverLevelName = nbtParser.getLevelName();
-            } catch (Exception ex) {
-                // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
-            }
-            new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
-                serverConfig.getServerLaunchArguments()).start();
-            startServer.setVisible(false);
-            stopServer.setVisible(true);
+            ButtonData serverConfig = config.getData().get(ServerDetails.serverId - 1);
+            serverConsoleArea.startServer(serverConfig);
+//            try {
+//                ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder(), serverConfig.getServerId());
+//                new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
+//                NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
+//                nbtParser.start();
+//                nbtParser.join();
+//                ServerDetails.serverLevelName = nbtParser.getLevelName();
+//            } catch (Exception ex) {
+//                // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
+//            }
+//            new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
+//                serverConfig.getServerLaunchArguments()).start();
+//            startServer.setVisible(false);
+//            stopServer.setVisible(true);
         });
 
         stopServer.addActionListener(e -> {
