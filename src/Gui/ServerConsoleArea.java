@@ -18,7 +18,7 @@ public class ServerConsoleArea extends JPanel {
     private boolean isServerRunning;
 
     private final Runnable consoleRunner = () -> {
-        if(isServerRunning) {
+//        if(isServerRunning) {
             try {
                 // Get the input stream of the server process
                 InputStream inputStream = processes.get(processes.size() - 1).getInputStream();
@@ -31,16 +31,19 @@ public class ServerConsoleArea extends JPanel {
                 String line;
 
                 int howManyTimesLineWasNull = 0;
-                while (isServerRunning) {
+                while (true) {
                     line = bufferedReader.readLine();
                     if (line == null) {
-                        inputStream = processes.get(processes.size() - 1).getInputStream();
-                        reader = new InputStreamReader(inputStream);
-                        bufferedReader = new BufferedReader(reader);
-                        howManyTimesLineWasNull++;
-                        if(howManyTimesLineWasNull > 50) {
-                            isServerRunning = false;
-                            howManyTimesLineWasNull = 0;
+                        if(isServerRunning) {
+                            inputStream = processes.get(processes.size() - 1).getInputStream();
+                            reader = new InputStreamReader(inputStream);
+                            bufferedReader = new BufferedReader(reader);
+                            howManyTimesLineWasNull++;
+                            if(howManyTimesLineWasNull > 50) {
+                                isServerRunning = false;
+                                howManyTimesLineWasNull = 0;
+                                processes.get(processes.size() - 1).destroy();
+                            }
                         }
                     } else {
                         ServerConsoleArea.consoleOutput.append(line + "\n");
@@ -50,7 +53,8 @@ public class ServerConsoleArea extends JPanel {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+//        }
+//        System.out.println("I am not in the fucking if statement!!!");
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
     private ProcessBuilder processBuilder;
@@ -148,10 +152,27 @@ public class ServerConsoleArea extends JPanel {
             isServerRunning = true;
             Process process1 = processBuilder.start();
             processes.add(process1);
-//            if (processes.size() == 1)
-            consoleMainThread.start();
+            if (processes.size() == 1)
+                consoleMainThread.start();
+            System.out.println("Console main thread state: " + consoleMainThread.getState());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if(consoleMainThread.isAlive()) { //that is the most braindead code that I've ever written TO DATE (seriously)
+            System.out.println("Command: " + command);
+            try {
+                processBuilder = new ProcessBuilder(command);
+                processBuilder.directory(new File(buttonData.getPathToServerFolder()));
+                processBuilder.redirectErrorStream(true);
+                isServerRunning = true;
+//                Process process1 = processBuilder.start();
+//                processes.add(process1);
+//                if (processes.size() == 1)
+//                    consoleMainThread.start();
+                System.out.println("Console main thread state: " + consoleMainThread.getState());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
