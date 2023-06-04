@@ -8,6 +8,7 @@ import Server.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
@@ -49,19 +50,14 @@ public class ServerSelectionPanel extends JPanel {
         nbtParser.join();
         ServerDetails.serverLevelName = nbtParser.getLevelName(); //issue #64 fix
 //        addWorldsPanel.setIcons();
-        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
-        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
-        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public static void setServerVariables(String text, String serverPath, int serverId) {
         ServerDetails.serverName = text;
         ServerDetails.serverPath = serverPath;
         ServerDetails.serverId = serverId;
+        ServerDetails.serverLatestLogFilePath = new File(serverPath + "/logs/latest.log");
         currentPanel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
-        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
-        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
-        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
     }
 
     public void setPanels(ServerSelectionPanel panel, WorldsTab worldsTab) {

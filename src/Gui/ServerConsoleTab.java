@@ -12,6 +12,7 @@ import Server.Runner;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ServerConsoleTab extends JPanel {
     private final JButton startServer = new JButton("Start Server");
@@ -26,6 +27,14 @@ public class ServerConsoleTab extends JPanel {
 
         upperPanel.add(serverConsoleArea, BorderLayout.CENTER);
 
+        Config config;
+        try {
+            config = new Config();
+        } catch (IOException ex) {
+            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
+            return;
+        }
+
         serverButtons.add(startServer);
         serverButtons.add(stopServer);
         serverButtons.add(killServer);
@@ -36,13 +45,7 @@ public class ServerConsoleTab extends JPanel {
         add(bottomPanel, BorderLayout.PAGE_END);
 
         startServer.addActionListener(e -> {
-            Config config;
-            try {
-                config = new Config();
-            } catch (IOException ex) {
-                Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
-                return;
-            }
+
 
             ButtonData serverConfig = config.getData().get(ServerDetails.serverId - 1);
             serverConsoleArea.startServer(serverConfig);

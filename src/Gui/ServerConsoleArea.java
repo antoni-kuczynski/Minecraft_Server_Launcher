@@ -1,5 +1,6 @@
 package Gui;
 
+import SelectedServer.ServerDetails;
 import Server.ButtonData;
 
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class ServerConsoleArea extends JPanel {
                             reader = new InputStreamReader(inputStream);
                             bufferedReader = new BufferedReader(reader);
                             howManyTimesLineWasNull++;
-                            if(howManyTimesLineWasNull > 50) {
+                            if(howManyTimesLineWasNull > 50) { //assuming that a server has been stopped
                                 isServerRunning = false;
                                 howManyTimesLineWasNull = 0;
                                 processes.get(processes.size() - 1).destroy();
@@ -182,5 +183,9 @@ public class ServerConsoleArea extends JPanel {
             writer.println(command);
             writer.flush();
         }
+    }
+
+    public void setText(String text) {
+        consoleOutput.setText(text);
     }
 }

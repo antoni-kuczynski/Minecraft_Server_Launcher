@@ -11,6 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -27,6 +28,7 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
     private final WorldsTab worldsTab;
+    private final ButtonPanel buttonPanel;
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
     private final String PREFS_KEY_WIDTH = "window_width";
@@ -43,9 +45,12 @@ public class Frame extends JFrame implements ActionListener {
         refreshServerList.setContentAreaFilled(false);
         refreshServerList.setVisible(true);
 
-        openServer.setVisible(false);
+        AtomicInteger themeIndex = new AtomicInteger(1);
+        openServer.setVisible(true);
         openServer.addActionListener(e -> {
-            DebugWindow.debugVariables.put("test_key" + Math.random() * 100, "test");
+            debugColorSchemes(themeIndex.get());
+            System.out.println(themeIndex.get());
+            themeIndex.getAndIncrement();
         });
 
         darculaTheme = new JMenuItem("Darcula (Inteliij Dark)");
@@ -92,7 +97,7 @@ public class Frame extends JFrame implements ActionListener {
 
         // Create the JPanels
         TitlePanel titlePanel = new TitlePanel();
-        ButtonPanel buttonPanel = new ButtonPanel();
+        buttonPanel = new ButtonPanel();
         ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
         WorldsTab worldsTab = new WorldsTab();
         ServerConsoleTab serverConsoleTab = new ServerConsoleTab();
@@ -294,6 +299,75 @@ public class Frame extends JFrame implements ActionListener {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
         }
         worldsTab.setBorders();
+        buttonPanel.setBorders();
+    }
+
+    public void debugColorSchemes(int theme) {
+        if (theme == 1) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatDarculaIJTheme");
+        } else if (theme == 2) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatArcIJTheme");
+        } else if (theme == 3) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme");
+        } else if (theme == 4) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme");
+        } else if (theme == 5) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme");
+        } else if (theme == 6) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme");
+        } else if (theme == 7) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme");
+        } else if (theme == 8) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme");
+        } else if (theme == 9) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme");
+        } else if (theme == 10) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme");
+        } else if (theme == 11) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme");
+        } else if (theme == 12) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme");
+        } else if (theme == 13) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme");
+        } else if (theme == 14) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGradiantoMidnightBlueIJTheme");
+        } else if (theme == 15) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme");
+        } else if (theme == 16) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme");
+        } else if (theme == 17) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme");
+        } else if (theme == 18) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkMediumIJTheme");
+        } else if (theme == 19) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme");
+        } else if (theme == 20) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme");
+        } else if (theme == 21) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatHighContrastIJTheme");
+        } else if (theme == 22) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme");
+        } else if (theme == 23) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatMonokaiIJTheme");
+        } else if (theme == 24) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme");
+        } else if (theme == 25) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
+        } else if (theme == 26) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme");
+        } else if (theme == 27) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme");
+        } else if (theme == 28) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme");
+        } else if (theme == 29) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme");
+        } else if (theme == 30) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme");
+        } else if (theme == 33) {
+            setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme");
+        }
+        worldsTab.setBorders();
+        buttonPanel.setBorders();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

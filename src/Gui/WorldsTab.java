@@ -324,9 +324,7 @@ public class WorldsTab extends JPanel {
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }
-        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
-        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
-        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
+
     }
 
     public void setBorders() {

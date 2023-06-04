@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import static Gui.ServerSelectionPanel.worldsTab;
 
 public class ButtonPanel extends JPanel implements ActionListener {
-    private static final int BUTTON_WIDTH_PADDING = 20;
-    private static final int BUTTON_HEIGHT_PADDING = 10;
     private final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 14);
     private final ArrayList<JButton> buttons = new ArrayList<>();
 
@@ -124,16 +122,26 @@ public class ButtonPanel extends JPanel implements ActionListener {
         }
 //        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
         worldsTab.setIcons();
-//        new Runner(serverConfig.getPathToServerJarFile(), RunMode.SERVER_JAR, serverConfig.getPathToJavaRuntime(),
-//                serverConfig.getServerLaunchArguments()).start();
-        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
-        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
-        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
+
         buttons.get(ServerDetails.serverId - 1).setBackground(Color.RED);
         for(JButton b : buttons) {
             if(b.getBackground() == Color.RED && buttons.indexOf(b) != ServerDetails.serverId - 1) {
-                b.setBackground(UIManager.getColor("Button.background"));
+                b.setContentAreaFilled(false);
+                b.setContentAreaFilled(true);
+//                Color bgColor = UIManager.getColor("Button.background");
+//                b.setBackground(bgColor);
+////                b.setBackground(new Color(bgColor.getRed() + 25, bgColor.getBlue() + 25, bgColor.getGreen() + 25));
             }
+            //ij darcula theme
+            //button color rgb(85, 88, 90)
+            //bg color rgb(60, 63, 65)
+        }
+    }
+
+    public void setBorders() {
+        for(JButton b : buttons) {
+            b.setBorderPainted(false);
+            b.setBorder(null);
         }
     }
 }

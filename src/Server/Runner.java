@@ -6,26 +6,13 @@ import Enums.RunMode;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import static Gui.Frame.alert;
 import static Gui.Frame.getErrorDialogMessage;
 
 public class Runner extends Thread {
     private final RunMode runMode;
-    private String pathToServerJar;
     private String pathToServerFolder;
-    private String javaRuntimePath;
-    private ArrayList<String> arguments;
-
-    public Runner(String pathToServerJar, RunMode runMode, String javaRuntimePath, String launchArgs) {
-        this.pathToServerJar = pathToServerJar;
-        this.javaRuntimePath = javaRuntimePath;
-        this.runMode = runMode;
-        arguments = Arrays.stream(launchArgs.split(" ")).collect(Collectors.toCollection(ArrayList::new));
-    }
 
     public Runner(RunMode runMode) {
         this.runMode = runMode;
@@ -36,28 +23,36 @@ public class Runner extends Thread {
         pathToServerFolder = serverPath;
     }
 
-    private void launchServer(String serverPath, String javaPath) throws IOException {
-        ArrayList<String> command = new ArrayList<>();
-        command.add("cmd");
-        command.add("/c");
-        command.add("start");
-        command.add("cmd.exe");
-        command.add("@cmd");
-        command.add("/c");
-        command.add("\"" + javaPath + "\"");
-        command.addAll(arguments);
-        command.add("-jar");
-        command.add(serverPath);
-        command.add("nogui");
+    private void openFolder(File folder) {
 
-        ProcessBuilder pb = new ProcessBuilder(command);
-        pb.directory(new File(serverPath).getParentFile());
-        pb.redirectErrorStream(true);
+        // check if the directory exists
+        if (!folder.exists()) {
+            alert(AlertType.ERROR, "Directory not found: " + folder.getAbsolutePath());
+            return;
+        }
 
-        pb.start();
+        // check if the Desktop API is supported
+        if (!Desktop.isDesktopSupported()) {
+            alert(AlertType.ERROR, "Desktop API is not supported on this platform");
+            return;
+        }
+
+        // get the Desktop instance
+        Desktop desktop = Desktop.getDesktop();
+
+        // check if the directory can be opened
+        if (!desktop.isSupported(Desktop.Action.OPEN)) {
+            alert(AlertType.ERROR, "Open action is not supported on this platform");
+            return;
+        }
+
+        // open the directory with the default file manager
+        try {
+            desktop.open(folder);
+        } catch (IOException e) {
+            alert(AlertType.ERROR, "Cannot open server's directory.\n" + getErrorDialogMessage(e));
+        }
     }
-
-
     @Override
     public void run() {
         switch (runMode) {
@@ -97,74 +92,8 @@ public class Runner extends Thread {
                     alert(AlertType.ERROR, "Cannot open \"servers.json\" file.\n" + getErrorDialogMessage(e));
                 }
             }
-            case SERVER_FOLDER -> {
-                File directory = new File(pathToServerFolder);
-
-                // check if the directory exists
-                if (!directory.exists()) {
-                    alert(AlertType.ERROR, "Directory not found: " + directory.getAbsolutePath());
-                    return;
-                }
-
-                // check if the Desktop API is supported
-                if (!Desktop.isDesktopSupported()) {
-                    alert(AlertType.ERROR, "Desktop API is not supported on this platform");
-                    return;
-                }
-
-                // get the Desktop instance
-                Desktop desktop = Desktop.getDesktop();
-
-                // check if the directory can be opened
-                if (!desktop.isSupported(Desktop.Action.OPEN)) {
-                    alert(AlertType.ERROR, "Open action is not supported on this platform");
-                    return;
-                }
-
-                // open the directory with the default file manager
-                try {
-                    desktop.open(directory);
-                } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot open server's directory.\n" + getErrorDialogMessage(e));
-                }
-            }
-            case SERVER_JAR -> {
-                try {
-                    launchServer(pathToServerJar, javaRuntimePath);
-                } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot start new Process pb. Cannot launch server.\n" + getErrorDialogMessage(e));
-                }
-            }
-            case GLOBAL_FOLDER -> {
-                File directory = new File(Config.globalServerFolder);
-                // check if the directory exists
-                if (!directory.exists()) {
-                    alert(AlertType.ERROR, "Directory not found: " + directory.getAbsolutePath());
-                    return;
-                }
-
-                // check if the Desktop API is supported
-                if (!Desktop.isDesktopSupported()) {
-                    alert(AlertType.ERROR, "Desktop API is not supported on this platform");
-                    return;
-                }
-
-                // get the Desktop instance
-                Desktop desktop = Desktop.getDesktop();
-
-                // check if the directory can be opened
-                if (!desktop.isSupported(Desktop.Action.OPEN)) {
-                    alert(AlertType.ERROR, "Open action is not supported on this platform");
-                    return;
-                }
-
-                // open the directory with the default file manager
-                try {
-                    desktop.open(directory);
-                } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot open server's directory.\n" + getErrorDialogMessage(e));
-                }
-            }
+            case SERVER_FOLDER -> openFolder(new File(pathToServerFolder));
+            case GLOBAL_FOLDER -> openFolder(new File(Config.globalServerFolder));
         }
     }
 }

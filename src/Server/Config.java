@@ -1,7 +1,6 @@
 package Server;
 
 import Enums.AlertType;
-import Gui.DebugWindow;
 import Gui.Frame;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,7 +17,6 @@ public class Config {
         return data;
     }
     private final ArrayList<ButtonData> data = new ArrayList<>();
-    public static boolean isInDevelopperMode;
     public static String globalServerFolder;
 
     public static String readFileString(File fileToRead) throws IOException {
@@ -41,7 +39,6 @@ public class Config {
                     [
                     {
                         "globalLaunchArgs": "-Xmx16G -Xms2G -XX:+UseG1GC -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=1 -XX:ParallelGCThreads=4 -XX:+OptimizeStringConcat",
-                        "isInDevelopperMode": false
                         "globalServerFolder": ""
                     },
                     {
@@ -69,12 +66,8 @@ public class Config {
         JSONArray configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
         JSONObject globalVariables = configJSONObjects.getJSONObject(0);
         String javaArguments = globalVariables.getString("globalLaunchArgs");
-        isInDevelopperMode = globalVariables.getBoolean("isInDevelopperMode");
         globalServerFolder = globalVariables.getString("globalServerFolder");
-        if(isInDevelopperMode) {
-            DebugWindow debugWindow = new DebugWindow();
-            debugWindow.setWindow(debugWindow);
-        }
+
         for (int jsonIndex = 1; jsonIndex < configJSONObjects.length(); jsonIndex++) { //start on index 1 because index 0 are global variables
             JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
             String buttonText = jsonObject.getString("buttonText");

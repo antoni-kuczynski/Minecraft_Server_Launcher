@@ -1,7 +1,6 @@
 [
   {
     "globalLaunchArgs": "-Xmx16G -Xms2G -XX:+UseG1GC -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=1 -XX:ParallelGCThreads=4 -XX:+OptimizeStringConcat",
-    "isInDevelopperMode": false,
     "globalServerFolder": "H:\\Minecraft Servers"
   },
   {
