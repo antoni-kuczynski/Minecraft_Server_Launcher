@@ -48,6 +48,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     }
 
     public ButtonPanel() throws IOException {
+        setBackground(new Color(26, 26, 26));
         setPreferredSize(new Dimension(250, getHeight()));
         // Create the container panel
         JPanel buttonContainer = new JPanel();
@@ -93,7 +94,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
         button.setBorderPainted(false);
         button.setBorder(null);
-
+        button.setBackground(new Color(13, 17, 23));
         return button;
     }
 
