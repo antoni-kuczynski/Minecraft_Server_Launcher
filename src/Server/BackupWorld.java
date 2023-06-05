@@ -21,7 +21,7 @@ public class BackupWorld extends Thread {
         if(!workingDirectory.exists())
             workingDirectory.mkdirs();
         try {
-            Date date = new Date(); //fuck american date format btw
+            Date date = new Date(); //fuck american date format
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             String dateFormated = "-" + calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH)) +

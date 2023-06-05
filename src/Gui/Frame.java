@@ -368,6 +368,7 @@ public class Frame extends JFrame implements ActionListener {
         }
         worldsTab.setBorders();
         buttonPanel.setBorders();
+        System.out.println(UIManager.getColor("Button.background"));
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
