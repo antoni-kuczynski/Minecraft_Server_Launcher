@@ -127,10 +127,10 @@ public class ButtonPanel extends JPanel implements ActionListener {
         buttons.get(ServerDetails.serverId - 1).setBackground(Color.RED);
         for(JButton b : buttons) {
             if(b.getBackground() == Color.RED && buttons.indexOf(b) != ServerDetails.serverId - 1) {
-                b.setContentAreaFilled(false);
-                b.setContentAreaFilled(true);
-//                Color bgColor = UIManager.getColor("Button.background");
-//                b.setBackground(bgColor);
+//                b.setContentAreaFilled(false);
+//                b.setContentAreaFilled(true);
+                Color bgColor = UIManager.getColor("Button.background");
+                b.setBackground(bgColor);
 ////                b.setBackground(new Color(bgColor.getRed() + 25, bgColor.getBlue() + 25, bgColor.getGreen() + 25));
             }
             //ij darcula theme

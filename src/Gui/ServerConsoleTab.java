@@ -23,9 +23,8 @@ public class ServerConsoleTab extends JPanel {
         JPanel upperPanel = new JPanel(new BorderLayout());
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
-        ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500,500));
 
-        upperPanel.add(serverConsoleArea, BorderLayout.CENTER);
+
 
         Config config;
         try {
@@ -34,6 +33,14 @@ public class ServerConsoleTab extends JPanel {
             Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             return;
         }
+
+        ArrayList<ServerConsoleArea> consoleAreas = new ArrayList<>();
+        for(int i = 0; i < config.getData().size(); i++) {
+//            ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500));
+            consoleAreas.add(new ServerConsoleArea(new Dimension(500, 500)));
+        }
+        System.out.println(ServerDetails.serverId);
+        upperPanel.add(consoleAreas.get(ServerDetails.serverId - 1), BorderLayout.CENTER);
 
         serverButtons.add(startServer);
         serverButtons.add(stopServer);
@@ -48,21 +55,22 @@ public class ServerConsoleTab extends JPanel {
 
         startServer.addActionListener(e -> {
             ButtonData serverConfig = config.getData().get(ServerDetails.serverId - 1);
-            serverConsoleArea.startServer(serverConfig);
+            consoleAreas.get(ServerDetails.serverId - 1).startServer(serverConfig);
             startServer.setVisible(false);
             stopServer.setVisible(true);
             killServer.setEnabled(true);
+
         });
 
         stopServer.addActionListener(e -> {
             stopServer.setVisible(false);
             startServer.setVisible(true);
             killServer.setEnabled(false);
-            serverConsoleArea.executeCommand("stop");
+            consoleAreas.get(ServerDetails.serverId - 1).executeCommand("stop");
         });
 
         killServer.addActionListener(e -> {
-            serverConsoleArea.killServer();
+            consoleAreas.get(ServerDetails.serverId - 1).killServer();
             stopServer.setVisible(false);
             startServer.setVisible(true);
         });

@@ -1,6 +1,7 @@
 package Gui;
 
 import Enums.AlertType;
+import SelectedServer.ServerDetails;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -94,7 +95,7 @@ public class Frame extends JFrame implements ActionListener {
 
 
         Preferences userValues = Preferences.userNodeForPackage(getClass());
-
+        ServerDetails.serverId = userValues.getInt("PREFS_SERVER_ID", 1);
         // Create the JPanels
         TitlePanel titlePanel = new TitlePanel();
         buttonPanel = new ButtonPanel();
@@ -173,6 +174,7 @@ public class Frame extends JFrame implements ActionListener {
             setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
         }
 
+
         // Save the window position to user preferences when the JFrame is closed
         addWindowListener(new WindowAdapter() {
             @Override
@@ -184,6 +186,7 @@ public class Frame extends JFrame implements ActionListener {
                 userSavedValues.putInt(PREFS_KEY_WIDTH, screenDimensions.width);
                 userSavedValues.putInt(PREFS_KEY_HEIGHT, screenDimensions.height);
                 userSavedValues.put(PREFS_KEY_LOOK_AND_FEEL, lookAndFeel);
+                userSavedValues.putInt("PREFS_SERVER_ID", ServerDetails.serverId);
 
                 File temporaryFilesDirectory = new File("world_temp");
                 if(!temporaryFilesDirectory.exists()) //issue #55 fix by checking if the folder exitst and creating it (if somehow it doesn't exist here)
