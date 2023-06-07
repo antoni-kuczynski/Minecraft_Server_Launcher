@@ -48,7 +48,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
     }
 
     public ButtonPanel() throws IOException {
-        setBackground(new Color(26, 26, 26));
+//        setBackground(new Color(26, 26, 26));
         setPreferredSize(new Dimension(250, getHeight()));
         // Create the container panel
         JPanel buttonContainer = new JPanel();
@@ -94,14 +94,11 @@ public class ButtonPanel extends JPanel implements ActionListener {
 
         button.setBorderPainted(false);
         button.setBorder(null);
-        button.setBackground(new Color(13, 17, 23));
+//        button.setBackground(new Color(13, 17, 23));
         return button;
     }
 
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
+    public void onButtonClicked(int index) {
         Config config;
         try {
             config = new Config();
@@ -109,7 +106,7 @@ public class ButtonPanel extends JPanel implements ActionListener {
             Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             return;
         }
-        int index = Integer.parseInt(e.getActionCommand());
+//        int index = Integer.parseInt(e.getActionCommand());
         ButtonData serverConfig = config.getData().get(index);
         try {
             ServerSelectionPanel.setServerVariables(serverConfig.getButtonText(), serverConfig.getPathToServerFolder(), serverConfig.getServerId());
@@ -137,6 +134,10 @@ public class ButtonPanel extends JPanel implements ActionListener {
             //button color rgb(85, 88, 90)
             //bg color rgb(60, 63, 65)
         }
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        onButtonClicked(Integer.parseInt(e.getActionCommand()));
     }
 
     public void setBorders() {

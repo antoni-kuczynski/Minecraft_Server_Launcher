@@ -133,19 +133,32 @@ public class Frame extends JFrame implements ActionListener {
 //        worldsPanelAndSpacing.add(Box.createRigidArea(new Dimension(200, 10)), BorderLayout.LINE_END);
 
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
+
         JTabbedPane serverPageSwitcher = new JTabbedPane(JTabbedPane.RIGHT);
         serverPageSwitcher.addTab("Console", serverConsoleTab);
         serverPageSwitcher.addTab("Worlds", worldsTab);
 
+        JTabbedPane serverPageSwitcher2 = new JTabbedPane(JTabbedPane.RIGHT);
+        serverPageSwitcher2.addTab("Console", new ServerConsoleTab());
+        serverPageSwitcher2.addTab("Worlds", new WorldsTab());
+
+        JTabbedPane serverList = new JTabbedPane(JTabbedPane.LEFT);
+        serverList.addTab("Test", serverPageSwitcher);
+        serverList.addTab("Test2", serverPageSwitcher2);
+
+        serverList.addChangeListener(e -> {
+            buttonPanel.onButtonClicked(serverList.getSelectedIndex() + 2);
+        });
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
+                buttonAndWorldsPanel.add(serverList, BorderLayout.CENTER);
+//                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
 //                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
 //                buttonAndWorldsPanel.add(serverPageSwitcher, BorderLayout.LINE_END);
                 add(titlePanel, BorderLayout.PAGE_START);
-                add(buttonAndWorldsPanel, BorderLayout.LINE_START);
-                add(serverPageSwitcher, BorderLayout.CENTER);
+                add(buttonAndWorldsPanel, BorderLayout.CENTER);
+//                add(serverPageSwitcher, BorderLayout.CENTER);
                 setVisible(true);
                 return null;
             }
@@ -378,7 +391,7 @@ public class Frame extends JFrame implements ActionListener {
         Preferences userValues = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = userValues.get(PREFS_KEY_LOOK_AND_FEEL, "com.formdev.flatlaf.FlatDarculaLaf");
         try {
-            UIManager.setLookAndFeel(lookAndFeel);
+            UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme");
         } catch( Exception ex ) {
             alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
         }

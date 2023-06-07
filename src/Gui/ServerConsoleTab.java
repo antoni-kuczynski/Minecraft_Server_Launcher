@@ -24,8 +24,6 @@ public class ServerConsoleTab extends JPanel {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
 
-
-
         Config config;
         try {
             config = new Config();
@@ -34,13 +32,10 @@ public class ServerConsoleTab extends JPanel {
             return;
         }
 
-        ArrayList<ServerConsoleArea> consoleAreas = new ArrayList<>();
-        for(int i = 0; i < config.getData().size(); i++) {
-//            ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500));
-            consoleAreas.add(new ServerConsoleArea(new Dimension(500, 500)));
-        }
+        ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500));
+
         System.out.println(ServerDetails.serverId);
-        upperPanel.add(consoleAreas.get(ServerDetails.serverId - 1), BorderLayout.CENTER);
+        upperPanel.add(serverConsoleArea, BorderLayout.CENTER);
 
         serverButtons.add(startServer);
         serverButtons.add(stopServer);
@@ -55,7 +50,7 @@ public class ServerConsoleTab extends JPanel {
 
         startServer.addActionListener(e -> {
             ButtonData serverConfig = config.getData().get(ServerDetails.serverId - 1);
-            consoleAreas.get(ServerDetails.serverId - 1).startServer(serverConfig);
+            serverConsoleArea.startServer(serverConfig);
             startServer.setVisible(false);
             stopServer.setVisible(true);
             killServer.setEnabled(true);
@@ -66,11 +61,11 @@ public class ServerConsoleTab extends JPanel {
             stopServer.setVisible(false);
             startServer.setVisible(true);
             killServer.setEnabled(false);
-            consoleAreas.get(ServerDetails.serverId - 1).executeCommand("stop");
+            serverConsoleArea.executeCommand("stop");
         });
 
         killServer.addActionListener(e -> {
-            consoleAreas.get(ServerDetails.serverId - 1).killServer();
+            serverConsoleArea.killServer();
             stopServer.setVisible(false);
             startServer.setVisible(true);
         });
