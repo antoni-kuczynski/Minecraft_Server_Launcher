@@ -32,7 +32,7 @@ public class ContainerPane extends JTabbedPane {
         ArrayList<ButtonData> configData = config.getData();
         for(int i = 0; i < configData.size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
-            tabbedPane.addTab("Console", new ServerConsoleTab());
+            tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
             tabbedPane.addTab("Worlds", new WorldsTab());
             serverTabbedPanes.add(tabbedPane);
         }
@@ -43,8 +43,10 @@ public class ContainerPane extends JTabbedPane {
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
         }
-//        for(int i = 0; i < getTabCount(); i++)
-//            setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
+
+
+        for(int i = 0; i < getTabCount(); i++)
+            setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
 
         addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));
     }
