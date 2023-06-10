@@ -2,6 +2,7 @@ package Gui;
 
 import Enums.AlertType;
 import SelectedServer.ServerDetails;
+import Server.Config;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -29,7 +30,7 @@ public class Frame extends JFrame implements ActionListener {
     private final JMenuItem nordTheme;
     private static String lookAndFeel;
     private final WorldsTab worldsTab;
-    private final ButtonPanel buttonPanel;
+//    private final ButtonPanel buttonPanel;
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
     private final String PREFS_KEY_WIDTH = "window_width";
@@ -93,15 +94,19 @@ public class Frame extends JFrame implements ActionListener {
         setTitle("Minecraft Server Server Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
+        Config config = new Config();
         Preferences userValues = Preferences.userNodeForPackage(getClass());
         ServerDetails.serverId = userValues.getInt("PREFS_SERVER_ID", 1);
+        ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
+        ServerDetails.serverPath = config.getData().get(ServerDetails.serverId - 1).pathToServerFolder();
+//        ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
+//        ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
+
         // Create the JPanels
-        TitlePanel titlePanel = new TitlePanel();
-        buttonPanel = new ButtonPanel();
-        ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
         WorldsTab worldsTab = new WorldsTab();
-        ContainerPanel containerPanel = new ContainerPanel();
+        ContainerPane containerPane = new ContainerPane();
+        ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
+//        TitlePanel titlePanel = new TitlePanel();
 
         serverSelectionPanel.setPanels(serverSelectionPanel, worldsTab);
 
@@ -138,11 +143,11 @@ public class Frame extends JFrame implements ActionListener {
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                buttonAndWorldsPanel.add(containerPanel, BorderLayout.CENTER);
+                buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
 //                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
 //                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
 //                buttonAndWorldsPanel.add(serverPageSwitcher, BorderLayout.LINE_END);
-                add(titlePanel, BorderLayout.PAGE_START);
+                add(Box.createRigidArea(new Dimension(1,10)), BorderLayout.PAGE_START);
                 add(buttonAndWorldsPanel, BorderLayout.CENTER);
 //                add(serverPageSwitcher, BorderLayout.CENTER);
                 setVisible(true);
@@ -152,7 +157,7 @@ public class Frame extends JFrame implements ActionListener {
 
 
         // Add the JPanel to the JFrame's BorderLayout.CENTER
-        add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+//        add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         add(configPanel, BorderLayout.PAGE_END);
 
 
@@ -213,11 +218,11 @@ public class Frame extends JFrame implements ActionListener {
         refreshServerList.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
-                try {
-                    buttonPanel.clearAllButtons();
-                } catch (IOException ex) {
-                    alert(AlertType.ERROR, getErrorDialogMessage(ex));
-                }
+//                try {
+////                    buttonPanel.clearAllButtons();
+//                } catch (IOException ex) {
+//                    alert(AlertType.ERROR, getErrorDialogMessage(ex));
+//                }
                 refreshServerList.setSelected(false);
             }
 
@@ -301,7 +306,7 @@ public class Frame extends JFrame implements ActionListener {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatNordIJTheme");
         }
         worldsTab.setBorders();
-        buttonPanel.setBorders();
+//        buttonPanel.setBorders();
     }
 
     public void debugColorSchemes(int theme) {
@@ -369,7 +374,7 @@ public class Frame extends JFrame implements ActionListener {
             setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme");
         }
         worldsTab.setBorders();
-        buttonPanel.setBorders();
+//        buttonPanel.setBorders();
         System.out.println(UIManager.getColor("Button.background"));
     }
 

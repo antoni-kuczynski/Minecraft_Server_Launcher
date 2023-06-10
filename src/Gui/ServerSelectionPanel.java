@@ -21,11 +21,11 @@ public class ServerSelectionPanel extends JPanel {
     public ServerSelectionPanel(Preferences userValues) throws IOException, InterruptedException {
         this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
-        JButton openAppsConfigFile = new JButton("Open App's Config File");
+        JButton openAppsConfigFile = new JButton("Config File");
         ServerDetails.serverName = userValues.get("SELECTED_SERVER_NAME", "ERROR");
         ServerDetails.serverPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
 
-        JButton openGlobalFolder = new JButton("Open global directory");
+        JButton openGlobalFolder = new JButton("Global Server Directory");
         openGlobalFolder.addActionListener(e -> new Runner(RunMode.GLOBAL_FOLDER).start());
         openAppsConfigFile.addActionListener(e -> new Runner(RunMode.CONFIG_FILE).start());
 
@@ -35,6 +35,7 @@ public class ServerSelectionPanel extends JPanel {
 
         JPanel openConfigAndBackupWorldButtons = new JPanel(new BorderLayout());
         openConfigAndBackupWorldButtons.add(openAppsConfigFile, BorderLayout.LINE_START);
+        openConfigAndBackupWorldButtons.add(Box.createRigidArea(new Dimension(5,5)), BorderLayout.CENTER);
         if(!Config.globalServerFolder.equals(""))
             openConfigAndBackupWorldButtons.add(openGlobalFolder, BorderLayout.LINE_END);
 

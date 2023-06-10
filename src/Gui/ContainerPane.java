@@ -9,24 +9,14 @@ import Server.Config;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import static Gui.ServerSelectionPanel.worldsTab;
 
-public class ContainerPanel extends JTabbedPane {
+public class ContainerPane extends JTabbedPane {
 
-    public ContainerPanel() {
-        ServerConsoleTab serverConsoleTab = new ServerConsoleTab();
-//        JTabbedPane serverPageSwitcher = new JTabbedPane(JTabbedPane.RIGHT);
-//        serverPageSwitcher.addTab("Console", serverConsoleTab);
-//        serverPageSwitcher.addTab("Worlds", worldsTab);
-//
-//        JTabbedPane serverPageSwitcher2 = new JTabbedPane(JTabbedPane.RIGHT);
-//        serverPageSwitcher2.addTab("Console", new ServerConsoleTab());
-//        serverPageSwitcher2.addTab("Worlds", new WorldsTab());
-
+    public ContainerPane() {
         Config config;
         try {
             config = new Config();
@@ -51,11 +41,9 @@ public class ContainerPanel extends JTabbedPane {
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
         }
-
+//        for(int i = 0; i < getTabCount(); i++)
+//            setIconAt(i, new ImageIcon(new ImageIcon("resources/checkmark.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
         this.setTabPlacement(LEFT);
-//        this.addTab("Test", serverPageSwitcher);
-//        this.addTab("Test2", serverPageSwitcher2);
-
         addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));
     }
 
@@ -81,8 +69,5 @@ public class ContainerPanel extends JTabbedPane {
         }
 //        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
         worldsTab.setIcons();
-            //ij darcula theme
-            //button color rgb(85, 88, 90)
-            //bg color rgb(60, 63, 65)
         }
-    }
+}

@@ -4,7 +4,7 @@ import SelectedServer.ServerDetails;
 import Server.ButtonData;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
@@ -17,6 +17,7 @@ public class ServerConsoleArea extends JPanel {
     public JTextArea consoleOutput = new JTextArea();
     private final ArrayList<Process> processes = new ArrayList<>();
     private boolean isServerRunning;
+    public final JLabel serverPIDText = new JLabel("Server PID:");
 
     private final Runnable consoleRunner = () -> {
 //        if(isServerRunning) {
@@ -100,6 +101,9 @@ public class ServerConsoleArea extends JPanel {
         JButton clearAll = new JButton("Clear All");
         JCheckBox wrapLines = new JCheckBox("Wrap lines");
         JLabel serverConsoleTitle = new JLabel("Server Console");
+        serverPIDText.setVisible(false);
+        options.add(serverPIDText);
+//        options.add(Box.createRigidArea(new Dimension(50,10)));
         options.add(wrapLines);
         options.add(clearAll);
 
@@ -152,12 +156,15 @@ public class ServerConsoleArea extends JPanel {
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
             Process process1 = processBuilder.start();
+            serverPIDText.setText("Server PID: " + process1.pid());
             processes.add(process1);
             if (processes.size() == 1)
                 consoleMainThread.start();
             System.out.println("Console main thread state: " + consoleMainThread.getState());
         } catch (Exception e) {
-            e.printStackTrace();
+//            appendToPane(console, Frame.getErrorDialogMessage(e), Color.RED);
+            consoleOutput.append(Frame.getErrorDialogMessage(e));
+//            consoleOutput.setForeground(Color.RED);
         }
         if(consoleMainThread.isAlive()) { //that is the most braindead code that I've ever written TO DATE (seriously)
             System.out.println("Command: " + command);

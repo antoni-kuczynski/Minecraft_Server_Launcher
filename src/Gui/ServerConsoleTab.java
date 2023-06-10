@@ -34,8 +34,9 @@ public class ServerConsoleTab extends JPanel {
 
         ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500));
 
-        System.out.println(ServerDetails.serverId);
+        upperPanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.LINE_START);
         upperPanel.add(serverConsoleArea, BorderLayout.CENTER);
+        upperPanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.LINE_END);
 
         serverButtons.add(startServer);
         serverButtons.add(stopServer);
@@ -54,7 +55,7 @@ public class ServerConsoleTab extends JPanel {
             startServer.setVisible(false);
             stopServer.setVisible(true);
             killServer.setEnabled(true);
-
+            serverConsoleArea.serverPIDText.setVisible(true);
         });
 
         stopServer.addActionListener(e -> {
@@ -62,12 +63,14 @@ public class ServerConsoleTab extends JPanel {
             startServer.setVisible(true);
             killServer.setEnabled(false);
             serverConsoleArea.executeCommand("stop");
+            serverConsoleArea.serverPIDText.setVisible(false);
         });
 
         killServer.addActionListener(e -> {
             serverConsoleArea.killServer();
             stopServer.setVisible(false);
             startServer.setVisible(true);
+            serverConsoleArea.serverPIDText.setVisible(false);
         });
     }
 }
