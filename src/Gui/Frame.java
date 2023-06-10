@@ -36,6 +36,7 @@ public class Frame extends JFrame implements ActionListener {
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
     private static final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
+    public static Preferences userValues = Preferences.userNodeForPackage(Frame.class);
 
     public Frame() throws IOException, InterruptedException {
         JMenuBar optionsBar = new JMenuBar();
@@ -95,7 +96,7 @@ public class Frame extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Config config = new Config();
-        Preferences userValues = Preferences.userNodeForPackage(getClass());
+
         ServerDetails.serverId = userValues.getInt("PREFS_SERVER_ID", 1);
         ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
         ServerDetails.serverPath = config.getData().get(ServerDetails.serverId - 1).pathToServerFolder();
@@ -105,7 +106,7 @@ public class Frame extends JFrame implements ActionListener {
         // Create the JPanels
         WorldsTab worldsTab = new WorldsTab();
         ContainerPane containerPane = new ContainerPane();
-        ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
+        ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel();
 //        TitlePanel titlePanel = new TitlePanel();
 
         serverSelectionPanel.setPanels(serverSelectionPanel, worldsTab);

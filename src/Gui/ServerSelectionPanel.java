@@ -15,15 +15,15 @@ import java.util.prefs.Preferences;
 public class ServerSelectionPanel extends JPanel {
     private static ServerSelectionPanel currentPanel;
     public static WorldsTab worldsTab;
-    private final Preferences userValues;
+//    private final Preferences userValues;
 
 
-    public ServerSelectionPanel(Preferences userValues) throws IOException, InterruptedException {
-        this.userValues = userValues;
+    public ServerSelectionPanel() throws IOException, InterruptedException {
+//        this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
         JButton openAppsConfigFile = new JButton("Config File");
-        ServerDetails.serverName = userValues.get("SELECTED_SERVER_NAME", "ERROR");
-        ServerDetails.serverPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
+//        ServerDetails.serverName = userValues.get("SELECTED_SERVER_NAME", "ERROR");
+//        ServerDetails.serverPath = userValues.get("SELECTED_SERVER_PATH", "ERROR");
 
         JButton openGlobalFolder = new JButton("Global Server Directory");
         openGlobalFolder.addActionListener(e -> new Runner(RunMode.GLOBAL_FOLDER).start());
@@ -68,7 +68,7 @@ public class ServerSelectionPanel extends JPanel {
     }
 
     private void reloadButtonText() {
-        userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
-        userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath);
+//        userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
+//        userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath);
     }
 }
