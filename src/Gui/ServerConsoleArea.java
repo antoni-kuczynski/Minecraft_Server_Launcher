@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ServerConsoleArea extends JPanel {
-    public static JTextArea consoleOutput = new JTextArea();
+    public JTextArea consoleOutput = new JTextArea();
     private final ArrayList<Process> processes = new ArrayList<>();
     private boolean isServerRunning;
 
@@ -47,7 +47,7 @@ public class ServerConsoleArea extends JPanel {
                             }
                         }
                     } else {
-                        ServerConsoleArea.consoleOutput.append(line + "\n");
+                        consoleOutput.append(line + "\n");
                     }
                     System.out.println(line);
                 }
