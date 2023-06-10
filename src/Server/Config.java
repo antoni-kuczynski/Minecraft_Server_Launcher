@@ -17,7 +17,7 @@ public class Config {
         return data;
     }
 
-    public static final ArrayList<ButtonData> data = new ArrayList<>();
+    private final ArrayList<ButtonData> data = new ArrayList<>();
     public static String globalServerFolder;
 
     public static String readFileString(File fileToRead) throws IOException {

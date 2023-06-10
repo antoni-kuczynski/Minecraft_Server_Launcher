@@ -9,6 +9,7 @@ import Server.Config;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -33,25 +34,29 @@ public class ContainerPanel extends JTabbedPane {
             Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
             throw new RuntimeException(e); //stop going any further
         }
+        System.out.println("config size: " + config.getData().size());
 
         ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
-        for(int i = 0; i < config.getData().size(); i++) {
-            serverTabbedPanes.add(new JTabbedPane(RIGHT));
+        ArrayList<ButtonData> configData = config.getData();
+        for(int i = 0; i < configData.size(); i++) {
+            JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
+            tabbedPane.addTab("Console", new ServerConsoleTab());
+            tabbedPane.addTab("Worlds", new WorldsTab());
+            serverTabbedPanes.add(tabbedPane);
         }
-        System.out.println(config.getData());
+
         for(int i = 0; i < serverTabbedPanes.size(); i++) {
-//            tabbedPane.addTab("Console", new ServerConsoleTab());
-//            tabbedPane.addTab("Worlds", new WorldsTab());
-            this.addTab("buttonData.serverName()", serverTabbedPanes.get(i));
+            String serverName = configData.get(i).serverName();
+            if(serverName.length() > 25)
+                serverName = serverName.substring(0, 25) + "...";
+            addTab(serverName, serverTabbedPanes.get(i));
         }
 
         this.setTabPlacement(LEFT);
 //        this.addTab("Test", serverPageSwitcher);
 //        this.addTab("Test2", serverPageSwitcher2);
 
-        addChangeListener(e -> {
-            onButtonClicked(this.getSelectedIndex() + 2);
-        });
+        addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));
     }
 
     public void onButtonClicked(int index) {
