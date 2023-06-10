@@ -1,12 +1,12 @@
 package Server;
 
-public record ButtonData(String buttonText, String pathToButtonIcon,
+public record ButtonData(String serverName, String pathToButtonIcon,
                          String pathToServerFolder, String pathToServerJarFile,
                          String pathToJavaRuntime, String serverLaunchArguments,
                          int serverId) {
 
     public String getButtonText() {
-        return buttonText;
+        return serverName;
     }
 
     public String getPathToButtonIcon() {

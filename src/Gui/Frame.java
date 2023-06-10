@@ -101,7 +101,7 @@ public class Frame extends JFrame implements ActionListener {
         buttonPanel = new ButtonPanel();
         ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel(userValues);
         WorldsTab worldsTab = new WorldsTab();
-        ServerConsoleTab serverConsoleTab = new ServerConsoleTab();
+        ContainerPanel containerPanel = new ContainerPanel();
 
         serverSelectionPanel.setPanels(serverSelectionPanel, worldsTab);
 
@@ -134,25 +134,11 @@ public class Frame extends JFrame implements ActionListener {
 
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
 
-        JTabbedPane serverPageSwitcher = new JTabbedPane(JTabbedPane.RIGHT);
-        serverPageSwitcher.addTab("Console", serverConsoleTab);
-        serverPageSwitcher.addTab("Worlds", worldsTab);
 
-        JTabbedPane serverPageSwitcher2 = new JTabbedPane(JTabbedPane.RIGHT);
-        serverPageSwitcher2.addTab("Console", new ServerConsoleTab());
-        serverPageSwitcher2.addTab("Worlds", new WorldsTab());
-
-        JTabbedPane serverList = new JTabbedPane(JTabbedPane.LEFT);
-        serverList.addTab("Test", serverPageSwitcher);
-        serverList.addTab("Test2", serverPageSwitcher2);
-
-        serverList.addChangeListener(e -> {
-            buttonPanel.onButtonClicked(serverList.getSelectedIndex() + 2);
-        });
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                buttonAndWorldsPanel.add(serverList, BorderLayout.CENTER);
+                buttonAndWorldsPanel.add(containerPanel, BorderLayout.CENTER);
 //                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
 //                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
 //                buttonAndWorldsPanel.add(serverPageSwitcher, BorderLayout.LINE_END);

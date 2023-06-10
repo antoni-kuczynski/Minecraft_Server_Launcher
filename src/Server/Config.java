@@ -16,6 +16,7 @@ public class Config {
     public ArrayList<ButtonData> getData() {
         return data;
     }
+
     public static final ArrayList<ButtonData> data = new ArrayList<>();
     public static String globalServerFolder;
 
@@ -42,7 +43,7 @@ public class Config {
                         "globalServerFolder": ""
                     },
                     {
-                        "buttonText": "Put your values here",
+                        "serverName": "Put your values here",
                         "pathToButtonIcon": "",
                         "pathToServerFolder": "",
                         "pathToServerJarFile": "",
@@ -51,7 +52,7 @@ public class Config {
                         "launchArgs": "-Xmx4G -Xms256M"
                       },
                       {
-                        "buttonText": "If you want to add more servers, just copy paste this whole block",
+                        "serverName": "If you want to add more servers, just copy paste this whole block",
                         "pathToButtonIcon": "",
                         "pathToServerFolder": "",
                         "pathToServerJarFile": "",
