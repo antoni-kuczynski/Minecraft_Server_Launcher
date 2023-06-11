@@ -382,11 +382,11 @@ public class Frame extends JFrame implements ActionListener {
     public static void main(String[] args) throws IOException, InterruptedException {
         Preferences userValues = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = userValues.get(PREFS_KEY_LOOK_AND_FEEL, "com.formdev.flatlaf.FlatDarculaLaf");
-        try {
-            UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme");
-        } catch( Exception ex ) {
-            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
-        }
+//        try {
+//            UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme");
+//        } catch( Exception ex ) {
+//            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
+//        }
         new Frame();
     }
 }

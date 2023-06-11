@@ -43,7 +43,7 @@ public class ContainerPane extends JTabbedPane {
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
         }
-
+//        setBackground(new Color(40, 39, 39));
 
         for(int i = 0; i < getTabCount(); i++)
             setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));

@@ -72,7 +72,8 @@ public class ServerConsoleTab extends JPanel {
             killServer.setEnabled(false);
             serverConsoleArea.executeCommand("stop");
             serverConsoleArea.serverPIDText.setVisible(false);
-//            parent.setIconAt(0, ONLINE);
+//            parent.icon
+            parent.setIconAt(0, ONLINE);
         });
 
         killServer.addActionListener(e -> {
