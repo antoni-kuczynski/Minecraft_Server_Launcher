@@ -3,6 +3,7 @@ package Gui;
 import Enums.AlertType;
 import SelectedServer.ServerDetails;
 import Server.Config;
+import com.formdev.flatlaf.IntelliJTheme;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -39,6 +40,8 @@ public class Frame extends JFrame implements ActionListener {
     public static Preferences userValues = Preferences.userNodeForPackage(Frame.class);
 
     public Frame() throws IOException, InterruptedException {
+
+        IntelliJTheme.setup(getClass().getResourceAsStream("resources/arc-theme.theme.json"));
         JMenuBar optionsBar = new JMenuBar();
         JMenu changeTheme = new JMenu("Change Theme");
         JMenu refreshServerList = new JMenu("Refresh Server List");
@@ -383,7 +386,7 @@ public class Frame extends JFrame implements ActionListener {
         Preferences userValues = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = userValues.get(PREFS_KEY_LOOK_AND_FEEL, "com.formdev.flatlaf.FlatDarculaLaf");
 //        try {
-//            UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme");
+//            UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatArcIJTheme");
 //        } catch( Exception ex ) {
 //            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
 //        }
