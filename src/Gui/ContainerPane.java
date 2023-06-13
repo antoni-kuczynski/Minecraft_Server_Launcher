@@ -1,5 +1,6 @@
 package Gui;
 
+import CustomJComponents.RoundedPanelBorder;
 import Enums.AlertType;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
@@ -12,7 +13,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static Gui.ServerSelectionPanel.worldsTab;
+import static Gui.GlobalButtonsPanel.worldsTab;
 
 public class ContainerPane extends JTabbedPane {
 
@@ -43,8 +44,8 @@ public class ContainerPane extends JTabbedPane {
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
         }
-//        setBackground(new Color(40, 39, 39));
-
+//        setBackground(new Color(201, 10, 10));
+//        setBorder(new RoundedPanelBorder(Color.BLACK, 10));
         for(int i = 0; i < getTabCount(); i++)
             setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
 

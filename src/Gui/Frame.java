@@ -1,5 +1,6 @@
 package Gui;
 
+import CustomJComponents.RoundedPanelBorder;
 import Enums.AlertType;
 import SelectedServer.ServerDetails;
 import Server.Config;
@@ -13,7 +14,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
@@ -40,8 +43,6 @@ public class Frame extends JFrame implements ActionListener {
     public static Preferences userValues = Preferences.userNodeForPackage(Frame.class);
 
     public Frame() throws IOException, InterruptedException {
-
-        IntelliJTheme.setup(getClass().getResourceAsStream("resources/arc-theme.theme.json"));
         JMenuBar optionsBar = new JMenuBar();
         JMenu changeTheme = new JMenu("Change Theme");
         JMenu refreshServerList = new JMenu("Refresh Server List");
@@ -109,10 +110,10 @@ public class Frame extends JFrame implements ActionListener {
         // Create the JPanels
         WorldsTab worldsTab = new WorldsTab();
         ContainerPane containerPane = new ContainerPane();
-        ServerSelectionPanel serverSelectionPanel = new ServerSelectionPanel();
+        GlobalButtonsPanel globalButtonsPanel = new GlobalButtonsPanel();
 //        TitlePanel titlePanel = new TitlePanel();
 
-        serverSelectionPanel.setPanels(serverSelectionPanel, worldsTab);
+        globalButtonsPanel.setPanels(globalButtonsPanel, worldsTab);
 
         //JPanel containing empty panels & config panel
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
@@ -127,7 +128,7 @@ public class Frame extends JFrame implements ActionListener {
         configPanel.add(separatorPanel, BorderLayout.PAGE_START);
         Dimension dimension = new Dimension(10, 10);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        configPanel.add(serverSelectionPanel, BorderLayout.CENTER);
+//        configPanel.add(globalButtonsPanel, BorderLayout.CENTER);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
         configPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
 
@@ -142,16 +143,18 @@ public class Frame extends JFrame implements ActionListener {
 //        worldsPanelAndSpacing.add(Box.createRigidArea(new Dimension(200, 10)), BorderLayout.LINE_END);
 
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
-
+        buttonAndWorldsPanel.setBackground(new Color(51, 51, 52));
+//        buttonAndWorldsPanel.setBorder(new RoundedPanelBorder(Color.BLACK, 10));
 
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
+//                buttonAndWorldsPanel.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.PAGE_START);
                 buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
 //                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
 //                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
 //                buttonAndWorldsPanel.add(serverPageSwitcher, BorderLayout.LINE_END);
-                add(Box.createRigidArea(new Dimension(1,10)), BorderLayout.PAGE_START);
+//                add(Box.createRigidArea(new Dimension(1,10)), BorderLayout.PAGE_START);
                 add(buttonAndWorldsPanel, BorderLayout.CENTER);
 //                add(serverPageSwitcher, BorderLayout.CENTER);
                 setVisible(true);
@@ -162,7 +165,7 @@ public class Frame extends JFrame implements ActionListener {
 
         // Add the JPanel to the JFrame's BorderLayout.CENTER
 //        add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        add(configPanel, BorderLayout.PAGE_END);
+//        add(configPanel, BorderLayout.PAGE_END);
 
 
         // Set the initial size and position of the JFrame
@@ -382,14 +385,22 @@ public class Frame extends JFrame implements ActionListener {
         System.out.println(UIManager.getColor("Button.background"));
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, UnsupportedLookAndFeelException {
         Preferences userValues = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = userValues.get(PREFS_KEY_LOOK_AND_FEEL, "com.formdev.flatlaf.FlatDarculaLaf");
-//        try {
+        try {
 //            UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatArcIJTheme");
-//        } catch( Exception ex ) {
-//            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
-//        }
+//            UIManager.setLookAndFeel("Gui.DarkTheme");
+        } catch( Exception ex ) {
+            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
+        }
+        InputStream inputStream = new FileInputStream("arc-theme.theme.json");
+        System.out.println(inputStream);
+        IntelliJTheme.setup(inputStream);
+//        MaterialTheme theme = new Theme();
+//
+//        MaterialLookAndFeel materialLookAndFeel = new MaterialLookAndFeel(theme);
+//        UIManager.setLookAndFeel(materialLookAndFeel);
         new Frame();
     }
 }

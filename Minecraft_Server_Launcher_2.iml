@@ -14,5 +14,6 @@
     <orderEntry type="library" name="json-20220924" level="project" />
     <orderEntry type="library" name="nbt-1.5.1" level="project" />
     <orderEntry type="library" name="swing-jnafilechooser" level="project" />
+    <orderEntry type="library" name="io.github.vincenzopalazzo.material.ui.swing" level="project" />
   </component>
 </module>

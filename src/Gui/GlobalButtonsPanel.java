@@ -10,15 +10,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.prefs.Preferences;
 
-public class ServerSelectionPanel extends JPanel {
-    private static ServerSelectionPanel currentPanel;
+public class GlobalButtonsPanel extends JPanel {
+    private static GlobalButtonsPanel currentPanel;
     public static WorldsTab worldsTab;
 //    private final Preferences userValues;
 
 
-    public ServerSelectionPanel() throws IOException, InterruptedException {
+    public GlobalButtonsPanel() throws IOException, InterruptedException {
 //        this.userValues = userValues;
         setLayout(new BorderLayout(10, 10));
         JButton openAppsConfigFile = new JButton("Config File");
@@ -61,9 +60,9 @@ public class ServerSelectionPanel extends JPanel {
         currentPanel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
     }
 
-    public void setPanels(ServerSelectionPanel panel, WorldsTab worldsTab) {
-        ServerSelectionPanel.currentPanel = panel;
-        ServerSelectionPanel.worldsTab = worldsTab;
+    public void setPanels(GlobalButtonsPanel panel, WorldsTab worldsTab) {
+        GlobalButtonsPanel.currentPanel = panel;
+        GlobalButtonsPanel.worldsTab = worldsTab;
         worldsTab.setIcons();
     }
 
