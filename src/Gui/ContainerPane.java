@@ -48,7 +48,7 @@ public class ContainerPane extends JTabbedPane {
 //        setBorder(new RoundedPanelBorder(Color.BLACK, 10));
         for(int i = 0; i < getTabCount(); i++)
             setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
-
+        setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));
     }
