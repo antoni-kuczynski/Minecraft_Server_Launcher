@@ -1,5 +1,6 @@
 package Gui;
 
+import CustomJComponents.RoundedPanelBorder;
 import Enums.AlertType;
 import Enums.RunMode;
 import SelectedServer.NBTParser;
@@ -8,6 +9,8 @@ import SelectedServer.ServerPropertiesFile;
 import Server.ButtonData;
 import Server.Config;
 import Server.Runner;
+import com.formdev.flatlaf.ui.FlatRoundBorder;
+import mdlaf.shadows.RoundedCornerBorder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,11 +42,13 @@ public class ServerConsoleTab extends JPanel {
             return;
         }
 
+//        startServer.setBorder(new RoundedPanelBorder(new Color(56, 56, 56), 2));
         ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500));
 
         upperPanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.LINE_START);
         upperPanel.add(serverConsoleArea, BorderLayout.CENTER);
         upperPanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.LINE_END);
+
 
         serverButtons.add(startServer);
         serverButtons.add(stopServer);

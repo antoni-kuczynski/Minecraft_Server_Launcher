@@ -146,11 +146,18 @@ public class Frame extends JFrame implements ActionListener {
         buttonAndWorldsPanel.setBackground(new Color(51, 51, 52));
 //        buttonAndWorldsPanel.setBorder(new RoundedPanelBorder(Color.BLACK, 10));
 
+//        JScrollPane scrollPane = new JScrollPane(containerPane);
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        JButton b = new JButton("adsadasff");
+        bottomPanel.add(b, BorderLayout.LINE_START);
+
+        JPanel panel = new JPanel();
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
 //                buttonAndWorldsPanel.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.PAGE_START);
                 buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
+//                buttonAndWorldsPanel.add(bottomPanel, BorderLayout.PAGE_END);
 //                buttonAndWorldsPanel.add(buttonPanel, BorderLayout.LINE_START);
 //                buttonAndWorldsPanel.add(worldsPanelAndSpacing, BorderLayout.CENTER);
 //                buttonAndWorldsPanel.add(serverPageSwitcher, BorderLayout.LINE_END);
@@ -161,6 +168,7 @@ public class Frame extends JFrame implements ActionListener {
                 return null;
             }
         }.execute();
+//        b.setPreferredSize(containerPane.);
 
 
         // Add the JPanel to the JFrame's BorderLayout.CENTER

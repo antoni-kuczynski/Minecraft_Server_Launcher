@@ -49,6 +49,7 @@ public class ContainerPane extends JTabbedPane {
         for(int i = 0; i < getTabCount(); i++)
             setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
 
+
         addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));
     }
 

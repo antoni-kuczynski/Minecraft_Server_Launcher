@@ -1,5 +1,6 @@
 package Gui;
 
+import CustomJComponents.RoundedPanelBorder;
 import SelectedServer.ServerDetails;
 import Server.ButtonData;
 
@@ -64,6 +65,13 @@ public class ServerConsoleArea extends JPanel {
     public ServerConsoleArea(Dimension size) {
         JScrollPane scrollPane = new JScrollPane(consoleOutput);
         scrollPane.setPreferredSize(new Dimension(size.width, size.height - 100));
+
+//        consoleOutput.setBorder(new RoundedPanelBorder(new Color(56, 56, 56), 1,5,1));
+//        scrollPane.setBorder(new RoundedPanelBorder(new Color(56, 56, 56), 1,5,1));
+        setBackground(new Color(56, 56, 56));
+        consoleOutput.setBorder(null);
+        scrollPane.setBorder(null);
+
 
         JTextField commandField = new JTextField();
         JButton executeButton = new JButton("Execute");
