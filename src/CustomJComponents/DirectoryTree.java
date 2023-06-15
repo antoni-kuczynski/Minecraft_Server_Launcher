@@ -17,7 +17,8 @@ public class DirectoryTree extends JTree {
         setModel(new DefaultTreeModel(null));
     }
 
-    public void setDirectory(String path, String selectedPath) {
+    public void setDirectory(String path) {
+        String selectedPath = path; //lol
         File file = new File(path);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(file);
         setModel(new DefaultTreeModel(root));

@@ -1,7 +1,6 @@
 package Server;
 
 import Enums.AlertType;
-import Gui.DebugWindow;
 import Gui.Frame;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,8 +16,8 @@ public class Config {
     public ArrayList<ButtonData> getData() {
         return data;
     }
+
     private final ArrayList<ButtonData> data = new ArrayList<>();
-    public static boolean isInDevelopperMode;
     public static String globalServerFolder;
 
     public static String readFileString(File fileToRead) throws IOException {
@@ -41,23 +40,22 @@ public class Config {
                     [
                     {
                         "globalLaunchArgs": "-Xmx16G -Xms2G -XX:+UseG1GC -XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=1 -XX:ParallelGCThreads=4 -XX:+OptimizeStringConcat",
-                        "isInDevelopperMode": false
                         "globalServerFolder": ""
                     },
                     {
-                        "buttonText": "Put your values here",
-                        "pathToButtonIcon": "",
-                        "pathToServerFolder": "",
-                        "pathToServerJarFile": "",
+                        "serverName": "Put your values here",
+                        "pathToServerButtonIcon": "",
+                        "serverPath": "",
+                        "serverJarPath": "",
                         "pathToJavaExecutable": "",
                         "overrideDefaultLaunchArgs": false,
                         "launchArgs": "-Xmx4G -Xms256M"
                       },
                       {
-                        "buttonText": "If you want to add more servers, just copy paste this whole block",
-                        "pathToButtonIcon": "",
-                        "pathToServerFolder": "",
-                        "pathToServerJarFile": "",
+                        "serverName": "If you want to add more servers, just copy paste this whole block",
+                        "pathToServerButtonIcon": "",
+                        "serverPath": "",
+                        "serverJarPath": "",
                         "pathToJavaExecutable": "",
                         "overrideDefaultLaunchArgs": false,
                         "launchArgs": "-Xmx4G -Xms256M"
@@ -69,19 +67,15 @@ public class Config {
         JSONArray configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
         JSONObject globalVariables = configJSONObjects.getJSONObject(0);
         String javaArguments = globalVariables.getString("globalLaunchArgs");
-        isInDevelopperMode = globalVariables.getBoolean("isInDevelopperMode");
         globalServerFolder = globalVariables.getString("globalServerFolder");
-        if(isInDevelopperMode) {
-            DebugWindow debugWindow = new DebugWindow();
-            debugWindow.setWindow(debugWindow);
-        }
+
         for (int jsonIndex = 1; jsonIndex < configJSONObjects.length(); jsonIndex++) { //start on index 1 because index 0 are global variables
             JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
-            String buttonText = jsonObject.getString("buttonText");
-            String pathToButtonIcon = jsonObject.getString("pathToButtonIcon");
-            String pathToServerFolder = jsonObject.getString("pathToServerFolder");
+            String buttonText = jsonObject.getString("serverName");
+            String pathToButtonIcon = jsonObject.getString("pathToServerIcon");
+            String pathToServerFolder = jsonObject.getString("pathToServer");
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
-            String pathToJavaRuntime = jsonObject.getString("pathToJavaExecutable");
+            String pathToJavaRuntime = jsonObject.getString("pathToJavaRuntimeExecutable");
             boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");
             String serverLaunchArgs;
             if(overrideGloballaunchArgs)
@@ -90,7 +84,7 @@ public class Config {
                 serverLaunchArgs = javaArguments;
 
 
-            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs, jsonIndex));
+            data.add(new ButtonData(buttonText, new File(pathToButtonIcon), new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime), serverLaunchArgs, jsonIndex));
         }
     }
 }

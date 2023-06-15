@@ -17,19 +17,19 @@ public class BackupWorld extends Thread {
 
     @Override
     public void run() {
-        File workingDirectory = new File(ServerDetails.serverPath + "\\server_launcher_world_backups\\");
+        File workingDirectory = new File(ServerDetails.serverPath.getAbsolutePath() + "\\server_launcher_world_backups\\");
         if(!workingDirectory.exists())
             workingDirectory.mkdirs();
         try {
-            Date date = new Date(); //fuck american date format btw
+            Date date = new Date(); //fuck american date format
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             String dateFormated = "-" + calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH)) +
                     "-" + (calendar.get(Calendar.DAY_OF_MONTH)) + "-" + calendar.get(Calendar.HOUR) + "-" + calendar.get(Calendar.MINUTE) +
                     "-" + calendar.get(Calendar.SECOND) + "-" + calendar.get(Calendar.MILLISECOND);
-            FileUtils.copyDirectory(new File(ServerDetails.serverWorldPath),
+            FileUtils.copyDirectory(ServerDetails.serverWorldPath,
                     new File(workingDirectory.getAbsolutePath() + "\\" +
-                            new File(ServerDetails.serverWorldPath).getName() + dateFormated));
+                            ServerDetails.serverWorldPath.getName() + dateFormated));
         } catch (IOException e) {
             Frame.alert(AlertType.ERROR, "Cannot backup the server world.\n" + Frame.getErrorDialogMessage(e));
         }

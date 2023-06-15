@@ -23,7 +23,7 @@ import java.io.Serial;
 import static Gui.Frame.alert;
 import static Gui.Frame.getErrorDialogMessage;
 
-public class AddWorldsPanel extends JPanel {
+public class WorldsTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
     private final JLabel selectedWorldIconLabel = new JLabel();
     private final JLabel serverWorldIconLabel = new JLabel();
@@ -43,7 +43,7 @@ public class AddWorldsPanel extends JPanel {
 
     private final double ONE_GIGABYTE = 1073741824;
 
-    public AddWorldsPanel() {
+    public WorldsTab() {
         super(new BorderLayout());
         JLabel dragNDropInfo = new JLabel(" or drag and drop it here.");
         JLabel selectedServerTxt = new JLabel();
@@ -93,7 +93,7 @@ public class AddWorldsPanel extends JPanel {
             setIcons();
         });
 
-        final AddWorldsPanel tempPanel = this;
+        final WorldsTab tempPanel = this;
         TransferHandler transferHandler = new TransferHandler() {
             @Serial
             private static final long serialVersionUID = 1L;
@@ -155,7 +155,7 @@ public class AddWorldsPanel extends JPanel {
             worldCopyHandler.start();
         });
 
-        directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
+        directoryTree.setDirectory(ServerDetails.serverPath.getAbsolutePath());
         JScrollPane directoryTreeScroll = new JScrollPane(directoryTree);
 
         selectedWorldIconLabel.setIcon(defaultWorldIcon);
@@ -191,7 +191,6 @@ public class AddWorldsPanel extends JPanel {
         startCopyingPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         startCopyingPanel.add(startCopyingBtnPanel, BorderLayout.LINE_END);
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
-
 
         JPanel addingWorld = new JPanel(new BorderLayout());
 
@@ -261,7 +260,7 @@ public class AddWorldsPanel extends JPanel {
         return new ConvertedSize(unitRound.format(finalSize), unitSymbol);
     }
     public void setIcons() {
-        directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
+        directoryTree.setDirectory(ServerDetails.serverPath.getAbsolutePath());
         if(userSelectedWorld != null && isInArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("<html>File: " + userSelectedWorld.getAbsolutePath() +
                     "<br>File size: TODO<br>" + "Extracted size: TODO" + "</html>");
@@ -312,22 +311,20 @@ public class AddWorldsPanel extends JPanel {
         }
 
         //size is in bytes
-        if(new File(ServerDetails.serverWorldPath).exists()) {
-            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverWorldPath));
+        if(ServerDetails.serverWorldPath.exists()) {
+            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(ServerDetails.serverWorldPath);
 //            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
             if(ServerDetails.serverLevelName == null)
                 ServerDetails.serverLevelName = "Level.dat file not found.";
 
-            String folderNameTemp = new File(ServerDetails.serverWorldPath).getName();
+            String folderNameTemp = ServerDetails.serverWorldPath.getName();
             if(!wasServerPropertiesFound)
                 folderNameTemp = "Server.properties file does not exist";
             serverWorldNameAndStuff.setText("<html> Folder Name: " + folderNameTemp +"<br> Level name: " + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }
-        DebugWindow.debugVariables.put("current_server_name", ServerDetails.serverName);
-        DebugWindow.debugVariables.put("current_server_path", ServerDetails.serverPath);
-        DebugWindow.debugVariables.put("current_server_id", String.valueOf(ServerDetails.serverId));
+
     }
 
     public void setBorders() {
@@ -336,7 +333,7 @@ public class AddWorldsPanel extends JPanel {
     }
 
     public static void setExtractedWorldDir(String extractedWorldDir) {
-        AddWorldsPanel.extractedWorldDir = extractedWorldDir;
+        WorldsTab.extractedWorldDir = extractedWorldDir;
     }
 
     public static String getExtractedWorldDir() {
