@@ -155,7 +155,7 @@ public class WorldsTab extends JPanel {
             worldCopyHandler.start();
         });
 
-        directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
+        directoryTree.setDirectory(ServerDetails.serverPath.getAbsolutePath());
         JScrollPane directoryTreeScroll = new JScrollPane(directoryTree);
 
         selectedWorldIconLabel.setIcon(defaultWorldIcon);
@@ -260,7 +260,7 @@ public class WorldsTab extends JPanel {
         return new ConvertedSize(unitRound.format(finalSize), unitSymbol);
     }
     public void setIcons() {
-        directoryTree.setDirectory(ServerDetails.serverPath, ServerDetails.serverPath);
+        directoryTree.setDirectory(ServerDetails.serverPath.getAbsolutePath());
         if(userSelectedWorld != null && isInArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("<html>File: " + userSelectedWorld.getAbsolutePath() +
                     "<br>File size: TODO<br>" + "Extracted size: TODO" + "</html>");
@@ -311,13 +311,13 @@ public class WorldsTab extends JPanel {
         }
 
         //size is in bytes
-        if(new File(ServerDetails.serverWorldPath).exists()) {
-            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(new File(ServerDetails.serverWorldPath));
+        if(ServerDetails.serverWorldPath.exists()) {
+            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(ServerDetails.serverWorldPath);
 //            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
             if(ServerDetails.serverLevelName == null)
                 ServerDetails.serverLevelName = "Level.dat file not found.";
 
-            String folderNameTemp = new File(ServerDetails.serverWorldPath).getName();
+            String folderNameTemp = ServerDetails.serverWorldPath.getName();
             if(!wasServerPropertiesFound)
                 folderNameTemp = "Server.properties file does not exist";
             serverWorldNameAndStuff.setText("<html> Folder Name: " + folderNameTemp +"<br> Level name: " + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here

@@ -1,6 +1,5 @@
 package Gui;
 
-import CustomJComponents.RoundedPanelBorder;
 import Enums.AlertType;
 import SelectedServer.ServerDetails;
 import Server.Config;
@@ -101,11 +100,17 @@ public class Frame extends JFrame implements ActionListener {
 
         Config config = new Config();
 
-        ServerDetails.serverId = userValues.getInt("PREFS_SERVER_ID", 1);
-        ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
-        ServerDetails.serverPath = config.getData().get(ServerDetails.serverId - 1).pathToServerFolder();
+        if(userValues.getInt("PREFS_SERVER_ID", 1) - 1 >= config.getData().size()) {
+            ServerDetails.serverId = userValues.getInt("PREFS_SERVER_ID", 1);
+            ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
+            ServerDetails.serverPath = config.getData().get(ServerDetails.serverId - 1).serverPath();
 //        ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
 //        ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
+        } else {
+            ServerDetails.serverId = 1;
+            ServerDetails.serverName = config.getData().get(0).serverName();
+            ServerDetails.serverPath = config.getData().get(0).serverPath();
+        }
 
         // Create the JPanels
         WorldsTab worldsTab = new WorldsTab();

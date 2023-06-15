@@ -24,13 +24,12 @@ public class NBTParser extends Thread {
     public void run() {
         //even better issue #68, issue #76 and issue #75 fix, now file names use server ids not names
         File pathToCopiedLevelDat = new File("world_temp\\level_" + "server_id_" + ServerDetails.serverId + "_" + ".dat");
-        if(!new File(ServerDetails.serverLevelDatFile).exists()) {
+        if(!ServerDetails.serverLevelDatFile.exists()) {
             ServerDetails.serverLevelName = "Level.dat file not found";
             return;
         }
         try {
-            File tempLevelDat = new File(ServerDetails.serverLevelDatFile);
-            FileUtils.copyFile(tempLevelDat, pathToCopiedLevelDat);
+            FileUtils.copyFile(ServerDetails.serverLevelDatFile, pathToCopiedLevelDat);
         } catch (Exception e) {
             if(!e.toString().contains("The process cannot access the file because it is being used by another process")) //fuck this shit - issue #74 and #73 fixed
                 SwingUtilities.invokeLater(() -> alert(AlertType.ERROR, "Cannot copy level.dat file." + getErrorDialogMessage(e))); //issue #61 fix, it was conflicting with ui dispatch thread

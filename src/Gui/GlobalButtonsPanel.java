@@ -52,13 +52,13 @@ public class GlobalButtonsPanel extends JPanel {
 //        addWorldsPanel.setIcons();
     }
 
-    public static void setServerVariables(String text, String serverPath, int serverId) {
-        ServerDetails.serverName = text;
-        ServerDetails.serverPath = serverPath;
-        ServerDetails.serverId = serverId;
-        ServerDetails.serverLatestLogFilePath = new File(serverPath + "/logs/latest.log");
-        currentPanel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
-    }
+//    public static void setServerVariables(String text, String serverPath, int serverId) {
+//        ServerDetails.serverName = text;
+//        ServerDetails.serverPath = serverPath;
+//        ServerDetails.serverId = serverId;
+//        ServerDetails.serverLatestLogFilePath = new File(serverPath + "/logs/latest.log");
+//        currentPanel.reloadButtonText(); //removed redundant addWorldPanel.repaint() calls and replaces panel.repaint() to decrease RAM usage
+//    }
 
     public void setPanels(GlobalButtonsPanel panel, WorldsTab worldsTab) {
         GlobalButtonsPanel.currentPanel = panel;

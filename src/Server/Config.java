@@ -44,18 +44,18 @@ public class Config {
                     },
                     {
                         "serverName": "Put your values here",
-                        "pathToButtonIcon": "",
-                        "pathToServerFolder": "",
-                        "pathToServerJarFile": "",
+                        "pathToServerButtonIcon": "",
+                        "serverPath": "",
+                        "serverJarPath": "",
                         "pathToJavaExecutable": "",
                         "overrideDefaultLaunchArgs": false,
                         "launchArgs": "-Xmx4G -Xms256M"
                       },
                       {
                         "serverName": "If you want to add more servers, just copy paste this whole block",
-                        "pathToButtonIcon": "",
-                        "pathToServerFolder": "",
-                        "pathToServerJarFile": "",
+                        "pathToServerButtonIcon": "",
+                        "serverPath": "",
+                        "serverJarPath": "",
                         "pathToJavaExecutable": "",
                         "overrideDefaultLaunchArgs": false,
                         "launchArgs": "-Xmx4G -Xms256M"
@@ -71,11 +71,11 @@ public class Config {
 
         for (int jsonIndex = 1; jsonIndex < configJSONObjects.length(); jsonIndex++) { //start on index 1 because index 0 are global variables
             JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
-            String buttonText = jsonObject.getString("buttonText");
-            String pathToButtonIcon = jsonObject.getString("pathToButtonIcon");
-            String pathToServerFolder = jsonObject.getString("pathToServerFolder");
+            String buttonText = jsonObject.getString("serverName");
+            String pathToButtonIcon = jsonObject.getString("pathToServerIcon");
+            String pathToServerFolder = jsonObject.getString("pathToServer");
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
-            String pathToJavaRuntime = jsonObject.getString("pathToJavaExecutable");
+            String pathToJavaRuntime = jsonObject.getString("pathToJavaRuntimeExecutable");
             boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");
             String serverLaunchArgs;
             if(overrideGloballaunchArgs)
@@ -84,7 +84,7 @@ public class Config {
                 serverLaunchArgs = javaArguments;
 
 
-            data.add(new ButtonData(buttonText, pathToButtonIcon, pathToServerFolder, pathToServerJarFile, pathToJavaRuntime, serverLaunchArgs, jsonIndex));
+            data.add(new ButtonData(buttonText, new File(pathToButtonIcon), new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime), serverLaunchArgs, jsonIndex));
         }
     }
 }

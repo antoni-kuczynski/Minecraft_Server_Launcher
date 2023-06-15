@@ -4,10 +4,10 @@ import java.io.File;
 
 public class ServerDetails {
     public static String serverName;
-    public static String serverPath;
-    public static String serverWorldPath;
+    public static File serverPath;
+    public static File serverWorldPath;
     public static String serverLevelName;
-    public static String serverLevelDatFile;
+    public static File serverLevelDatFile;
     public static int serverId;
     public static File serverLatestLogFilePath;
 }

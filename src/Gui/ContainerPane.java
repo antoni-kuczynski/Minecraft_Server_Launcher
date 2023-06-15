@@ -1,6 +1,5 @@
 package Gui;
 
-import CustomJComponents.RoundedPanelBorder;
 import Enums.AlertType;
 import SelectedServer.NBTParser;
 import SelectedServer.ServerDetails;
@@ -18,7 +17,6 @@ import static Gui.GlobalButtonsPanel.worldsTab;
 public class ContainerPane extends JTabbedPane {
 
     public ContainerPane() {
-        System.out.println("a");
         Config config;
         try {
             config = new Config();
@@ -26,8 +24,6 @@ public class ContainerPane extends JTabbedPane {
             Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
             throw new RuntimeException(e); //stop going any further
         }
-        System.out.println("b");
-        System.out.println("config size: " + config.getData().size());
 
         ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
         ArrayList<ButtonData> configData = config.getData();
@@ -49,7 +45,7 @@ public class ContainerPane extends JTabbedPane {
         for(int i = 0; i < getTabCount(); i++)
             setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-
+        setSelectedIndex(ServerDetails.serverId - 1);
         addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));
     }
 
@@ -64,11 +60,11 @@ public class ContainerPane extends JTabbedPane {
 //        int index = Integer.parseInt(e.getActionCommand());
         ButtonData serverConfig = config.getData().get(index);
         try {
-            ServerDetails.serverName = serverConfig.getButtonText();
-            ServerDetails.serverPath = serverConfig.getPathToServerFolder();
-            ServerDetails.serverId = serverConfig.getServerId();
+            ServerDetails.serverName = serverConfig.serverName();
+            ServerDetails.serverPath = serverConfig.serverPath();
+            ServerDetails.serverId = serverConfig.serverId();
             Frame.userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
-            Frame.userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath);
+            Frame.userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath.getAbsolutePath());
             new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
             NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
             nbtParser.start();

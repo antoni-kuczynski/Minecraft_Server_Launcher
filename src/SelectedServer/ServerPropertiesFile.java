@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
-import static Gui.Frame.alert;
 import static Gui.Frame.getErrorDialogMessage;
 
 public class ServerPropertiesFile {
@@ -22,8 +21,8 @@ public class ServerPropertiesFile {
 //            alert(AlertType.WARNING, "\"" +ServerDetails.serverName + "\" server's \"server.properties\" file does not exist. " +
 //                    "Predicted server world folder name was set to \"world\".");
             worldName = "world";
-            ServerDetails.serverWorldPath = ServerDetails.serverPath + "\\world";
-            ServerDetails.serverLevelDatFile = ServerDetails.serverPath + "\\" + worldName + "\\" + "level.dat";
+            ServerDetails.serverWorldPath = new File(ServerDetails.serverPath.getAbsolutePath() + "\\world");
+            ServerDetails.serverLevelDatFile = new File(ServerDetails.serverPath.getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
             WorldsTab.wasServerPropertiesFound = false;
             return;
         }
@@ -42,8 +41,8 @@ public class ServerPropertiesFile {
                 break;
             }
         }
-        ServerDetails.serverWorldPath = ServerDetails.serverPath + "\\" + worldName;
-        ServerDetails.serverLevelDatFile = ServerDetails.serverPath + "\\" + worldName + "\\" + "level.dat";
+        ServerDetails.serverWorldPath = new File(ServerDetails.serverPath.getAbsolutePath() + "\\" + worldName);
+        ServerDetails.serverLevelDatFile = new File(ServerDetails.serverPath.getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
 
     }
 

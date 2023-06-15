@@ -35,7 +35,7 @@ public class WorldCopyHandler extends Thread {
         ServerPropertiesFile serverPropertiesFile = new ServerPropertiesFile();
         this.worldsTab = worldsTab;
         this.serverWorldName = serverPropertiesFile.getWorldName();
-        this.serverWorldDir = new File(ServerDetails.serverPath + "\\" + serverWorldName);
+        this.serverWorldDir = new File(ServerDetails.serverPath.getAbsolutePath() + "\\" + serverWorldName);
         this.selectedWorld = originalWorldDir;
         WorldCopyHandler.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
@@ -143,7 +143,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(ServerDetails.serverPath)) {
+        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(ServerDetails.serverPath.getAbsolutePath())) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -218,8 +218,8 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
                 }
 
-                String temp = ServerDetails.serverLevelDatFile;
-                ServerDetails.serverLevelDatFile = predictedWorldDir.getAbsolutePath() + "\\level.dat"; //trick the NBTParser into using extracted world's level.dat
+                File temp = ServerDetails.serverLevelDatFile;
+                ServerDetails.serverLevelDatFile = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat"); //trick the NBTParser into using extracted world's level.dat
                 try { //issue #71 fix
                     NBTParser nbtParser = new NBTParser();
                     nbtParser.start();
@@ -230,7 +230,7 @@ public class WorldCopyHandler extends Thread {
                 }
                 ServerDetails.serverLevelDatFile = temp; //restore the original level.dat file location for safety
             }
-        } else if (selectedWorld.toString().contains(ServerDetails.serverPath)) {
+        } else if (selectedWorld.toString().contains(ServerDetails.serverPath.getAbsolutePath())) {
             Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         jButtonToDisable.setEnabled(true); //issue #15 fix

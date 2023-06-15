@@ -1,7 +1,5 @@
 package Gui;
 
-import CustomJComponents.RoundedPanelBorder;
-import SelectedServer.ServerDetails;
 import Server.ButtonData;
 
 import javax.swing.*;
@@ -156,11 +154,11 @@ public class ServerConsoleArea extends JPanel {
 
     public void startServer(ButtonData buttonData) {
         ArrayList<String> command = new ArrayList<>(Arrays.asList("java",
-                 "-jar", buttonData.getPathToServerJarFile(), "nogui"));
+                 "-jar", buttonData.serverPath().getAbsolutePath(), "nogui"));
         System.out.println("Command: " + command);
         try {
             processBuilder = new ProcessBuilder(command);
-            processBuilder.directory(new File(buttonData.getPathToServerFolder()));
+            processBuilder.directory(buttonData.serverPath());
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
             Process process1 = processBuilder.start();
@@ -178,7 +176,7 @@ public class ServerConsoleArea extends JPanel {
             System.out.println("Command: " + command);
             try {
                 processBuilder = new ProcessBuilder(command);
-                processBuilder.directory(new File(buttonData.getPathToServerFolder()));
+                processBuilder.directory(buttonData.serverPath());
                 processBuilder.redirectErrorStream(true);
                 isServerRunning = true;
 //                Process process1 = processBuilder.start();
