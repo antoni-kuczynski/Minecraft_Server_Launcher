@@ -42,7 +42,9 @@ public class ContainerPane extends JTabbedPane {
         }
 //        setBackground(new Color(201, 10, 10));
 //        setBorder(new RoundedPanelBorder(Color.BLACK, 10));
-        for(int i = 0; i < getTabCount(); i++)
+        addTab("Add server", new AddServerTab());
+        setIconAt(getTabCount() - 1, new ImageIcon(new ImageIcon("resources/addServer.png").getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
+        for(int i = 0; i < getTabCount() - 1; i++)
             setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(ServerDetails.serverId - 1);
@@ -50,30 +52,34 @@ public class ContainerPane extends JTabbedPane {
     }
 
     public void onButtonClicked(int index) {
-        Config config;
-        try {
-            config = new Config();
-        } catch (IOException ex) {
-            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
-            return;
-        }
+        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
+            Config config;
+            try {
+                config = new Config();
+            } catch (IOException ex) {
+                Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
+                return;
+            }
 //        int index = Integer.parseInt(e.getActionCommand());
-        ButtonData serverConfig = config.getData().get(index);
-        try {
-            ServerDetails.serverName = serverConfig.serverName();
-            ServerDetails.serverPath = serverConfig.serverPath();
-            ServerDetails.serverId = serverConfig.serverId();
-            Frame.userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
-            Frame.userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath.getAbsolutePath());
-            new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
-            NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
-            nbtParser.start();
-            nbtParser.join();
-            ServerDetails.serverLevelName = nbtParser.getLevelName();
-        } catch (Exception ex) {
-            // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
-        }
+            ButtonData serverConfig = config.getData().get(index);
+            try {
+                ServerDetails.serverName = serverConfig.serverName();
+                ServerDetails.serverPath = serverConfig.serverPath();
+                ServerDetails.serverId = serverConfig.serverId();
+                Frame.userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
+                Frame.userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath.getAbsolutePath());
+                new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
+                NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
+                nbtParser.start();
+                nbtParser.join();
+                ServerDetails.serverLevelName = nbtParser.getLevelName();
+            } catch (Exception ex) {
+                // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
+            }
 //        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
-        worldsTab.setIcons();
+            worldsTab.setIcons();
+        } else { //when "add server" was selected
+            System.out.println("asdfdsaf");
         }
+    }
 }
