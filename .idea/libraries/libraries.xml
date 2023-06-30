@@ -7,7 +7,6 @@
       <root url="jar://$PROJECT_DIR$/lib/gson-2.10.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/json-20220924.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/nbt-1.5.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/swing-jnafilechooser.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

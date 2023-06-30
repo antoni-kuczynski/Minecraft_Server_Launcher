@@ -14,7 +14,18 @@
     <orderEntry type="library" name="json-20220924" level="project" />
     <orderEntry type="library" name="nbt-1.5.1" level="project" />
     <orderEntry type="library" name="swing-jnafilechooser" level="project" />
-    <orderEntry type="library" name="io.github.vincenzopalazzo.material.ui.swing" level="project" />
     <orderEntry type="library" name="github.oshi.core" level="project" />
+    <orderEntry type="library" name="jfree.jfreechart" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jna-5.13.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="knowm.xchart" level="project" />
+    <orderEntry type="library" name="knowm.xchart.demo" level="project" />
   </component>
 </module>
