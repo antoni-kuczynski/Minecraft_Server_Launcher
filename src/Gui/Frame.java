@@ -45,15 +45,20 @@ public class Frame extends JFrame implements ActionListener {
         JMenuBar optionsBar = new JMenuBar();
         JMenu changeTheme = new JMenu("Change Theme");
         JMenu refreshServerList = new JMenu("Refresh Server List");
-        JButton openServer = new JButton("Debug");
+        JButton debugButton = new JButton("Debug");
+
+        debugButton.setVisible(false);
+        refreshServerList.setVisible(false);
+        changeTheme.setVisible(false);
+
         refreshServerList.setBorderPainted(false);
         refreshServerList.setRequestFocusEnabled(false);
         refreshServerList.setContentAreaFilled(false);
-        refreshServerList.setVisible(true);
+//        refreshServerList.setVisible(true);
 
         AtomicInteger themeIndex = new AtomicInteger(1);
-        openServer.setVisible(true);
-        openServer.addActionListener(e -> {
+//        debugButton.setVisible(true);
+        debugButton.addActionListener(e -> {
             debugColorSchemes(themeIndex.get());
             System.out.println(themeIndex.get());
             themeIndex.getAndIncrement();
@@ -89,7 +94,7 @@ public class Frame extends JFrame implements ActionListener {
 
         optionsBar.add(changeTheme);
         optionsBar.add(refreshServerList);
-        optionsBar.add(openServer);
+        optionsBar.add(debugButton);
         setJMenuBar(optionsBar);
 
 
@@ -111,7 +116,9 @@ public class Frame extends JFrame implements ActionListener {
             ServerDetails.serverName = config.getData().get(0).serverName();
             ServerDetails.serverPath = config.getData().get(0).serverPath();
         }
-
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        this.getRootPane().putClientProperty("JRootPane.titleBarBackground", new Color(51, 51, 52));
+        this.getRootPane().putClientProperty("JRootPane.titleBarForeground", new Color(204, 204, 204));
         // Create the JPanels
         WorldsTab worldsTab = new WorldsTab();
         ContainerPane containerPane = new ContainerPane();
@@ -405,15 +412,11 @@ public class Frame extends JFrame implements ActionListener {
     public static void main(String[] args) throws IOException, InterruptedException, UnsupportedLookAndFeelException {
         Preferences userValues = Preferences.userNodeForPackage(Frame.class);
         lookAndFeel = userValues.get(PREFS_KEY_LOOK_AND_FEEL, "com.formdev.flatlaf.FlatDarculaLaf");
-        try {
-//            UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatArcIJTheme");
-//            UIManager.setLookAndFeel("Gui.DarkTheme");
-        } catch( Exception ex ) {
-            alert(AlertType.ERROR, "Cannot initialize look and feel\n" + getErrorDialogMessage(ex));
-        }
         InputStream inputStream = new FileInputStream("arc-theme.theme.json");
         System.out.println(inputStream);
         IntelliJTheme.setup(inputStream);
+
+
 //        MaterialTheme theme = new Theme();
 //
 //        MaterialLookAndFeel materialLookAndFeel = new MaterialLookAndFeel(theme);

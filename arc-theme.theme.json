@@ -41,7 +41,7 @@
         "hoverBackground": "#303030"
       },
       "Header": {
-        "borderColor": "#383838",
+        "borderColor": "#ff0000",
         "background": "#383838",
         "inactiveBackground": "#383838"
       },

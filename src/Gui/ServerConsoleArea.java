@@ -16,7 +16,13 @@ public class ServerConsoleArea extends JPanel {
     public JTextArea consoleOutput = new JTextArea();
     private final ArrayList<Process> processes = new ArrayList<>();
     private boolean isServerRunning;
+    public boolean isServerStopCausedByAButton = false;
     public final JLabel serverPIDText = new JLabel("Server PID:");
+    private ContainerPane parentPane;
+    private int index;
+    private ServerConsoleTab tab;
+    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
+    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
 
     private final Runnable consoleRunner = () -> {
 //        if(isServerRunning) {
@@ -44,12 +50,20 @@ public class ServerConsoleArea extends JPanel {
                                 isServerRunning = false;
                                 howManyTimesLineWasNull = 0;
                                 processes.get(processes.size() - 1).destroy();
+                                if(!isServerStopCausedByAButton) {
+                                    parentPane.setIconAt(index, ERRORED);
+                                } else {
+                                    parentPane.setIconAt(index, OFFLINE);
+                                }
+                                tab.stopServer.setVisible(false);
+                                tab.startServer.setVisible(true);
+                                tab.killServer.setEnabled(false);
                             }
                         }
                     } else {
                         consoleOutput.append(line + "\n");
                     }
-//                    System.out.println(line);
+                    System.out.println(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,7 +74,11 @@ public class ServerConsoleArea extends JPanel {
     private final Thread consoleMainThread = new Thread(consoleRunner);
     private ProcessBuilder processBuilder;
 
-    public ServerConsoleArea(Dimension size) {
+
+    public ServerConsoleArea(Dimension size, ContainerPane parentPane, int index, ServerConsoleTab tab) {
+        this.index = index;
+        this.parentPane = parentPane;
+        this.tab = tab;
         JScrollPane scrollPane = new JScrollPane(consoleOutput);
         scrollPane.setPreferredSize(new Dimension(size.width, size.height - 100));
 
@@ -192,6 +210,8 @@ public class ServerConsoleArea extends JPanel {
 
     public void executeCommand(String command) {
         if (processes.size() > 0) {
+            if(command.equals("stop"))
+                isServerStopCausedByAButton = true;
             PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());
             writer.println(command);
             writer.flush();
