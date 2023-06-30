@@ -23,7 +23,7 @@ public class ServerConsoleTab extends JPanel {
     private final JButton killServer = new JButton("Kill Server");
     private final ContainerPane parentPane;
     private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
-    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/online.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
+    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
     private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
     private final int index;
     public ServerConsoleTab(ContainerPane parent, int index) {
@@ -68,7 +68,7 @@ public class ServerConsoleTab extends JPanel {
             stopServer.setVisible(true);
             killServer.setEnabled(true);
             serverConsoleArea.serverPIDText.setVisible(true);
-//            parentPane.setIconAt(0, new ImageIcon("resources/app_icon.png"));
+            parentPane.setIconAt(index, ONLINE);
         });
 
         stopServer.addActionListener(e -> {
@@ -77,8 +77,7 @@ public class ServerConsoleTab extends JPanel {
             killServer.setEnabled(false);
             serverConsoleArea.executeCommand("stop");
             serverConsoleArea.serverPIDText.setVisible(false);
-//            parent.icon
-            parent.setIconAt(0, ONLINE);
+            parent.setIconAt(index, OFFLINE);
         });
 
         killServer.addActionListener(e -> {
@@ -86,6 +85,7 @@ public class ServerConsoleTab extends JPanel {
             stopServer.setVisible(false);
             startServer.setVisible(true);
             serverConsoleArea.serverPIDText.setVisible(false);
+            parent.setIconAt(index, OFFLINE);
         });
     }
 }
