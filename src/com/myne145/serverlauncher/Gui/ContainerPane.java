@@ -17,11 +17,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.myne145.serverlauncher.Gui.GlobalButtonsPanel.worldsTab;
 
 public class ContainerPane extends JTabbedPane {
-    public static CPUChart cpuChart = new CPUChart();
-    public static RAMChart ramChart = new RAMChart();
 
     public ContainerPane() {
         Config config;
@@ -75,7 +72,7 @@ public class ContainerPane extends JTabbedPane {
                 ServerDetails.serverId = serverConfig.serverId();
                 Frame.userValues.put("SELECTED_SERVER_NAME", ServerDetails.serverName);
                 Frame.userValues.put("SELECTED_SERVER_PATH", ServerDetails.serverPath.getAbsolutePath());
-                new ServerPropertiesFile(); //this needs a refactor - makes level-name actually update TODO
+                new ServerPropertiesFile();
                 NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
                 nbtParser.start();
                 nbtParser.join();
@@ -84,7 +81,7 @@ public class ContainerPane extends JTabbedPane {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
 //        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
-            worldsTab.setIcons();
+//            worldsTab.setIcons();
         } else { //when "add server" was selected
             System.out.println("asdfdsaf");
         }

@@ -18,8 +18,6 @@ public class ServerPropertiesFile {
     public ServerPropertiesFile() throws IOException {
         File serverProperties = new File(ServerDetails.serverPath + "\\server.properties");
         if(!serverProperties.exists()) {
-//            alert(AlertType.WARNING, "\"" +ServerDetails.serverName + "\" server's \"server.properties\" file does not exist. " +
-//                    "Predicted server world folder name was set to \"world\".");
             worldName = "world";
             ServerDetails.serverWorldPath = new File(ServerDetails.serverPath.getAbsolutePath() + "\\world");
             ServerDetails.serverLevelDatFile = new File(ServerDetails.serverPath.getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");

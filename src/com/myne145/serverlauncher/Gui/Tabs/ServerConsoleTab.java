@@ -40,7 +40,6 @@ public class ServerConsoleTab extends JPanel {
             return;
         }
 
-//        startServer.setBorder(new RoundedPanelBorder(new Color(56, 56, 56), 2));
         ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500), parentPane, index, this);
 
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_START);

@@ -2,7 +2,9 @@ package com.myne145.serverlauncher.Gui;
 
 import com.myne145.serverlauncher.Enums.AlertType;
 import com.myne145.serverlauncher.Gui.Tabs.WorldsTab;
+import com.myne145.serverlauncher.SelectedServer.NBTParser;
 import com.myne145.serverlauncher.SelectedServer.ServerDetails;
+import com.myne145.serverlauncher.SelectedServer.ServerPropertiesFile;
 import com.myne145.serverlauncher.Server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import org.apache.commons.io.FileUtils;
@@ -123,10 +125,14 @@ public class Frame extends JFrame implements ActionListener {
         // Create the JPanels
         WorldsTab worldsTab = new WorldsTab();
         ContainerPane containerPane = new ContainerPane();
-        GlobalButtonsPanel globalButtonsPanel = new GlobalButtonsPanel();
-//        TitlePanel titlePanel = new TitlePanel();
 
-        globalButtonsPanel.setPanels(globalButtonsPanel, worldsTab);
+
+        new ServerPropertiesFile();
+        NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
+        nbtParser.start();
+        nbtParser.join();
+        ServerDetails.serverLevelName = nbtParser.getLevelName(); //issue #64 fix
+        worldsTab.setIcons();
 
         //JPanel containing empty panels & config panel
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);

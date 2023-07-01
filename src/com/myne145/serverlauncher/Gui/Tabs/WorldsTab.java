@@ -320,7 +320,7 @@ public class WorldsTab extends JPanel {
             String folderNameTemp = ServerDetails.serverWorldPath.getName();
             if(!wasServerPropertiesFound)
                 folderNameTemp = "server.properties file does not exist";
-            serverWorldNameAndStuff.setText("<html> Folder Name: " + folderNameTemp +"<br> Level name: " + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>"); //world name todo here
+            serverWorldNameAndStuff.setText("<html> Folder Name: " + folderNameTemp +"<br> Level name: " + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>");
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }
