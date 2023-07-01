@@ -14,16 +14,12 @@ import java.util.TimerTask;
 
 public class RAMChart extends JPanel {
     private final PieChart chart;
-    SystemInfo systemInfo = new SystemInfo();
-    GlobalMemory memory = systemInfo.getHardware().getMemory();
-
-    long totalMemoryMegabytes = memory.getTotal() / 1048576; //convert to mb
-    long availableMemoryMegabytes = memory.getAvailable() / 1048576;
-    long usedMemoryMegabytes = totalMemoryMegabytes - availableMemoryMegabytes;
+    private final SystemInfo systemInfo = new SystemInfo();
+    private final GlobalMemory memory = systemInfo.getHardware().getMemory();
+    private final double TOTAL_MEMORY_GB = (double) memory.getTotal() / 1073741824;
 
     public RAMChart() {
         setBorder(new FlatRoundBorder());
-        setForeground(Color.GREEN);
         chart = createChart();
 
         // Create a ChartPanel to display the chart
@@ -39,11 +35,11 @@ public class RAMChart extends JPanel {
             public void run() {
                 updateChartData();
             }
-        }, 0, 1000);
+        }, 0, 5000);
     }
 
     private PieChart createChart() {
-        PieChart chart = new PieChartBuilder().width(130).height(150).build();
+        PieChart chart = new PieChartBuilder().width(160).height(180).build();
 
         chart.getStyler().setCircular(false);
         chart.getStyler().setLegendPosition(Styler.LegendPosition.OutsideS);
@@ -53,36 +49,20 @@ public class RAMChart extends JPanel {
         chart.addSeries("empty", 100);
         chart.setTitle("RAM Usage");
 
-
-        chart.getStyler().setDefaultSeriesRenderStyle(PieSeries.PieSeriesRenderStyle.Donut);
-        chart.getStyler().setSeriesColors(new Color[]{Color.RED, new Color(51, 51, 52)});
-        chart.getStyler().setLegendVisible(false);
-        chart.getStyler().setChartBackgroundColor(new Color(56, 56, 56));
-        chart.getStyler().setPlotBackgroundColor(new Color(56, 56, 56));
-        chart.getStyler().setPlotBorderColor(new Color(56, 56, 56));
-        chart.getStyler().setLabelsVisible(false);
-
-        chart.getStyler().setChartFontColor(new Color(204, 204, 204));
-
-        chart.getStyler().setLabelType(PieStyler.LabelType.NameAndPercentage);
-
-        chart.getStyler().setLabelsDistance(.82);
-        chart.getStyler().setPlotContentSize(.9);
-        chart.getStyler().setSumVisible(true);
+        SystemMonitorChart.decorateChart(chart);
 
         return chart;
     }
 
     private void updateChartData() {
-        double usedMemoryPercentage = (double) usedMemoryMegabytes / totalMemoryMegabytes * 100;
+        double availableMemoryGB = (double) memory.getAvailable() / 1073741824;
+        double usedMemoryGB = TOTAL_MEMORY_GB - availableMemoryGB;
+        double usedMemoryPercentage = usedMemoryGB / TOTAL_MEMORY_GB * 100;
 
         chart.updatePieSeries("ram_usage", usedMemoryPercentage);
-        chart.getStyler().setSumFormat(usedMemoryMegabytes + " / " + totalMemoryMegabytes);
-//        chart.updatePieSeries("empty", totalMemoryMegabytes - usedMemoryMegabytes);
+        chart.getStyler().setSumFormat(String.valueOf(usedMemoryGB).split("\\.")[0] + "." +  String.valueOf(usedMemoryGB).split("\\.")[1].charAt(0) +
+                " / " + (int) Math.ceil(TOTAL_MEMORY_GB) + "GB");
+        chart.updatePieSeries("empty", 100 - usedMemoryPercentage);
         repaint();  // Repaint the panel to update the chart
-
-        System.out.printf("Total Memory: %d bytes%n", totalMemoryMegabytes);
-        System.out.printf("Used Memory: %d bytes%n", usedMemoryMegabytes);
-        System.out.printf("Used Memory Percentage: %.2f%%%n", usedMemoryPercentage);
     }
 }

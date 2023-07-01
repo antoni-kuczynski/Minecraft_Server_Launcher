@@ -1,6 +1,8 @@
 package com.myne145.serverlauncher.Gui;
 
 import com.myne145.serverlauncher.Enums.AlertType;
+import com.myne145.serverlauncher.Gui.Charts.CPUChart;
+import com.myne145.serverlauncher.Gui.Charts.RAMChart;
 import com.myne145.serverlauncher.Gui.Tabs.AddServerTab;
 import com.myne145.serverlauncher.Gui.Tabs.ServerConsoleTab;
 import com.myne145.serverlauncher.Gui.Tabs.WorldsTab;
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 import static com.myne145.serverlauncher.Gui.GlobalButtonsPanel.worldsTab;
 
 public class ContainerPane extends JTabbedPane {
+    public static CPUChart cpuChart = new CPUChart();
+    public static RAMChart ramChart = new RAMChart();
 
     public ContainerPane() {
         Config config;

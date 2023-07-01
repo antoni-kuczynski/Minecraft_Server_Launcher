@@ -52,15 +52,17 @@ public class ServerConsoleTab extends JPanel {
         serverButtons.add(stopServer);
         serverButtons.add(killServer);
 
+
         JPanel cpuMonitor = new JPanel(); //DO NOT DELETE!!! When this panel is deleted, the ProcessorPanel is not spaced correctly.
-        cpuMonitor.add(new CPUChart());
+        cpuMonitor.add(new CPUChart()); //TODO: optimize that to save the enourmous memory amount of 20mb
 
         JPanel ramMonitor = new JPanel(); //DO NOT DELETE!!! When this panel is deleted, the ProcessorPanel is not spaced correctly.
         ramMonitor.add(new RAMChart());
 
         bottomPanel.add(cpuMonitor, BorderLayout.LINE_START);
+        bottomPanel.add(serverButtons, BorderLayout.CENTER);
         bottomPanel.add(ramMonitor, BorderLayout.LINE_END);
-        bottomPanel.add(serverButtons, BorderLayout.PAGE_END);
+
         stopServer.setVisible(false);
 
         add(upperPanel, BorderLayout.PAGE_START);

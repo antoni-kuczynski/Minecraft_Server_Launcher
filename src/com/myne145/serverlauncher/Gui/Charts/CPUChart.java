@@ -22,7 +22,6 @@ public class CPUChart extends JPanel {
 
     public CPUChart() {
         setBorder(new FlatRoundBorder());
-        setForeground(Color.GREEN);
         chart = createChart();
 
         // Create a ChartPanel to display the chart
@@ -38,11 +37,11 @@ public class CPUChart extends JPanel {
             public void run() {
                 updateChartData();
             }
-        }, 0, 1000);
+        }, 0, 2000);
     }
 
     private PieChart createChart() {
-        PieChart chart = new PieChartBuilder().width(130).height(150).build();
+        PieChart chart = new PieChartBuilder().width(160).height(180).build();
 
         chart.getStyler().setCircular(false);
         chart.getStyler().setLegendPosition(Styler.LegendPosition.OutsideS);
@@ -53,21 +52,7 @@ public class CPUChart extends JPanel {
         chart.setTitle("CPU Usage");
 
 
-        chart.getStyler().setDefaultSeriesRenderStyle(PieSeries.PieSeriesRenderStyle.Donut);
-        chart.getStyler().setSeriesColors(new Color[]{Color.RED, new Color(51, 51, 52)});
-        chart.getStyler().setLegendVisible(false);
-        chart.getStyler().setChartBackgroundColor(new Color(56, 56, 56));
-        chart.getStyler().setPlotBackgroundColor(new Color(56, 56, 56));
-        chart.getStyler().setPlotBorderColor(new Color(56, 56, 56));
-        chart.getStyler().setLabelsVisible(false);
-
-        chart.getStyler().setChartFontColor(new Color(204, 204, 204));
-
-        chart.getStyler().setLabelType(PieStyler.LabelType.NameAndPercentage);
-
-        chart.getStyler().setLabelsDistance(.82);
-        chart.getStyler().setPlotContentSize(.9);
-        chart.getStyler().setSumVisible(true);
+        SystemMonitorChart.decorateChart(chart);
 
         return chart;
     }
