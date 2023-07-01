@@ -17,7 +17,7 @@ public class CPUChart extends JPanel {
     private final PieChart chart;
     private static final SystemInfo si = new SystemInfo();
     private static final HardwareAbstractionLayer hal = si.getHardware();
-    private static final CentralProcessor cpu = hal.getProcessor();
+    private final static CentralProcessor cpu = hal.getProcessor();
     static long[] prevTicks = new long[CentralProcessor.TickType.values().length];
 
     public CPUChart() {

@@ -44,7 +44,7 @@ public class Frame extends JFrame implements ActionListener {
     private static final String PREFS_KEY_LOOK_AND_FEEL = "look_and_feel";
     public static Preferences userValues = Preferences.userNodeForPackage(Frame.class);
 
-    public Frame() throws IOException, InterruptedException {
+    public Frame() throws Exception {
         JMenuBar optionsBar = new JMenuBar();
         JMenu changeTheme = new JMenu("Change Theme");
         JMenu refreshServerList = new JMenu("Refresh Server List");
@@ -106,26 +106,29 @@ public class Frame extends JFrame implements ActionListener {
         setTitle("Minecraft Server Launcher V2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Config config = new Config();
+        Config.createConfig();
 
-        if(userValues.getInt("PREFS_SERVER_ID", 1) - 1 >= config.getData().size()) {
+        System.out.println(Config.getData().size());
+        if(userValues.getInt("PREFS_SERVER_ID", 1) - 1 <= Config.getData().size()) {
             ServerDetails.serverId = userValues.getInt("PREFS_SERVER_ID", 1);
-            ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
-            ServerDetails.serverPath = config.getData().get(ServerDetails.serverId - 1).serverPath();
+            ServerDetails.serverName = Config.getData().get(ServerDetails.serverId - 1).serverName();
+            ServerDetails.serverPath = Config.getData().get(ServerDetails.serverId - 1).serverPath();
 //        ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
 //        ServerDetails.serverName = config.getData().get(ServerDetails.serverId - 1).serverName();
         } else {
             ServerDetails.serverId = 1;
-            ServerDetails.serverName = config.getData().get(0).serverName();
-            ServerDetails.serverPath = config.getData().get(0).serverPath();
+            ServerDetails.serverName = Config.getData().get(0).serverName();
+            ServerDetails.serverPath = Config.getData().get(0).serverPath();
         }
+
+//        System.out.println(ServerDetails.serverName);
         JFrame.setDefaultLookAndFeelDecorated(true);
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", new Color(51, 51, 52));
         this.getRootPane().putClientProperty("JRootPane.titleBarForeground", new Color(204, 204, 204));
         // Create the JPanels
         WorldsTab worldsTab = new WorldsTab();
         ContainerPane containerPane = new ContainerPane();
-
+        System.out.println(ServerDetails.serverName);
 
         new ServerPropertiesFile();
         NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
@@ -431,7 +434,7 @@ public class Frame extends JFrame implements ActionListener {
         SwingUtilities.invokeLater(() -> {
             try {
                 new Frame();
-            } catch (IOException | InterruptedException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });

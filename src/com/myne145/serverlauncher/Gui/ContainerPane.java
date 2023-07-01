@@ -21,17 +21,9 @@ import java.util.ArrayList;
 public class ContainerPane extends JTabbedPane {
 
     public ContainerPane() {
-        Config config;
-        try {
-            config = new Config();
-        } catch (IOException e) {
-            Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
-            throw new RuntimeException(e); //stop going any further
-        }
-
         ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
-        ArrayList<ButtonData> configData = config.getData();
-        for(int i = 0; i < configData.size(); i++) {
+        ArrayList<ButtonData> configData = Config.getData();
+        for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
             tabbedPane.addTab("Worlds", new WorldsTab());
@@ -57,15 +49,8 @@ public class ContainerPane extends JTabbedPane {
 
     public void onButtonClicked(int index) {
         if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
-            Config config;
-            try {
-                config = new Config();
-            } catch (IOException ex) {
-                Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
-                return;
-            }
 //        int index = Integer.parseInt(e.getActionCommand());
-            ButtonData serverConfig = config.getData().get(index);
+            ButtonData serverConfig = Config.getData().get(index);
             try {
                 ServerDetails.serverName = serverConfig.serverName();
                 ServerDetails.serverPath = serverConfig.serverPath();

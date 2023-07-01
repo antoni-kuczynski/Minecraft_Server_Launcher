@@ -32,14 +32,6 @@ public class ServerConsoleTab extends JPanel {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
 
-        Config config;
-        try {
-            config = new Config();
-        } catch (IOException ex) {
-            com.myne145.serverlauncher.Gui.Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
-            return;
-        }
-
         ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500), parentPane, index, this);
 
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_START);
@@ -70,7 +62,7 @@ public class ServerConsoleTab extends JPanel {
         killServer.setEnabled(false);
 
         startServer.addActionListener(e -> {
-            ButtonData serverConfig = config.getData().get(ServerDetails.serverId - 1);
+            ButtonData serverConfig = Config.getData().get(ServerDetails.serverId - 1);
             serverConsoleArea.startServer(serverConfig);
             startServer.setVisible(false);
             stopServer.setVisible(true);
