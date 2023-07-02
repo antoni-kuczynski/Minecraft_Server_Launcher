@@ -38,8 +38,4 @@ public final class LevelNameColorConverter {
         levelName = levelName + "</font></i></u></strike></b>";
         return levelName;
     }
-
-    private LevelNameColorConverter() {
-
-    }
 }

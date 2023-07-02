@@ -19,6 +19,7 @@ public class CPUChart extends JPanel {
     private static final HardwareAbstractionLayer hal = si.getHardware();
     private final static CentralProcessor cpu = hal.getProcessor();
     static long[] prevTicks = new long[CentralProcessor.TickType.values().length];
+    public boolean isEnabled = true;
 
     public CPUChart() {
         setBorder(new FlatRoundBorder());
@@ -29,15 +30,16 @@ public class CPUChart extends JPanel {
         chartPanel.setPreferredSize(new Dimension(130, 150));
 
         add(chartPanel);
-
+        updateChartData();
         // Create a Timer to update the chart every second
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                updateChartData();
+                if(isEnabled)
+                    updateChartData();
             }
-        }, 0, 2000);
+        }, 0, 5000);
     }
 
     private PieChart createChart() {
@@ -47,8 +49,8 @@ public class CPUChart extends JPanel {
         chart.getStyler().setLegendPosition(Styler.LegendPosition.OutsideS);
         chart.getStyler().setLegendLayout(Styler.LegendLayout.Horizontal);
 
-        chart.addSeries("cpu_usage", 0);
-        chart.addSeries("empty", 100);
+        chart.addSeries("cpu_usage", 100);
+        chart.addSeries("empty", 0);
         chart.setTitle("CPU Usage");
 
 

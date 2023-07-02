@@ -17,6 +17,7 @@ public class RAMChart extends JPanel {
     private final SystemInfo systemInfo = new SystemInfo();
     private final GlobalMemory memory = systemInfo.getHardware().getMemory();
     private final double TOTAL_MEMORY_GB = (double) memory.getTotal() / 1073741824;
+    public boolean isEnabled = true;
 
     public RAMChart() {
         setBorder(new FlatRoundBorder());
@@ -33,7 +34,8 @@ public class RAMChart extends JPanel {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                updateChartData();
+                if(isEnabled)
+                    updateChartData();
             }
         }, 0, 5000);
     }
@@ -45,12 +47,12 @@ public class RAMChart extends JPanel {
         chart.getStyler().setLegendPosition(Styler.LegendPosition.OutsideS);
         chart.getStyler().setLegendLayout(Styler.LegendLayout.Horizontal);
 
+
         chart.addSeries("ram_usage", 0);
         chart.addSeries("empty", 100);
         chart.setTitle("RAM Usage");
 
         SystemMonitorChart.decorateChart(chart);
-
         return chart;
     }
 

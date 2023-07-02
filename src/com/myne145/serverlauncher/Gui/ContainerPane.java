@@ -1,8 +1,5 @@
 package com.myne145.serverlauncher.Gui;
 
-import com.myne145.serverlauncher.Enums.AlertType;
-import com.myne145.serverlauncher.Gui.Charts.CPUChart;
-import com.myne145.serverlauncher.Gui.Charts.RAMChart;
 import com.myne145.serverlauncher.Gui.Tabs.AddServerTab;
 import com.myne145.serverlauncher.Gui.Tabs.ServerConsoleTab;
 import com.myne145.serverlauncher.Gui.Tabs.WorldsTab;
@@ -14,14 +11,12 @@ import com.myne145.serverlauncher.Server.Config;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class ContainerPane extends JTabbedPane {
-
+    private final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
     public ContainerPane() {
-        ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
         ArrayList<ButtonData> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
@@ -36,8 +31,6 @@ public class ContainerPane extends JTabbedPane {
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
         }
-//        setBackground(new Color(201, 10, 10));
-//        setBorder(new RoundedPanelBorder(Color.BLACK, 10));
         addTab("Add server", new AddServerTab());
         setIconAt(getTabCount() - 1, new ImageIcon(new ImageIcon("resources/addServer.png").getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
         for(int i = 0; i < getTabCount() - 1; i++)
@@ -49,7 +42,22 @@ public class ContainerPane extends JTabbedPane {
 
     public void onButtonClicked(int index) {
         if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
-//        int index = Integer.parseInt(e.getActionCommand());
+            ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
+            WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);
+            worldsTab.setIcons();
+
+            selectedConsoleTab.enableCharts();
+
+            Runnable runnable = () -> {
+                for(int i = 0; i < serverTabbedPanes.size(); i++) {
+                    if(i != index) {
+                        ServerConsoleTab serverConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
+                        serverConsoleTab.disableCharts();
+                    }
+                }
+            };
+            new Thread(runnable).start();
+
             ButtonData serverConfig = Config.getData().get(index);
             try {
                 ServerDetails.serverName = serverConfig.serverName();
@@ -65,8 +73,6 @@ public class ContainerPane extends JTabbedPane {
             } catch (Exception ex) {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
-//        ServerSelectionPanel.getServerSelection().setSelectedIndex(index);
-//            worldsTab.setIcons();
         } else { //when "add server" was selected
             System.out.println("asdfdsaf");
         }

@@ -64,13 +64,10 @@ public class ServerConsoleArea extends JPanel {
                     } else {
                         consoleOutput.append(line + "\n");
                     }
-                    System.out.println(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//        }
-//        System.out.println("I am not in the fucking if statement!!!");
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
     private ProcessBuilder processBuilder;
@@ -83,8 +80,6 @@ public class ServerConsoleArea extends JPanel {
         JScrollPane scrollPane = new JScrollPane(consoleOutput);
         scrollPane.setPreferredSize(new Dimension(size.width, size.height - 100));
 
-//        consoleOutput.setBorder(new RoundedPanelBorder(new Color(56, 56, 56), 1,5,1));
-//        scrollPane.setBorder(new RoundedPanelBorder(new Color(56, 56, 56), 1,5,1));
         setBackground(new Color(56, 56, 56));
         consoleOutput.setBorder(null);
         scrollPane.setBorder(null);
@@ -174,7 +169,6 @@ public class ServerConsoleArea extends JPanel {
     public void startServer(ButtonData buttonData) {
         ArrayList<String> command = new ArrayList<>(Arrays.asList("java",
                  "-jar", buttonData.serverJarPath().getAbsolutePath(), "nogui"));
-        System.out.println("Command: " + command);
         try {
             processBuilder = new ProcessBuilder(command);
             processBuilder.directory(buttonData.serverPath());
@@ -185,24 +179,17 @@ public class ServerConsoleArea extends JPanel {
             processes.add(process1);
             if (processes.size() == 1)
                 consoleMainThread.start();
-            System.out.println("Console main thread state: " + consoleMainThread.getState());
         } catch (Exception e) {
 //            appendToPane(console, Frame.getErrorDialogMessage(e), Color.RED);
             consoleOutput.append(Frame.getErrorDialogMessage(e));
 //            consoleOutput.setForeground(Color.RED);
         }
         if(consoleMainThread.isAlive()) { //that is the most braindead code that I've ever written TO DATE (seriously)
-            System.out.println("Command: " + command);
             try {
                 processBuilder = new ProcessBuilder(command);
                 processBuilder.directory(buttonData.serverPath());
                 processBuilder.redirectErrorStream(true);
                 isServerRunning = true;
-//                Process process1 = processBuilder.start();
-//                processes.add(process1);
-//                if (processes.size() == 1)
-//                    consoleMainThread.start();
-//                System.out.println("Console main thread state: " + consoleMainThread.getState());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -217,9 +204,5 @@ public class ServerConsoleArea extends JPanel {
             writer.println(command);
             writer.flush();
         }
-    }
-
-    public void setText(String text) {
-        consoleOutput.setText(text);
     }
 }

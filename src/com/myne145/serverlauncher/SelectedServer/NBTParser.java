@@ -14,10 +14,10 @@ import static com.myne145.serverlauncher.Gui.Frame.getErrorDialogMessage;
 
 public class NBTParser extends Thread {
     private String levelName;
-    //contructor for server world
     public NBTParser() {
 
     }
+
 
 
     @Override
@@ -47,6 +47,7 @@ public class NBTParser extends Thread {
             CompoundTag levelDatContent = layerOne.get("Data");
             this.levelName = String.valueOf(levelDatContent.get("LevelName")).split("\"")[1];
         }
+        ServerDetails.serverLevelName = this.getLevelName(); //issue #64 fix
     }
 
     public String getLevelName() {

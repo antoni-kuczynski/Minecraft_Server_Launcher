@@ -1,10 +1,8 @@
 package com.myne145.serverlauncher.Gui.Tabs;
 
-import com.myne145.serverlauncher.Enums.AlertType;
 import com.myne145.serverlauncher.Gui.Charts.CPUChart;
 import com.myne145.serverlauncher.Gui.Charts.RAMChart;
 import com.myne145.serverlauncher.Gui.ContainerPane;
-import com.myne145.serverlauncher.Gui.Frame;
 import com.myne145.serverlauncher.Gui.ServerConsoleArea;
 import com.myne145.serverlauncher.SelectedServer.ServerDetails;
 import com.myne145.serverlauncher.Server.ButtonData;
@@ -12,7 +10,6 @@ import com.myne145.serverlauncher.Server.Config;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class ServerConsoleTab extends JPanel {
     public final JButton startServer = new JButton("Start Server");
@@ -23,6 +20,8 @@ public class ServerConsoleTab extends JPanel {
     private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     private final int index;
+    CPUChart cpuChart = new CPUChart();
+    RAMChart ramChart = new RAMChart();
 
     public ServerConsoleTab(ContainerPane parent, int index) {
         parentPane = parent;
@@ -45,10 +44,10 @@ public class ServerConsoleTab extends JPanel {
 
 
         JPanel cpuMonitor = new JPanel(); //DO NOT DELETE!!! When this panel is deleted, the ProcessorPanel is not spaced correctly.
-        cpuMonitor.add(new CPUChart()); //TODO: optimize that to save the enourmous memory amount of 20mb
+        cpuMonitor.add(cpuChart); //TODO: optimize that to save the enourmous memory amount of 20mb
 
         JPanel ramMonitor = new JPanel(); //DO NOT DELETE!!! When this panel is deleted, the ProcessorPanel is not spaced correctly.
-        ramMonitor.add(new RAMChart());
+        ramMonitor.add(ramChart);
 
         bottomPanel.add(cpuMonitor, BorderLayout.LINE_START);
         bottomPanel.add(serverButtons, BorderLayout.CENTER);
@@ -90,4 +89,17 @@ public class ServerConsoleTab extends JPanel {
             parent.setIconAt(index, OFFLINE);
         });
     }
+    public void disableCharts() {
+        cpuChart.setVisible(false);
+        ramChart.setVisible(false);
+        cpuChart.isEnabled = false;
+        ramChart.isEnabled = false;
+    }
+    public void enableCharts() {
+        cpuChart.setVisible(true);
+        ramChart.setVisible(true);
+        cpuChart.isEnabled = true;
+        ramChart.isEnabled = true;
+    }
+
 }

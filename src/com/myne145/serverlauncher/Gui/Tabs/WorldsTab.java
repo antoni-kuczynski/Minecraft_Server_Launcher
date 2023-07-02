@@ -51,6 +51,9 @@ public class WorldsTab extends JPanel {
         selectedServerTxt.setText(selServPrefix + ServerDetails.serverName);
         startCopying.setEnabled(false);
         JButton openButton = new JButton("Open Folder");
+        openButton.addActionListener(e -> {
+
+        });
 //        openButton.addActionListener(e -> { //jna file chooser implementation here - issue #42 fixed
 //            JnaFileChooser fileDialog = new JnaFileChooser();
 //            fileDialog.showOpenDialog(null);
@@ -92,7 +95,7 @@ public class WorldsTab extends JPanel {
 //            }
 //            setIcons();
 //        });
-
+        setIcons();
         final WorldsTab tempPanel = this;
         TransferHandler transferHandler = new TransferHandler() {
             @Serial
@@ -155,8 +158,8 @@ public class WorldsTab extends JPanel {
             worldCopyHandler.start();
         });
 
-        directoryTree.setDirectory(ServerDetails.serverPath.getAbsolutePath());
-        JScrollPane directoryTreeScroll = new JScrollPane(directoryTree);
+//        directoryTree.setDirectory(ServerDetails.serverPath.getAbsolutePath());
+//        JScrollPane directoryTreeScroll = new JScrollPane(directoryTree);
 
         selectedWorldIconLabel.setIcon(defaultWorldIcon);
 
@@ -205,6 +208,7 @@ public class WorldsTab extends JPanel {
         worldPanel.add(Box.createRigidArea(dimension)); //issue #62 fix
         worldPanel.add(worldNameAndStuffText, BorderLayout.LINE_END);
         worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
+        worldPanel.setBorder(new FlatRoundBorder());
 
         JPanel worldPaneUpper = new JPanel(new BorderLayout());
         worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
@@ -221,6 +225,7 @@ public class WorldsTab extends JPanel {
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         serverNameAndStuff.add(serverIconWithSpacing, BorderLayout.LINE_END);
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
+        serverNameAndStuff.setBorder(new FlatRoundBorder());
 
         JPanel iHateFrontendPanel = new JPanel(new BorderLayout());
         iHateFrontendPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
@@ -232,7 +237,7 @@ public class WorldsTab extends JPanel {
 
         addingWorld.add(worldPaneUpper, BorderLayout.PAGE_START);
         addingWorld.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        addingWorld.add(directoryTreeScroll, BorderLayout.CENTER);
+//        addingWorld.add(directoryTreeScroll, BorderLayout.CENTER);
         addingWorld.add(serverPanelBottom, BorderLayout.PAGE_END);
 
         add(buttonAndText, BorderLayout.PAGE_START);

@@ -15,7 +15,6 @@
     <orderEntry type="library" name="nbt-1.5.1" level="project" />
     <orderEntry type="library" name="swing-jnafilechooser" level="project" />
     <orderEntry type="library" name="github.oshi.core" level="project" />
-    <orderEntry type="library" name="jfree.jfreechart" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -27,5 +26,7 @@
     </orderEntry>
     <orderEntry type="library" name="knowm.xchart" level="project" />
     <orderEntry type="library" name="knowm.xchart.demo" level="project" />
+    <orderEntry type="library" name="openjfx.javafx.base" level="project" />
+    <orderEntry type="library" name="openjfx.javafx.swing" level="project" />
   </component>
 </module>
