@@ -74,15 +74,17 @@ public class ServerConsoleArea extends JPanel {
 
 
     public ServerConsoleArea(Dimension size, ContainerPane parentPane, int index, ServerConsoleTab tab) {
+        setBackground(Color.GREEN);
+        setLayout(new BorderLayout());
         this.index = index;
         this.parentPane = parentPane;
         this.tab = tab;
         JScrollPane scrollPane = new JScrollPane(consoleOutput);
-        scrollPane.setPreferredSize(new Dimension(size.width, size.height - 100));
+//        scrollPane.setPreferredSize(new Dimension(500,500));
 
         setBackground(new Color(56, 56, 56));
         consoleOutput.setBorder(null);
-        scrollPane.setBorder(null);
+//        scrollPane.setBorder(null);
 
 
         JTextField commandField = new JTextField();
@@ -150,9 +152,10 @@ public class ServerConsoleArea extends JPanel {
         commandPanel.add(commandField, BorderLayout.CENTER);
         commandPanel.add(executeButton, BorderLayout.LINE_END);
 
-        setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
+
+
         add(optionsPanel, BorderLayout.PAGE_START);
+        add(scrollPane, BorderLayout.CENTER);
 //        add(killServer, BorderLayout.PAGE_START);
         add(commandPanel, BorderLayout.PAGE_END);
     }

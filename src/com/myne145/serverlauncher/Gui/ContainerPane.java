@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class ContainerPane extends JTabbedPane {
     private final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
     public ContainerPane() {
+        setLayout(new BorderLayout());
         ArrayList<ButtonData> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);

@@ -24,6 +24,7 @@ public class ServerConsoleTab extends JPanel {
     RAMChart ramChart = new RAMChart();
 
     public ServerConsoleTab(ContainerPane parent, int index) {
+        setBackground(Color.RED);
         parentPane = parent;
         this.index = index;
         setLayout(new BorderLayout());
@@ -33,10 +34,11 @@ public class ServerConsoleTab extends JPanel {
 
         ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500), parentPane, index, this);
 
+//        serverConsoleArea.setPreferredSize(new Dimension(500,500));
+
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_START);
         upperPanel.add(serverConsoleArea, BorderLayout.CENTER);
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_END);
-
 
         serverButtons.add(startServer);
         serverButtons.add(stopServer);
@@ -55,7 +57,7 @@ public class ServerConsoleTab extends JPanel {
 
         stopServer.setVisible(false);
 
-        add(upperPanel, BorderLayout.PAGE_START);
+        add(upperPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.PAGE_END);
 
         killServer.setEnabled(false);
