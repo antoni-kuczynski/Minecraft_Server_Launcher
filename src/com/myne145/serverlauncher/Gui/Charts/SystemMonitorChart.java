@@ -19,6 +19,7 @@ public class SystemMonitorChart {
         chart.getStyler().setChartFontColor(new Color(204, 204, 204));
 
         chart.getStyler().setLabelType(PieStyler.LabelType.NameAndPercentage);
+        chart.getStyler().setSumFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
         chart.getStyler().setLabelsDistance(.82);
         chart.getStyler().setPlotContentSize(.9);

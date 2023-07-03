@@ -20,8 +20,8 @@ public class ServerConsoleTab extends JPanel {
     private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     private final int index;
-    CPUChart cpuChart = new CPUChart();
-    RAMChart ramChart = new RAMChart();
+    public final CPUChart cpuChart = new CPUChart();
+    public final RAMChart ramChart = new RAMChart();
 
     public ServerConsoleTab(ContainerPane parent, int index) {
         setBackground(Color.RED);
@@ -51,9 +51,9 @@ public class ServerConsoleTab extends JPanel {
         JPanel ramMonitor = new JPanel(); //DO NOT DELETE!!! When this panel is deleted, the ProcessorPanel is not spaced correctly.
         ramMonitor.add(ramChart);
 
-        bottomPanel.add(cpuMonitor, BorderLayout.LINE_START);
+        bottomPanel.add(cpuChart, BorderLayout.LINE_START);
         bottomPanel.add(serverButtons, BorderLayout.CENTER);
-        bottomPanel.add(ramMonitor, BorderLayout.LINE_END);
+        bottomPanel.add(ramChart, BorderLayout.LINE_END);
 
         stopServer.setVisible(false);
 
@@ -103,5 +103,4 @@ public class ServerConsoleTab extends JPanel {
         cpuChart.isEnabled = true;
         ramChart.isEnabled = true;
     }
-
 }

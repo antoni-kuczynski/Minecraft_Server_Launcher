@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -25,7 +26,9 @@ public class Frame extends JFrame {
     private final String PREFS_KEY_Y = "window_y";
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
+    private final String PREFS_ARE_CHARTS_ENABLED = "are_charts_enabled";
     public static Preferences userValues = Preferences.userNodeForPackage(Frame.class);
+    public static boolean areChartsEnabled;
 
     public Frame() throws Exception {
         // Set up the JFrame
@@ -62,6 +65,15 @@ public class Frame extends JFrame {
         add(buttonAndWorldsPanel, BorderLayout.CENTER);
         setVisible(true);
 
+        JMenu optionsMenu = new JMenu("Options");
+        JCheckBoxMenuItem showCharts = new JCheckBoxMenuItem("Show usage graphs");
+        optionsMenu.add(showCharts);
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(optionsMenu);
+        setJMenuBar(menuBar);
+        areChartsEnabled = userValues.getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
+        showCharts.setSelected(areChartsEnabled);
+        containerPane.setChartsVisibility(areChartsEnabled);
 
         // Set the initial size and position of the JFrame
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -80,7 +92,15 @@ public class Frame extends JFrame {
             setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
         }
 
-
+        showCharts.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                containerPane.setChartsVisibility(true);
+                areChartsEnabled = true;
+            } else {
+                containerPane.setChartsVisibility(false);
+                areChartsEnabled = false;
+            }
+        });
         // Save the window position to user preferences when the JFrame is closed
         addWindowListener(new WindowAdapter() {
             @Override
@@ -92,6 +112,7 @@ public class Frame extends JFrame {
                 userSavedValues.putInt(PREFS_KEY_WIDTH, screenDimensions.width);
                 userSavedValues.putInt(PREFS_KEY_HEIGHT, screenDimensions.height);
                 userSavedValues.putInt("PREFS_SERVER_ID", ServerDetails.serverId);
+                userSavedValues.putBoolean(PREFS_ARE_CHARTS_ENABLED, areChartsEnabled);
 
                 File temporaryFilesDirectory = new File("world_temp");
                 if(!temporaryFilesDirectory.exists()) //issue #55 fix by checking if the folder exitst and creating it (if somehow it doesn't exist here)

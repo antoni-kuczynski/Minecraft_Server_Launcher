@@ -31,6 +31,7 @@ public class ContainerPane extends JTabbedPane {
             if(serverName.length() > 25)
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
+            setToolTipTextAt(i, "Offline");
         }
         addTab("Add server", new AddServerTab());
         setIconAt(getTabCount() - 1, new ImageIcon(new ImageIcon("resources/addServer.png").getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
@@ -47,7 +48,8 @@ public class ContainerPane extends JTabbedPane {
             WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);
             worldsTab.setIcons();
 
-            selectedConsoleTab.enableCharts();
+            if(Frame.areChartsEnabled)
+                selectedConsoleTab.enableCharts();
 
             Runnable runnable = () -> {
                 for(int i = 0; i < serverTabbedPanes.size(); i++) {
@@ -76,6 +78,17 @@ public class ContainerPane extends JTabbedPane {
             }
         } else { //when "add server" was selected
             System.out.println("asdfdsaf");
+        }
+    }
+
+    public void setChartsVisibility(boolean isVisible) {
+        for(JTabbedPane tabbedPane : serverTabbedPanes) {
+            ServerConsoleTab serverConsoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
+            serverConsoleTab.cpuChart.isEnabled = isVisible;
+            serverConsoleTab.cpuChart.setVisible(isVisible);
+
+            serverConsoleTab.ramChart.isEnabled = isVisible;
+            serverConsoleTab.ramChart.setVisible(isVisible);
         }
     }
 }

@@ -18,7 +18,7 @@ public class ServerConsoleArea extends JPanel {
     private final ArrayList<Process> processes = new ArrayList<>();
     private boolean isServerRunning;
     public boolean isServerStopCausedByAButton = false;
-    public final JLabel serverPIDText = new JLabel("Server PID:");
+    public final JLabel serverPIDText = new JLabel("Process's PID:");
     private ContainerPane parentPane;
     private int index;
     private ServerConsoleTab tab;
@@ -47,14 +47,16 @@ public class ServerConsoleArea extends JPanel {
                             reader = new InputStreamReader(inputStream);
                             bufferedReader = new BufferedReader(reader);
                             howManyTimesLineWasNull++;
-                            if(howManyTimesLineWasNull > 50) { //assuming that a server has been stopped
+                            if(howManyTimesLineWasNull > 50) { //we assume that the server has been stopped at this point
                                 isServerRunning = false;
                                 howManyTimesLineWasNull = 0;
                                 processes.get(processes.size() - 1).destroy();
                                 if(!isServerStopCausedByAButton) {
                                     parentPane.setIconAt(index, ERRORED);
+                                    parentPane.setToolTipTextAt(index, "Errored");
                                 } else {
                                     parentPane.setIconAt(index, OFFLINE);
+                                    parentPane.setToolTipTextAt(index, "Offline");
                                 }
                                 tab.stopServer.setVisible(false);
                                 tab.startServer.setVisible(true);
@@ -167,6 +169,7 @@ public class ServerConsoleArea extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        parentPane.setToolTipTextAt(index, "Offline");
     }
 
     public void startServer(ButtonData buttonData) {
@@ -178,10 +181,11 @@ public class ServerConsoleArea extends JPanel {
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
             Process process1 = processBuilder.start();
-            serverPIDText.setText("Server PID: " + process1.pid());
+            serverPIDText.setText("Process's PID: " + process1.pid());
             processes.add(process1);
             if (processes.size() == 1)
                 consoleMainThread.start();
+            parentPane.setToolTipTextAt(index, "Running");
         } catch (Exception e) {
 //            appendToPane(console, Frame.getErrorDialogMessage(e), Color.RED);
             consoleOutput.append(Frame.getErrorDialogMessage(e));
@@ -201,8 +205,11 @@ public class ServerConsoleArea extends JPanel {
 
     public void executeCommand(String command) {
         if (processes.size() > 0) {
-            if(command.equals("stop"))
+            if(command.equals("stop")) {
                 isServerStopCausedByAButton = true;
+                parentPane.setToolTipTextAt(index, "Offline");
+                serverPIDText.setVisible(false);
+            }
             PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());
             writer.println(command);
             writer.flush();

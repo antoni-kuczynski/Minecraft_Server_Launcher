@@ -43,7 +43,7 @@ public class CPUChart extends JPanel {
     }
 
     private PieChart createChart() {
-        PieChart chart = new PieChartBuilder().width(160).height(180).build();
+        PieChart chart = new PieChartBuilder().width(130).height(150).build();
 
         chart.getStyler().setCircular(false);
         chart.getStyler().setLegendPosition(Styler.LegendPosition.OutsideS);
