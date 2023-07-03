@@ -27,6 +27,7 @@ public class Frame extends JFrame {
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
     private final String PREFS_ARE_CHARTS_ENABLED = "are_charts_enabled";
+    private final String PREFS_SERVER_ID = "prefs_server_id";
     public static Preferences userValues = Preferences.userNodeForPackage(Frame.class);
     public static boolean areChartsEnabled;
 
@@ -40,8 +41,8 @@ public class Frame extends JFrame {
         buttonAndWorldsPanel.setBackground(new Color(51, 51, 52));
 
 
-        if(userValues.getInt("PREFS_SERVER_ID", 1) - 1 <= Config.getData().size()) {
-            ServerDetails.serverId = userValues.getInt("PREFS_SERVER_ID", 1);
+        if(userValues.getInt(PREFS_SERVER_ID, 1) - 1 <= Config.getData().size()) {
+            ServerDetails.serverId = userValues.getInt(PREFS_SERVER_ID, 1);
             ServerDetails.serverName = Config.getData().get(ServerDetails.serverId - 1).serverName();
             ServerDetails.serverPath = Config.getData().get(ServerDetails.serverId - 1).serverPath();
         } else {
@@ -57,8 +58,6 @@ public class Frame extends JFrame {
         new ServerPropertiesFile();
         NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
         nbtParser.start();
-//        nbtParser.join();
-//        worldsTab.setIcons();
 
         ContainerPane containerPane = new ContainerPane();
         buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
@@ -111,8 +110,10 @@ public class Frame extends JFrame {
                 userSavedValues.putInt(PREFS_KEY_Y, screenDimensions.y);
                 userSavedValues.putInt(PREFS_KEY_WIDTH, screenDimensions.width);
                 userSavedValues.putInt(PREFS_KEY_HEIGHT, screenDimensions.height);
-                userSavedValues.putInt("PREFS_SERVER_ID", ServerDetails.serverId);
+                userSavedValues.putInt(PREFS_SERVER_ID, ServerDetails.serverId);
                 userSavedValues.putBoolean(PREFS_ARE_CHARTS_ENABLED, areChartsEnabled);
+
+                containerPane.killAllServerProcesses();
 
                 File temporaryFilesDirectory = new File("world_temp");
                 if(!temporaryFilesDirectory.exists()) //issue #55 fix by checking if the folder exitst and creating it (if somehow it doesn't exist here)

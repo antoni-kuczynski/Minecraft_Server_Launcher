@@ -20,6 +20,7 @@ public class ServerConsoleTab extends JPanel {
     private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     private final int index;
+    private final ServerConsoleArea serverConsoleArea;
     public final CPUChart cpuChart = new CPUChart();
     public final RAMChart ramChart = new RAMChart();
 
@@ -31,9 +32,7 @@ public class ServerConsoleTab extends JPanel {
         JPanel upperPanel = new JPanel(new BorderLayout());
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
-
-        ServerConsoleArea serverConsoleArea = new ServerConsoleArea(new Dimension(500, 500), parentPane, index, this);
-
+        serverConsoleArea = new ServerConsoleArea(parentPane, index, this);
 //        serverConsoleArea.setPreferredSize(new Dimension(500,500));
 
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_START);
@@ -102,5 +101,9 @@ public class ServerConsoleTab extends JPanel {
         ramChart.setVisible(true);
         cpuChart.isEnabled = true;
         ramChart.isEnabled = true;
+    }
+
+    public ServerConsoleArea getServerConsoleArea() {
+        return serverConsoleArea;
     }
 }

@@ -1,7 +1,9 @@
 package com.myne145.serverlauncher.Gui;
 
 import com.myne145.serverlauncher.Gui.Tabs.ServerConsoleTab;
+import com.myne145.serverlauncher.SelectedServer.ServerDetails;
 import com.myne145.serverlauncher.Server.ButtonData;
+import com.myne145.serverlauncher.Server.Config;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -24,6 +26,7 @@ public class ServerConsoleArea extends JPanel {
     private ServerConsoleTab tab;
     private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
     private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
+    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 
     private final Runnable consoleRunner = () -> {
 //        if(isServerRunning) {
@@ -75,7 +78,7 @@ public class ServerConsoleArea extends JPanel {
     private ProcessBuilder processBuilder;
 
 
-    public ServerConsoleArea(Dimension size, ContainerPane parentPane, int index, ServerConsoleTab tab) {
+    public ServerConsoleArea(ContainerPane parentPane, int index, ServerConsoleTab tab) {
         setBackground(Color.GREEN);
         setLayout(new BorderLayout());
         this.index = index;
@@ -186,6 +189,7 @@ public class ServerConsoleArea extends JPanel {
             if (processes.size() == 1)
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
+            parentPane.setIconAt(index, ONLINE);
         } catch (Exception e) {
 //            appendToPane(console, Frame.getErrorDialogMessage(e), Color.RED);
             consoleOutput.append(Frame.getErrorDialogMessage(e));
@@ -204,6 +208,8 @@ public class ServerConsoleArea extends JPanel {
     }
 
     public void executeCommand(String command) {
+        if(!isServerRunning && command.equalsIgnoreCase("start"))
+            startServer(Config.getData().get(ServerDetails.serverId - 1));
         if (processes.size() > 0) {
             if(command.equals("stop")) {
                 isServerStopCausedByAButton = true;
@@ -214,5 +220,10 @@ public class ServerConsoleArea extends JPanel {
             writer.println(command);
             writer.flush();
         }
+    }
+
+    void killAllProcesses() {
+        for(Process p : processes)
+            p.destroy();
     }
 }

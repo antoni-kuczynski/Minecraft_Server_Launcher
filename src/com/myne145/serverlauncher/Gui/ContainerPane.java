@@ -91,4 +91,10 @@ public class ContainerPane extends JTabbedPane {
             serverConsoleTab.ramChart.setVisible(isVisible);
         }
     }
+    public void killAllServerProcesses() {
+        for(JTabbedPane tabbedPane : serverTabbedPanes) {
+            ServerConsoleTab serverConsoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
+            serverConsoleTab.getServerConsoleArea().killAllProcesses();
+        }
+    }
 }
