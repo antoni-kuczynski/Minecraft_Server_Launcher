@@ -169,7 +169,14 @@ public class WorldsTab extends JPanel {
         JPanel startCopyingPanel = new JPanel(new BorderLayout());
         JPanel copyingProgress = new JPanel(new BorderLayout());
         JPanel startCopyingBtnPanel = new JPanel(new BorderLayout());
+        JPanel titlePanel = new JPanel(new BorderLayout());
 
+        JLabel title = new JLabel("World Manager");
+        title.setFont(new Font("Arial", Font.BOLD, 18));
+        titlePanel.add(Box.createRigidArea(new Dimension(5,5)), BorderLayout.PAGE_START);
+        titlePanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.LINE_START);
+        titlePanel.add(title, BorderLayout.CENTER);
+        titlePanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.PAGE_END);
 
         openButton.setPreferredSize(new Dimension(130, 40));
         separatorBtnTextKinda.add(openButton, BorderLayout.LINE_START);
@@ -177,7 +184,7 @@ public class WorldsTab extends JPanel {
         Dimension dimension = new Dimension(10, 10);
         separatorBtnTextKinda.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
-        buttonAndText.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
+        buttonAndText.add(titlePanel, BorderLayout.PAGE_START);
         buttonAndText.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         buttonAndText.add(separatorBtnTextKinda, BorderLayout.CENTER);
 

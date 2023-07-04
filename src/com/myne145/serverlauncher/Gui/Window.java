@@ -58,6 +58,8 @@ public class Window extends JFrame {
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", new Color(51, 51, 52));
         this.getRootPane().putClientProperty("JRootPane.titleBarForeground", new Color(204, 204, 204));
 
+
+
         new ServerPropertiesFile();
         NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
         nbtParser.start();

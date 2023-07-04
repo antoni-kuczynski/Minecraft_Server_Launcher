@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.Gui;
 
 import com.myne145.serverlauncher.Gui.Tabs.AddServerTab;
+import com.myne145.serverlauncher.Gui.Tabs.Components.CustomTabbedPaneUI;
 import com.myne145.serverlauncher.Gui.Tabs.ServerConsoleTab;
 import com.myne145.serverlauncher.Gui.Tabs.WorldsTab;
 import com.myne145.serverlauncher.Server.Current.NBTParser;
@@ -20,6 +21,7 @@ public class ContainerPane extends JTabbedPane {
     private final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
     public ContainerPane() {
         setLayout(new BorderLayout());
+//        setUI(new CustomTabbedPaneUI(new Color(76, 76, 80), new Color(51, 51, 52)));
         ArrayList<MCServer> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
@@ -45,6 +47,7 @@ public class ContainerPane extends JTabbedPane {
     }
 
     public void onButtonClicked(int index) {
+//        setBackgroundAt(index, Color.RED);
         if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
             ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
             WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);

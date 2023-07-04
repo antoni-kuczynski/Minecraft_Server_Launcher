@@ -493,8 +493,11 @@
       "disabledUnderlineColor": "#454545",
       "contentAreaColor": "#282828",
       "hoverColor": "#282828",
-      "EditorTabs.underlinedTabBackground" : "#474c5b99"
+      "EditorTabs.underlinedTabBackground" : "#0835c199",
+      "focus": "#434241"
     },
+
+
 
     "VersionControl": {
 
