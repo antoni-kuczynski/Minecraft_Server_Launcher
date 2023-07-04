@@ -30,6 +30,7 @@ public class Frame extends JFrame {
     private final String PREFS_SERVER_ID = "prefs_server_id";
     public static Preferences userValues = Preferences.userNodeForPackage(Frame.class);
     public static boolean areChartsEnabled;
+    public static int SERVER_STATUS_ICON_DIMENSION = 32;
 
     public Frame() throws Exception {
         // Set up the JFrame

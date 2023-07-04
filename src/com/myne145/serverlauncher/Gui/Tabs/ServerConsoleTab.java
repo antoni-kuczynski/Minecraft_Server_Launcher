@@ -11,14 +11,16 @@ import com.myne145.serverlauncher.Server.Config;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.myne145.serverlauncher.Gui.Frame.SERVER_STATUS_ICON_DIMENSION;
+
 public class ServerConsoleTab extends JPanel {
     public final JButton startServer = new JButton("Start Server");
     public final JButton stopServer = new JButton("Stop Server");
     public final JButton killServer = new JButton("Kill Server");
     private final ContainerPane parentPane;
-    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
+    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
+    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
     public final int index;
     private final ServerConsoleArea serverConsoleArea;
     public final CPUChart cpuChart = new CPUChart();
@@ -88,6 +90,7 @@ public class ServerConsoleTab extends JPanel {
             serverConsoleArea.serverPIDText.setVisible(false);
             serverConsoleArea.isServerStopCausedByAButton = true;
             parent.setIconAt(index, OFFLINE);
+            killServer.setEnabled(false);
         });
     }
     public void disableCharts() {

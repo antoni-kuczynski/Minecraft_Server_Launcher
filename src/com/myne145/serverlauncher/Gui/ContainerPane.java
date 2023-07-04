@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static com.myne145.serverlauncher.Gui.Frame.SERVER_STATUS_ICON_DIMENSION;
+
 
 public class ContainerPane extends JTabbedPane {
     private final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
@@ -36,7 +38,7 @@ public class ContainerPane extends JTabbedPane {
         addTab("Add server", new AddServerTab());
         setIconAt(getTabCount() - 1, new ImageIcon(new ImageIcon("resources/addServer.png").getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
         for(int i = 0; i < getTabCount() - 1; i++)
-            setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH)));
+            setIconAt(i, new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(ServerDetails.serverId - 1);
         addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));

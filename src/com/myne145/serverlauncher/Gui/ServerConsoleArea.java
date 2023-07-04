@@ -15,7 +15,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Timer;
+
+import static com.myne145.serverlauncher.Gui.Frame.SERVER_STATUS_ICON_DIMENSION;
 
 public class ServerConsoleArea extends JPanel {
     public JTextArea consoleOutput = new JTextArea();
@@ -27,9 +28,9 @@ public class ServerConsoleArea extends JPanel {
     private int index;
     private ServerConsoleTab tab;
     public boolean isVisible = false;
-    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
-    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
-    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
+    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
+    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
 //    private final Runnable consoleRunner = () -> {
 ////        if(isServerRunning) {
 //            try {
@@ -289,7 +290,7 @@ public class ServerConsoleArea extends JPanel {
         return fileToReadReader.toString();
     }
 
-    public void setTextFromLatestLogFile() throws IOException, InterruptedException {
+    public void setTextFromLatestLogFile() throws IOException {
         if(isServerRunning) {
             File latestLog = new File(ServerDetails.serverPath.getAbsolutePath() + "\\logs\\latest.log");
             consoleOutput.setText("");
