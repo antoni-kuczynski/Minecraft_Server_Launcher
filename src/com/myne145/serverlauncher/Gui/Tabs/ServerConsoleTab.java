@@ -19,7 +19,7 @@ public class ServerConsoleTab extends JPanel {
     private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-    private final int index;
+    public final int index;
     private final ServerConsoleArea serverConsoleArea;
     public final CPUChart cpuChart = new CPUChart();
     public final RAMChart ramChart = new RAMChart();

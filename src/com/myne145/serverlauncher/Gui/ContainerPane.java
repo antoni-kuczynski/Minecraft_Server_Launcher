@@ -76,6 +76,26 @@ public class ContainerPane extends JTabbedPane {
             } catch (Exception ex) {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
+
+            for(int i = 0; i < serverTabbedPanes.size(); i++) {
+                ServerConsoleTab c = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
+                c.getServerConsoleArea().isVisible = false;
+            }
+
+            selectedConsoleTab.getServerConsoleArea().isVisible = true;
+            try {
+                selectedConsoleTab.getServerConsoleArea().setTextFromLatestLogFile();
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+
+
+            for(JTabbedPane tabbedPane : serverTabbedPanes) {
+                ServerConsoleTab consoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
+                System.out.println("Index: " + consoleTab.index + "\tisVisible: " + consoleTab.getServerConsoleArea().isVisible);
+            }
+            System.out.println("-=-=-=-=-=-=-=-=-=-=-=-");
+
         } else { //when "add server" was selected
             System.out.println("asdfdsaf");
         }

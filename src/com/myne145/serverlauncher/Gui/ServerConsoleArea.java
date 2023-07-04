@@ -12,8 +12,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
 
 public class ServerConsoleArea extends JPanel {
     public JTextArea consoleOutput = new JTextArea();
@@ -24,56 +26,108 @@ public class ServerConsoleArea extends JPanel {
     private ContainerPane parentPane;
     private int index;
     private ServerConsoleTab tab;
+    public boolean isVisible = false;
     private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
     private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(32,32, Image.SCALE_SMOOTH));
     private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+//    private final Runnable consoleRunner = () -> {
+////        if(isServerRunning) {
+//            try {
+//                synchronized (this) {
+//                    while (true) {
+//                        while (!isVisible) {
+//                            wait();
+//                        }
+//                        // Get the input stream of the server process
+//                        InputStream inputStream = processes.get(processes.size() - 1).getInputStream();
+//
+//                        // Create a reader to read the input stream
+//                        InputStreamReader reader = new InputStreamReader(inputStream);
+//                        BufferedReader bufferedReader = new BufferedReader(reader);
+//
+//                        // Read the output from the server and append it to the JTextArea
+//                        String line;
+//
+//                        int howManyTimesLineWasNull = 0;
+//                        while (true) {
+//                            line = bufferedReader.readLine();
+//                            if (line == null) {
+//                                if (isServerRunning) {
+//                                    inputStream = processes.get(processes.size() - 1).getInputStream();
+//                                    reader = new InputStreamReader(inputStream);
+//                                    bufferedReader = new BufferedReader(reader);
+//                                    howManyTimesLineWasNull++;
+//                                    if (howManyTimesLineWasNull > 50) { //we assume that the server has been stopped at this point
+//                                        isServerRunning = false;
+//                                        howManyTimesLineWasNull = 0;
+//                                        processes.get(processes.size() - 1).destroy();
+//                                        if (!isServerStopCausedByAButton) {
+//                                            parentPane.setIconAt(index, ERRORED);
+//                                            parentPane.setToolTipTextAt(index, "Errored");
+//                                        } else {
+//                                            parentPane.setIconAt(index, OFFLINE);
+//                                            parentPane.setToolTipTextAt(index, "Offline");
+//                                        }
+//                                        tab.stopServer.setVisible(false);
+//                                        tab.startServer.setVisible(true);
+//                                        tab.killServer.setEnabled(false);
+//                                    }
+//                                }
+//                            } else {
+//                                consoleOutput.append(line + "\n");
+//                            }
+//                        }
+//
+//                        }
+//                    }
+//                } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//    };
 
     private final Runnable consoleRunner = () -> {
-//        if(isServerRunning) {
-            try {
-                // Get the input stream of the server process
-                InputStream inputStream = processes.get(processes.size() - 1).getInputStream();
-
-                // Create a reader to read the input stream
-                InputStreamReader reader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(reader);
-
-                // Read the output from the server and append it to the JTextArea
-                String line;
-
-                int howManyTimesLineWasNull = 0;
+        try {
+            synchronized (this) {
                 while (true) {
-                    line = bufferedReader.readLine();
-                    if (line == null) {
-                        if(isServerRunning) {
-                            inputStream = processes.get(processes.size() - 1).getInputStream();
-                            reader = new InputStreamReader(inputStream);
-                            bufferedReader = new BufferedReader(reader);
-                            howManyTimesLineWasNull++;
-                            if(howManyTimesLineWasNull > 50) { //we assume that the server has been stopped at this point
-                                isServerRunning = false;
-                                howManyTimesLineWasNull = 0;
-                                processes.get(processes.size() - 1).destroy();
-                                if(!isServerStopCausedByAButton) {
-                                    parentPane.setIconAt(index, ERRORED);
-                                    parentPane.setToolTipTextAt(index, "Errored");
-                                } else {
-                                    parentPane.setIconAt(index, OFFLINE);
-                                    parentPane.setToolTipTextAt(index, "Offline");
+                    // Wait until isVisible is true
+                    while (!isVisible) {
+                        wait();
+                    }
+
+                    // Get the input stream of the server process
+                    InputStream inputStream = processes.get(processes.size() - 1).getInputStream();
+
+                    // Create a reader to read the input stream
+                    InputStreamReader reader = new InputStreamReader(inputStream);
+                    BufferedReader bufferedReader = new BufferedReader(reader);
+
+                    // Read the output from the server and append it to the JTextArea
+                    String line;
+
+                    int howManyTimesLineWasNull = 0;
+                    while (true) {
+                        line = bufferedReader.readLine();
+                        if (line == null) {
+                            if (isServerRunning) {
+                                inputStream = processes.get(processes.size() - 1).getInputStream();
+                                reader = new InputStreamReader(inputStream);
+                                bufferedReader = new BufferedReader(reader);
+                                howManyTimesLineWasNull++;
+                                if (howManyTimesLineWasNull > 50) {
+                                    // Rest of your code here...
                                 }
-                                tab.stopServer.setVisible(false);
-                                tab.startServer.setVisible(true);
-                                tab.killServer.setEnabled(false);
                             }
+                        } else {
+                            consoleOutput.append(line + "\n");
                         }
-                    } else {
-                        consoleOutput.append(line + "\n");
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     };
+
     private final Thread consoleMainThread = new Thread(consoleRunner);
     private ProcessBuilder processBuilder;
 
@@ -225,5 +279,23 @@ public class ServerConsoleArea extends JPanel {
     void killAllProcesses() {
         for(Process p : processes)
             p.destroy();
+    }
+
+    private String readFileString(File fileToRead) throws IOException {
+        StringBuilder fileToReadReader = new StringBuilder();
+        for(String fileLine : Files.readAllLines(fileToRead.toPath())) {
+            fileToReadReader.append(fileLine).append("\n");
+        }
+        return fileToReadReader.toString();
+    }
+
+    public void setTextFromLatestLogFile() throws IOException, InterruptedException {
+        if(isServerRunning) {
+            File latestLog = new File(ServerDetails.serverPath.getAbsolutePath() + "\\logs\\latest.log");
+            System.out.println(readFileString(latestLog));
+            consoleOutput.setText("");
+            consoleOutput.append(readFileString(latestLog));
+            isVisible = true;
+        }
     }
 }
