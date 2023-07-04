@@ -89,13 +89,6 @@ public class ContainerPane extends JTabbedPane {
                 throw new RuntimeException();
             }
 
-
-            for(JTabbedPane tabbedPane : serverTabbedPanes) {
-                ServerConsoleTab consoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
-                System.out.println("Index: " + consoleTab.index + "\tisVisible: " + consoleTab.getServerConsoleArea().isVisible);
-            }
-            System.out.println("-=-=-=-=-=-=-=-=-=-=-=-");
-
         } else { //when "add server" was selected
             System.out.println("asdfdsaf");
         }

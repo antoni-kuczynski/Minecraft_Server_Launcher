@@ -292,7 +292,6 @@ public class ServerConsoleArea extends JPanel {
     public void setTextFromLatestLogFile() throws IOException, InterruptedException {
         if(isServerRunning) {
             File latestLog = new File(ServerDetails.serverPath.getAbsolutePath() + "\\logs\\latest.log");
-            System.out.println(readFileString(latestLog));
             consoleOutput.setText("");
             consoleOutput.append(readFileString(latestLog));
             isVisible = true;
