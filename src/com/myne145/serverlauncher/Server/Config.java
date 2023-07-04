@@ -1,7 +1,7 @@
 package com.myne145.serverlauncher.Server;
 
-import com.myne145.serverlauncher.Enums.AlertType;
-import com.myne145.serverlauncher.Gui.Frame;
+import com.myne145.serverlauncher.Gui.AlertType;
+import com.myne145.serverlauncher.Gui.Window;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class Config {
-    private static final ArrayList<ButtonData> data = new ArrayList<>();
+    private static final ArrayList<MCServer> data = new ArrayList<>();
 
     private static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
@@ -26,7 +26,7 @@ public class Config {
         File serverConfigFile = new File("servers.json");
         if(!serverConfigFile.exists()) {
             if(!serverConfigFile.createNewFile()) {
-                Frame.alert(AlertType.FATAL, "Cannot create config file");
+                Window.alert(AlertType.FATAL, "Cannot create config file");
                 System.exit(1);
             }
             FileWriter configWriter = new FileWriter(serverConfigFile);
@@ -78,10 +78,10 @@ public class Config {
                 serverLaunchArgs = javaArguments;
 
 
-            data.add(new ButtonData(buttonText, new File(pathToButtonIcon), new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime), serverLaunchArgs, jsonIndex));
+            data.add(new MCServer(buttonText, new File(pathToButtonIcon), new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime), serverLaunchArgs, jsonIndex));
         }
     }
-    public static ArrayList<ButtonData> getData() {
+    public static ArrayList<MCServer> getData() {
         return data;
     }
 }

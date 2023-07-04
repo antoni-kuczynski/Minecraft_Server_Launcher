@@ -2,7 +2,6 @@ package com.myne145.serverlauncher.Gui.Charts;
 
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import org.knowm.xchart.*;
-import org.knowm.xchart.style.PieStyler;
 import org.knowm.xchart.style.Styler;
 import oshi.SystemInfo;
 import oshi.hardware.GlobalMemory;
@@ -52,7 +51,7 @@ public class RAMChart extends JPanel {
         chart.addSeries("empty", 100);
         chart.setTitle("RAM Usage");
 
-        SystemMonitorChart.decorateChart(chart);
+        ChartDecorator.decorateChart(chart);
         return chart;
     }
 

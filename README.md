@@ -2,8 +2,8 @@
 
 Features:
 - Allows launching servers by pressing specific buttons.
-- Allows copying a world archive/folder to specified server.
-- Allows you to see server world name (the one saved in level.dat file)
+- Allows copying a world archive/folder to specified MCServer.
+- Allows you to see MCServer world name (the one saved in level.dat file)
 
 Libraries used:
 - commons-io

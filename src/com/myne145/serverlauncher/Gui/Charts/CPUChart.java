@@ -2,7 +2,6 @@ package com.myne145.serverlauncher.Gui.Charts;
 
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import org.knowm.xchart.*;
-import org.knowm.xchart.style.PieStyler;
 import org.knowm.xchart.style.Styler;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -54,7 +53,7 @@ public class CPUChart extends JPanel {
         chart.setTitle("CPU Usage");
 
 
-        SystemMonitorChart.decorateChart(chart);
+        ChartDecorator.decorateChart(chart);
 
         return chart;
     }

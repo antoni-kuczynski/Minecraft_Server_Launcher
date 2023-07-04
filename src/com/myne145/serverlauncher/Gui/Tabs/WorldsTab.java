@@ -1,9 +1,9 @@
 package com.myne145.serverlauncher.Gui.Tabs;
 
-import com.myne145.serverlauncher.CustomJComponents.DirectoryTree;
-import com.myne145.serverlauncher.Enums.AlertType;
-import com.myne145.serverlauncher.Server.ConvertedSize;
-import com.myne145.serverlauncher.SelectedServer.ServerDetails;
+import com.myne145.serverlauncher.Gui.Tabs.Components.DirectoryTree;
+import com.myne145.serverlauncher.Gui.AlertType;
+import com.myne145.serverlauncher.Server.FileSize;
+import com.myne145.serverlauncher.Server.Current.CurrentServerInfo;
 import com.myne145.serverlauncher.Server.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 //import jnafilechooser.api.JnaFileChooser;
@@ -20,8 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 
-import static com.myne145.serverlauncher.Gui.Frame.alert;
-import static com.myne145.serverlauncher.Gui.Frame.getErrorDialogMessage;
+import static com.myne145.serverlauncher.Gui.Window.alert;
+import static com.myne145.serverlauncher.Gui.Window.getErrorDialogMessage;
 
 public class WorldsTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
@@ -48,7 +48,7 @@ public class WorldsTab extends JPanel {
         JLabel dragNDropInfo = new JLabel(" or drag and drop it here.");
         JLabel selectedServerTxt = new JLabel();
         String selServPrefix = "Selected server: ";
-        selectedServerTxt.setText(selServPrefix + ServerDetails.serverName);
+        selectedServerTxt.setText(selServPrefix + CurrentServerInfo.serverName);
         startCopying.setEnabled(false);
         JButton openButton = new JButton("Open Folder");
         openButton.addActionListener(e -> {
@@ -245,7 +245,7 @@ public class WorldsTab extends JPanel {
         add(startCopyingPanel, BorderLayout.PAGE_END);
     }
 
-    private ConvertedSize directorySizeWithConverion(File directory) {
+    private FileSize directorySizeWithConverion(File directory) {
         long SIZE_IN_BYTES = FileUtils.sizeOfDirectory(directory);
         double ONE_KILOBYTE = 1024;
         double ONE_MEGABYTE = 1048576;
@@ -262,10 +262,10 @@ public class WorldsTab extends JPanel {
             finalSize = SIZE_IN_BYTES / ONE_GIGABYTE;
             unitSymbol = "gb";
         }
-        return new ConvertedSize(unitRound.format(finalSize), unitSymbol);
+        return new FileSize(unitRound.format(finalSize), unitSymbol);
     }
     public void setIcons() {
-        directoryTree.setDirectory(ServerDetails.serverPath.getAbsolutePath());
+        directoryTree.setDirectory(CurrentServerInfo.serverPath.getAbsolutePath());
         if(userSelectedWorld != null && isInArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("<html>File: " + userSelectedWorld.getAbsolutePath() +
                     "<br>File size: TODO<br>" + "Extracted size: TODO" + "</html>");
@@ -308,24 +308,24 @@ public class WorldsTab extends JPanel {
         }
 
 
-        if(!new File(ServerDetails.serverWorldPath + "\\icon.png").exists()) {
+        if(!new File(CurrentServerInfo.serverWorldPath + "\\icon.png").exists()) {
             serverWorldIconLabel.setIcon(defaultWorldIcon);
         } else {
-            serverWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(ServerDetails.serverWorldPath + "\\icon.png")
+            serverWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(CurrentServerInfo.serverWorldPath + "\\icon.png")
                     .getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
         }
 
         //size is in bytes
-        if(ServerDetails.serverWorldPath.exists()) {
-            ConvertedSize serverWorldConvertedSize = directorySizeWithConverion(ServerDetails.serverWorldPath);
+        if(CurrentServerInfo.serverWorldPath.exists()) {
+            FileSize serverWorldFileSize = directorySizeWithConverion(CurrentServerInfo.serverWorldPath);
 //            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
-            if(ServerDetails.serverLevelName == null)
-                ServerDetails.serverLevelName = "Level.dat file not found.";
+            if(CurrentServerInfo.serverLevelName == null)
+                CurrentServerInfo.serverLevelName = "Level.dat file not found.";
 
-            String folderNameTemp = ServerDetails.serverWorldPath.getName();
+            String folderNameTemp = CurrentServerInfo.serverWorldPath.getName();
             if(!wasServerPropertiesFound)
                 folderNameTemp = "server.properties file does not exist";
-            serverWorldNameAndStuff.setText("<html> Folder Name: " + folderNameTemp +"<br> Level name: " + ServerDetails.serverLevelName + "<br> Size: " + serverWorldConvertedSize.getText() + "</html>");
+            serverWorldNameAndStuff.setText("<html> Folder Name: " + folderNameTemp +"<br> Level name: " + CurrentServerInfo.serverLevelName + "<br> Size: " + serverWorldFileSize.getText() + "</html>");
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
         }

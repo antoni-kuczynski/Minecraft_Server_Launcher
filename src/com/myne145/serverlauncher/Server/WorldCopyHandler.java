@@ -1,11 +1,11 @@
 package com.myne145.serverlauncher.Server;
 
 import com.myne145.serverlauncher.Gui.Tabs.WorldsTab;
-import com.myne145.serverlauncher.Enums.AlertType;
-import com.myne145.serverlauncher.Gui.Frame;
-import com.myne145.serverlauncher.SelectedServer.NBTParser;
-import com.myne145.serverlauncher.SelectedServer.ServerPropertiesFile;
-import com.myne145.serverlauncher.SelectedServer.ServerDetails;
+import com.myne145.serverlauncher.Gui.AlertType;
+import com.myne145.serverlauncher.Gui.Window;
+import com.myne145.serverlauncher.Server.Current.NBTParser;
+import com.myne145.serverlauncher.Server.Current.ServerPropertiesFile;
+import com.myne145.serverlauncher.Server.Current.CurrentServerInfo;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.*;
 
-import static com.myne145.serverlauncher.Gui.Frame.alert;
-import static com.myne145.serverlauncher.Gui.Frame.getErrorDialogMessage;
+import static com.myne145.serverlauncher.Gui.Window.alert;
+import static com.myne145.serverlauncher.Gui.Window.getErrorDialogMessage;
 
 public class WorldCopyHandler extends Thread {
     private static JProgressBar progressBar = null;
@@ -35,7 +35,7 @@ public class WorldCopyHandler extends Thread {
         ServerPropertiesFile serverPropertiesFile = new ServerPropertiesFile();
         this.worldsTab = worldsTab;
         this.serverWorldName = serverPropertiesFile.getWorldName();
-        this.serverWorldDir = new File(ServerDetails.serverPath.getAbsolutePath() + "\\" + serverWorldName);
+        this.serverWorldDir = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + serverWorldName);
         this.selectedWorld = originalWorldDir;
         WorldCopyHandler.progressBar = progressBar;
         this.copyFilesToServerDir = copyFilesToServerDir;
@@ -143,7 +143,7 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(ServerDetails.serverPath.getAbsolutePath())) {
+        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
             if (!serverWorldDir.exists()) {
                 if (!serverWorldDir.mkdirs())
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
@@ -218,20 +218,20 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
                 }
 
-                File temp = ServerDetails.serverLevelDatFile;
-                ServerDetails.serverLevelDatFile = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat"); //trick the NBTParser into using extracted world's level.dat
+                File temp = CurrentServerInfo.serverLevelDatFile;
+                CurrentServerInfo.serverLevelDatFile = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat"); //trick the NBTParser into using extracted world's level.dat
                 try { //issue #71 fix
                     NBTParser nbtParser = new NBTParser();
                     nbtParser.start();
                     nbtParser.join();
-                    ServerDetails.serverLevelName = nbtParser.getLevelName();
+                    CurrentServerInfo.serverLevelName = nbtParser.getLevelName();
                 } catch (Exception e) {
-                    alert(AlertType.ERROR, Frame.getErrorDialogMessage(e));
+                    alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
                 }
-                ServerDetails.serverLevelDatFile = temp; //restore the original level.dat file location for safety
+                CurrentServerInfo.serverLevelDatFile = temp; //restore the original level.dat file location for safety
             }
-        } else if (selectedWorld.toString().contains(ServerDetails.serverPath.getAbsolutePath())) {
-            Frame.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
+        } else if (selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
+            Window.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         jButtonToDisable.setEnabled(true); //issue #15 fix
         worldsTab.setIcons();

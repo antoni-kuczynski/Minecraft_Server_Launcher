@@ -3,24 +3,24 @@ package com.myne145.serverlauncher.Gui.Tabs;
 import com.myne145.serverlauncher.Gui.Charts.CPUChart;
 import com.myne145.serverlauncher.Gui.Charts.RAMChart;
 import com.myne145.serverlauncher.Gui.ContainerPane;
-import com.myne145.serverlauncher.Gui.ServerConsoleArea;
-import com.myne145.serverlauncher.SelectedServer.ServerDetails;
-import com.myne145.serverlauncher.Server.ButtonData;
+import com.myne145.serverlauncher.Gui.Tabs.Components.ServerConsoleArea;
+import com.myne145.serverlauncher.Server.Current.CurrentServerInfo;
+import com.myne145.serverlauncher.Server.MCServer;
 import com.myne145.serverlauncher.Server.Config;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static com.myne145.serverlauncher.Gui.Frame.SERVER_STATUS_ICON_DIMENSION;
+import static com.myne145.serverlauncher.Gui.Window.SERVER_STATUS_ICON_DIMENSION;
 
 public class ServerConsoleTab extends JPanel {
     public final JButton startServer = new JButton("Start Server");
     public final JButton stopServer = new JButton("Stop Server");
     public final JButton killServer = new JButton("Kill Server");
     private final ContainerPane parentPane;
-    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/running.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/errored.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
+    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
+    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
+    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/server_errored.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
     public final int index;
     private final ServerConsoleArea serverConsoleArea;
     public final CPUChart cpuChart = new CPUChart();
@@ -64,8 +64,8 @@ public class ServerConsoleTab extends JPanel {
         killServer.setEnabled(false);
 
         startServer.addActionListener(e -> {
-            ButtonData serverConfig = Config.getData().get(ServerDetails.serverId - 1);
-            serverConsoleArea.startServer(serverConfig);
+            MCServer MCServerConfig = Config.getData().get(CurrentServerInfo.serverId - 1);
+            serverConsoleArea.startServer(MCServerConfig);
             startServer.setVisible(false);
             stopServer.setVisible(true);
             killServer.setEnabled(true);
