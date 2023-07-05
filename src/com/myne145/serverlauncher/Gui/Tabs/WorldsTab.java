@@ -27,7 +27,7 @@ public class WorldsTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
     private final JLabel selectedWorldIconLabel = new JLabel();
     private final JLabel serverWorldIconLabel = new JLabel();
-    private final JLabel worldNameAndStuffText = new JLabel();
+    private final JLabel worldNameAndStuffText = new JLabel("World File name will appear here.");
     private final JLabel serverWorldNameAndStuff = new JLabel();
     private final JPanel worldPanel = new JPanel(new BorderLayout());
     private final DirectoryTree directoryTree = new DirectoryTree();
@@ -35,11 +35,11 @@ public class WorldsTab extends JPanel {
     private final JButton startCopying = new JButton("Start Copying");
     private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("resources/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
     private final JPanel serverNameAndStuff = new JPanel(new BorderLayout());
-    private static File userSelectedWorld;
-    private static String extractedWorldDir;
+    private File userSelectedWorld;
+    private String extractedWorldDir;
     private boolean isInArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
     private final DecimalFormat unitRound = new DecimalFormat("###.##");
-    public static boolean wasServerPropertiesFound = true;
+    public boolean wasServerPropertiesFound = true;
 
     private final double ONE_GIGABYTE = 1073741824;
 
@@ -117,6 +117,7 @@ public class WorldsTab extends JPanel {
                     File fileToAdd = l.get(l.size() - 1);
 
                     if (WorldCopyHandler.isArchive(fileToAdd)) {
+                        System.out.println(WorldCopyHandler.isArchive(fileToAdd));
                         isInArchiveMode = true;
                         userSelectedWorld = fileToAdd;
                         new WorldCopyHandler(tempPanel, progressBar, userSelectedWorld, false, startCopying).start();
@@ -162,6 +163,7 @@ public class WorldsTab extends JPanel {
 //        JScrollPane directoryTreeScroll = new JScrollPane(directoryTree);
 
         selectedWorldIconLabel.setIcon(defaultWorldIcon);
+        openButton.setPreferredSize(new Dimension(130, 40));
 
         //Panels
         JPanel buttonAndText = new JPanel(new BorderLayout());
@@ -170,6 +172,10 @@ public class WorldsTab extends JPanel {
         JPanel copyingProgress = new JPanel(new BorderLayout());
         JPanel startCopyingBtnPanel = new JPanel(new BorderLayout());
         JPanel titlePanel = new JPanel(new BorderLayout());
+        JPanel addingWorld = new JPanel(new BorderLayout());
+
+
+        Dimension dimension = new Dimension(10, 10);
 
         JLabel title = new JLabel("World Manager");
         title.setFont(new Font("Arial", Font.BOLD, 18));
@@ -178,10 +184,8 @@ public class WorldsTab extends JPanel {
         titlePanel.add(title, BorderLayout.CENTER);
         titlePanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.PAGE_END);
 
-        openButton.setPreferredSize(new Dimension(130, 40));
         separatorBtnTextKinda.add(openButton, BorderLayout.LINE_START);
         separatorBtnTextKinda.add(dragNDropInfo, BorderLayout.CENTER);
-        Dimension dimension = new Dimension(10, 10);
         separatorBtnTextKinda.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
         buttonAndText.add(titlePanel, BorderLayout.PAGE_START);
@@ -202,9 +206,6 @@ public class WorldsTab extends JPanel {
         startCopyingPanel.add(startCopyingBtnPanel, BorderLayout.LINE_END);
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
-        JPanel addingWorld = new JPanel(new BorderLayout());
-
-        worldNameAndStuffText.setText("World File name will appear here.");
 
         JPanel iHateFrontendPanel2 = new JPanel(new BorderLayout());
         iHateFrontendPanel2.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
@@ -213,7 +214,7 @@ public class WorldsTab extends JPanel {
         worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         worldPanel.add(iHateFrontendPanel2, BorderLayout.LINE_START);
         worldPanel.add(Box.createRigidArea(dimension)); //issue #62 fix
-        worldPanel.add(worldNameAndStuffText, BorderLayout.LINE_END);
+        worldPanel.add(worldNameAndStuffText, BorderLayout.CENTER);
         worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
         worldPanel.setBorder(new FlatRoundBorder());
 
@@ -272,6 +273,8 @@ public class WorldsTab extends JPanel {
         return new FileSize(unitRound.format(finalSize), unitSymbol);
     }
     public void setIcons() {
+        if(userSelectedWorld != null)
+            isInArchiveMode = WorldCopyHandler.isArchive(userSelectedWorld);
         directoryTree.setDirectory(CurrentServerInfo.serverPath.getAbsolutePath());
         if(userSelectedWorld != null && isInArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("<html>File: " + userSelectedWorld.getAbsolutePath() +
@@ -330,8 +333,8 @@ public class WorldsTab extends JPanel {
                 CurrentServerInfo.serverLevelName = "Level.dat file not found.";
 
             String folderNameTemp = CurrentServerInfo.serverWorldPath.getName();
-            if(!wasServerPropertiesFound)
-                folderNameTemp = "server.properties file does not exist";
+//            if(!wasServerPropertiesFound)
+//                folderNameTemp = "server.properties file does not exist";
             serverWorldNameAndStuff.setText("<html> Folder Name: " + folderNameTemp +"<br> Level name: " + CurrentServerInfo.serverLevelName + "<br> Size: " + serverWorldFileSize.getText() + "</html>");
         } else {
             serverWorldNameAndStuff.setText("Server world folder does not exist.");
@@ -344,11 +347,11 @@ public class WorldsTab extends JPanel {
         serverNameAndStuff.setBorder(border);
     }
 
-    public static void setExtractedWorldDir(String extractedWorldDir) {
-        WorldsTab.extractedWorldDir = extractedWorldDir;
+    public void setExtractedWorldDir(String extractedWorldDir) {
+        this.extractedWorldDir = extractedWorldDir;
     }
 
-    public static String getExtractedWorldDir() {
+    public String getExtractedWorldDir() {
         return extractedWorldDir;
     }
 }

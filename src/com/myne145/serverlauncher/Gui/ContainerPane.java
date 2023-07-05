@@ -43,6 +43,11 @@ public class ContainerPane extends JTabbedPane {
             setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(CurrentServerInfo.serverId - 1);
+
+        ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(CurrentServerInfo.serverId - 1).getComponentAt(0);
+        selectedConsoleTab.cpuChart.isEnabled = true;
+        selectedConsoleTab.cpuChart.updateChartData();
+
         addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));
     }
 
@@ -50,8 +55,6 @@ public class ContainerPane extends JTabbedPane {
 //        setBackgroundAt(index, Color.RED);
         if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
             ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
-            WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);
-            worldsTab.setIcons();
 
             if(Window.areChartsEnabled)
                 selectedConsoleTab.enableCharts();
@@ -66,11 +69,11 @@ public class ContainerPane extends JTabbedPane {
             };
             new Thread(runnable).start();
 
-            MCServer MCServerConfig = Config.getData().get(index);
+            MCServer mcServerConfig = Config.getData().get(index);
             try {
-                CurrentServerInfo.serverName = MCServerConfig.serverName();
-                CurrentServerInfo.serverPath = MCServerConfig.serverPath();
-                CurrentServerInfo.serverId = MCServerConfig.serverId();
+                CurrentServerInfo.serverName = mcServerConfig.serverName();
+                CurrentServerInfo.serverPath = mcServerConfig.serverPath();
+                CurrentServerInfo.serverId = mcServerConfig.serverId();
                 Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
                 Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
                 new ServerPropertiesFile();
@@ -81,6 +84,9 @@ public class ContainerPane extends JTabbedPane {
             } catch (Exception ex) {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
+
+            WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);
+            worldsTab.setIcons();
 
             for(int i = 0; i < serverTabbedPanes.size(); i++) {
                 ServerConsoleTab c = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);

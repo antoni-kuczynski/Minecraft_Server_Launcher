@@ -21,10 +21,10 @@ public class ServerPropertiesFile {
             worldName = "world";
             CurrentServerInfo.serverWorldPath = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\world");
             CurrentServerInfo.serverLevelDatFile = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
-            WorldsTab.wasServerPropertiesFound = false;
+//            WorldsTab.wasServerPropertiesFound = false;
             return;
         }
-        WorldsTab.wasServerPropertiesFound = true;
+//        WorldsTab.wasServerPropertiesFound = true;
         ArrayList<String> serverPropertiesContent = null;
         try {
             serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());

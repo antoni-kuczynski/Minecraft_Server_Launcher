@@ -27,7 +27,6 @@ public class WorldCopyHandler extends Thread {
     private final File selectedWorld;
     private final File serverWorldDir;
     private final boolean copyFilesToServerDir;
-    public static boolean isInRightClickMode = false;
 
 
     public WorldCopyHandler(WorldsTab worldsTab, JProgressBar progressBar,
@@ -98,13 +97,14 @@ public class WorldCopyHandler extends Thread {
 
         while (zipEntry != null) {
             File newFile = new File(destinationPath, zipEntry.getName());
+            if (extractedDirectory == null) {
+                System.out.println("NEWFILE WHEN NULL: " + newFile.getAbsolutePath());
+                extractedDirectory = newFile.getAbsolutePath();
+            }
             if (zipEntry.isDirectory()) {
                 if(!newFile.mkdirs()) {
                     alert(AlertType.ERROR, "Cannot create a directory.\nWorldCopyHandler.java extractingArchive()");
                     break;
-                }
-                if (extractedDirectory == null) {
-                    extractedDirectory = newFile.getAbsolutePath();
                 }
             } else {
                 newFile.getParentFile().mkdirs();
@@ -118,10 +118,13 @@ public class WorldCopyHandler extends Thread {
                 fos.close();
             }
             zipEntry = zis.getNextEntry();
+            System.out.println("newFile: " + newFile.getAbsolutePath());
+            System.out.println("Extracted directory: " + extractedDirectory);
         }
         zis.closeEntry();
         zis.close();
 
+        System.out.println("FINAL Extracted Directory: " + extractedDirectory);
         jButtonToDisable.setEnabled(true);
         return extractedDirectory;
     }
@@ -140,6 +143,46 @@ public class WorldCopyHandler extends Thread {
         return totalSize;
     }
 
+    private String findWorldDirectory(String dir) { //function should now work most of the times
+        ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
+        ArrayList<String> filenames = new ArrayList<>();
+        for (File f : arr) {
+            filenames.add(f.getName());
+        }
+        File foundLevelDat = new File(dir);
+        boolean containsLevelDat = false;
+        boolean hasDirectory = false;
+        for(File f : arr)
+            if(f.isDirectory())
+                hasDirectory = true;
+        for (File f : arr) {
+            if (f.getName().equals("level.dat") || !hasDirectory) {
+                containsLevelDat = true;
+                foundLevelDat = new File(f.getAbsolutePath());
+            }
+
+        }
+        if(!hasDirectory && !copyFilesToServerDir) {
+            alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
+        }
+        if (containsLevelDat) {
+            return foundLevelDat.getParent();
+        } else {
+            String nextDir = null;
+            for (File f : arr) {
+                if (f.isDirectory()) {
+                    nextDir = f.getAbsolutePath();
+                    break;
+                } else {
+                    nextDir = new File(f.getParent()).getParent(); //for the name of fuck, i dont understand how does that work
+                }
+            }
+            if(!nextDir.equals(dir))
+                return findWorldDirectory(nextDir);
+            else
+                return dir;
+        }
+    }
 
     @Override
     public void run() {
@@ -168,24 +211,26 @@ public class WorldCopyHandler extends Thread {
                 alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
             }
         } else if (isArchive(selectedWorld)) {
-            if (!copyFilesToServerDir || isInRightClickMode) {
+            if (!copyFilesToServerDir) {
                 String extractedDirTemp;
                 try {
                     File dirToDelete = new File(".\\world_temp\\" + selectedWorld.getName());
                     if (dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
                         FileUtils.deleteDirectory(dirToDelete);
                     String temp = extractArchive(selectedWorld.getAbsolutePath(), ".\\world_temp\\" + selectedWorld.getName());
-                    if(temp != null)
+                    if(temp != null) {
                         extractedDirTemp = new File(temp).getParent(); //issue #34 fix by starting at correct directory
-                    else {
+                    } else {
                         alert(AlertType.WARNING, "File is probably not a minecraft world. Continue at your own risk."); //checking if a file is a minecraft world
                         throw new RuntimeException();
                     }
                     File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
-                    WorldsTab.setExtractedWorldDir(extractedDirTemp);
+                    System.out.println("Predicted world dir: " + predictedWorldDir.getAbsolutePath());
+                    System.out.println("Extracted dir temp: " + extractedDirTemp);
+                    worldsTab.setExtractedWorldDir(predictedWorldDir.getAbsolutePath());
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + getErrorDialogMessage(e));
-                    throw new RuntimeException(); //this line's stayin for some reason
+                    throw new RuntimeException();
                 }
                 worldsTab.setIcons();
             }
@@ -196,7 +241,7 @@ public class WorldCopyHandler extends Thread {
                         alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
                 }
 
-                File dir = new File(WorldsTab.getExtractedWorldDir());
+                File dir = new File(worldsTab.getExtractedWorldDir());
                 if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                     try {
                         FileUtils.deleteDirectory(serverWorldDir);
@@ -235,46 +280,5 @@ public class WorldCopyHandler extends Thread {
         }
         jButtonToDisable.setEnabled(true); //issue #15 fix
         worldsTab.setIcons();
-    }
-
-    private String findWorldDirectory(String dir) { //function should now work most of the times
-        ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
-        ArrayList<String> filenames = new ArrayList<>();
-        for (File f : arr) {
-            filenames.add(f.getName());
-        }
-        File foundLevelDat = new File(dir);
-        boolean containsLevelDat = false;
-        boolean hasDirectory = false;
-        for(File f : arr)
-            if(f.isDirectory())
-                hasDirectory = true;
-        for (File f : arr) {
-            if (f.getName().equals("level.dat") || !hasDirectory) {
-                containsLevelDat = true;
-                foundLevelDat = new File(f.getAbsolutePath());
-            }
-
-        }
-        if(!hasDirectory && !copyFilesToServerDir) {
-            alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
-        }
-        if (containsLevelDat) {
-            return foundLevelDat.getParent();
-        } else {
-            String nextDir = null;
-            for (File f : arr) {
-                if (f.isDirectory()) {
-                    nextDir = f.getAbsolutePath();
-                    break;
-                } else {
-                    nextDir = new File(f.getParent()).getParent(); //for the name of fuck, i dont understand how does that work
-                }
-            }
-            if(!nextDir.equals(dir))
-                return findWorldDirectory(nextDir); //fixed the function
-            else
-                return dir;
-        }
     }
 }

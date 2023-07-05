@@ -58,7 +58,7 @@ public class CPUChart extends JPanel {
         return chart;
     }
 
-    private void updateChartData() {
+    public void updateChartData() {
         double cpuLoad = cpu.getSystemCpuLoadBetweenTicks(prevTicks) * 100;
         prevTicks = cpu.getSystemCpuLoadTicks();
         if (cpuLoad != 0) {
