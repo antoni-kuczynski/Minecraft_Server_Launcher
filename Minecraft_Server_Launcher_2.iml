@@ -28,5 +28,6 @@
     <orderEntry type="library" name="knowm.xchart.demo" level="project" />
     <orderEntry type="library" name="openjfx.javafx.base" level="project" />
     <orderEntry type="library" name="openjfx.javafx.swing" level="project" />
+    <orderEntry type="library" name="formdev.flatlaf.extras" level="project" />
   </component>
 </module>
