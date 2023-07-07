@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.myne145.serverlauncher.gui.tabs.AddServerTab;
 import com.myne145.serverlauncher.gui.tabs.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.WorldsTab;
@@ -11,6 +12,7 @@ import com.myne145.serverlauncher.server.Config;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 
 import static com.myne145.serverlauncher.gui.Window.SERVER_STATUS_ICON_DIMENSION;
@@ -35,12 +37,20 @@ public class ContainerPane extends JTabbedPane {
             if(serverName.length() > 25)
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
-            setToolTipTextAt(i, "Offline");
+            if(Config.getData().get(i).serverPath().exists()) {
+                setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+                setToolTipTextAt(i, "Offline");
+            } else {
+                setEnabledAt(i, false);
+                setIconAt(i, new FlatSVGIcon(new File("resources/server_errored.svg")).derive(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION));
+                setToolTipTextAt(i, "Errored - Server file missing");
+            }
         }
+
         addTab("Add server", new AddServerTab());
         setIconAt(getTabCount() - 1, new ImageIcon(new ImageIcon("resources/add_server.png").getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
-        for(int i = 0; i < getTabCount() - 1; i++)
-            setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+//        for(int i = 0; i < getTabCount() - 1; i++)
+//            setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(CurrentServerInfo.serverId - 1);
         onButtonClicked(CurrentServerInfo.serverId - 1);
