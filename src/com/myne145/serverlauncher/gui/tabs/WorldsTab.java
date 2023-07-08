@@ -1,5 +1,7 @@
 package com.myne145.serverlauncher.gui.tabs;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.icons.FlatMenuArrowIcon;
 import com.myne145.serverlauncher.gui.tabs.components.DirectoryTree;
 import com.myne145.serverlauncher.gui.AlertType;
 import com.myne145.serverlauncher.server.FileSize;
@@ -7,6 +9,7 @@ import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 //import jnafilechooser.api.JnaFileChooser;
+import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -54,47 +57,47 @@ public class WorldsTab extends JPanel {
         openButton.addActionListener(e -> {
 
         });
-//        openButton.addActionListener(e -> { //jna file chooser implementation here - issue #42 fixed
-//            JnaFileChooser fileDialog = new JnaFileChooser();
-//            fileDialog.showOpenDialog(null);
-//
-//            File[] filePaths = fileDialog.getSelectedFiles();
-//            String folderPath = "";
-//            if(fileDialog.getCurrentDirectory() != null)
-//                folderPath = fileDialog.getCurrentDirectory().getAbsolutePath();
-//
-//            if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
-//                return;
-//            }
-//
-//            File selectedFile = filePaths[0];
-//
-//            if (WorldCopyHandler.isArchive(selectedFile)) {
-//                userSelectedWorld = selectedFile;
-//                isInArchiveMode = true;
-//                try {
-//                    new WorldCopyHandler(this, progressBar, userSelectedWorld, false, startCopying).start();
-//                } catch (IOException ex) {
-//                    alert(AlertType.ERROR, getErrorDialogMessage(ex));
-//                }
-//            } else {
-//                isInArchiveMode = false;
-//                File folder = new File(folderPath);
-//                //issue #16 fix adding a warning to check for folder's size
-//
-//                if (FileUtils.sizeOfDirectory(folder) < ONE_GIGABYTE) {
-//                    userSelectedWorld = folder;
-//                }
-//                if (FileUtils.sizeOfDirectory(folder) >= ONE_GIGABYTE) {
-//                    if (JOptionPane.showConfirmDialog(null,
-//                            "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
-//                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-//                        userSelectedWorld = folder; //yes option
-//                    }
-//                }
-//            }
-//            setIcons();
-//        });
+        openButton.addActionListener(e -> {
+            JnaFileChooser fileDialog = new JnaFileChooser();
+            fileDialog.showOpenDialog(null);
+
+            File[] filePaths = fileDialog.getSelectedFiles();
+            String folderPath = "";
+            if(fileDialog.getCurrentDirectory() != null)
+                folderPath = fileDialog.getCurrentDirectory().getAbsolutePath();
+
+            if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
+                return;
+            }
+
+            File selectedFile = filePaths[0];
+
+            if (WorldCopyHandler.isArchive(selectedFile)) {
+                userSelectedWorld = selectedFile;
+                isInArchiveMode = true;
+                try {
+                    new WorldCopyHandler(this, progressBar, userSelectedWorld, false, startCopying).start();
+                } catch (IOException ex) {
+                    alert(AlertType.ERROR, getErrorDialogMessage(ex));
+                }
+            } else {
+                isInArchiveMode = false;
+                File folder = new File(folderPath);
+                //issue #16 fix adding a warning to check for folder's size
+
+                if (FileUtils.sizeOfDirectory(folder) < ONE_GIGABYTE) {
+                    userSelectedWorld = folder;
+                }
+                if (FileUtils.sizeOfDirectory(folder) >= ONE_GIGABYTE) {
+                    if (JOptionPane.showConfirmDialog(null,
+                            "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        userSelectedWorld = folder; //yes option
+                    }
+                }
+            }
+            setIcons();
+        });
         setIcons();
         final WorldsTab tempPanel = this;
         TransferHandler transferHandler = new TransferHandler() {
@@ -117,7 +120,6 @@ public class WorldsTab extends JPanel {
                     File fileToAdd = l.get(l.size() - 1);
 
                     if (WorldCopyHandler.isArchive(fileToAdd)) {
-                        System.out.println(WorldCopyHandler.isArchive(fileToAdd));
                         isInArchiveMode = true;
                         userSelectedWorld = fileToAdd;
                         new WorldCopyHandler(tempPanel, progressBar, userSelectedWorld, false, startCopying).start();
@@ -165,6 +167,8 @@ public class WorldsTab extends JPanel {
         selectedWorldIconLabel.setIcon(defaultWorldIcon);
         openButton.setPreferredSize(new Dimension(130, 40));
 
+
+
         //Panels
         JPanel buttonAndText = new JPanel(new BorderLayout());
         JPanel separatorBtnTextKinda = new JPanel(new BorderLayout());
@@ -173,9 +177,18 @@ public class WorldsTab extends JPanel {
         JPanel startCopyingBtnPanel = new JPanel(new BorderLayout());
         JPanel titlePanel = new JPanel(new BorderLayout());
         JPanel addingWorld = new JPanel(new BorderLayout());
+        JPanel arrowPanel = new JPanel(new BorderLayout());
 
 
         Dimension dimension = new Dimension(10, 10);
+
+
+        JLabel arrow = new JLabel();
+        JLabel modeInfo = new JLabel("Copy and replace   ");
+        modeInfo.setFont(new Font("Arial", Font.BOLD, 14));
+        arrow.setIcon(new FlatSVGIcon(new File("resources/arrow.svg")).derive(80,116));
+        arrowPanel.add(modeInfo, BorderLayout.LINE_START);
+        arrowPanel.add(arrow, BorderLayout.CENTER);
 
         JLabel title = new JLabel("World Manager");
         title.setFont(new Font("Arial", Font.BOLD, 18));
@@ -245,7 +258,7 @@ public class WorldsTab extends JPanel {
 
         addingWorld.add(worldPaneUpper, BorderLayout.PAGE_START);
         addingWorld.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-//        addingWorld.add(directoryTreeScroll, BorderLayout.CENTER);
+        addingWorld.add(arrowPanel, BorderLayout.CENTER);
         addingWorld.add(serverPanelBottom, BorderLayout.PAGE_END);
 
         add(buttonAndText, BorderLayout.PAGE_START);

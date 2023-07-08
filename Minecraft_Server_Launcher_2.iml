@@ -29,5 +29,6 @@
     <orderEntry type="library" name="openjfx.javafx.base" level="project" />
     <orderEntry type="library" name="openjfx.javafx.swing" level="project" />
     <orderEntry type="library" name="formdev.flatlaf.extras" level="project" />
+    <orderEntry type="library" name="jnafilechooser-1.1-SNAPSHOT" level="project" />
   </component>
 </module>

@@ -112,7 +112,7 @@ public class ContainerPane extends JTabbedPane {
             }
 
         } else { //when "add server" was selected
-            System.out.println("asdfdsaf");
+
         }
     }
 

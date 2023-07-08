@@ -98,7 +98,6 @@ public class WorldCopyHandler extends Thread {
         while (zipEntry != null) {
             File newFile = new File(destinationPath, zipEntry.getName());
             if (extractedDirectory == null) {
-                System.out.println("NEWFILE WHEN NULL: " + newFile.getAbsolutePath());
                 extractedDirectory = newFile.getAbsolutePath();
             }
             if (zipEntry.isDirectory()) {
@@ -118,13 +117,10 @@ public class WorldCopyHandler extends Thread {
                 fos.close();
             }
             zipEntry = zis.getNextEntry();
-            System.out.println("newFile: " + newFile.getAbsolutePath());
-            System.out.println("Extracted directory: " + extractedDirectory);
         }
         zis.closeEntry();
         zis.close();
 
-        System.out.println("FINAL Extracted Directory: " + extractedDirectory);
         jButtonToDisable.setEnabled(true);
         return extractedDirectory;
     }
@@ -225,8 +221,6 @@ public class WorldCopyHandler extends Thread {
                         throw new RuntimeException();
                     }
                     File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
-                    System.out.println("Predicted world dir: " + predictedWorldDir.getAbsolutePath());
-                    System.out.println("Extracted dir temp: " + extractedDirTemp);
                     worldsTab.setExtractedWorldDir(predictedWorldDir.getAbsolutePath());
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + getErrorDialogMessage(e));

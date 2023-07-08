@@ -221,7 +221,6 @@ public class ServerConsoleArea extends JPanel {
                 serverPIDText.setVisible(false);
             }
             PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());
-            writer.println(command);
             writer.flush();
         }
     }
