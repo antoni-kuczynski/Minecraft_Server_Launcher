@@ -27,12 +27,10 @@ public class ServerConsoleArea extends JPanel {
     private boolean isServerRunning;
     public boolean isServerStopCausedByAButton = false;
     public final JLabel serverPIDText = new JLabel("Process's PID:");
-    private ContainerPane parentPane;
-    private int index;
+    private final ContainerPane parentPane;
+    private final int index;
     private ServerConsoleTab tab;
     public boolean isVisible = false;
-    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/server_errored.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
     private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
     private final Runnable consoleRunner = () -> {
         try {
@@ -78,9 +76,7 @@ public class ServerConsoleArea extends JPanel {
             e.printStackTrace();
         }
     };
-
     private final Thread consoleMainThread = new Thread(consoleRunner);
-    private ProcessBuilder processBuilder;
 
 
     public ServerConsoleArea(ContainerPane parentPane, int index, ServerConsoleTab tab) {
@@ -186,6 +182,7 @@ public class ServerConsoleArea extends JPanel {
         isVisible = true;
         ArrayList<String> command = new ArrayList<>(Arrays.asList("java",
                  "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
+        ProcessBuilder processBuilder;
         try {
             processBuilder = new ProcessBuilder(command);
             processBuilder.directory(MCServer.serverPath());

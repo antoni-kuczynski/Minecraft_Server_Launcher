@@ -62,7 +62,7 @@ public class RAMChart extends JPanel {
 
         chart.updatePieSeries("ram_usage", usedMemoryPercentage);
         chart.getStyler().setSumFormat(String.valueOf(usedMemoryGB).split("\\.")[0] + "." +  String.valueOf(usedMemoryGB).split("\\.")[1].charAt(0) +
-                " / " + (int) Math.ceil(TOTAL_MEMORY_GB) + "GB");
+                " / " + (int) Math.ceil(TOTAL_MEMORY_GB) + "GiB");
         chart.updatePieSeries("empty", 100 - usedMemoryPercentage);
         repaint();  // Repaint the panel to update the chart
     }

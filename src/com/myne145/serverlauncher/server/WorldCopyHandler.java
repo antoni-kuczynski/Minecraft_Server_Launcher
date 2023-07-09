@@ -10,6 +10,8 @@ import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -56,13 +58,14 @@ public class WorldCopyHandler extends Thread {
         for (File sourceFile : Objects.requireNonNull(sourceDir.listFiles())) {
             File destFile = new File(destDir, sourceFile.getName());
 
-            if (sourceFile.isDirectory()) {
+            BasicFileAttributes basicFileAttributes = Files.readAttributes(sourceFile.toPath(), BasicFileAttributes.class);
+            if (basicFileAttributes.isDirectory()) {
                 // Recursively copy subdirectories
                 copyDirectory(sourceFile, destFile);
             } else {
                 // Copy files and update progress bar
                 FileUtils.copyFile(sourceFile, destFile);
-                copiedBytes += sourceFile.length();
+                copiedBytes += basicFileAttributes.size();
                 int progress = (int) Math.round((double) copiedBytes / totalBytes * 100);
                 progressBar.setValue(progress);
             }
@@ -223,7 +226,7 @@ public class WorldCopyHandler extends Thread {
                     File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
                     worldsTab.setExtractedWorldDir(predictedWorldDir.getAbsolutePath());
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot extract file or obtain its directory.\n" + getErrorDialogMessage(e));
+                    alert(AlertType.ERROR, "This kind of world archive is currently not supported.\nTry extracting the archive and copying the world as a folder.\nDetailed error:\n" + getErrorDialogMessage(e));
                     throw new RuntimeException();
                 }
                 worldsTab.setIcons();

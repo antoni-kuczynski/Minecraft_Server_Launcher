@@ -31,7 +31,7 @@ public class NBTParser extends Thread {
         try {
             FileUtils.copyFile(CurrentServerInfo.serverLevelDatFile, pathToCopiedLevelDat);
         } catch (Exception e) {
-            if(!e.toString().contains("The process cannot access the file because it is being used by another process")) //fuck this shit - issue #74 and #73 fixed
+            if(!e.toString().contains("The process cannot access the file because it is being used by another process"))
                 SwingUtilities.invokeLater(() -> alert(AlertType.ERROR, "Cannot copy level.dat file." + getErrorDialogMessage(e))); //issue #61 fix, it was conflicting with ui dispatch thread
         }
         Nbt levelDat = new Nbt();

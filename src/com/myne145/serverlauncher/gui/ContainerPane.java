@@ -1,7 +1,6 @@
 package com.myne145.serverlauncher.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.myne145.serverlauncher.gui.tabs.AddServerTab;
 import com.myne145.serverlauncher.gui.tabs.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.WorldsTab;
 import com.myne145.serverlauncher.server.current.NBTParser;
@@ -27,7 +26,7 @@ public class ContainerPane extends JTabbedPane {
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
-            tabbedPane.addTab("Worlds", new WorldsTab());
+            tabbedPane.addTab("Worlds", new WorldsTab(i));
 //            tabbedPane.setIconAt(0, new FlatSVGIcon(new File("resources/console_icon.svg")).derive(16,16));
             serverTabbedPanes.add(tabbedPane);
         }
@@ -63,7 +62,13 @@ public class ContainerPane extends JTabbedPane {
     }
 
     public void onButtonClicked(int index) {
-//        setBackgroundAt(index, Color.RED);
+        for(int i = 0; i <= getTabCount(); i++) {
+            if(i == index)
+                setBackgroundAt(index, new Color(64, 75, 93));
+            else
+                setBackgroundAt(index, new Color(51, 51, 52));
+        }
+
 //        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
             ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
 
@@ -99,8 +104,8 @@ public class ContainerPane extends JTabbedPane {
             WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);
             worldsTab.setIcons();
 
-            for(int i = 0; i < serverTabbedPanes.size(); i++) {
-                ServerConsoleTab c = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
+            for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
+                ServerConsoleTab c = (ServerConsoleTab) serverTabbedPane.getComponentAt(0);
                 c.getServerConsoleArea().isVisible = false;
             }
 

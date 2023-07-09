@@ -21,7 +21,7 @@ public class ServerConsoleContextMenu extends JPopupMenu {
     private void addPopupMenuItems() {
         copy = new JMenuItem("Copy");
         copy.setEnabled(false);
-        copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         copy.addActionListener(event -> textComponent.copy());
         add(copy);
 
@@ -29,7 +29,7 @@ public class ServerConsoleContextMenu extends JPopupMenu {
 
         selectAll = new JMenuItem("Select All");
         selectAll.setEnabled(false);
-        selectAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        selectAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         selectAll.addActionListener(event -> textComponent.selectAll());
         add(selectAll);
     }

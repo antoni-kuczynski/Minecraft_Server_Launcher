@@ -9,5 +9,4 @@ public class CurrentServerInfo {
     public static String serverLevelName;
     public static File serverLevelDatFile;
     public static int serverId;
-    public static File serverLatestLogFilePath;
 }

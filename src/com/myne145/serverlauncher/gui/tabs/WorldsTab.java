@@ -1,19 +1,16 @@
 package com.myne145.serverlauncher.gui.tabs;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.icons.FlatMenuArrowIcon;
-import com.myne145.serverlauncher.gui.tabs.components.DirectoryTree;
 import com.myne145.serverlauncher.gui.AlertType;
+import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.FileSize;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
-//import jnafilechooser.api.JnaFileChooser;
 import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -32,22 +29,19 @@ public class WorldsTab extends JPanel {
     private final JLabel serverWorldIconLabel = new JLabel();
     private final JLabel worldNameAndStuffText = new JLabel("World File name will appear here.");
     private final JLabel serverWorldNameAndStuff = new JLabel();
-    private final JPanel worldPanel = new JPanel(new BorderLayout());
-    private final DirectoryTree directoryTree = new DirectoryTree();
-    private final FlatRoundBorder border = new FlatRoundBorder();
+    //    private final DirectoryTree directoryTree = new DirectoryTree();
     private final JButton startCopying = new JButton("Start Copying");
     private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("resources/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-    private final JPanel serverNameAndStuff = new JPanel(new BorderLayout());
     private File userSelectedWorld;
     private String extractedWorldDir;
     private boolean isInArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
-    private final DecimalFormat unitRound = new DecimalFormat("###.##");
-    public boolean wasServerPropertiesFound = true;
 
     private final double ONE_GIGABYTE = 1073741824;
 
-    public WorldsTab() {
+    public WorldsTab(int index) {
         super(new BorderLayout());
+        if(!Config.getData().get(index).serverPath().exists())
+            return;
         JLabel dragNDropInfo = new JLabel(" or drag and drop it here.");
         JLabel selectedServerTxt = new JLabel();
         String selServPrefix = "Selected server: ";
@@ -90,7 +84,7 @@ public class WorldsTab extends JPanel {
                 }
                 if (FileUtils.sizeOfDirectory(folder) >= ONE_GIGABYTE) {
                     if (JOptionPane.showConfirmDialog(null,
-                            "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
+                            "Folder that you're trying to copy's size is greater than 1GiB. Do you still want to prooced?", "Warning",
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                         userSelectedWorld = folder; //yes option
                     }
@@ -128,7 +122,7 @@ public class WorldsTab extends JPanel {
                         //issue #16 fix adding a warning to check for folder's size
                         if(FileUtils.sizeOfDirectory(new File(fileToAdd.getParent())) > ONE_GIGABYTE) {
                             if (JOptionPane.showConfirmDialog(null,
-                                    "Folder that you're trying to copy's size is greater than 1GB. Do you still want to prooced?", "Warning",
+                                    "Folder that you're trying to copy's size is greater than 1GiB. Do you still want to prooced?", "Warning",
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
                                 userSelectedWorld = new File(fileToAdd.getParent()); //yes option
                             }
@@ -220,14 +214,16 @@ public class WorldsTab extends JPanel {
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
 
-        JPanel iHateFrontendPanel2 = new JPanel(new BorderLayout());
-        iHateFrontendPanel2.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        iHateFrontendPanel2.add(selectedWorldIconLabel, BorderLayout.CENTER);
+        JPanel worldIconWithSpacing = new JPanel(new BorderLayout());
+        worldIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+        worldIconWithSpacing.add(selectedWorldIconLabel, BorderLayout.CENTER);
+        worldIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
+        JPanel worldPanel = new JPanel(new BorderLayout());
         worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
-        worldPanel.add(iHateFrontendPanel2, BorderLayout.LINE_START);
-        worldPanel.add(Box.createRigidArea(dimension)); //issue #62 fix
+        worldPanel.add(worldIconWithSpacing, BorderLayout.LINE_START);
         worldPanel.add(worldNameAndStuffText, BorderLayout.CENTER);
+        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
         worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
         worldPanel.setBorder(new FlatRoundBorder());
 
@@ -242,18 +238,22 @@ public class WorldsTab extends JPanel {
         serverIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.CENTER); //issue #62 fix for servers
         serverIconWithSpacing.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
 
+        JPanel serverNameAndStuff = new JPanel(new BorderLayout());
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        serverNameAndStuff.add(serverIconWithSpacing, BorderLayout.LINE_END);
+        serverNameAndStuff.add(serverIconWithSpacing, BorderLayout.CENTER);
+        serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
         serverNameAndStuff.setBorder(new FlatRoundBorder());
 
-        JPanel iHateFrontendPanel = new JPanel(new BorderLayout());
-        iHateFrontendPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        iHateFrontendPanel.add(serverNameAndStuff, BorderLayout.CENTER);
+        JPanel serverWorldNameWithSpacing = new JPanel(new BorderLayout());
+        serverWorldNameWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+        serverWorldNameWithSpacing.add(serverNameAndStuff, BorderLayout.CENTER);
 
         JPanel serverPanelBottom = new JPanel(new BorderLayout());
-        serverPanelBottom.add(iHateFrontendPanel, BorderLayout.LINE_START);
+
+
+        serverPanelBottom.add(serverWorldNameWithSpacing, BorderLayout.LINE_START);
         serverPanelBottom.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
         addingWorld.add(worldPaneUpper, BorderLayout.PAGE_START);
@@ -266,29 +266,11 @@ public class WorldsTab extends JPanel {
         add(startCopyingPanel, BorderLayout.PAGE_END);
     }
 
-    private FileSize directorySizeWithConverion(File directory) {
-        long SIZE_IN_BYTES = FileUtils.sizeOfDirectory(directory);
-        double ONE_KILOBYTE = 1024;
-        double ONE_MEGABYTE = 1048576;
 
-        double finalSize = SIZE_IN_BYTES;
-        String unitSymbol = "b";
-        if (SIZE_IN_BYTES >= ONE_KILOBYTE && SIZE_IN_BYTES < ONE_MEGABYTE) {
-            finalSize = SIZE_IN_BYTES / ONE_KILOBYTE;
-            unitSymbol = "kb";
-        } else if (SIZE_IN_BYTES >= ONE_MEGABYTE && SIZE_IN_BYTES < ONE_GIGABYTE) {
-            finalSize = SIZE_IN_BYTES / ONE_MEGABYTE;
-            unitSymbol = "mb";
-        } else if (SIZE_IN_BYTES >= ONE_GIGABYTE) {
-            finalSize = SIZE_IN_BYTES / ONE_GIGABYTE;
-            unitSymbol = "gb";
-        }
-        return new FileSize(unitRound.format(finalSize), unitSymbol);
-    }
     public void setIcons() {
         if(userSelectedWorld != null)
             isInArchiveMode = WorldCopyHandler.isArchive(userSelectedWorld);
-        directoryTree.setDirectory(CurrentServerInfo.serverPath.getAbsolutePath());
+//        directoryTree.setDirectory(CurrentServerInfo.serverPath.getAbsolutePath());
         if(userSelectedWorld != null && isInArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("<html>File: " + userSelectedWorld.getAbsolutePath() +
                     "<br>File size: TODO<br>" + "Extracted size: TODO" + "</html>");
@@ -303,7 +285,7 @@ public class WorldsTab extends JPanel {
                         "..." + tempWorldName.substring(tempWorldName.length() - 9, tempWorldName.length() - 1);
             }
             worldNameAndStuffText.setText("<html>Folder: " + worldToAddTempText +
-                    "<br>Folder size: " + directorySizeWithConverion(userSelectedWorld).getText() + "</html>");
+                    "<br>Folder size: " + FileSize.directorySizeWithConverion(userSelectedWorld).getText() + "</html>");
         }
 
         if(isInArchiveMode && extractedWorldDir != null) {
@@ -339,7 +321,7 @@ public class WorldsTab extends JPanel {
         }
 
         if(CurrentServerInfo.serverWorldPath.exists()) {
-            FileSize serverWorldFileSizeBytes = directorySizeWithConverion(CurrentServerInfo.serverWorldPath);
+            FileSize serverWorldFileSizeBytes = FileSize.directorySizeWithConverion(CurrentServerInfo.serverWorldPath);
 //            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
             if(CurrentServerInfo.serverLevelName == null)
                 CurrentServerInfo.serverLevelName = "Level.dat file not found.";
@@ -353,12 +335,6 @@ public class WorldsTab extends JPanel {
         }
 
     }
-
-    public void setBorders() {
-        worldPanel.setBorder(border); //issue #5 fixed
-        serverNameAndStuff.setBorder(border);
-    }
-
     public void setExtractedWorldDir(String extractedWorldDir) {
         this.extractedWorldDir = extractedWorldDir;
     }

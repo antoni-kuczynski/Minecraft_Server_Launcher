@@ -18,18 +18,15 @@ public class DirectoryTree extends JTree {
     }
 
     public void setDirectory(String path) {
-        String selectedPath = path; //lol
         File file = new File(path);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(file);
         setModel(new DefaultTreeModel(root));
         addNodes(root, file);
         expandAllNodes();
 
-        if (selectedPath != null) {
-            TreePath pathToSelect = findPathToNode(selectedPath);
-            if (pathToSelect != null) {
-                setSelectionPath(pathToSelect);
-            }
+        TreePath pathToSelect = findPathToNode(path);
+        if (pathToSelect != null) {
+            setSelectionPath(pathToSelect);
         }
     }
 
