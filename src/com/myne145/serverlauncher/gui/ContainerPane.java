@@ -47,8 +47,8 @@ public class ContainerPane extends JTabbedPane {
             }
         }
 
-        addTab("Add server", new AddServerTab());
-        setIconAt(getTabCount() - 1, new ImageIcon(new ImageIcon("resources/add_server.png").getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
+//        addTab("Add server", new AddServerTab());
+//        setIconAt(getTabCount() - 1, new ImageIcon(new ImageIcon("resources/add_server.png").getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
 //        for(int i = 0; i < getTabCount() - 1; i++)
 //            setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -64,7 +64,7 @@ public class ContainerPane extends JTabbedPane {
 
     public void onButtonClicked(int index) {
 //        setBackgroundAt(index, Color.RED);
-        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
+//        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
             ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
 
             if(Window.areChartsEnabled)
@@ -111,9 +111,9 @@ public class ContainerPane extends JTabbedPane {
                 throw new RuntimeException();
             }
 
-        } else { //when "add server" was selected
-
-        }
+//        } else { //when "add server" was selected
+//
+//        }
     }
 
     public void setChartsVisibility(boolean isVisible) {

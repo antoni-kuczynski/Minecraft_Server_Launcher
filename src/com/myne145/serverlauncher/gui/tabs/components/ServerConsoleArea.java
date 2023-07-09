@@ -57,13 +57,15 @@ public class ServerConsoleArea extends JPanel {
                     while (true) {
                         line = bufferedReader.readLine();
                         if (line == null) {
-                            if (isServerRunning) {
+                            if(isServerRunning) {
                                 inputStream = processes.get(processes.size() - 1).getInputStream();
                                 reader = new InputStreamReader(inputStream);
                                 bufferedReader = new BufferedReader(reader);
                                 howManyTimesLineWasNull++;
-                                if (howManyTimesLineWasNull > 50) {
-                                    // Rest of your code here...
+                                if(howManyTimesLineWasNull > 50) { //assuming that a server has been stopped
+                                    isServerRunning = false;
+                                    howManyTimesLineWasNull = 0;
+                                    processes.get(processes.size() - 1).destroy();
                                 }
                             }
                         } else {
@@ -177,9 +179,11 @@ public class ServerConsoleArea extends JPanel {
             e.printStackTrace();
         }
         parentPane.setToolTipTextAt(index, "Offline");
+        isVisible = false;
     }
 
     public void startServer(MCServer MCServer) {
+        isVisible = true;
         ArrayList<String> command = new ArrayList<>(Arrays.asList("java",
                  "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
         try {
