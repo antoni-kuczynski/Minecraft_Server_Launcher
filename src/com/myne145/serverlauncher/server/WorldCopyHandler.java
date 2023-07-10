@@ -212,23 +212,25 @@ public class WorldCopyHandler extends Thread {
         } else if (isArchive(selectedWorld)) {
             if (!copyFilesToServerDir) {
                 String extractedDirTemp;
+                File predictedWorldDir;
                 try {
                     File dirToDelete = new File(".\\world_temp\\" + selectedWorld.getName());
                     if (dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
                         FileUtils.deleteDirectory(dirToDelete);
                     String temp = extractArchive(selectedWorld.getAbsolutePath(), ".\\world_temp\\" + selectedWorld.getName());
                     if(temp != null) {
-                        extractedDirTemp = new File(temp).getParent(); //issue #34 fix by starting at correct directory
+                        extractedDirTemp = new File(temp).getParent();
                     } else {
                         alert(AlertType.WARNING, "File is probably not a minecraft world. Continue at your own risk."); //checking if a file is a minecraft world
                         throw new RuntimeException();
                     }
-                    File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
+                    predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
                     worldsTab.setExtractedWorldDir(predictedWorldDir.getAbsolutePath());
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "This kind of world archive is currently not supported.\nTry extracting the archive and copying the world as a folder.\nDetailed error:\n" + getErrorDialogMessage(e));
                     throw new RuntimeException();
                 }
+                worldsTab.extractedWorldSize = FileSize.directorySizeWithConversion(new File(extractedDirTemp));
                 worldsTab.setIcons();
             }
             if (copyFilesToServerDir) {

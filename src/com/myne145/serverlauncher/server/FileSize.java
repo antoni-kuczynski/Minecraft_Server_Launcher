@@ -9,17 +9,25 @@ public class FileSize {
     private final String size;
     private final String unit;
     private static final DecimalFormat unitRound = new DecimalFormat("###.##");
+    private static final double ONE_KILOBYTE = 1024;
+    private static final double ONE_MEGABYTE = 1048576;
 
     private FileSize(String size, String unit) {
         this.size = size;
         this.unit = unit;
     }
 
-    public static FileSize directorySizeWithConverion(File directory) {
+    public static FileSize directorySizeWithConversion(File directory) {
         long SIZE_IN_BYTES = FileUtils.sizeOfDirectory(directory);
-        double ONE_KILOBYTE = 1024;
-        double ONE_MEGABYTE = 1048576;
+        return convertSize(SIZE_IN_BYTES);
+    }
 
+    public static FileSize fileSizeWithConversion(File file) {
+        long SIZE_IN_BYTES = FileUtils.sizeOf(file);
+        return convertSize(SIZE_IN_BYTES);
+    }
+
+    private static FileSize convertSize(long SIZE_IN_BYTES) {
         double finalSize = SIZE_IN_BYTES;
         String unitSymbol = "b";
         double ONE_GIGABYTE = 1073741824;

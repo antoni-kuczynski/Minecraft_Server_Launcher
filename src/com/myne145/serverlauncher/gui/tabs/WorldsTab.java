@@ -35,6 +35,7 @@ public class WorldsTab extends JPanel {
     private File userSelectedWorld;
     private String extractedWorldDir;
     private boolean isInArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
+    public FileSize extractedWorldSize;
 
     private final double ONE_GIGABYTE = 1073741824;
 
@@ -275,7 +276,7 @@ public class WorldsTab extends JPanel {
 //        directoryTree.setDirectory(CurrentServerInfo.serverPath.getAbsolutePath());
         if(userSelectedWorld != null && isInArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("<html>File: " + userSelectedWorld.getAbsolutePath() +
-                    "<br>File size: TODO<br>" + "Extracted size: TODO" + "</html>");
+                    "<br>Size: " + FileSize.fileSizeWithConversion(userSelectedWorld).getText() + "<br>Extracted size: " + extractedWorldSize.getText() + "</html>");
         } else if(!isInArchiveMode && userSelectedWorld != null) {
             String worldToAddTempText = userSelectedWorld.getAbsolutePath();
             if(worldToAddTempText.length() > 50 && userSelectedWorld.getName().length() < 25) { //issue #77 fix by adding ... to the path
@@ -287,7 +288,7 @@ public class WorldsTab extends JPanel {
                         "..." + tempWorldName.substring(tempWorldName.length() - 9, tempWorldName.length() - 1);
             }
             worldNameAndStuffText.setText("<html>Folder: " + worldToAddTempText +
-                    "<br>Folder size: " + FileSize.directorySizeWithConverion(userSelectedWorld).getText() + "</html>");
+                    "<br>Size: " + FileSize.directorySizeWithConversion(userSelectedWorld).getText() + "</html>");
         }
 
         if(isInArchiveMode && extractedWorldDir != null) {
@@ -323,7 +324,7 @@ public class WorldsTab extends JPanel {
         }
 
         if(CurrentServerInfo.serverWorldPath.exists()) {
-            FileSize serverWorldFileSizeBytes = FileSize.directorySizeWithConverion(CurrentServerInfo.serverWorldPath);
+            FileSize serverWorldFileSizeBytes = FileSize.directorySizeWithConversion(CurrentServerInfo.serverWorldPath);
 //            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
             if(CurrentServerInfo.serverLevelName == null)
                 CurrentServerInfo.serverLevelName = "Level.dat file not found.";

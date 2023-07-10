@@ -72,7 +72,7 @@ public class Window extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         JMenu viewMenu = new JMenu("View");
-        JCheckBoxMenuItem showCharts = new JCheckBoxMenuItem("Show usage graphs");
+        JCheckBoxMenuItem showCharts = new JCheckBoxMenuItem("Show CPU & RAM usage graphs");
 
         JMenu serverButtonsScale = new JMenu("Server buttons scale");
         ButtonGroup buttonGroup = new ButtonGroup();
