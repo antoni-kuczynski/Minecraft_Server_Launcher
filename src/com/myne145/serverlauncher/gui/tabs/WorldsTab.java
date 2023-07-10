@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.gui.tabs;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.myne145.serverlauncher.gui.AlertType;
+import com.myne145.serverlauncher.gui.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.FileSize;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
@@ -36,11 +37,13 @@ public class WorldsTab extends JPanel {
     private String extractedWorldDir;
     private boolean isInArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
     public FileSize extractedWorldSize;
+    private final WorldsTab worldsTab;
 
     private final double ONE_GIGABYTE = 1073741824;
 
     public WorldsTab(int index) {
         super(new BorderLayout());
+        worldsTab = this;
         if(!Config.getData().get(index).serverPath().exists())
             return;
         JLabel dragNDropInfo = new JLabel(" or drag and drop it here.");
@@ -50,48 +53,52 @@ public class WorldsTab extends JPanel {
         startCopying.setEnabled(false);
         JButton openButton = new JButton("Open Folder");
         openButton.addActionListener(e -> {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    JnaFileChooser fileDialog = new JnaFileChooser();
+                    fileDialog.showOpenDialog(Window.getWindow());
 
-        });
-        openButton.addActionListener(e -> {
-            JnaFileChooser fileDialog = new JnaFileChooser();
-            fileDialog.showOpenDialog(null);
+                    File[] filePaths = fileDialog.getSelectedFiles();
+                    String folderPath = "";
+                    if(fileDialog.getCurrentDirectory() != null)
+                        folderPath = fileDialog.getCurrentDirectory().getAbsolutePath();
 
-            File[] filePaths = fileDialog.getSelectedFiles();
-            String folderPath = "";
-            if(fileDialog.getCurrentDirectory() != null)
-                folderPath = fileDialog.getCurrentDirectory().getAbsolutePath();
-
-            if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
-                return;
-            }
-
-            File selectedFile = filePaths[0];
-
-            if (WorldCopyHandler.isArchive(selectedFile)) {
-                userSelectedWorld = selectedFile;
-                isInArchiveMode = true;
-                try {
-                    new WorldCopyHandler(this, progressBar, userSelectedWorld, false, startCopying).start();
-                } catch (IOException ex) {
-                    alert(AlertType.ERROR, getErrorDialogMessage(ex));
-                }
-            } else {
-                isInArchiveMode = false;
-                File folder = new File(folderPath);
-                //issue #16 fix adding a warning to check for folder's size
-
-                if (FileUtils.sizeOfDirectory(folder) < ONE_GIGABYTE) {
-                    userSelectedWorld = folder;
-                }
-                if (FileUtils.sizeOfDirectory(folder) >= ONE_GIGABYTE) {
-                    if (JOptionPane.showConfirmDialog(null,
-                            "Folder that you're trying to copy's size is greater than 1GiB. Do you still want to prooced?", "Warning",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        userSelectedWorld = folder; //yes option
+                    if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
+                        return;
                     }
+
+                    File selectedFile = filePaths[0];
+
+                    if (WorldCopyHandler.isArchive(selectedFile)) {
+                        userSelectedWorld = selectedFile;
+                        isInArchiveMode = true;
+                        try {
+                            new WorldCopyHandler(worldsTab, progressBar, userSelectedWorld, false, startCopying).start();
+                        } catch (IOException ex) {
+                            alert(AlertType.ERROR, getErrorDialogMessage(ex));
+                        }
+                    } else {
+                        isInArchiveMode = false;
+                        File folder = new File(folderPath);
+                        //issue #16 fix adding a warning to check for folder's size
+
+                        if (FileUtils.sizeOfDirectory(folder) < ONE_GIGABYTE) {
+                            userSelectedWorld = folder;
+                        }
+                        if (FileUtils.sizeOfDirectory(folder) >= ONE_GIGABYTE) {
+                            if (JOptionPane.showConfirmDialog(null,
+                                    "Folder that you're trying to copy's size is greater than 1GiB. Do you still want to prooced?", "Warning",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                                userSelectedWorld = folder; //yes option
+                            }
+                        }
+                    }
+                    setIcons();
                 }
-            }
-            setIcons();
+            };
+            new Thread(runnable).start();
+
         });
         setIcons();
         final WorldsTab tempPanel = this;
