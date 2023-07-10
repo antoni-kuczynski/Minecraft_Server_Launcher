@@ -271,12 +271,15 @@ public class WorldsTab extends JPanel {
 
 
     public void setIcons() {
+        String extractedWorldSizeText = "Can't obtain world's size";
+        if(extractedWorldSize != null)
+            extractedWorldSizeText = extractedWorldSize.getText();
         if(userSelectedWorld != null)
             isInArchiveMode = WorldCopyHandler.isArchive(userSelectedWorld);
 //        directoryTree.setDirectory(CurrentServerInfo.serverPath.getAbsolutePath());
         if(userSelectedWorld != null && isInArchiveMode) { //issue #7 fix
             worldNameAndStuffText.setText("<html>File: " + userSelectedWorld.getAbsolutePath() +
-                    "<br>Size: " + FileSize.fileSizeWithConversion(userSelectedWorld).getText() + "<br>Extracted size: " + extractedWorldSize.getText() + "</html>");
+                    "<br>Size: " + FileSize.fileSizeWithConversion(userSelectedWorld).getText() + "<br>Extracted size: " + extractedWorldSizeText + "</html>");
         } else if(!isInArchiveMode && userSelectedWorld != null) {
             String worldToAddTempText = userSelectedWorld.getAbsolutePath();
             if(worldToAddTempText.length() > 50 && userSelectedWorld.getName().length() < 25) { //issue #77 fix by adding ... to the path

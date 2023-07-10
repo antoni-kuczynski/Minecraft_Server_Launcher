@@ -38,7 +38,7 @@ public class Window extends JFrame {
     public Window() throws Exception {
         // Set up the JFrame
         setIconImage(new ImageIcon("resources/app_icon.png").getImage());
-        setTitle("Minecraft Server Launcher V2");
+        setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         SERVER_STATUS_ICON_DIMENSION = userValues.getInt(PREFS_SERVER_ICONS_SCALE,  32); //this needs to be here cuz size needs to be loaded before actually loading the icons
@@ -238,7 +238,7 @@ public class Window extends JFrame {
                 else
                     tempFile.delete();
             } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
+//                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }
     }
@@ -249,7 +249,7 @@ public class Window extends JFrame {
 
     public static void main(String[] args) throws Exception {
         Config.createConfig();
-        InputStream inputStream = new FileInputStream("arc-theme.theme.json");
+        InputStream inputStream = new FileInputStream("resources/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
 
         SwingUtilities.invokeLater(() -> {
