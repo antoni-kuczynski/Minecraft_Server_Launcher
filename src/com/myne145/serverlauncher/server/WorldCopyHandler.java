@@ -9,6 +9,7 @@ import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -29,6 +30,7 @@ public class WorldCopyHandler extends Thread {
     private final File selectedWorld;
     private final File serverWorldDir;
     private final boolean copyFilesToServerDir;
+    private static final Taskbar taskbar = Taskbar.getTaskbar();
 
 
     public WorldCopyHandler(WorldsTab worldsTab, JProgressBar progressBar,
@@ -68,8 +70,11 @@ public class WorldCopyHandler extends Thread {
                 copiedBytes += basicFileAttributes.size();
                 int progress = (int) Math.round((double) copiedBytes / totalBytes * 100);
                 progressBar.setValue(progress);
+                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.INDETERMINATE);
+                taskbar.setWindowProgressValue(Window.getWindow(), 100);
             }
         }
+        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
     }
 
     public static boolean isArchive(File file) {
@@ -93,6 +98,8 @@ public class WorldCopyHandler extends Thread {
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
+        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.NORMAL);
+
 
         String extractedDirectory = null;
         long totalSize = getTotalSize(archivePath);
@@ -116,6 +123,7 @@ public class WorldCopyHandler extends Thread {
                     fos.write(buffer, 0, len);
                     extractedSize += len;
                     progressBar.setValue((int) (extractedSize * 100 / totalSize)); // Set progress bar value based on the extracted size
+                    taskbar.setWindowProgressValue( Window.getWindow(), (int) (extractedSize * 100 / totalSize)); //same for taskbar
                 }
                 fos.close();
             }
@@ -125,6 +133,7 @@ public class WorldCopyHandler extends Thread {
         zis.close();
 
         jButtonToDisable.setEnabled(true);
+        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
         return extractedDirectory;
     }
 

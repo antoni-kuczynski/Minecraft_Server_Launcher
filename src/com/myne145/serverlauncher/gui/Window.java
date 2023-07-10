@@ -32,6 +32,8 @@ public class Window extends JFrame {
     public static Preferences userValues = Preferences.userNodeForPackage(Window.class);
     public static boolean areChartsEnabled;
     public static int SERVER_STATUS_ICON_DIMENSION;
+    private static Window window;
+    private final static Taskbar taskbar = Taskbar.getTaskbar();
 
     public Window() throws Exception {
         // Set up the JFrame
@@ -196,10 +198,13 @@ public class Window extends JFrame {
                 clearTempDirectory();
             }
         });
+        window = this;
     }
 
     public static String getErrorDialogMessage(Exception e) {
         Toolkit.getDefaultToolkit().beep();
+        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
+        taskbar.setWindowProgressValue(Window.getWindow(), 100);
         StringBuilder errorMessage = new StringBuilder();
         errorMessage.append(e).append("\n");
         errorMessage.append("Caused by:\n");
@@ -218,6 +223,7 @@ public class Window extends JFrame {
             case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
             case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
         }
+        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
     }
 
     private static void clearTempDirectory() {
@@ -235,6 +241,10 @@ public class Window extends JFrame {
                 alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }
+    }
+
+    public static Window getWindow() {
+        return window;
     }
 
     public static void main(String[] args) throws Exception {
