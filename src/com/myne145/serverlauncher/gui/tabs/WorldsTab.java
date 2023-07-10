@@ -119,16 +119,18 @@ public class WorldsTab extends JPanel {
                         new WorldCopyHandler(tempPanel, progressBar, userSelectedWorld, false, startCopying).start();
                     } else {
                         isInArchiveMode = false;
-                        //issue #16 fix adding a warning to check for folder's size
-//                        if(FileUtils.sizeOfDirectory(new File(fileToAdd.getParent())) > ONE_GIGABYTE) {
-//                            if (JOptionPane.showConfirmDialog(null,
-//                                    "Folder that you're trying to copy's size is greater than 1GiB. Do you still want to prooced?", "Warning",
-//                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-//                                userSelectedWorld = new File(fileToAdd.getParent()); //yes option
-//                            }
-//                        } else { //if file is less than 1gb
+                        if(fileToAdd.isFile()) {
+                            fileToAdd = new File(fileToAdd.getParent());
+                        }
+                        if(FileUtils.sizeOfDirectory(fileToAdd) > ONE_GIGABYTE) {
+                            if (JOptionPane.showConfirmDialog(null,
+                                    "Folder that you're trying to copy's size is greater than 1GiB. Do you still want to prooced?", "Warning",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                                userSelectedWorld = fileToAdd; //yes option
+                            }
+                        } else { //if file is less than 1gb
                             userSelectedWorld = fileToAdd;
-//                        }
+                        }
 
                     }
                     setIcons();
