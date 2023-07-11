@@ -171,44 +171,75 @@ public class WorldsTab extends JPanel {
         selectedWorldIconLabel.setIcon(defaultWorldIcon);
         openButton.setPreferredSize(new Dimension(130, 40));
 
-
+        Dimension dimension = new Dimension(10, 10);
 
         //Panels
+        JPanel titlePanel = new JPanel(new BorderLayout());
+        JPanel openButtonInCorrectPlacement = new JPanel(new BorderLayout());
         JPanel buttonAndText = new JPanel(new BorderLayout());
-        JPanel separatorBtnTextKinda = new JPanel(new BorderLayout());
+        JPanel worldIconWithSpacing = new JPanel(new BorderLayout());
+        JPanel worldPanel = new JPanel(new BorderLayout());
+
+
+
         JPanel startCopyingPanel = new JPanel(new BorderLayout());
         JPanel copyingProgress = new JPanel(new BorderLayout());
         JPanel startCopyingBtnPanel = new JPanel(new BorderLayout());
-        JPanel titlePanel = new JPanel(new BorderLayout());
+
         JPanel addingWorld = new JPanel(new BorderLayout());
         JPanel arrowPanel = new JPanel(new BorderLayout());
+        JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
 
-        Dimension dimension = new Dimension(10, 10);
+        JPanel worldPaneUpper = new JPanel(new BorderLayout());
+        JPanel serverIconWithSpacing = new JPanel(new BorderLayout());
+        JPanel serverNameAndStuff = new JPanel(new BorderLayout());
+        JPanel serverWorldNameWithSpacing = new JPanel(new BorderLayout());
+        JPanel serverPanelBottom = new JPanel(new BorderLayout());
+        JPanel worldAndArrowPanel = new JPanel(new BorderLayout());
 
-
+        JButton refreshButton = new JButton("Refresh");
+        JLabel title = new JLabel("World Manager");
         JLabel arrow = new JLabel();
         JLabel modeInfo = new JLabel("    Copy and replace   ");
-        modeInfo.setFont(new Font("Arial", Font.BOLD, 14));
-        arrow.setIcon(new FlatSVGIcon(new File("resources/arrow.svg")).derive(80,116));
-        arrowPanel.add(modeInfo, BorderLayout.LINE_START);
-        arrowPanel.add(arrow, BorderLayout.CENTER);
 
-        JLabel title = new JLabel("World Manager");
+        modeInfo.setFont(new Font("Arial", Font.BOLD, 14));
         title.setFont(new Font("Arial", Font.BOLD, 18));
+        arrow.setIcon(new FlatSVGIcon(new File("resources/arrow.svg")).derive(80,116));
+
+
         titlePanel.add(Box.createRigidArea(new Dimension(5,5)), BorderLayout.PAGE_START);
         titlePanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.LINE_START);
         titlePanel.add(title, BorderLayout.CENTER);
         titlePanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.PAGE_END);
 
-        separatorBtnTextKinda.add(openButton, BorderLayout.LINE_START);
-        separatorBtnTextKinda.add(dragNDropInfo, BorderLayout.CENTER);
-        separatorBtnTextKinda.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
+        openButtonInCorrectPlacement.add(openButton, BorderLayout.LINE_START);
 
         buttonAndText.add(titlePanel, BorderLayout.PAGE_START);
         buttonAndText.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        buttonAndText.add(separatorBtnTextKinda, BorderLayout.CENTER);
+        buttonAndText.add(openButtonInCorrectPlacement, BorderLayout.CENTER);
         buttonAndText.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.PAGE_END);
+
+
+
+
+        worldIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+        worldIconWithSpacing.add(selectedWorldIconLabel, BorderLayout.CENTER);
+        worldIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
+
+        worldPanel.setBorder(new FlatRoundBorder());
+        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
+        worldPanel.add(worldIconWithSpacing, BorderLayout.LINE_START);
+        worldPanel.add(worldNameAndStuffText, BorderLayout.CENTER);
+        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
+        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
+
+
+        arrowPanel.add(modeInfo, BorderLayout.LINE_START);
+        arrowPanel.add(arrow, BorderLayout.CENTER);
+
+
+
 
         copyingProgress.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         copyingProgress.add(Box.createRigidArea(new Dimension(10,5)), BorderLayout.LINE_START);
@@ -220,36 +251,31 @@ public class WorldsTab extends JPanel {
         startCopyingBtnPanel.add(startCopying, BorderLayout.CENTER);
         startCopyingBtnPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
-        startCopyingPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+
+
+        refreshButtonWithSpacing.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.LINE_START);
+        refreshButtonWithSpacing.add(refreshButton, BorderLayout.CENTER);
+
+
+        startCopyingPanel.add(refreshButtonWithSpacing, BorderLayout.LINE_START);
         startCopyingPanel.add(startCopyingBtnPanel, BorderLayout.LINE_END);
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
 
-        JPanel worldIconWithSpacing = new JPanel(new BorderLayout());
-        worldIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        worldIconWithSpacing.add(selectedWorldIconLabel, BorderLayout.CENTER);
-        worldIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
-        JPanel worldPanel = new JPanel(new BorderLayout());
-        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
-        worldPanel.add(worldIconWithSpacing, BorderLayout.LINE_START);
-        worldPanel.add(worldNameAndStuffText, BorderLayout.CENTER);
-        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
-        worldPanel.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
-        worldPanel.setBorder(new FlatRoundBorder());
 
-        JPanel worldPaneUpper = new JPanel(new BorderLayout());
+
+
         worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         worldPaneUpper.add(worldPanel, BorderLayout.CENTER);
         worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
 
-        JPanel serverIconWithSpacing = new JPanel(new BorderLayout());
         serverIconWithSpacing.add(serverWorldIconLabel, BorderLayout.LINE_START);
         serverIconWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.CENTER); //issue #62 fix for servers
         serverIconWithSpacing.add(serverWorldNameAndStuff, BorderLayout.LINE_END);
 
-        JPanel serverNameAndStuff = new JPanel(new BorderLayout());
+
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         serverNameAndStuff.add(serverIconWithSpacing, BorderLayout.CENTER);
@@ -257,17 +283,17 @@ public class WorldsTab extends JPanel {
         serverNameAndStuff.add(Box.createRigidArea(dimension), BorderLayout.PAGE_END);
         serverNameAndStuff.setBorder(new FlatRoundBorder());
 
-        JPanel serverWorldNameWithSpacing = new JPanel(new BorderLayout());
+
         serverWorldNameWithSpacing.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         serverWorldNameWithSpacing.add(serverNameAndStuff, BorderLayout.CENTER);
 
-        JPanel serverPanelBottom = new JPanel(new BorderLayout());
+
 
 
         serverPanelBottom.add(serverWorldNameWithSpacing, BorderLayout.LINE_START);
         serverPanelBottom.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
-        JPanel worldAndArrowPanel = new JPanel(new BorderLayout());
+
         worldAndArrowPanel.add(worldPaneUpper, BorderLayout.PAGE_START);
 //        worldAndArrowPanel.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.CENTER);
         worldAndArrowPanel.add(arrowPanel, BorderLayout.CENTER);
