@@ -262,10 +262,6 @@ public class WorldsTab extends JPanel {
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
 
-
-
-
-
         worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         worldPaneUpper.add(worldPanel, BorderLayout.CENTER);
         worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
