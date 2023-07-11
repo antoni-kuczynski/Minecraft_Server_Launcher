@@ -5,7 +5,7 @@ import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerPropertiesFile;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
-import com.myne145.serverlauncher.server.FileOpener;
+import com.myne145.serverlauncher.server.DesktopOpener;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -159,9 +159,9 @@ public class Window extends JFrame {
             }
         });
 
-        openConfigFile.addActionListener(e -> FileOpener.openConfigFile());
+        openConfigFile.addActionListener(e -> DesktopOpener.openConfigFile());
 
-        openServerFolder.addActionListener(e -> FileOpener.openServerFolder());
+        openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder());
 
         // Save the window position to user preferences when the JFrame is closed
         addWindowListener(new WindowAdapter() {

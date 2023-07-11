@@ -188,7 +188,7 @@ public class WorldsTab extends JPanel {
 
 
         JLabel arrow = new JLabel();
-        JLabel modeInfo = new JLabel("Copy and replace   ");
+        JLabel modeInfo = new JLabel("    Copy and replace   ");
         modeInfo.setFont(new Font("Arial", Font.BOLD, 14));
         arrow.setIcon(new FlatSVGIcon(new File("resources/arrow.svg")).derive(80,116));
         arrowPanel.add(modeInfo, BorderLayout.LINE_START);
@@ -208,6 +208,7 @@ public class WorldsTab extends JPanel {
         buttonAndText.add(titlePanel, BorderLayout.PAGE_START);
         buttonAndText.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         buttonAndText.add(separatorBtnTextKinda, BorderLayout.CENTER);
+        buttonAndText.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.PAGE_END);
 
         copyingProgress.add(Box.createRigidArea(dimension), BorderLayout.PAGE_START);
         copyingProgress.add(Box.createRigidArea(new Dimension(10,5)), BorderLayout.LINE_START);
@@ -266,13 +267,24 @@ public class WorldsTab extends JPanel {
         serverPanelBottom.add(serverWorldNameWithSpacing, BorderLayout.LINE_START);
         serverPanelBottom.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
 
-        addingWorld.add(worldPaneUpper, BorderLayout.PAGE_START);
-        addingWorld.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
-        addingWorld.add(arrowPanel, BorderLayout.CENTER);
-        addingWorld.add(serverPanelBottom, BorderLayout.PAGE_END);
+        JPanel worldAndArrowPanel = new JPanel(new BorderLayout());
+        worldAndArrowPanel.add(worldPaneUpper, BorderLayout.PAGE_START);
+//        worldAndArrowPanel.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.CENTER);
+        worldAndArrowPanel.add(arrowPanel, BorderLayout.CENTER);
+        worldAndArrowPanel.add(serverPanelBottom, BorderLayout.PAGE_END);
 
-        add(buttonAndText, BorderLayout.PAGE_START);
-        add(addingWorld, BorderLayout.LINE_START);
+
+//        addingWorld.add(worldAndArrowPanel, BorderLayout.CENTER);
+//        addingWorld.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
+//        addingWorld.add(arrowPanel, BorderLayout.CENTER);
+//        addingWorld.add(serverPanelBottom, BorderLayout.PAGE_END);
+
+        addingWorld.add(buttonAndText, BorderLayout.PAGE_START);
+        addingWorld.add(worldAndArrowPanel, BorderLayout.LINE_START);
+//        addingWorld.add(startCopyingPanel, BorderLayout.PAGE_END);
+
+//        add(buttonAndText, BorderLayout.PAGE_START);
+        add(addingWorld, BorderLayout.PAGE_START);
         add(startCopyingPanel, BorderLayout.PAGE_END);
     }
 

@@ -10,7 +10,7 @@ import java.io.IOException;
 import static com.myne145.serverlauncher.gui.Window.alert;
 import static com.myne145.serverlauncher.gui.Window.getErrorDialogMessage;
 
-public class FileOpener {
+public class DesktopOpener {
 
     public static void openConfigFile() {
         File file = new File("servers.json");

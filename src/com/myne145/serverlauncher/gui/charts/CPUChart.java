@@ -30,6 +30,7 @@ public class CPUChart extends JPanel {
         XChartPanel<PieChart> chartPanel = new XChartPanel<>(chart);
         chartPanel.setPreferredSize(new Dimension(130, 150));
 
+        chart.getStyler().setSumFormat("100%%");
         add(chartPanel);
         updateChartData();
         // Create a Timer to update the chart every second
