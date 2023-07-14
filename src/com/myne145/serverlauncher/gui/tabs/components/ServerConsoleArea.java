@@ -31,9 +31,6 @@ public class ServerConsoleArea extends JPanel {
     private final int index;
     private ServerConsoleTab tab;
     public boolean isVisible = false;
-    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/server_errored.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
     private final Runnable consoleRunner = () -> {
         try {
             while (true) {
@@ -174,6 +171,7 @@ public class ServerConsoleArea extends JPanel {
         isVisible = false;
     }
 
+
     public void startServer(MCServer MCServer) {
         isVisible = true;
         ArrayList<String> command = new ArrayList<>(Arrays.asList("java", "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
@@ -188,7 +186,7 @@ public class ServerConsoleArea extends JPanel {
             if (processes.size() == 1)
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
-            parentPane.setIconAt(index, ONLINE);
+            parentPane.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         } catch (Exception e) {
             consoleOutput.append(Window.getErrorDialogMessage(e));
         }
@@ -205,7 +203,6 @@ public class ServerConsoleArea extends JPanel {
     }
 
     public void executeCommand(String command) {
-        System.out.println(command);
         if (!isServerRunning && command.equalsIgnoreCase("start")) {
             startServer(Config.getData().get(CurrentServerInfo.serverId - 1));
             tab.startServer.setVisible(false);
@@ -215,10 +212,9 @@ public class ServerConsoleArea extends JPanel {
         }
         if (processes.size() > 0) {
             if (command.equals("stop")) {
-                System.out.println("fdfsd");
                 isServerStopCausedByAButton = true;
                 parentPane.setToolTipTextAt(index, "Offline");
-                parentPane.setIconAt(index, OFFLINE);
+                parentPane.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
                 serverPIDText.setVisible(false);
             }
             PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());

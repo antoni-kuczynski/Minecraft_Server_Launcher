@@ -3,14 +3,18 @@ package com.myne145.serverlauncher.gui;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.myne145.serverlauncher.gui.tabs.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.WorldsTab;
+import com.myne145.serverlauncher.gui.tabs.components.contextmenus.ServerConsoleContextMenu;
+import com.myne145.serverlauncher.gui.tabs.components.contextmenus.TabLabelWithContextMenu;
 import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerPropertiesFile;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -26,7 +30,7 @@ public class ContainerPane extends JTabbedPane {
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
-            tabbedPane.addTab("Worlds", new WorldsTab(i));
+            tabbedPane.addTab("Worlds", new WorldsTab(this, i));
 //            tabbedPane.setIconAt(0, new FlatSVGIcon(new File("resources/console_icon.svg")).derive(16,16));
             serverTabbedPanes.add(tabbedPane);
         }
@@ -36,6 +40,17 @@ public class ContainerPane extends JTabbedPane {
             if(serverName.length() > 25)
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
+
+//            TabLabelWithContextMenu tabLabel = new TabLabelWithContextMenu(serverName, i, Config.getData().get(i).serverPath().exists());
+//            setTabComponentAt(i, tabLabel);
+//            if(Config.getData().get(i).serverPath().exists()) {
+//                tabLabel.setIcon(new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+//                setToolTipTextAt(i, "Offline");
+//            } else {
+//                setEnabledAt(i, false);
+//                tabLabel.setIcon(new FlatSVGIcon(new File("resources/server_errored.svg")).derive(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION));
+//                setToolTipTextAt(i, "Errored - Server file missing");
+//            }
             if(Config.getData().get(i).serverPath().exists()) {
                 setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
                 setToolTipTextAt(i, "Offline");
@@ -52,16 +67,16 @@ public class ContainerPane extends JTabbedPane {
 //            setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(CurrentServerInfo.serverId - 1);
-        onButtonClicked(CurrentServerInfo.serverId - 1);
+        onTabSwitched(CurrentServerInfo.serverId - 1);
 
         ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(CurrentServerInfo.serverId - 1).getComponentAt(0);
         selectedConsoleTab.cpuChart.isEnabled = true;
         selectedConsoleTab.cpuChart.updateChartData();
 
-        addChangeListener(e -> onButtonClicked(this.getSelectedIndex()));
+        addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
     }
 
-    public void onButtonClicked(int index) {
+    public void onTabSwitched(int index) {
         for(int i = 0; i <= getTabCount(); i++) {
             if(i == index)
                 setBackgroundAt(index, new Color(64, 75, 93));
@@ -148,4 +163,25 @@ public class ContainerPane extends JTabbedPane {
             setIconAt(i, new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         }
     }
+
+//    public void updateServerButtonsSizes() {
+//        ArrayList<Icon> icons = new ArrayList<>();
+//        for(int i = 0; i < serverTabbedPanes.size(); i++) {
+//            TabLabelWithContextMenu tabLabel = (TabLabelWithContextMenu) getTabComponentAt(i);
+//            icons.add(tabLabel.getIcon());
+//        }
+////        FlatSVGIcon flatSVGIcon = (FlatSVGIcon) icons.get(0);
+////        flatSVGIcon.getImage()
+//
+//
+//        for(int i = 0; i < serverTabbedPanes.size(); i++) {
+//            ImageIcon imageIcon = (ImageIcon) icons.get(i);
+//            TabLabelWithContextMenu tabLabel = (TabLabelWithContextMenu) getTabComponentAt(i);
+//            tabLabel.setIcon(new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+//        }
+//    }
+
+//    public void setServerState(ServerState serverState, int index) {
+//
+//    }
 }

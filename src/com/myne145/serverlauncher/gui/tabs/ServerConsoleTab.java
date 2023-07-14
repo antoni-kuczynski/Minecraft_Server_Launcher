@@ -18,9 +18,6 @@ public class ServerConsoleTab extends JPanel {
     public final JButton stopServer = new JButton("Stop Server");
     public final JButton killServer = new JButton("Kill Server");
     private final ContainerPane parentPane;
-    private final ImageIcon OFFLINE = new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-    private final ImageIcon ONLINE = new ImageIcon(new ImageIcon("resources/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-    private final ImageIcon ERRORED = new ImageIcon(new ImageIcon("resources/server_errored.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
     public final int index;
     private final ServerConsoleArea serverConsoleArea;
     public final CPUChart cpuChart = new CPUChart();
@@ -74,7 +71,7 @@ public class ServerConsoleTab extends JPanel {
             stopServer.setVisible(true);
             killServer.setEnabled(true);
             serverConsoleArea.serverPIDText.setVisible(true);
-            parentPane.setIconAt(index, ONLINE);
+            parentPane.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         });
 
         stopServer.addActionListener(e -> {
@@ -84,7 +81,7 @@ public class ServerConsoleTab extends JPanel {
             serverConsoleArea.executeCommand("stop");
             serverConsoleArea.isServerStopCausedByAButton = true;
             serverConsoleArea.serverPIDText.setVisible(false);
-            parent.setIconAt(index, OFFLINE);
+            parent.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         });
 
         killServer.addActionListener(e -> {
@@ -93,7 +90,7 @@ public class ServerConsoleTab extends JPanel {
             startServer.setVisible(true);
             serverConsoleArea.serverPIDText.setVisible(false);
             serverConsoleArea.isServerStopCausedByAButton = true;
-            parent.setIconAt(index, OFFLINE);
+            parent.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
             killServer.setEnabled(false);
         });
     }

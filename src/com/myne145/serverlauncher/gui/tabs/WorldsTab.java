@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.gui.tabs;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.myne145.serverlauncher.gui.AlertType;
+import com.myne145.serverlauncher.gui.ContainerPane;
 import com.myne145.serverlauncher.gui.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.FileSize;
@@ -41,10 +42,10 @@ public class WorldsTab extends JPanel {
 
     private final double ONE_GIGABYTE = 1073741824;
 
-    public WorldsTab(int index) {
+    public WorldsTab(ContainerPane parentPane, int tabSwitchingToIndex) {
         super(new BorderLayout());
         worldsTab = this;
-        if(!Config.getData().get(index).serverPath().exists())
+        if(!Config.getData().get(tabSwitchingToIndex).serverPath().exists())
             return;
         JLabel dragNDropInfo = new JLabel(" or drag and drop it here.");
         JLabel selectedServerTxt = new JLabel();
@@ -165,6 +166,10 @@ public class WorldsTab extends JPanel {
             worldCopyHandler.start();
         });
 
+        JButton refreshButton = new JButton("Refresh");
+
+        refreshButton.addActionListener(e -> parentPane.onTabSwitched(tabSwitchingToIndex));
+
 //        directoryTree.setDirectory(ServerDetails.serverPath.getAbsolutePath());
 //        JScrollPane directoryTreeScroll = new JScrollPane(directoryTree);
 
@@ -198,7 +203,7 @@ public class WorldsTab extends JPanel {
         JPanel serverPanelBottom = new JPanel(new BorderLayout());
         JPanel worldAndArrowPanel = new JPanel(new BorderLayout());
 
-        JButton refreshButton = new JButton("Refresh");
+
         JLabel title = new JLabel("World Manager");
         JLabel arrow = new JLabel();
         JLabel modeInfo = new JLabel("    Copy and replace   ");
