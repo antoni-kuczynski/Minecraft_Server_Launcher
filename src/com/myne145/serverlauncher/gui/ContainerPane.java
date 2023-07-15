@@ -73,6 +73,7 @@ public class ContainerPane extends JTabbedPane {
         selectedConsoleTab.cpuChart.isEnabled = true;
         selectedConsoleTab.cpuChart.updateChartData();
 
+        onTabSwitched(CurrentServerInfo.serverId - 1);
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
     }
 
