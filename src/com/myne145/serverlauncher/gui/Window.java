@@ -37,7 +37,7 @@ public class Window extends JFrame {
 
     public Window() throws Exception {
         // Set up the JFrame
-        setIconImage(new ImageIcon("resources/app_icon.png").getImage());
+        setIconImage(new ImageIcon(Config.RESOURCES_PATH + "/app_icon.png").getImage());
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -249,7 +249,7 @@ public class Window extends JFrame {
 
     public static void main(String[] args) throws Exception {
         Config.createConfig();
-        InputStream inputStream = new FileInputStream("resources/DarkFlatTheme/DarkFlatTheme.json");
+        InputStream inputStream = new FileInputStream(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
 
         SwingUtilities.invokeLater(() -> {

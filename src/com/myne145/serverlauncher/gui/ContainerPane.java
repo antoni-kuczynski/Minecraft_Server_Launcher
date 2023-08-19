@@ -52,11 +52,11 @@ public class ContainerPane extends JTabbedPane {
 //                setToolTipTextAt(i, "Errored - Server file missing");
 //            }
             if(Config.getData().get(i).serverPath().exists()) {
-                setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+                setIconAt(i, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
                 setToolTipTextAt(i, "Offline");
             } else {
                 setEnabledAt(i, false);
-                setIconAt(i, new FlatSVGIcon(new File("resources/server_errored.svg")).derive(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION));
+                setIconAt(i, new FlatSVGIcon(new File(Config.RESOURCES_PATH + "/server_errored.svg")).derive(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION));
                 setToolTipTextAt(i, "Errored - Server file missing");
             }
         }

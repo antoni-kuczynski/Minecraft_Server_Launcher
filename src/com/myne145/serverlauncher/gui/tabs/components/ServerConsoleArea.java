@@ -186,7 +186,7 @@ public class ServerConsoleArea extends JPanel {
             if (processes.size() == 1)
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
-            parentPane.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+            parentPane.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         } catch (Exception e) {
             consoleOutput.append(Window.getErrorDialogMessage(e));
         }
@@ -214,7 +214,7 @@ public class ServerConsoleArea extends JPanel {
             if (command.equals("stop")) {
                 isServerStopCausedByAButton = true;
                 parentPane.setToolTipTextAt(index, "Offline");
-                parentPane.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+                parentPane.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
                 serverPIDText.setVisible(false);
             }
             PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());

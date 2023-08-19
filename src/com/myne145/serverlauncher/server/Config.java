@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class Config {
     private static final ArrayList<MCServer> data = new ArrayList<>();
+    public static String RESOURCES_PATH = "src/com/myne145/serverlauncher/resources";
 
     private static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();

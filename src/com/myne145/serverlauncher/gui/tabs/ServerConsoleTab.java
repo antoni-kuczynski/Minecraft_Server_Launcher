@@ -71,7 +71,7 @@ public class ServerConsoleTab extends JPanel {
             stopServer.setVisible(true);
             killServer.setEnabled(true);
             serverConsoleArea.serverPIDText.setVisible(true);
-            parentPane.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+            parentPane.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         });
 
         stopServer.addActionListener(e -> {
@@ -81,7 +81,7 @@ public class ServerConsoleTab extends JPanel {
             serverConsoleArea.executeCommand("stop");
             serverConsoleArea.isServerStopCausedByAButton = true;
             serverConsoleArea.serverPIDText.setVisible(false);
-            parent.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+            parent.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         });
 
         killServer.addActionListener(e -> {
@@ -90,7 +90,7 @@ public class ServerConsoleTab extends JPanel {
             startServer.setVisible(true);
             serverConsoleArea.serverPIDText.setVisible(false);
             serverConsoleArea.isServerStopCausedByAButton = true;
-            parent.setIconAt(index, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+            parent.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
             killServer.setEnabled(false);
         });
     }

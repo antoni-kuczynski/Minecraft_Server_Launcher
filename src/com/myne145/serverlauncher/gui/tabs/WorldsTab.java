@@ -32,8 +32,8 @@ public class WorldsTab extends JPanel {
     private final JLabel worldNameAndStuffText = new JLabel("World File name will appear here.");
     private final JLabel serverWorldNameAndStuff = new JLabel();
     //    private final DirectoryTree directoryTree = new DirectoryTree();
-    private final JButton startCopying = new JButton("Start Copying");
-    private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon("resources/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+    private final JButton startCopying = new JButton("Start importing");
+    private final ImageIcon defaultWorldIcon = new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
     private File userSelectedWorld;
     private String extractedWorldDir;
     private boolean isInArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
@@ -52,7 +52,7 @@ public class WorldsTab extends JPanel {
         String selServPrefix = "Selected server: ";
         selectedServerTxt.setText(selServPrefix + CurrentServerInfo.serverName);
         startCopying.setEnabled(false);
-        JButton openButton = new JButton("Open Folder");
+        JButton openButton = new JButton("Import existing world");
         openButton.addActionListener(e -> {
             Runnable runnable = new Runnable() {
                 @Override
@@ -174,7 +174,7 @@ public class WorldsTab extends JPanel {
 //        JScrollPane directoryTreeScroll = new JScrollPane(directoryTree);
 
         selectedWorldIconLabel.setIcon(defaultWorldIcon);
-        openButton.setPreferredSize(new Dimension(130, 40));
+        openButton.setPreferredSize(new Dimension(170, 40));
 
         Dimension dimension = new Dimension(10, 10);
 
@@ -210,7 +210,7 @@ public class WorldsTab extends JPanel {
 
         modeInfo.setFont(new Font("Arial", Font.BOLD, 14));
         title.setFont(new Font("Arial", Font.BOLD, 18));
-        arrow.setIcon(new FlatSVGIcon(new File("resources/arrow.svg")).derive(80,116));
+        arrow.setIcon(new FlatSVGIcon(new File(Config.RESOURCES_PATH + "/arrow.svg")).derive(80,116));
 
 
         titlePanel.add(Box.createRigidArea(new Dimension(5,5)), BorderLayout.PAGE_START);
