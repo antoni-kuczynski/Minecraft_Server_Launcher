@@ -41,6 +41,7 @@ public class WorldsTab extends JPanel {
     private final WorldsTab worldsTab;
 
     private final double ONE_GIGABYTE = 1073741824;
+    private JButton openButton;
 
     public WorldsTab(ContainerPane parentPane, int tabSwitchingToIndex) {
         super(new BorderLayout());
@@ -52,7 +53,8 @@ public class WorldsTab extends JPanel {
         String selServPrefix = "Selected server: ";
         selectedServerTxt.setText(selServPrefix + CurrentServerInfo.serverName);
         startCopying.setEnabled(false);
-        JButton openButton = new JButton("Import existing world");
+        openButton = new JButton("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
+        openButton.setMaximumSize(new Dimension(300, 40));
         openButton.addActionListener(e -> {
             Runnable runnable = new Runnable() {
                 @Override
@@ -74,16 +76,15 @@ public class WorldsTab extends JPanel {
                     if (WorldCopyHandler.isArchive(selectedFile)) {
                         userSelectedWorld = selectedFile;
                         isInArchiveMode = true;
-                        try {
-                            new WorldCopyHandler(worldsTab, progressBar, userSelectedWorld, false, startCopying).start();
-                        } catch (IOException ex) {
-                            alert(AlertType.ERROR, getErrorDialogMessage(ex));
-                        }
+                        WorldCopyHandler.createWorldCopyHandler(worldsTab).start();
+//                        try {
+//                            new WorldCopyHandler(worldsTab, false).start();
+//                        } catch (IOException ex) {
+//                            alert(AlertType.ERROR, getErrorDialogMessage(ex));
+//                        }
                     } else {
                         isInArchiveMode = false;
                         File folder = new File(folderPath);
-                        //issue #16 fix adding a warning to check for folder's size
-
                         if (FileUtils.sizeOfDirectory(folder) < ONE_GIGABYTE) {
                             userSelectedWorld = folder;
                         }
@@ -125,7 +126,8 @@ public class WorldsTab extends JPanel {
                     if (WorldCopyHandler.isArchive(fileToAdd)) {
                         isInArchiveMode = true;
                         userSelectedWorld = fileToAdd; //TODO: proper directory checks not stupid file.getParent()
-                        new WorldCopyHandler(tempPanel, progressBar, userSelectedWorld, false, startCopying).start();
+//                        new WorldCopyHandler(tempPanel, false).start();
+                        WorldCopyHandler.createWorldCopyHandler(tempPanel).start();
                     } else {
                         isInArchiveMode = false;
                         if(fileToAdd.isFile()) {
@@ -156,14 +158,15 @@ public class WorldsTab extends JPanel {
         worldNameAndStuffText.setTransferHandler(transferHandler);
 
         startCopying.addActionListener(e -> {
-            WorldCopyHandler worldCopyHandler;
-            try {
-                worldCopyHandler = new WorldCopyHandler(this, progressBar, userSelectedWorld, true, startCopying);
-            } catch (IOException ex) {
-                alert(AlertType.ERROR, getErrorDialogMessage(ex));
-                return;
-            }
-            worldCopyHandler.start();
+//            WorldCopyHandler worldCopyHandler;
+//            try {
+//                worldCopyHandler = new WorldCopyHandler(this, true);
+//            } catch (IOException ex) {
+//                alert(AlertType.ERROR, getErrorDialogMessage(ex));
+//                return;
+//            }
+//            worldCopyHandler.start();
+            WorldCopyHandler.createWorldCopyHandler(this).setCopyMode(true).start();
         });
 
         JButton refreshButton = new JButton("Refresh");
@@ -174,7 +177,7 @@ public class WorldsTab extends JPanel {
 //        JScrollPane directoryTreeScroll = new JScrollPane(directoryTree);
 
         selectedWorldIconLabel.setIcon(defaultWorldIcon);
-        openButton.setPreferredSize(new Dimension(170, 40));
+//        openButton.setPreferredSize(new Dimension(170, 40));
 
         Dimension dimension = new Dimension(10, 10);
 
@@ -267,6 +270,7 @@ public class WorldsTab extends JPanel {
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
 
+        worldPaneUpper.add(new JLabel("Selected world:"), BorderLayout.PAGE_START);
         worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_START);
         worldPaneUpper.add(worldPanel, BorderLayout.CENTER);
         worldPaneUpper.add(Box.createRigidArea(dimension), BorderLayout.LINE_END);
@@ -315,9 +319,22 @@ public class WorldsTab extends JPanel {
         add(startCopyingPanel, BorderLayout.PAGE_END);
     }
 
+    public void setButtonNotAWorldWarning() {
+        openButton.setIcon(new FlatSVGIcon(new File("src/com/myne145/serverlauncher/resources/error.svg")).derive(16, 16));
+        openButton.setToolTipText("Not a Minecraft world!");
+    }
+    public void removeButtonNotAWorldWarning() {
+        openButton.setIcon(null);
+        openButton.setToolTipText(null);
+    }
 
     public void setIcons() {
         String extractedWorldSizeText = "Can't obtain world's size";
+        if(userSelectedWorld != null) {
+            openButton.setText("<html><b>Currently selected:</b><br><small>" + userSelectedWorld.getAbsolutePath() + "</small></html>");
+        } else {
+            openButton.setText("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
+        }
         if(extractedWorldSize != null)
             extractedWorldSizeText = extractedWorldSize.getText();
         if(userSelectedWorld != null)
@@ -393,5 +410,17 @@ public class WorldsTab extends JPanel {
 
     public String getExtractedWorldDir() {
         return extractedWorldDir;
+    }
+
+    public File getUserSelectedWorld() {
+        return userSelectedWorld;
+    }
+
+    public JProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public JButton getStartCopyingButton() {
+        return startCopying;
     }
 }

@@ -29,22 +29,46 @@ public class WorldCopyHandler extends Thread {
     private final String serverWorldName;
     private final File selectedWorld;
     private final File serverWorldDir;
-    private final boolean copyFilesToServerDir;
+    private boolean copyFilesToServerDir;
     private static final Taskbar taskbar = Taskbar.getTaskbar();
 
 
-    public WorldCopyHandler(WorldsTab worldsTab, JProgressBar progressBar,
-                            File originalWorldDir, boolean copyFilesToServerDir, JButton jButtonToDisable) throws IOException {
+    private WorldCopyHandler(WorldsTab worldsTab, boolean copyFilesToServerDir) throws IOException {
         ServerPropertiesFile serverPropertiesFile = new ServerPropertiesFile();
         this.worldsTab = worldsTab;
+
         this.serverWorldName = serverPropertiesFile.getWorldName();
         this.serverWorldDir = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + serverWorldName);
-        this.selectedWorld = originalWorldDir;
-        WorldCopyHandler.progressBar = progressBar;
+
+        this.selectedWorld = worldsTab.getUserSelectedWorld();
+        WorldCopyHandler.progressBar = worldsTab.getProgressBar();
         this.copyFilesToServerDir = copyFilesToServerDir;
-        WorldCopyHandler.jButtonToDisable = jButtonToDisable;
+        WorldCopyHandler.jButtonToDisable = worldsTab.getStartCopyingButton();
     }
 
+    /**
+     * Creates a new instance of {@link com.myne145.serverlauncher.server.WorldCopyHandler} and sets the copy mode to false.
+     * @param worldsTab world manager tab
+     * @return {@link com.myne145.serverlauncher.server.WorldCopyHandler} instance
+     */
+    public static WorldCopyHandler createWorldCopyHandler(WorldsTab worldsTab) {
+        try {
+            WorldCopyHandler worldCopyHandler = new WorldCopyHandler(worldsTab, false);
+            return worldCopyHandler;
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    /**
+     * Sets the copy mode of a {@link com.myne145.serverlauncher.server.WorldCopyHandler} instance
+     * @param mode copy mode (true - copy files to the server, false - just unzip and set icon an title of the world. For archives only.
+     * @return {@link com.myne145.serverlauncher.server.WorldCopyHandler} instance with the desired copy mode
+     */
+    public WorldCopyHandler setCopyMode(boolean mode) {
+        this.copyFilesToServerDir = mode;
+        return this;
+    }
 
     private void copyDirectory(File sourceDir, File destDir) throws IOException {
         long totalBytes = FileUtils.sizeOfDirectory(sourceDir);
@@ -171,7 +195,8 @@ public class WorldCopyHandler extends Thread {
 
         }
         if(!hasDirectory && !copyFilesToServerDir) {
-            alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
+            worldsTab.setButtonNotAWorldWarning();
+//            alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
         }
         if (containsLevelDat) {
             return foundLevelDat.getParent();
@@ -194,12 +219,21 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
+        worldsTab.removeButtonNotAWorldWarning();
         if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
-            if (!serverWorldDir.exists()) {
-                if (!serverWorldDir.mkdirs())
+            if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
             }
-            if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
+
+            ArrayList<String> serverWorldFilenamesList = new ArrayList<>(Arrays.asList(serverWorldDir.list()));
+            boolean containsWorldFiles =
+                    serverWorldFilenamesList.contains("level.dat") ||
+                    serverWorldFilenamesList.contains("data") ||
+                    serverWorldFilenamesList.contains("region");
+
+            if (serverWorldDir.list() != null && serverWorldFilenamesList.size() > 0 && !containsWorldFiles) {
+                worldsTab.setButtonNotAWorldWarning();
+            } else if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                 try {
                     FileUtils.deleteDirectory(serverWorldDir);
                 } catch (IOException e) {
@@ -212,6 +246,7 @@ public class WorldCopyHandler extends Thread {
             } catch (IOException e) {
                 alert(AlertType.ERROR, "Cannot delete nether and end directories.\n" + getErrorDialogMessage(e));
             }
+
 
             try {
                 copyDirectory(selectedWorld, serverWorldDir);
@@ -233,7 +268,7 @@ public class WorldCopyHandler extends Thread {
                         alert(AlertType.WARNING, "File is probably not a minecraft world. Continue at your own risk."); //checking if a file is a minecraft world
                         throw new RuntimeException();
                     }
-                    predictedWorldDir = new File(findWorldDirectory(extractedDirTemp)); //future functionalities
+                    predictedWorldDir = new File(findWorldDirectory(extractedDirTemp));
                     worldsTab.setExtractedWorldDir(predictedWorldDir.getAbsolutePath());
                 } catch (IOException e) {
                     alert(AlertType.ERROR, "This kind of world archive is currently not supported.\nTry extracting the archive and copying the world as a folder.\nDetailed error:\n" + getErrorDialogMessage(e));
