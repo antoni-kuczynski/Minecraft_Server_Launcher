@@ -40,7 +40,7 @@ public class WorldCopyHandler extends Thread {
         this.serverWorldName = serverPropertiesFile.getWorldName();
         this.serverWorldDir = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + serverWorldName);
 
-        this.selectedWorld = worldsTab.getUserSelectedWorld();
+        this.selectedWorld = worldsTab.getUserAddedWorld();
         WorldCopyHandler.progressBar = worldsTab.getProgressBar();
         this.copyFilesToServerDir = copyFilesToServerDir;
         WorldCopyHandler.jButtonToDisable = worldsTab.getStartCopyingButton();
@@ -195,7 +195,7 @@ public class WorldCopyHandler extends Thread {
 
         }
         if(!hasDirectory && !copyFilesToServerDir) {
-            worldsTab.setButtonNotAWorldWarning();
+            worldsTab.setImportButtonWarning("Not a Minecraft world!");
 //            alert(AlertType.WARNING, "Specified file may not be a minecraft world. Remember to take a backup, continue at your own risk!");
         }
         if (containsLevelDat) {
@@ -219,8 +219,9 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        worldsTab.removeButtonNotAWorldWarning();
+        worldsTab.removeImportButtonWarning();
         if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
+            System.out.println(selectedWorld.getAbsolutePath());
             if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
             }
@@ -232,7 +233,7 @@ public class WorldCopyHandler extends Thread {
                     serverWorldFilenamesList.contains("region");
 
             if (serverWorldDir.list() != null && serverWorldFilenamesList.size() > 0 && !containsWorldFiles) {
-                worldsTab.setButtonNotAWorldWarning();
+                worldsTab.setImportButtonWarning("Not a Minecraft world!");
             } else if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
                 try {
                     FileUtils.deleteDirectory(serverWorldDir);
@@ -309,7 +310,7 @@ public class WorldCopyHandler extends Thread {
                 File temp = CurrentServerInfo.serverLevelDatFile;
                 CurrentServerInfo.serverLevelDatFile = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat"); //trick the NBTParser into using extracted world's level.dat
                 try { //issue #71 fix
-                    NBTParser nbtParser = new NBTParser();
+                    NBTParser nbtParser = NBTParser.createServerNBTParser();
                     nbtParser.start();
                     nbtParser.join();
                     CurrentServerInfo.serverLevelName = nbtParser.getLevelName();

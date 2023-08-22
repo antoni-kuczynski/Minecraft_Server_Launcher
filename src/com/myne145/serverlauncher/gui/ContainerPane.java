@@ -109,7 +109,7 @@ public class ContainerPane extends JTabbedPane {
                 Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
                 Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
                 new ServerPropertiesFile();
-                NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
+                NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
                 nbtParser.start();
                 nbtParser.join();
                 CurrentServerInfo.serverLevelName = nbtParser.getLevelName();

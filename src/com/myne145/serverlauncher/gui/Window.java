@@ -63,7 +63,7 @@ public class Window extends JFrame {
 
 
         new ServerPropertiesFile();
-        NBTParser nbtParser = new NBTParser(); //reading NBT level.dat file for level name
+        NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
         nbtParser.start();
 
         ContainerPane containerPane = new ContainerPane();
@@ -195,6 +195,10 @@ public class Window extends JFrame {
                 File temporaryFilesDirectory = new File("world_temp");
                 if(!temporaryFilesDirectory.exists()) //issue #55 fix by checking if the folder exitst and creating it
                     temporaryFilesDirectory.mkdirs();
+                File temporaryWorldLevelDatFiles = new File(temporaryFilesDirectory.getAbsolutePath() + "worlds_level_dat");
+                if(!temporaryWorldLevelDatFiles.exists())
+                    temporaryWorldLevelDatFiles.mkdirs();
+
                 clearTempDirectory();
             }
         });
@@ -235,6 +239,9 @@ public class Window extends JFrame {
             try {
                 if(tempFile.isDirectory())
                     FileUtils.deleteDirectory(tempFile);
+                else if(tempFile.isDirectory() && tempFile.getName().equals("worlds_level_dat")) {
+                    continue;
+                }
                 else
                     tempFile.delete();
             } catch (IOException e) {
