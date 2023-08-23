@@ -9,6 +9,7 @@ import com.myne145.serverlauncher.server.FileSize;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
+import com.myne145.serverlauncher.server.current.NBTParser;
 import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 
@@ -284,16 +285,21 @@ public class WorldsTab extends JPanel {
             if(world.isFile()) {
                 world = new File(world.getParent());
             }
+
             if (FileUtils.sizeOfDirectory(world) >= ONE_GIGABYTE) {
                 setImportButtonWarning("Larger than 1GiB!");
             }
             userAddedWorld = world;
+            WorldCopyHandler.createWorldCopyHandler(worldsTab).start();
         }
     }
 
     public void setImportButtonWarning(String message) {
         openButton.setIcon(new FlatSVGIcon(new File("src/com/myne145/serverlauncher/resources/error.svg")).derive(16, 16));
-        openButton.setToolTipText(message);
+        if(openButton.getToolTipText() != null) {
+            openButton.setToolTipText(openButton.getToolTipText() + "\n" + message);
+        } else
+            openButton.setToolTipText(message);
     }
     public void removeImportButtonWarning() {
         openButton.setIcon(null);
@@ -301,6 +307,7 @@ public class WorldsTab extends JPanel {
     }
 
     public void setIcons() {
+        System.out.println(userAddedWorld);
         String extractedWorldSizeText = "Can't obtain world's size";
         if(userAddedWorld != null) {
             openButton.setText("<html><b>Currently selected:</b><br><small>" + userAddedWorld.getAbsolutePath() + "</small></html>");
@@ -313,8 +320,9 @@ public class WorldsTab extends JPanel {
             isInArchiveMode = WorldCopyHandler.isArchive(userAddedWorld);
 //        directoryTree.setDirectory(CurrentServerInfo.serverPath.getAbsolutePath());
         if(userAddedWorld != null && isInArchiveMode) { //issue #7 fix
+            NBTParser nbtParser = NBTParser.createAddedWorldNBTParser(extractedWorldDir);
             userAddedWorldDetailsWithoutIcon.setText(
-                    "<html>Level name: " + "TODO" + //can be like that: FOLDER_NAME / level.dat NAME
+                    "<html>Level name: " + extractedWorldDir + //can be like that: FOLDER_NAME / level.dat NAME
                     "<br>Last played: " + "TODO" +
                     "<br>Folder size: " + extractedWorldSizeText + "</html>"
             );
@@ -359,24 +367,24 @@ public class WorldsTab extends JPanel {
         }
 
 
-        if(!new File(CurrentServerInfo.serverWorldPath + "\\icon.png").exists()) {
+        if(!new File(CurrentServerInfo.world.getPath() + "\\icon.png").exists()) {
             serverWorldIconLabel.setIcon(DEFAULT_WORLD_ICON_PACK_PNG);
         } else {
-            serverWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(CurrentServerInfo.serverWorldPath + "\\icon.png")
+            serverWorldIconLabel.setIcon(new ImageIcon(new ImageIcon(CurrentServerInfo.world.getPath() + "\\icon.png")
                     .getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
         }
 
-        if(CurrentServerInfo.serverWorldPath.exists()) {
-            FileSize serverWorldFileSizeBytes = FileSize.directorySizeWithConversion(CurrentServerInfo.serverWorldPath);
+        if(CurrentServerInfo.world.getPath().exists()) {
+            FileSize serverWorldFileSizeBytes = FileSize.directorySizeWithConversion(CurrentServerInfo.world.getPath());
 //            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
-            if(CurrentServerInfo.serverLevelName == null)
-                CurrentServerInfo.serverLevelName = "Level.dat file not found.";
+            if(CurrentServerInfo.world.getLevelName() == null)
+                CurrentServerInfo.world.levelName = "Level.dat file not found.";
 
-            String folderNameTemp = CurrentServerInfo.serverWorldPath.getName();
+            String folderNameTemp = CurrentServerInfo.world.getPath().getName();
 //            if(!wasServerPropertiesFound)
 //                folderNameTemp = "server.properties file does not exist";
             serverWorldDetailsWithoutIcon.setText(
-                    "<html>Level name: " + CurrentServerInfo.serverLevelName + " / " + folderNameTemp +
+                    "<html>Level name: " + CurrentServerInfo.world.getLevelName() + " / " + folderNameTemp +
                     "<br>Other info like date modified / gamemode used: " + "TODO" +
                     "<br>Folder size: " + serverWorldFileSizeBytes.getText() + "</html>"
             );

@@ -219,14 +219,14 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
-        worldsTab.removeImportButtonWarning();
+//        worldsTab.removeImportButtonWarning();
         if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
             System.out.println(selectedWorld.getAbsolutePath());
             if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
             }
 
-            ArrayList<String> serverWorldFilenamesList = new ArrayList<>(Arrays.asList(serverWorldDir.list()));
+            ArrayList<String> serverWorldFilenamesList = new ArrayList<>(Arrays.asList(selectedWorld.list()));
             boolean containsWorldFiles =
                     serverWorldFilenamesList.contains("level.dat") ||
                     serverWorldFilenamesList.contains("data") ||
@@ -234,25 +234,39 @@ public class WorldCopyHandler extends Thread {
 
             if (serverWorldDir.list() != null && serverWorldFilenamesList.size() > 0 && !containsWorldFiles) {
                 worldsTab.setImportButtonWarning("Not a Minecraft world!");
-            } else if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
-                try {
-                    FileUtils.deleteDirectory(serverWorldDir);
+            }
+
+            System.out.println(new File(selectedWorld.getAbsolutePath() + "level.dat") + "asdasdasd");
+            if(new File(selectedWorld.getAbsolutePath() + "/level.dat").exists()) {
+                try { //copying world's level.dat file analogically like server ones
+                    FileUtils.copyFile(new File(selectedWorld.getAbsolutePath() + "/level.dat"), new File("world_temp/worlds_level_dat/level_" + selectedWorld.getName() + ".dat"));
                 } catch (IOException e) {
-                    alert(AlertType.ERROR, "Cannot delete server world directory.\n" + getErrorDialogMessage(e));
+                    throw new RuntimeException(e);
                 }
             }
-            try {
-                FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
-                FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
-            } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot delete nether and end directories.\n" + getErrorDialogMessage(e));
-            }
 
+            if(copyFilesToServerDir) {
+                if (serverWorldDir.list() != null && serverWorldFilenamesList.size() > 0 && !containsWorldFiles) {
+                    worldsTab.setImportButtonWarning("Not a Minecraft world!");
+                } else if (Objects.requireNonNull(serverWorldDir.list()).length > 0 && serverWorldDir.list() != null) { //world dir is not empty
+                    try {
+                        FileUtils.deleteDirectory(serverWorldDir);
+                    } catch (IOException e) {
+                        alert(AlertType.ERROR, "Cannot delete server world directory.\n" + getErrorDialogMessage(e));
+                    }
+                }
+                try {
+                    FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
+                    FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
+                } catch (IOException e) {
+                    alert(AlertType.ERROR, "Cannot delete nether and end directories.\n" + getErrorDialogMessage(e));
+                }
 
-            try {
-                copyDirectory(selectedWorld, serverWorldDir);
-            } catch (IOException e) {
-                alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
+                try {
+                    copyDirectory(selectedWorld, serverWorldDir);
+                } catch (IOException e) {
+                    alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
+                }
             }
         } else if (isArchive(selectedWorld)) {
             if (!copyFilesToServerDir) {
@@ -262,9 +276,9 @@ public class WorldCopyHandler extends Thread {
                     File dirToDelete = new File(".\\world_temp\\" + selectedWorld.getName());
                     if (dirToDelete.exists())  //issue #11, #12, #23 fixed by the laziest solution ever
                         FileUtils.deleteDirectory(dirToDelete);
-                    String temp = extractArchive(selectedWorld.getAbsolutePath(), ".\\world_temp\\" + selectedWorld.getName());
-                    if(temp != null) {
-                        extractedDirTemp = new File(temp).getParent();
+                    String extractedDirectory = extractArchive(selectedWorld.getAbsolutePath(), ".\\world_temp\\" + selectedWorld.getName());
+                    if(extractedDirectory != null) {
+                        extractedDirTemp = new File(extractedDirectory).getParent();
                     } else {
                         alert(AlertType.WARNING, "File is probably not a minecraft world. Continue at your own risk."); //checking if a file is a minecraft world
                         throw new RuntimeException();
@@ -275,6 +289,17 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "This kind of world archive is currently not supported.\nTry extracting the archive and copying the world as a folder.\nDetailed error:\n" + getErrorDialogMessage(e));
                     throw new RuntimeException();
                 }
+
+                File extractedWorldsLevelDat = new File(predictedWorldDir.getAbsolutePath() + "/level.dat");
+                if(extractedWorldsLevelDat.exists()) {
+                    try { //copying world's level.dat file analogically like server ones
+                        FileUtils.copyFile(extractedWorldsLevelDat, new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+
                 worldsTab.extractedWorldSize = FileSize.directorySizeWithConversion(new File(extractedDirTemp));
                 worldsTab.setIcons();
             }
@@ -307,17 +332,17 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot copy world dir to server world dir.\n" + getErrorDialogMessage(e));
                 }
 
-                File temp = CurrentServerInfo.serverLevelDatFile;
-                CurrentServerInfo.serverLevelDatFile = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat"); //trick the NBTParser into using extracted world's level.dat
+                File temp = CurrentServerInfo.world.getLevelDat();
+                CurrentServerInfo.world.levelDat = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat"); //trick the NBTParser into using extracted world's level.dat
                 try { //issue #71 fix
                     NBTParser nbtParser = NBTParser.createServerNBTParser();
                     nbtParser.start();
                     nbtParser.join();
-                    CurrentServerInfo.serverLevelName = nbtParser.getLevelName();
+                    CurrentServerInfo.world.levelName = nbtParser.getLevelName();
                 } catch (Exception e) {
                     alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
                 }
-                CurrentServerInfo.serverLevelDatFile = temp; //restore the original level.dat file location for safety
+                CurrentServerInfo.world.levelDat = temp; //restore the original level.dat file location for safety
             }
         } else if (selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
             Window.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");

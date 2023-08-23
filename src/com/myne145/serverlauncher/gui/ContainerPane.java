@@ -112,7 +112,7 @@ public class ContainerPane extends JTabbedPane {
                 NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
                 nbtParser.start();
                 nbtParser.join();
-                CurrentServerInfo.serverLevelName = nbtParser.getLevelName();
+                CurrentServerInfo.world.levelName = nbtParser.getLevelName();
             } catch (Exception ex) {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }

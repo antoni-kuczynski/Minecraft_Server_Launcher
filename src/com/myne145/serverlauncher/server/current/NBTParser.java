@@ -18,6 +18,7 @@ public class NBTParser extends Thread {
     private String levelName;
     private Calendar lastPlayedDate;
     private File pathToLevelDat;
+    private boolean isServerMode;
 
     private NBTParser() {
 
@@ -29,20 +30,21 @@ public class NBTParser extends Thread {
         return nbtParser;
     }
 
-    public static NBTParser createAddedWorldNBTParser() {
+    public static NBTParser createAddedWorldNBTParser(String extractedWorldDirectory) {
         NBTParser nbtParser = new NBTParser();
+        nbtParser.pathToLevelDat = new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat");
         return nbtParser;
     }
 
     @Override
     public void run() {
 
-        if(!CurrentServerInfo.serverLevelDatFile.exists()) {
-            CurrentServerInfo.serverLevelName = "Level.dat file not found";
+        if(!CurrentServerInfo.world.getLevelDat().exists()) {
+            CurrentServerInfo.world.levelName = "Level.dat file not found";
             return;
         }
         try {
-            FileUtils.copyFile(CurrentServerInfo.serverLevelDatFile, pathToLevelDat);
+            FileUtils.copyFile(CurrentServerInfo.world.getLevelDat(), pathToLevelDat);
         } catch (Exception e) {
             if(!e.toString().contains("The process cannot access the file because it is being used by another process"))
                 SwingUtilities.invokeLater(() -> alert(AlertType.ERROR, "Cannot copy level.dat file." + getErrorDialogMessage(e)));
@@ -68,9 +70,7 @@ public class NBTParser extends Thread {
         calendar.setTime(lastPlayedDateGMT);
         lastPlayedDate = calendar;
 
-        CurrentServerInfo.serverLevelName = this.getLevelName(); //issue #64 fix
-
-
+        CurrentServerInfo.world.levelName = this.getLevelName(); //issue #64 fix
     }
 
     public String getLevelName() {

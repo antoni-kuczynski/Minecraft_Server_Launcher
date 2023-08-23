@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui;
 
+import com.myne145.serverlauncher.server.current.CurrentServerWorld;
 import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerPropertiesFile;
@@ -17,6 +18,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -45,7 +48,7 @@ public class Window extends JFrame {
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
         buttonAndWorldsPanel.setBackground(new Color(51, 51, 52));
 
-
+        CurrentServerInfo.world = new CurrentServerWorld(null, null, null, null);
         if(userValues.getInt(PREFS_SERVER_ID, 1) - 1 <= Config.getData().size()) {
             CurrentServerInfo.serverId = userValues.getInt(PREFS_SERVER_ID, 1);
             CurrentServerInfo.serverName = Config.getData().get(CurrentServerInfo.serverId - 1).serverName();
@@ -192,10 +195,10 @@ public class Window extends JFrame {
             @Override
             public void windowOpened(WindowEvent e) {
                 super.windowOpened(e);
-                File temporaryFilesDirectory = new File("world_temp");
-                if(!temporaryFilesDirectory.exists()) //issue #55 fix by checking if the folder exitst and creating it
-                    temporaryFilesDirectory.mkdirs();
-                File temporaryWorldLevelDatFiles = new File(temporaryFilesDirectory.getAbsolutePath() + "worlds_level_dat");
+//                File temporaryFilesDirectory = new File("world_temp");
+//                if(!temporaryFilesDirectory.exists())
+//                    temporaryFilesDirectory.mkdirs();
+                File temporaryWorldLevelDatFiles = new File("world_temp/worlds_level_dat");
                 if(!temporaryWorldLevelDatFiles.exists())
                     temporaryWorldLevelDatFiles.mkdirs();
 
@@ -231,7 +234,7 @@ public class Window extends JFrame {
     }
 
     private static void clearTempDirectory() {
-        File tempFilesDirectory = new File(".\\world_temp");
+        File tempFilesDirectory = new File("world_temp");
         File[] filesInTempDir = tempFilesDirectory.listFiles();
         if(filesInTempDir == null)
             return;
@@ -239,15 +242,13 @@ public class Window extends JFrame {
             try {
                 if(tempFile.isDirectory())
                     FileUtils.deleteDirectory(tempFile);
-                else if(tempFile.isDirectory() && tempFile.getName().equals("worlds_level_dat")) {
-                    continue;
-                }
                 else
                     tempFile.delete();
             } catch (IOException e) {
 //                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }
+        new File(tempFilesDirectory.getAbsolutePath() + "/worlds_level_dat").mkdirs();
     }
 
     public static Window getWindow() {
