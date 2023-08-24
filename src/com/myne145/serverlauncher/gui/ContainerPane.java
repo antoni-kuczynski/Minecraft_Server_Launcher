@@ -27,7 +27,7 @@ public class ContainerPane extends JTabbedPane {
         setLayout(new BorderLayout());
 //        setUI(new CustomTabbedPaneUI(new Color(76, 76, 80), new Color(51, 51, 52)));
         ArrayList<MCServer> configData = Config.getData();
-        for(int i = 0; i < Config.getData().size(); i++) {
+        for(int i = 0; i < configData.size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
             tabbedPane.addTab("Worlds", new WorldsTab(this, i));
@@ -85,56 +85,56 @@ public class ContainerPane extends JTabbedPane {
                 setBackgroundAt(index, new Color(51, 51, 52));
         }
 
-//        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
-            ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
+        //        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
+        ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
 
-            if(Window.areChartsEnabled)
-                selectedConsoleTab.enableCharts();
+        if(Window.areChartsEnabled)
+            selectedConsoleTab.enableCharts();
 
-            Runnable runnable = () -> {
-                for(int i = 0; i < serverTabbedPanes.size(); i++) {
-                    if(i != index) {
-                        ServerConsoleTab serverConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
-                        serverConsoleTab.disableCharts();
-                    }
+        Runnable runnable = () -> {
+            for(int i = 0; i < serverTabbedPanes.size(); i++) {
+                if(i != index) {
+                    ServerConsoleTab serverConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
+                    serverConsoleTab.disableCharts();
                 }
-            };
-            new Thread(runnable).start();
-
-            MCServer mcServerConfig = Config.getData().get(index);
-            try {
-                CurrentServerInfo.serverName = mcServerConfig.serverName();
-                CurrentServerInfo.serverPath = mcServerConfig.serverPath();
-                CurrentServerInfo.serverId = mcServerConfig.serverId();
-                Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
-                Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
-                new ServerPropertiesFile();
-                NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
-                nbtParser.start();
-                nbtParser.join();
-                CurrentServerInfo.world.levelName = nbtParser.getLevelName();
-            } catch (Exception ex) {
-                // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
+        };
+        new Thread(runnable).start();
 
-            WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);
-            worldsTab.setIcons();
+        MCServer mcServerConfig = Config.getData().get(index);
+        try {
+            CurrentServerInfo.serverName = mcServerConfig.serverName();
+            CurrentServerInfo.serverPath = mcServerConfig.serverPath();
+            CurrentServerInfo.serverId = mcServerConfig.serverId();
+            Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
+            Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
+            new ServerPropertiesFile();
+            NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
+            nbtParser.start();
+            nbtParser.join();
+            CurrentServerInfo.world.levelName = nbtParser.getLevelName();
+        } catch (Exception ex) {
+            // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
+        }
 
-            for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
-                ServerConsoleTab c = (ServerConsoleTab) serverTabbedPane.getComponentAt(0);
-                c.getServerConsoleArea().isVisible = false;
-            }
+        WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);
+        worldsTab.setIcons();
 
-            selectedConsoleTab.getServerConsoleArea().isVisible = true;
-            try {
-                selectedConsoleTab.getServerConsoleArea().setTextFromLatestLogFile();
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+        for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
+            ServerConsoleTab c = (ServerConsoleTab) serverTabbedPane.getComponentAt(0);
+            c.getServerConsoleArea().isVisible = false;
+        }
 
-//        } else { //when "add server" was selected
-//
-//        }
+        selectedConsoleTab.getServerConsoleArea().isVisible = true;
+        try {
+            selectedConsoleTab.getServerConsoleArea().setTextFromLatestLogFile();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+        //        } else { //when "add server" was selected
+        //
+        //        }
     }
 
     public void setChartsVisibility(boolean isVisible) {

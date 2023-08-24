@@ -4,6 +4,7 @@ import com.myne145.serverlauncher.gui.charts.CPUChart;
 import com.myne145.serverlauncher.gui.charts.RAMChart;
 import com.myne145.serverlauncher.gui.ContainerPane;
 import com.myne145.serverlauncher.gui.tabs.components.ServerConsoleArea;
+import com.myne145.serverlauncher.server.DesktopOpener;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
@@ -34,6 +35,15 @@ public class ServerConsoleTab extends JPanel {
 //        serverConsoleArea.setPreferredSize(new Dimension(500,500));
 
         if(!Config.getData().get(index).serverPath().exists()) {
+            JButton button = new JButton("Open config file");
+            button.addActionListener(e -> {
+                DesktopOpener.openConfigFile();
+            });
+
+//            button.setPreferredSize(new Dimension(170, 40));
+            add(new JLabel("Add a server in servers.json file to access the server panel!"), BorderLayout.LINE_START);
+            add(button, BorderLayout.PAGE_END);
+
             return;
         }
 
