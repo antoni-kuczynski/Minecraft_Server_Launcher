@@ -40,7 +40,6 @@ public class Config {
                      {
                          "serverName": "YOUR SERVER NAME",
                          "pathToServerIcon": "PATH TO ICON",
-                         "pathToServer": "PATH TO SERVER",
                          "pathToServerJarFile": "PATH TO SERVER JAR",
                          "pathToJavaRuntimeExecutable": "PATH TO JAVA RUNTIME EXECUTABLE",
                          "overrideDefaultLaunchArgs": false,
@@ -59,7 +58,7 @@ public class Config {
             JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
             String serverName = jsonObject.getString("serverName");
             String pathToServerIcon = jsonObject.getString("pathToServerIcon");
-            String pathToServerFolder = jsonObject.getString("pathToServer");
+            String pathToServerFolder = new File(jsonObject.getString("pathToServerJarFile")).getParent();
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
             String pathToJavaRuntime = jsonObject.getString("pathToJavaRuntimeExecutable");
             boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");

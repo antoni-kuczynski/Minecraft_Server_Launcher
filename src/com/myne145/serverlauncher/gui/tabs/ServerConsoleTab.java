@@ -36,9 +36,7 @@ public class ServerConsoleTab extends JPanel {
 
         if(!Config.getData().get(index).serverPath().exists()) {
             JButton button = new JButton("Open config file");
-            button.addActionListener(e -> {
-                DesktopOpener.openConfigFile();
-            });
+            button.addActionListener(e -> DesktopOpener.openConfigFile());
 
 //            button.setPreferredSize(new Dimension(170, 40));
             add(new JLabel("Add a server in servers.json file to access the server panel!"), BorderLayout.LINE_START);
