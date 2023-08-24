@@ -42,7 +42,7 @@ public class WorldsTab extends JPanel {
     private final WorldsTab worldsTab;
 
     private final double ONE_GIGABYTE = 1073741824;
-    private JButton openButton;
+    private final JButton openButton =  new JButton("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
 
     public WorldsTab(ContainerPane parentPane, int tabSwitchingToIndex) {
         super(new BorderLayout());
@@ -53,7 +53,6 @@ public class WorldsTab extends JPanel {
         String selServPrefix = "Selected server: ";
         selectedServerTxt.setText(selServPrefix + CurrentServerInfo.serverName);
         startCopying.setEnabled(false);
-        openButton = new JButton("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
         openButton.setMaximumSize(new Dimension(300, 40));
         openButton.addActionListener(e -> {
             Runnable runnable = new Runnable() {
