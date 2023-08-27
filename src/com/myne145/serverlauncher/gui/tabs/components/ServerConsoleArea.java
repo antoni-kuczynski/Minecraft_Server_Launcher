@@ -174,7 +174,12 @@ public class ServerConsoleArea extends JPanel {
 
     public void startServer(MCServer MCServer) {
         isVisible = true;
-        ArrayList<String> command = new ArrayList<>(Arrays.asList("java", "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
+        boolean isSelectedJavaTheDefaultOne = MCServer.javaRuntimePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
+                MCServer.javaRuntimePath().getAbsolutePath().endsWith("java");
+        System.out.println("is java default" + isSelectedJavaTheDefaultOne);
+        String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : MCServer.javaRuntimePath().getAbsolutePath();
+        ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
+
         try {
             processBuilder = new ProcessBuilder(command);
             processBuilder.directory(MCServer.serverPath());
@@ -189,6 +194,7 @@ public class ServerConsoleArea extends JPanel {
             parentPane.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         } catch (Exception e) {
             consoleOutput.append(Window.getErrorDialogMessage(e));
+            consoleOutput.append("(You probably specified a java executable that is not valid in the config file.)");
         }
         if (consoleMainThread.isAlive()) {
             try {

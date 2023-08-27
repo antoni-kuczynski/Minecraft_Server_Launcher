@@ -33,20 +33,19 @@ public class Config {
             FileWriter configWriter = new FileWriter(serverConfigFile);
             configWriter.write("""
                     [
-                    {
-                        "globalLaunchArgs": "",
-                        "globalServerFolder": ""
-                    },
-                    {
-                        "serverName": "",
-                        "pathToServerButtonIcon": "",
-                        "serverPath": "",
-                        "serverJarPath": "",
-                        "pathToJavaExecutable": "",
-                        "overrideDefaultLaunchArgs": false,
-                        "launchArgs": ""
-                      }
-                    ]""");
+                     {
+                         "globalLaunchArgs": "",
+                         "globalServerFolder": ""
+                     },
+                     {
+                         "serverName": "YOUR SERVER NAME",
+                         "pathToServerIcon": "PATH TO ICON",
+                         "pathToServerJarFile": "PATH TO SERVER JAR",
+                         "pathToJavaRuntimeExecutable": "PATH TO JAVA RUNTIME EXECUTABLE",
+                         "overrideDefaultLaunchArgs": false,
+                         "launchArgs": ""
+                       }
+                     ]""");
             configWriter.close();
         }
 
@@ -59,7 +58,7 @@ public class Config {
             JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
             String serverName = jsonObject.getString("serverName");
             String pathToServerIcon = jsonObject.getString("pathToServerIcon");
-            String pathToServerFolder = jsonObject.getString("pathToServer");
+            String pathToServerFolder = new File(jsonObject.getString("pathToServerJarFile")).getParent();
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
             String pathToJavaRuntime = jsonObject.getString("pathToJavaRuntimeExecutable");
             boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");
