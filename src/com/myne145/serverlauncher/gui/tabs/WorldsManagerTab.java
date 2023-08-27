@@ -25,8 +25,9 @@ import java.io.Serial;
 
 import static com.myne145.serverlauncher.gui.Window.alert;
 import static com.myne145.serverlauncher.gui.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.server.ZipUtils.isArchive;
 
-public class WorldsTab extends JPanel {
+public class WorldsManagerTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
     private final JLabel userAddedWorldIconOnly = new JLabel();
     private final JLabel serverWorldIconLabel = new JLabel();
@@ -39,14 +40,14 @@ public class WorldsTab extends JPanel {
     private String extractedWorldDir;
     private boolean isInArchiveMode; //issue #8 fixed by adding a boolean to check the content's type
     public FileSize extractedWorldSize;
-    private final WorldsTab worldsTab;
+    private final WorldsManagerTab worldsManagerTab;
 
     private final double ONE_GIGABYTE = 1073741824;
     private JButton openButton;
 
-    public WorldsTab(ContainerPane parentPane, int tabSwitchingToIndex) {
+    public WorldsManagerTab(ContainerPane parentPane, int tabSwitchingToIndex) {
         super(new BorderLayout());
-        worldsTab = this;
+        worldsManagerTab = this;
         if(!Config.getData().get(tabSwitchingToIndex).serverPath().exists())
             return;
         JLabel selectedServerTxt = new JLabel();
@@ -276,10 +277,10 @@ public class WorldsTab extends JPanel {
 
     private void setUserAddedWorld(File world) {
         removeImportButtonWarning();
-        if (WorldCopyHandler.isArchive(world)) {
+        if (isArchive(world)) {
             userAddedWorld = world;
             isInArchiveMode = true;
-            WorldCopyHandler.createWorldCopyHandler(worldsTab).start();
+            WorldCopyHandler.createWorldCopyHandler(worldsManagerTab).start();
         } else {
             isInArchiveMode = false;
             if(world.isFile()) {
@@ -290,7 +291,7 @@ public class WorldsTab extends JPanel {
                 setImportButtonWarning("Larger than 1GiB!");
             }
             userAddedWorld = world;
-            WorldCopyHandler.createWorldCopyHandler(worldsTab).start();
+            WorldCopyHandler.createWorldCopyHandler(worldsManagerTab).start();
         }
     }
 
@@ -317,7 +318,7 @@ public class WorldsTab extends JPanel {
         if(extractedWorldSize != null)
             extractedWorldSizeText = extractedWorldSize.getText();
         if(userAddedWorld != null)
-            isInArchiveMode = WorldCopyHandler.isArchive(userAddedWorld);
+            isInArchiveMode = isArchive(userAddedWorld);
 //        directoryTree.setDirectory(CurrentServerInfo.serverPath.getAbsolutePath());
         if(userAddedWorld != null && isInArchiveMode) { //issue #7 fix
             NBTParser nbtParser = NBTParser.createAddedWorldNBTParser(extractedWorldDir);
@@ -410,6 +411,10 @@ public class WorldsTab extends JPanel {
     }
 
     public JButton getStartCopyingButton() {
+        return startCopying;
+    }
+
+    public JButton getStartCopying() {
         return startCopying;
     }
 }

@@ -2,19 +2,15 @@ package com.myne145.serverlauncher.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.myne145.serverlauncher.gui.tabs.ServerConsoleTab;
-import com.myne145.serverlauncher.gui.tabs.WorldsTab;
-import com.myne145.serverlauncher.gui.tabs.components.contextmenus.ServerConsoleContextMenu;
-import com.myne145.serverlauncher.gui.tabs.components.contextmenus.TabLabelWithContextMenu;
+import com.myne145.serverlauncher.gui.tabs.WorldsManagerTab;
 import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerPropertiesFile;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -30,7 +26,7 @@ public class ContainerPane extends JTabbedPane {
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
-            tabbedPane.addTab("Worlds", new WorldsTab(this, i));
+            tabbedPane.addTab("Worlds", new WorldsManagerTab(this, i));
 //            tabbedPane.setIconAt(0, new FlatSVGIcon(new File("resources/console_icon.svg")).derive(16,16));
             serverTabbedPanes.add(tabbedPane);
         }
@@ -117,8 +113,8 @@ public class ContainerPane extends JTabbedPane {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
 
-            WorldsTab worldsTab = (WorldsTab) serverTabbedPanes.get(index).getComponentAt(1);
-            worldsTab.setIcons();
+            WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
+            worldsManagerTab.setIcons();
 
             for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
                 ServerConsoleTab c = (ServerConsoleTab) serverTabbedPane.getComponentAt(0);
