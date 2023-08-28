@@ -81,7 +81,6 @@ public class ServerConsoleArea extends JPanel {
 
 
     public ServerConsoleArea(ContainerPane parentPane, int index, ServerConsoleTab tab) {
-        setBackground(Color.GREEN);
         setLayout(new BorderLayout());
         this.index = index;
         this.parentPane = parentPane;

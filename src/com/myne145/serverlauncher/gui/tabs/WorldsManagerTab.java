@@ -50,45 +50,24 @@ public class WorldsManagerTab extends JPanel {
         worldsManagerTab = this;
         if(!Config.getData().get(tabSwitchingToIndex).serverPath().exists())
             return;
-        JLabel selectedServerTxt = new JLabel();
-        String selServPrefix = "Selected server: ";
-        selectedServerTxt.setText(selServPrefix + CurrentServerInfo.serverName);
+
         startCopying.setEnabled(false);
         openButton.setMaximumSize(new Dimension(300, 40));
         openButton.addActionListener(e -> {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    JnaFileChooser fileDialog = new JnaFileChooser();
-                    fileDialog.showOpenDialog(Window.getWindow());
+            Runnable runnable = () -> {
+                JnaFileChooser fileDialog = new JnaFileChooser();
+                fileDialog.showOpenDialog(Window.getWindow());
 
-                    removeImportButtonWarning();
-                    File[] filePaths = fileDialog.getSelectedFiles();
+                removeImportButtonWarning();
+                File[] filePaths = fileDialog.getSelectedFiles();
 
-                    if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
-                        return;
-                    }
-
-                    File fileToAdd = filePaths[0];
-                    setUserAddedWorld(fileToAdd);
-//                    if (WorldCopyHandler.isArchive(fileToAdd)) {
-//                        userSelectedWorld = fileToAdd;
-//                        isInArchiveMode = true;
-//                        WorldCopyHandler.createWorldCopyHandler(worldsTab).start();
-//                    } else {
-//                        isInArchiveMode = false;
-//                        if(fileToAdd.isFile()) {
-//                            fileToAdd = new File(fileToAdd.getParent());
-//                        }
-//                        if (FileUtils.sizeOfDirectory(fileToAdd) >= ONE_GIGABYTE) {
-//                            setImportButtonWarning("Larger than 1GiB!");
-//                            userSelectedWorld = fileToAdd;
-//                        } else { //less than 1GiB
-//                            userSelectedWorld = fileToAdd;
-//                        }
-//                    }
-                    setIcons();
+                if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
+                    return;
                 }
+
+                File fileToAdd = filePaths[0];
+                setUserAddedWorld(fileToAdd);
+                setIcons();
             };
             new Thread(runnable).start();
 
@@ -136,6 +115,9 @@ public class WorldsManagerTab extends JPanel {
 
         Dimension emptyBoxDimension = new Dimension(10, 10);
 
+
+
+
         //Panels
         JPanel titlePanel = new JPanel(new BorderLayout());
         JPanel openButtonInCorrectPlacement = new JPanel(new BorderLayout());
@@ -143,32 +125,25 @@ public class WorldsManagerTab extends JPanel {
         JPanel worldIconWithSpacing = new JPanel(new BorderLayout());
         JPanel worldPanel = new JPanel(new BorderLayout());
 
-
-
         JPanel startCopyingPanel = new JPanel(new BorderLayout());
         JPanel copyingProgress = new JPanel(new BorderLayout());
         JPanel startCopyingBtnPanel = new JPanel(new BorderLayout());
 
         JPanel addingWorld = new JPanel(new BorderLayout());
-        JPanel arrowPanel = new JPanel(new BorderLayout());
         JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
 
         JPanel worldPaneUpper = new JPanel(new BorderLayout());
-        JPanel serverIconWithSpacing = new JPanel(new BorderLayout());
-        JPanel serverNameAndStuff = new JPanel(new BorderLayout());
+        JPanel serverInfoPanelWithIcon = new JPanel(new BorderLayout());
+        JPanel serverInfoPanelWithSpacing = new JPanel(new BorderLayout());
         JPanel serverWorldNameWithSpacing = new JPanel(new BorderLayout());
         JPanel serverPanelBottom = new JPanel(new BorderLayout());
-        JPanel worldAndArrowPanel = new JPanel(new BorderLayout());
+        JPanel worldAndArrowPanel = new JPanel();
 
+        worldAndArrowPanel.setLayout(new BoxLayout(worldAndArrowPanel, BoxLayout.Y_AXIS));
 
         JLabel title = new JLabel("World Manager");
-        JLabel arrow = new JLabel();
-        JLabel modeInfo = new JLabel("    Copy and replace   ");
-
-        modeInfo.setFont(new Font("Arial", Font.BOLD, 14));
         title.setFont(new Font("Arial", Font.BOLD, 18));
-        arrow.setIcon(new FlatSVGIcon(new File(Config.RESOURCES_PATH + "/arrow.svg")).derive(80,116));
 
 
         titlePanel.add(Box.createRigidArea(new Dimension(5,5)), BorderLayout.PAGE_START);
@@ -198,10 +173,6 @@ public class WorldsManagerTab extends JPanel {
         worldPanel.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_END);
 
 
-        arrowPanel.add(modeInfo, BorderLayout.LINE_START);
-        arrowPanel.add(arrow, BorderLayout.CENTER);
-
-
 
 
         copyingProgress.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_START);
@@ -225,45 +196,36 @@ public class WorldsManagerTab extends JPanel {
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
 
-        worldPaneUpper.add(new JLabel("Selected world:"), BorderLayout.PAGE_START);
         worldPaneUpper.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_START);
         worldPaneUpper.add(worldPanel, BorderLayout.CENTER);
         worldPaneUpper.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
 
 
-        serverIconWithSpacing.add(serverWorldIconLabel, BorderLayout.LINE_START);
-        serverIconWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.CENTER); //issue #62 fix for servers
-        serverIconWithSpacing.add(serverWorldDetailsWithoutIcon, BorderLayout.LINE_END);
+        serverInfoPanelWithIcon.add(serverWorldIconLabel, BorderLayout.LINE_START);
+        serverInfoPanelWithIcon.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.CENTER);
+        serverInfoPanelWithIcon.add(serverWorldDetailsWithoutIcon, BorderLayout.LINE_END);
 
 
-        serverNameAndStuff.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_START);
-        serverNameAndStuff.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_START);
-        serverNameAndStuff.add(serverIconWithSpacing, BorderLayout.CENTER);
-        serverNameAndStuff.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
-        serverNameAndStuff.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_END);
-        serverNameAndStuff.setBorder(new FlatRoundBorder());
+        serverInfoPanelWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_START);
+        serverInfoPanelWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_START);
+        serverInfoPanelWithSpacing.add(serverInfoPanelWithIcon, BorderLayout.CENTER);
+        serverInfoPanelWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
+        serverInfoPanelWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_END);
+        serverInfoPanelWithSpacing.setBorder(new FlatRoundBorder());
 
 
         serverWorldNameWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_START);
-        serverWorldNameWithSpacing.add(serverNameAndStuff, BorderLayout.CENTER);
-
-
+        serverWorldNameWithSpacing.add(serverInfoPanelWithSpacing, BorderLayout.CENTER);
 
 
         serverPanelBottom.add(serverWorldNameWithSpacing, BorderLayout.LINE_START);
         serverPanelBottom.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
 
 
-        worldAndArrowPanel.add(worldPaneUpper, BorderLayout.PAGE_START);
-//        worldAndArrowPanel.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.CENTER);
-        worldAndArrowPanel.add(arrowPanel, BorderLayout.CENTER);
-        worldAndArrowPanel.add(serverPanelBottom, BorderLayout.PAGE_END);
+        worldAndArrowPanel.add(worldPaneUpper);
+        worldAndArrowPanel.add(serverPanelBottom);
 
 
-//        addingWorld.add(worldAndArrowPanel, BorderLayout.CENTER);
-//        addingWorld.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_START);
-//        addingWorld.add(arrowPanel, BorderLayout.CENTER);
-//        addingWorld.add(serverPanelBottom, BorderLayout.PAGE_END);
 
         addingWorld.add(buttonAndText, BorderLayout.PAGE_START);
         addingWorld.add(worldAndArrowPanel, BorderLayout.LINE_START);

@@ -146,18 +146,22 @@ public class WorldCopyHandler extends Thread {
     }
 
     private void handler() throws IOException, InterruptedException {
+         if (selectedWorld.isDirectory() && selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
+            Window.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
+        }
+
         if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
-            ArrayList<String> serverWorldFilenamesList = new ArrayList<>(Arrays.asList(selectedWorld.list()));
-            boolean isServerWorldDirEmpty = serverWorldDir.list() == null || selectedWorld.list().length <= 0;
+            ArrayList<String> selectedWorldFilenamesList = new ArrayList<>(Arrays.asList(selectedWorld.list()));
+            boolean isAddedWorldDirEmpty = serverWorldDir.list() == null || selectedWorld.list().length <= 0;
             boolean containsWorldFiles =
-                    serverWorldFilenamesList.contains("level.dat") ||
-                            serverWorldFilenamesList.contains("data") ||
-                            serverWorldFilenamesList.contains("region");
+                    selectedWorldFilenamesList.contains("level.dat") ||
+                            selectedWorldFilenamesList.contains("data") ||
+                            selectedWorldFilenamesList.contains("region");
 
             if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
                 alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
             }
-            if (!isServerWorldDirEmpty && !containsWorldFiles) {
+            if (!isAddedWorldDirEmpty && !containsWorldFiles) {
                 worldsManagerTab.setImportButtonWarning("Not a Minecraft world!");
             }
 
@@ -167,7 +171,7 @@ public class WorldCopyHandler extends Thread {
             }
 
             if(copyFilesToServerDir) {
-                if (!isServerWorldDirEmpty && !containsWorldFiles) {
+                if (!isAddedWorldDirEmpty && !containsWorldFiles) {
                     worldsManagerTab.setImportButtonWarning("Not a Minecraft world!");
                 } else if (serverWorldDir.list() != null && serverWorldDir.list().length > 0) { //world dir is not empty
                     FileUtils.deleteDirectory(serverWorldDir);
@@ -187,14 +191,7 @@ public class WorldCopyHandler extends Thread {
                     worldsManagerTab.setImportButtonWarning("File is probably not a minecraft world. Continue at your own risk.");
                     return;
                 }
-                if(extractedDirectory == null)
-                    return;
-//                if(extractedDirectory != null) {
-//                    extractedDirTemp = new File(extractedDirectory).getParent();
-//                } else {
-//                    alert(AlertType.WARNING, "File is probably not a minecraft world. Continue at your own risk.");
-//                    return;
-//                }
+
                 String extractedDirTemp = new File(extractedDirectory).getParent();
                 File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp));
                 worldsManagerTab.setExtractedWorldDir(predictedWorldDir.getAbsolutePath());
@@ -232,8 +229,6 @@ public class WorldCopyHandler extends Thread {
                 CurrentServerInfo.world.levelName = nbtParser.getLevelName();
                 CurrentServerInfo.world.levelDat = CurrentServerInfo.world.getLevelDat(); //restore the original level.dat file location for safety
             }
-        } else if (selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
-            Window.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
         startImportingButtonFromWorldManagerTab.setEnabled(true); //issue #15 fix
         worldsManagerTab.setIcons();
