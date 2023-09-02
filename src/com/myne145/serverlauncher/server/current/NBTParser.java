@@ -1,6 +1,6 @@
 package com.myne145.serverlauncher.server.current;
 
-import com.myne145.serverlauncher.gui.AlertType;
+import com.myne145.serverlauncher.utils.AlertType;
 import dev.dewy.nbt.Nbt;
 import dev.dewy.nbt.tags.collection.CompoundTag;
 import org.apache.commons.io.FileUtils;
@@ -11,9 +11,10 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.myne145.serverlauncher.gui.Window.alert;
-import static com.myne145.serverlauncher.gui.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.gui.window.Window.alert;
+import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
+@Deprecated
 public class NBTParser extends Thread {
     private String levelName;
     private Calendar lastPlayedDate;

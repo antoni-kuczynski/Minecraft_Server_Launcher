@@ -1,12 +1,14 @@
-package com.myne145.serverlauncher.gui;
+package com.myne145.serverlauncher.gui.window;
 
+import com.myne145.serverlauncher.gui.window.components.ContainerPane;
 import com.myne145.serverlauncher.server.current.CurrentServerWorld;
 import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
-import com.myne145.serverlauncher.server.current.ServerPropertiesFile;
+import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
-import com.myne145.serverlauncher.server.DesktopOpener;
+import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.utils.DesktopOpener;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -18,8 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -65,7 +65,7 @@ public class Window extends JFrame {
 
 
 
-        new ServerPropertiesFile();
+        ServerProperties.reloadLevelNameGlobalValue();
         NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
         nbtParser.start();
 

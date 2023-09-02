@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui.charts;
+package com.myne145.serverlauncher.gui.tabs.serverdashboard.charts;
 
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import org.knowm.xchart.*;
@@ -9,8 +9,6 @@ import oshi.hardware.HardwareAbstractionLayer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Timer;
 import java.util.TimerTask;
 

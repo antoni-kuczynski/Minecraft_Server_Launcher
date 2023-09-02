@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.server;
+package com.myne145.serverlauncher.utils;
 
 import org.apache.commons.io.FileUtils;
 

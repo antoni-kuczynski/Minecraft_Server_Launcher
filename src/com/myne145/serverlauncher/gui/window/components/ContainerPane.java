@@ -1,11 +1,12 @@
-package com.myne145.serverlauncher.gui;
+package com.myne145.serverlauncher.gui.window.components;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.myne145.serverlauncher.gui.tabs.ServerConsoleTab;
-import com.myne145.serverlauncher.gui.tabs.WorldsManagerTab;
+import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
+import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
-import com.myne145.serverlauncher.server.current.ServerPropertiesFile;
+import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 
@@ -14,7 +15,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
-import static com.myne145.serverlauncher.gui.Window.SERVER_STATUS_ICON_DIMENSION;
+import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
 
 
 public class ContainerPane extends JTabbedPane {
@@ -84,7 +85,7 @@ public class ContainerPane extends JTabbedPane {
 //        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
             ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
 
-            if(Window.areChartsEnabled)
+            if(com.myne145.serverlauncher.gui.window.Window.areChartsEnabled)
                 selectedConsoleTab.enableCharts();
 
             Runnable runnable = () -> {
@@ -102,9 +103,9 @@ public class ContainerPane extends JTabbedPane {
                 CurrentServerInfo.serverName = mcServerConfig.serverName();
                 CurrentServerInfo.serverPath = mcServerConfig.serverPath();
                 CurrentServerInfo.serverId = mcServerConfig.serverId();
-                Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
+                com.myne145.serverlauncher.gui.window.Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
                 Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
-                new ServerPropertiesFile();
+                ServerProperties.reloadLevelNameGlobalValue();
                 NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
                 nbtParser.start();
                 nbtParser.join();
@@ -113,8 +114,8 @@ public class ContainerPane extends JTabbedPane {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
 
-            WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
-            worldsManagerTab.setIcons();
+//            WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
+//            worldsManagerTab.setIcons();
 
             for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
                 ServerConsoleTab c = (ServerConsoleTab) serverTabbedPane.getComponentAt(0);

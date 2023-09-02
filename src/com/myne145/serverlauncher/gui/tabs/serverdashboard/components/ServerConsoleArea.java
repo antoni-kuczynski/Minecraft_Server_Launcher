@@ -1,9 +1,8 @@
-package com.myne145.serverlauncher.gui.tabs.components;
+package com.myne145.serverlauncher.gui.tabs.serverdashboard.components;
 
-import com.myne145.serverlauncher.gui.ContainerPane;
-import com.myne145.serverlauncher.gui.tabs.components.contextmenus.ServerConsoleContextMenu;
-import com.myne145.serverlauncher.gui.Window;
-import com.myne145.serverlauncher.gui.tabs.ServerConsoleTab;
+import com.myne145.serverlauncher.gui.window.components.ContainerPane;
+import com.myne145.serverlauncher.gui.window.Window;
+import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
@@ -19,7 +18,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.myne145.serverlauncher.gui.Window.SERVER_STATUS_ICON_DIMENSION;
+import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
 
 public class ServerConsoleArea extends JPanel {
     public JTextArea consoleOutput = new JTextArea();

@@ -1,10 +1,10 @@
-package com.myne145.serverlauncher.gui.tabs;
+package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 
-import com.myne145.serverlauncher.gui.charts.CPUChart;
-import com.myne145.serverlauncher.gui.charts.RAMChart;
-import com.myne145.serverlauncher.gui.ContainerPane;
-import com.myne145.serverlauncher.gui.tabs.components.ServerConsoleArea;
-import com.myne145.serverlauncher.server.DesktopOpener;
+import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.CPUChart;
+import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.RAMChart;
+import com.myne145.serverlauncher.gui.window.components.ContainerPane;
+import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerConsoleArea;
+import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
@@ -12,7 +12,7 @@ import com.myne145.serverlauncher.server.Config;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.myne145.serverlauncher.gui.Window.SERVER_STATUS_ICON_DIMENSION;
+import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
 
 public class ServerConsoleTab extends JPanel {
     public final JButton startServer = new JButton("Start Server");

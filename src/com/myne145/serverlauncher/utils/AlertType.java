@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui;
+package com.myne145.serverlauncher.utils;
 
 public enum AlertType {
     ERROR,

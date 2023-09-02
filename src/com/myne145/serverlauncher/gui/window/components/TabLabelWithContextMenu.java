@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui.tabs.components.contextmenus;
+package com.myne145.serverlauncher.gui.window.components;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;

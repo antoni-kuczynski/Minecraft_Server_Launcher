@@ -1,11 +1,12 @@
 package com.myne145.serverlauncher.server;
 
-import com.myne145.serverlauncher.gui.tabs.WorldsManagerTab;
-import com.myne145.serverlauncher.gui.AlertType;
-import com.myne145.serverlauncher.gui.Window;
+import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
+import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.current.NBTParser;
-import com.myne145.serverlauncher.server.current.ServerPropertiesFile;
+import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
+import com.myne145.serverlauncher.utils.FileSize;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -17,10 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.myne145.serverlauncher.gui.Window.alert;
-import static com.myne145.serverlauncher.gui.Window.getErrorDialogMessage;
-import static com.myne145.serverlauncher.server.ZipUtils.extractArchive;
-import static com.myne145.serverlauncher.server.ZipUtils.isArchive;
+import static com.myne145.serverlauncher.gui.window.Window.alert;
+import static com.myne145.serverlauncher.utils.ZipUtils.extractArchive;
+import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 
 public class WorldCopyHandler extends Thread {
     private static JProgressBar progressBar = null;
@@ -33,10 +33,10 @@ public class WorldCopyHandler extends Thread {
     private static final Taskbar taskbar = Taskbar.getTaskbar();
 
     private WorldCopyHandler(WorldsManagerTab worldsManagerTab, boolean copyFilesToServerDir) throws IOException {
-        ServerPropertiesFile serverPropertiesFile = new ServerPropertiesFile();
+        ServerProperties.reloadLevelNameGlobalValue();
         this.worldsManagerTab = worldsManagerTab;
 
-        this.serverWorldName = serverPropertiesFile.getWorldName();
+        this.serverWorldName = ServerProperties.getWorldName();
         this.serverWorldDir = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + serverWorldName);
 
         this.selectedWorld = worldsManagerTab.getUserAddedWorld();
@@ -203,7 +203,7 @@ public class WorldCopyHandler extends Thread {
                 }
                 
                 worldsManagerTab.extractedWorldSize = FileSize.directorySizeWithConversion(new File(extractedDirTemp));
-                worldsManagerTab.setIcons();
+//                worldsManagerTab.setIcons();
             }
             if (copyFilesToServerDir) {
                 startImportingButtonFromWorldManagerTab.setEnabled(false); //issue #15 fix
@@ -231,7 +231,7 @@ public class WorldCopyHandler extends Thread {
             }
         }
         startImportingButtonFromWorldManagerTab.setEnabled(true); //issue #15 fix
-        worldsManagerTab.setIcons();
+        worldsManagerTab.setIcons(); //non-removable
     }
 
     @Override

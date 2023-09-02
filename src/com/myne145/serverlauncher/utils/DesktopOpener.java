@@ -1,14 +1,13 @@
-package com.myne145.serverlauncher.server;
+package com.myne145.serverlauncher.utils;
 
-import com.myne145.serverlauncher.gui.AlertType;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-import static com.myne145.serverlauncher.gui.Window.alert;
-import static com.myne145.serverlauncher.gui.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.gui.window.Window.alert;
+import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
 public class DesktopOpener {
 

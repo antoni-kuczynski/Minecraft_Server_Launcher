@@ -1,11 +1,12 @@
-package com.myne145.serverlauncher.gui.tabs;
+package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.myne145.serverlauncher.gui.AlertType;
-import com.myne145.serverlauncher.gui.ContainerPane;
-import com.myne145.serverlauncher.gui.Window;
+import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.gui.window.components.ContainerPane;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.server.FileSize;
+import com.myne145.serverlauncher.utils.FileSize;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
@@ -23,9 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 
-import static com.myne145.serverlauncher.gui.Window.alert;
-import static com.myne145.serverlauncher.gui.Window.getErrorDialogMessage;
-import static com.myne145.serverlauncher.server.ZipUtils.isArchive;
+import static com.myne145.serverlauncher.gui.window.Window.alert;
+import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 
 public class WorldsManagerTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
@@ -67,12 +68,10 @@ public class WorldsManagerTab extends JPanel {
 
                 File fileToAdd = filePaths[0];
                 setUserAddedWorld(fileToAdd);
-                setIcons();
             };
             new Thread(runnable).start();
 
         });
-        setIcons();
         TransferHandler transferHandler = new TransferHandler() {
             @Serial
             private static final long serialVersionUID = 1L;
@@ -92,7 +91,7 @@ public class WorldsManagerTab extends JPanel {
                     List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
                     File fileToAdd = l.get(l.size() - 1);
                     setUserAddedWorld(fileToAdd);
-                    setIcons();
+
                 } catch (UnsupportedFlavorException | IOException e) {
                     alert(AlertType.ERROR, getErrorDialogMessage(e));
                     return false;
@@ -172,7 +171,27 @@ public class WorldsManagerTab extends JPanel {
         worldPanel.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
         worldPanel.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_END);
 
+        worldPanel.setBackground(new Color(60, 63, 65));
+        worldPanel.setBackground(new Color(60, 63, 65));
+        worldPanel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0), new Color(44, 44, 44), 1, 32));
 
+        JPanel worldInfoPanelWithIcon = new JPanel();
+
+        worldInfoPanelWithIcon.add(Box.createRigidArea(emptyBoxDimension));
+        worldInfoPanelWithIcon.add(userAddedWorldIconOnly);
+        worldInfoPanelWithIcon.add(Box.createRigidArea(emptyBoxDimension));
+        worldInfoPanelWithIcon.add(userAddedWorldDetailsWithoutIcon);
+
+        worldPanel.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_START);
+//        worldPanel.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_START);
+        worldPanel.add(worldInfoPanelWithIcon, BorderLayout.LINE_START);
+        worldPanel.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
+        worldPanel.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_END);
+
+
+        worldInfoPanelWithIcon.setBackground(new Color(60, 63, 65));
+        worldPanel.setBackground(new Color(60, 63, 65));
+        worldPanel.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0), new Color(44, 44, 44), 1, 32));
 
 
         copyingProgress.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_START);
@@ -185,8 +204,6 @@ public class WorldsManagerTab extends JPanel {
         startCopyingBtnPanel.add(startCopying, BorderLayout.CENTER);
         startCopyingBtnPanel.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
 
-
-
         refreshButtonWithSpacing.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.LINE_START);
         refreshButtonWithSpacing.add(refreshButton, BorderLayout.CENTER);
 
@@ -195,7 +212,7 @@ public class WorldsManagerTab extends JPanel {
         startCopyingPanel.add(startCopyingBtnPanel, BorderLayout.LINE_END);
         startCopyingPanel.add(copyingProgress, BorderLayout.PAGE_END);
 
-
+//
         worldPaneUpper.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_START);
         worldPaneUpper.add(worldPanel, BorderLayout.CENTER);
         worldPaneUpper.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
@@ -211,7 +228,11 @@ public class WorldsManagerTab extends JPanel {
         serverInfoPanelWithSpacing.add(serverInfoPanelWithIcon, BorderLayout.CENTER);
         serverInfoPanelWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_END);
         serverInfoPanelWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.PAGE_END);
-        serverInfoPanelWithSpacing.setBorder(new FlatRoundBorder());
+
+
+        serverInfoPanelWithIcon.setBackground(new Color(60, 63, 65));
+        serverInfoPanelWithSpacing.setBackground(new Color(60, 63, 65));
+        serverInfoPanelWithSpacing.setBorder(new FlatLineBorder(new Insets(0, 0, 0, 0), new Color(44, 44, 44), 1, 32));
 
 
         serverWorldNameWithSpacing.add(Box.createRigidArea(emptyBoxDimension), BorderLayout.LINE_START);
@@ -234,6 +255,8 @@ public class WorldsManagerTab extends JPanel {
 //        add(buttonAndText, BorderLayout.PAGE_START);
         add(addingWorld, BorderLayout.PAGE_START);
         add(startCopyingPanel, BorderLayout.PAGE_END);
+
+        setIcons(); //non-removable
     }
 
     private void setUserAddedWorld(File world) {
@@ -253,6 +276,7 @@ public class WorldsManagerTab extends JPanel {
             }
             userAddedWorld = world;
             WorldCopyHandler.createWorldCopyHandler(worldsManagerTab).start();
+            setIcons(); //non-removable
         }
     }
 

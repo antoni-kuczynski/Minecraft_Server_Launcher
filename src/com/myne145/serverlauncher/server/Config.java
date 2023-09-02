@@ -1,7 +1,7 @@
 package com.myne145.serverlauncher.server;
 
-import com.myne145.serverlauncher.gui.AlertType;
-import com.myne145.serverlauncher.gui.Window;
+import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.gui.window.Window;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

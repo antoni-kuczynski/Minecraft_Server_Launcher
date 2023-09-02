@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.server.current;
 
 import java.util.LinkedHashMap;
 
+@Deprecated
 public final class LevelNameColorConverter {
     private static final LinkedHashMap<String, String> MC_CODES = new LinkedHashMap<>();
     static {

@@ -1,33 +1,30 @@
 package com.myne145.serverlauncher.server.current;
 
-import com.myne145.serverlauncher.gui.AlertType;
-import com.myne145.serverlauncher.gui.Window;
+import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.gui.window.Window;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
-import static com.myne145.serverlauncher.gui.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
-public class ServerPropertiesFile {
-    private String worldName;
+public class ServerProperties {
+    private static String worldName;
 
-    public ServerPropertiesFile() throws IOException {
+    public static void reloadLevelNameGlobalValue() {
         File serverProperties = new File(CurrentServerInfo.serverPath + "\\server.properties");
         if(!serverProperties.exists()) {
             worldName = "world";
             CurrentServerInfo.world.path = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\world");
             CurrentServerInfo.world.levelDat = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
-//            WorldsTab.wasServerPropertiesFound = false;
             return;
         }
-//        WorldsTab.wasServerPropertiesFound = true;
         ArrayList<String> serverPropertiesContent = null;
         try {
             serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
-        } catch (NoSuchFileException e) {
+        } catch (IOException e) {
             Window.alert(AlertType.FATAL, "\"" + e.getMessage() + "\"" + " file not found.\n"  + getErrorDialogMessage(e));
             System.exit(1);
         }
@@ -40,10 +37,9 @@ public class ServerPropertiesFile {
         }
         CurrentServerInfo.world.path = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + worldName);
         CurrentServerInfo.world.levelDat = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
-
     }
 
-    public String getWorldName() {
+    public static String getWorldName() {
         return worldName;
     }
 }

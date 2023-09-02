@@ -1,8 +1,7 @@
-package com.myne145.serverlauncher.server;
+package com.myne145.serverlauncher.utils;
 
-import com.myne145.serverlauncher.gui.AlertType;
-import com.myne145.serverlauncher.gui.Window;
-import com.myne145.serverlauncher.gui.tabs.WorldsManagerTab;
+import com.myne145.serverlauncher.gui.window.Window;
+import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 
 import java.awt.*;
 import java.io.File;
@@ -12,7 +11,7 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.myne145.serverlauncher.gui.Window.alert;
+import static com.myne145.serverlauncher.gui.window.Window.alert;
 
 public class ZipUtils {
     private static final Taskbar taskbar = Taskbar.getTaskbar();

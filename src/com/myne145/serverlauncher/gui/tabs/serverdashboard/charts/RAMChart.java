@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui.charts;
+package com.myne145.serverlauncher.gui.tabs.serverdashboard.charts;
 
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import org.knowm.xchart.*;
