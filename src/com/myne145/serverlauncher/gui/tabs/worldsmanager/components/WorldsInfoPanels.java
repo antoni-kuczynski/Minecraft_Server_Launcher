@@ -2,18 +2,19 @@ package com.myne145.serverlauncher.gui.tabs.worldsmanager.components;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
+import com.myne145.serverlauncher.server.Config;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.Calendar;
 
-public class WorldsInfo extends JPanel {
-    private final ImageIcon DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(new ImageIcon("defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+public class WorldsInfoPanels extends JPanel {
+    private final ImageIcon DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
     private final WorldInformationPanel clientWorldInfo;
     private final WorldInformationPanel serverWorldInfo;
 
-    public WorldsInfo() {
+    public WorldsInfoPanels() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         clientWorldInfo = createInformationPanel("Currently selected world");
         serverWorldInfo = createInformationPanel("Current server world");
@@ -41,6 +42,12 @@ public class WorldsInfo extends JPanel {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        if(clientMCWorld.getLevelNameNoColors() == null) {
+            worldInformationPanel.worldInformationLabel.setText("<html><font size=4>Level.dat file not found!</font></html>");
+            worldInformationPanel.worldInformationLabel.setIcon(DEFAULT_WORLD_ICON_PACK_PNG);
+            return;
+        }
+
 
         String AM_PM = "AM";
         if(clientMCWorld.getLastPlayedDate().get(Calendar.AM_PM) == Calendar.PM)

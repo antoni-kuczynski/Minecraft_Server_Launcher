@@ -1,8 +1,10 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
+import com.myne145.serverlauncher.server.Config;
 import dev.dewy.nbt.Nbt;
 import dev.dewy.nbt.tags.collection.CompoundTag;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -20,15 +22,23 @@ public class MinecraftWorld {
     private String gamemode;
     private boolean isUsingCheats;
     private String gameVersion;
+    private final ImageIcon DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
 
     public MinecraftWorld(File worldPath) throws IOException {
         //Icon
         File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
-        worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96,96, Image.SCALE_SMOOTH));
+        try {
+            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+        } catch (Exception e) {
+            worldIcon = DEFAULT_WORLD_ICON_PACK_PNG;
+        }
+        File levelDatFile = new File(worldPath.getAbsolutePath() + "/level.dat");
+        if(!levelDatFile.exists())
+            return;
 
         //level.dat NBT reading
         Nbt levelDat = new Nbt();
-        CompoundTag content = levelDat.fromFile(new File(worldPath.getAbsolutePath() + "/level.dat"));
+        CompoundTag content = levelDat.fromFile(levelDatFile);
 
         if(content == null)
             return;

@@ -114,8 +114,8 @@ public class ContainerPane extends JTabbedPane {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
 
-//            WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
-//            worldsManagerTab.setIcons();
+            WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
+            worldsManagerTab.setIcons();
 
             for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
                 ServerConsoleTab c = (ServerConsoleTab) serverTabbedPane.getComponentAt(0);
