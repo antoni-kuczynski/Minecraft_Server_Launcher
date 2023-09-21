@@ -199,7 +199,10 @@ public class WorldCopyHandler extends Thread {
 
                 File extractedWorldsLevelDat = new File(predictedWorldDir.getAbsolutePath() + "/level.dat");
                 if(extractedWorldsLevelDat.exists()) {//copying world's level.dat file analogically like server ones
-                    FileUtils.copyFile(extractedWorldsLevelDat, new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat"));
+                    File worldLevelDat = new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat");
+//                    if(worldLevelDat.exists())
+//                        FileUtils.forceDelete(worldLevelDat);
+                    FileUtils.copyFile(extractedWorldsLevelDat, worldLevelDat);
                 }
                 
                 worldsManagerTab.extractedWorldSize = FileSize.directorySizeWithConversion(new File(extractedDirTemp));
