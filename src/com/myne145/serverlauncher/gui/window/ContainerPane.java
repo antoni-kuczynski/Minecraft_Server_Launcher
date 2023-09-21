@@ -1,9 +1,8 @@
-package com.myne145.serverlauncher.gui.window.components;
+package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
-import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerProperties;
@@ -20,6 +19,13 @@ import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DI
 
 public class ContainerPane extends JTabbedPane {
     private final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
+
+    @Override
+    public void setIconAt(int index, Icon icon) {
+        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+        tabLabel.setIcon(icon);
+    }
+
     public ContainerPane() {
         setLayout(new BorderLayout());
 //        setUI(new CustomTabbedPaneUI(new Color(76, 76, 80), new Color(51, 51, 52)));
@@ -28,6 +34,8 @@ public class ContainerPane extends JTabbedPane {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
             tabbedPane.addTab("Worlds", new WorldsManagerTab(this, i));
+            tabbedPane.setTabComponentAt(0, new TabLabelWithFileTransfer("Console", tabbedPane,0));
+            tabbedPane.setTabComponentAt(1, new TabLabelWithFileTransfer("Worlds", tabbedPane,1));
 //            tabbedPane.setIconAt(0, new FlatSVGIcon(new File("resources/console_icon.svg")).derive(16,16));
             serverTabbedPanes.add(tabbedPane);
         }
@@ -37,6 +45,7 @@ public class ContainerPane extends JTabbedPane {
             if(serverName.length() > 25)
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
+            setTabComponentAt(i, new ServerTabLabel(serverName, this, i));
 
 //            TabLabelWithContextMenu tabLabel = new TabLabelWithContextMenu(serverName, i, Config.getData().get(i).serverPath().exists());
 //            setTabComponentAt(i, tabLabel);

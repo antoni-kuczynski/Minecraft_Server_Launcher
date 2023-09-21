@@ -36,15 +36,15 @@ public class MinecraftWorld {
             worldIcon = DEFAULT_WORLD_ICON_PACK_PNG;
         }
         File levelDatFile = new File("world_temp/worlds_level_dat/level_" + worldPath.getName() + ".dat");
-        InputStream levelDatInputStream = new FileInputStream(levelDatFile);
+//        InputStream levelDatInputStream = new FileInputStream(levelDatFile);
 
         if(!levelDatFile.exists())
             return;
 
         //level.dat NBT reading
         Nbt levelDat = new Nbt();
-        CompoundTag content = levelDat.fromFile(IOUtils.copy);
-        levelDat.fromStream()
+        CompoundTag content = levelDat.fromFile(levelDatFile);
+//        levelDat.fromStream()
 
         if(content == null)
             return;

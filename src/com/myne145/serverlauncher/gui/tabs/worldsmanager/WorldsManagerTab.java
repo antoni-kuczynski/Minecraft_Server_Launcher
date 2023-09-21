@@ -4,14 +4,13 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
 import com.myne145.serverlauncher.utils.AlertType;
-import com.myne145.serverlauncher.gui.window.components.ContainerPane;
+import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.FileSize;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
-import com.myne145.serverlauncher.server.current.NBTParser;
 import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 

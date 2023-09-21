@@ -1,6 +1,5 @@
 package com.myne145.serverlauncher.gui.window;
 
-import com.myne145.serverlauncher.gui.window.components.ContainerPane;
 import com.myne145.serverlauncher.server.current.CurrentServerWorld;
 import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
