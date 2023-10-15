@@ -36,11 +36,7 @@ public class ServerConsoleContextMenu extends JPopupMenu {
 
     private void addTo(Component textComponent) {
         textComponent.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent pressedEvent) {
 
-
-            }
         });
 
         textComponent.addMouseListener(new MouseAdapter() {
@@ -73,13 +69,13 @@ public class ServerConsoleContextMenu extends JPopupMenu {
         String text = textComponent.getText();
 
         if (text != null) {
-            if (text.length() > 0) {
+            if (!text.isEmpty()) {
                 enableSelectAll = true;
             }
         }
 
         if (selectedText != null) {
-            if (selectedText.length() > 0) {
+            if (!selectedText.isEmpty()) {
                 enableCopy = true;
             }
         }

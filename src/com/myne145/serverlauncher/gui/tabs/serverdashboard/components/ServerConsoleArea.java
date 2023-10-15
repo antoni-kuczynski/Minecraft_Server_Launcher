@@ -6,6 +6,7 @@ import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.utils.AlertType;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -18,7 +19,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
+import static com.myne145.serverlauncher.gui.window.Window.*;
 
 public class ServerConsoleArea extends JPanel {
     public JTextArea consoleOutput = new JTextArea();
@@ -28,7 +29,7 @@ public class ServerConsoleArea extends JPanel {
     public final JLabel serverPIDText = new JLabel("Process's PID:");
     private final ContainerPane parentPane;
     private final int index;
-    private ServerConsoleTab tab;
+    private final ServerConsoleTab tab;
     public boolean isVisible = false;
     private final Runnable consoleRunner = () -> {
         try {
@@ -72,7 +73,7 @@ public class ServerConsoleArea extends JPanel {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            alert(AlertType.ERROR, "Error in server console thread:\n" + getErrorDialogMessage(e));
         }
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
@@ -159,12 +160,8 @@ public class ServerConsoleArea extends JPanel {
     }
 
     public void killServer() {
-        try {
-            if (processes.size() > 0)
-                processes.get(processes.size() - 1).destroy();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (!processes.isEmpty())
+            processes.get(processes.size() - 1).destroy();
         parentPane.setToolTipTextAt(index, "Offline");
         isVisible = false;
     }
@@ -195,14 +192,10 @@ public class ServerConsoleArea extends JPanel {
             consoleOutput.append("(You probably specified a java executable that is not valid in the config file.)");
         }
         if (consoleMainThread.isAlive()) {
-            try {
-                processBuilder = new ProcessBuilder(command);
-                processBuilder.directory(MCServer.serverPath());
-                processBuilder.redirectErrorStream(true);
-                isServerRunning = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            processBuilder = new ProcessBuilder(command);
+            processBuilder.directory(MCServer.serverPath());
+            processBuilder.redirectErrorStream(true);
+            isServerRunning = true;
         }
     }
 
@@ -214,7 +207,7 @@ public class ServerConsoleArea extends JPanel {
             tab.killServer.setEnabled(true);
             tab.getServerConsoleArea().serverPIDText.setVisible(true);
         }
-        if (processes.size() > 0) {
+        if (!processes.isEmpty()) {
             if (command.equals("stop")) {
                 isServerStopCausedByAButton = true;
                 parentPane.setToolTipTextAt(index, "Offline");

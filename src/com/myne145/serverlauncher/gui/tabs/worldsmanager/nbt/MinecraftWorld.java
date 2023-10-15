@@ -2,7 +2,6 @@ package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
 import com.myne145.serverlauncher.server.Config;
 import dev.dewy.nbt.Nbt;
-import dev.dewy.nbt.api.registry.TagTypeRegistry;
 import dev.dewy.nbt.tags.collection.CompoundTag;
 
 import javax.imageio.ImageIO;
@@ -36,7 +35,6 @@ public class MinecraftWorld {
             worldIcon = DEFAULT_WORLD_ICON_PACK_PNG;
         }
         File levelDatFile = getLevelDatFile(worldPath);
-//        InputStream levelDatInputStream = new FileInputStream(levelDatFile);
 
         if(!levelDatFile.exists())
             return;
@@ -44,10 +42,6 @@ public class MinecraftWorld {
         //level.dat NBT reading
         Nbt levelDat = new Nbt();
         CompoundTag content = levelDat.fromFile(levelDatFile);
-//        CompoundTag compoundTag = new CompoundTag();
-
-//        System.out.println(content.toJson(4, new TagTypeRegistry()));
-//        levelDat.fromStream()
 
         if(content == null)
             return;

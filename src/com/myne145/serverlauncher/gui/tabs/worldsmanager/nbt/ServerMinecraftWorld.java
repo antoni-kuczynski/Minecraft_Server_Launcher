@@ -27,8 +27,6 @@ public class ServerMinecraftWorld extends MinecraftWorld{
             throw new RuntimeException(e);
         }
 
-
-//        System.out.println("Server leveldat" + new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat").getAbsolutePath());
         return new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat");
     }
 
