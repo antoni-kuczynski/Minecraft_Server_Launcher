@@ -1,7 +1,10 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.components;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+//import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
+import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ClientMinecraftWorld;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
+import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ServerMinecraftWorld;
 import com.myne145.serverlauncher.server.Config;
 
 import javax.swing.*;
@@ -26,22 +29,28 @@ public class WorldsInfoPanels extends JPanel {
 
 
     public void updateClientWorldInformation(File worldPath) {
-        updatePanel(clientWorldInfo, worldPath);
+        updatePanel(clientWorldInfo, worldPath, "CLIENT");
     }
 
     public void updateServerWorldInformation(File serverWorldPath) {
-        updatePanel(serverWorldInfo, serverWorldPath);
+        updatePanel(serverWorldInfo, serverWorldPath, "SERVER");
     }
 
 
 
-    private void updatePanel(WorldInformationPanel worldInformationPanel, File worldPath) {
+    private void updatePanel(WorldInformationPanel worldInformationPanel, File worldPath, String type) {
         MinecraftWorld clientMCWorld;
         try {
-            clientMCWorld = new MinecraftWorld(worldPath);
+            if(type.equals("CLIENT"))
+                clientMCWorld = new ClientMinecraftWorld(worldPath);
+            else if(type.equals("SERVER"))
+                clientMCWorld = new ServerMinecraftWorld(worldPath);
+            else
+                return;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         if(clientMCWorld.getLevelNameNoColors() == null) {
             worldInformationPanel.worldInformationLabel.setText("<html><font size=4>Level.dat file not found!</font></html>");
             worldInformationPanel.worldInformationLabel.setIcon(DEFAULT_WORLD_ICON_PACK_PNG);

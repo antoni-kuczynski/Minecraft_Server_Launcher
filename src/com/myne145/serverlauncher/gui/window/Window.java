@@ -1,7 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.myne145.serverlauncher.server.current.CurrentServerWorld;
-import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.Config;
@@ -65,8 +64,8 @@ public class Window extends JFrame {
 
 
         ServerProperties.reloadLevelNameGlobalValue();
-        NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
-        nbtParser.start();
+//        NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
+//        nbtParser.start();
 
         ContainerPane containerPane = new ContainerPane();
         buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);

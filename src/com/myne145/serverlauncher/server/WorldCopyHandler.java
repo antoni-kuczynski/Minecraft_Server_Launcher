@@ -3,7 +3,6 @@ package com.myne145.serverlauncher.server;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
-import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.utils.FileSize;
@@ -152,24 +151,25 @@ public class WorldCopyHandler extends Thread {
 
         if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
             ArrayList<String> selectedWorldFilenamesList = new ArrayList<>(Arrays.asList(selectedWorld.list()));
-            boolean isAddedWorldDirEmpty = serverWorldDir.list() == null || selectedWorld.list().length <= 0;
+            boolean isAddedWorldDirEmpty = serverWorldDir.list() == null || selectedWorld.list().length == 0;
             boolean containsWorldFiles =
                     selectedWorldFilenamesList.contains("level.dat") ||
                             selectedWorldFilenamesList.contains("data") ||
                             selectedWorldFilenamesList.contains("region");
 
-            if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
-                alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
-            }
-            if (!isAddedWorldDirEmpty && !containsWorldFiles) {
-                worldsManagerTab.setImportButtonWarning("Not a Minecraft world!");
-            }
+            if(!copyFilesToServerDir) {
+                if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
+                    alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
+                }
+                if (!isAddedWorldDirEmpty && !containsWorldFiles) {
+                    worldsManagerTab.setImportButtonWarning("Not a Minecraft world!");
+                }
 
-            if(new File(selectedWorld.getAbsolutePath() + "/level.dat").exists()) {
-                 //copying world's level.dat file analogically like server ones
-                FileUtils.copyFile(new File(selectedWorld.getAbsolutePath() + "/level.dat"), new File("world_temp/worlds_level_dat/level_" + selectedWorld.getName() + ".dat"));
+                if(new File(selectedWorld.getAbsolutePath() + "/level.dat").exists()) {
+                    //copying world's level.dat file analogically like server ones
+                    FileUtils.copyFile(new File(selectedWorld.getAbsolutePath() + "/level.dat"), new File("world_temp/worlds_level_dat/level_" + selectedWorld.getName() + ".dat"));
+                }
             }
-
             if(copyFilesToServerDir) {
                 if (!isAddedWorldDirEmpty && !containsWorldFiles) {
                     worldsManagerTab.setImportButtonWarning("Not a Minecraft world!");
@@ -226,15 +226,18 @@ public class WorldCopyHandler extends Thread {
                 
 
                 CurrentServerInfo.world.levelDat = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat"); //trick the NBTParser into using extracted world's level.dat
-                NBTParser nbtParser = NBTParser.createServerNBTParser();
-                nbtParser.start();
-                nbtParser.join();
-                CurrentServerInfo.world.levelName = nbtParser.getLevelName();
+//                NBTParser nbtParser = NBTParser.createServerNBTParser();
+//                nbtParser.start();
+//                nbtParser.join();
+//                CurrentServerInfo.world.levelName = nbtParser.getLevelName();
                 CurrentServerInfo.world.levelDat = CurrentServerInfo.world.getLevelDat(); //restore the original level.dat file location for safety
             }
         }
         startImportingButtonFromWorldManagerTab.setEnabled(true); //issue #15 fix
         worldsManagerTab.setIcons(); //non-removable
+        if(CurrentServerInfo.world.getPath().exists()) {
+            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(CurrentServerInfo.world.path);
+        }
     }
 
     @Override

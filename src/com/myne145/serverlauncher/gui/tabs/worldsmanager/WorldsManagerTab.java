@@ -260,6 +260,9 @@ public class WorldsManagerTab extends JPanel {
         add(startCopyingPanel, BorderLayout.PAGE_END);
 
         setIcons(); //non-removable
+//        if(CurrentServerInfo.world.getPath().exists()) {
+//            worldsInfoPanels.updateServerWorldInformation(CurrentServerInfo.world.path);
+//        }
     }
 
     private void setUserAddedWorld(File world) {
@@ -267,7 +270,8 @@ public class WorldsManagerTab extends JPanel {
         if (isArchive(world)) {
             userAddedWorld = world;
             isInArchiveMode = true;
-            WorldCopyHandler.createWorldCopyHandler(worldsManagerTab).start();
+            WorldCopyHandler worldCopyHandler = WorldCopyHandler.createWorldCopyHandler(worldsManagerTab);
+            worldCopyHandler.start();
         } else {
             isInArchiveMode = false;
             if(world.isFile()) {
@@ -332,7 +336,6 @@ public class WorldsManagerTab extends JPanel {
 //                    "<br>Folder size: " + FileSize.directorySizeWithConversion(userAddedWorld).getText() + "</html>"
 //            );
             worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
-
         }
 
 //        if(isInArchiveMode && extractedWorldDir != null) {
@@ -366,24 +369,23 @@ public class WorldsManagerTab extends JPanel {
 //                    .getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH)));
 //        }
 
-        if(CurrentServerInfo.world.getPath().exists()) {
-//            FileSize serverWorldFileSizeBytes = FileSize.directorySizeWithConversion(CurrentServerInfo.world.getPath());
-////            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
-//            if(CurrentServerInfo.world.getLevelName() == null)
-//                CurrentServerInfo.world.levelName = "Level.dat file not found.";
-//
-//            String folderNameTemp = CurrentServerInfo.world.getPath().getName();
-////            if(!wasServerPropertiesFound)
-////                folderNameTemp = "server.properties file does not exist";
-//            serverWorldDetailsWithoutIcon.setText(
-//                    "<html>Level name: " + CurrentServerInfo.world.getLevelName() + " / " + folderNameTemp +
-//                    "<br>Other info like date modified / gamemode used: " + "TODO" +
-//                    "<br>Folder size: " + serverWorldFileSizeBytes.getText() + "</html>"
-//            );
-            worldsInfoPanels.updateServerWorldInformation(CurrentServerInfo.world.path);
-        } else {
-            serverWorldDetailsWithoutIcon.setText("Server world folder does not exist.");
-        }
+//        System.out.println("Current server world path: " + CurrentServerInfo.world.path);
+//        if(CurrentServerInfo.world.getPath().exists()) {
+////            FileSize serverWorldFileSizeBytes = FileSize.directorySizeWithConversion(CurrentServerInfo.world.getPath());
+//////            LevelNameColorConverter.convertColors(ServerDetails.serverLevelName);
+////            if(CurrentServerInfo.world.getLevelName() == null)
+////                CurrentServerInfo.world.levelName = "Level.dat file not found.";
+////
+////            String folderNameTemp = CurrentServerInfo.world.getPath().getName();
+//////            if(!wasServerPropertiesFound)
+//////                folderNameTemp = "server.properties file does not exist";
+////            serverWorldDetailsWithoutIcon.setText(
+////                    "<html>Level name: " + CurrentServerInfo.world.getLevelName() + " / " + folderNameTemp +
+////                    "<br>Other info like date modified / gamemode used: " + "TODO" +
+////                    "<br>Folder size: " + serverWorldFileSizeBytes.getText() + "</html>"
+////            );
+//            worldsInfoPanels.updateServerWorldInformation(CurrentServerInfo.world.path);
+//        }
 
     }
     public void setExtractedWorldDir(String extractedWorldDir) {
@@ -408,5 +410,9 @@ public class WorldsManagerTab extends JPanel {
 
     public JButton getStartCopying() {
         return startCopying;
+    }
+
+    public WorldsInfoPanels getWorldsInfoPanels() {
+        return worldsInfoPanels;
     }
 }

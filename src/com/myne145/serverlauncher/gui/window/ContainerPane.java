@@ -3,7 +3,6 @@ package com.myne145.serverlauncher.gui.window;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
-import com.myne145.serverlauncher.server.current.NBTParser;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.MCServer;
@@ -31,6 +30,7 @@ public class ContainerPane extends JTabbedPane {
 //        setUI(new CustomTabbedPaneUI(new Color(76, 76, 80), new Color(51, 51, 52)));
         ArrayList<MCServer> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
+            ServerProperties.reloadLevelNameGlobalValue();
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
             tabbedPane.addTab("Worlds", new WorldsManagerTab(this, i));
@@ -47,16 +47,6 @@ public class ContainerPane extends JTabbedPane {
             addTab(serverName, serverTabbedPanes.get(i));
             setTabComponentAt(i, new ServerTabLabel(serverName, this, i));
 
-//            TabLabelWithContextMenu tabLabel = new TabLabelWithContextMenu(serverName, i, Config.getData().get(i).serverPath().exists());
-//            setTabComponentAt(i, tabLabel);
-//            if(Config.getData().get(i).serverPath().exists()) {
-//                tabLabel.setIcon(new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
-//                setToolTipTextAt(i, "Offline");
-//            } else {
-//                setEnabledAt(i, false);
-//                tabLabel.setIcon(new FlatSVGIcon(new File("resources/server_errored.svg")).derive(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION));
-//                setToolTipTextAt(i, "Errored - Server file missing");
-//            }
             if(Config.getData().get(i).serverPath().exists()) {
                 setIconAt(i, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
                 setToolTipTextAt(i, "Offline");
@@ -66,11 +56,6 @@ public class ContainerPane extends JTabbedPane {
                 setToolTipTextAt(i, "Errored - Server file missing");
             }
         }
-
-//        addTab("Add server", new AddServerTab());
-//        setIconAt(getTabCount() - 1, new ImageIcon(new ImageIcon("resources/add_server.png").getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
-//        for(int i = 0; i < getTabCount() - 1; i++)
-//            setIconAt(i, new ImageIcon(new ImageIcon("resources/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(CurrentServerInfo.serverId - 1);
         onTabSwitched(CurrentServerInfo.serverId - 1);
@@ -115,16 +100,20 @@ public class ContainerPane extends JTabbedPane {
                 com.myne145.serverlauncher.gui.window.Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
                 Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
                 ServerProperties.reloadLevelNameGlobalValue();
-                NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
-                nbtParser.start();
-                nbtParser.join();
-                CurrentServerInfo.world.levelName = nbtParser.getLevelName();
+//                NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
+//                nbtParser.start();
+//                nbtParser.join();
+//                CurrentServerInfo.world.levelName = nbtParser.getLevelName();
             } catch (Exception ex) {
                 // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
             }
 
+
             WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
             worldsManagerTab.setIcons();
+            if(CurrentServerInfo.world.getPath().exists()) {
+                worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(CurrentServerInfo.world.path);
+            }
 
             for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
                 ServerConsoleTab c = (ServerConsoleTab) serverTabbedPane.getComponentAt(0);

@@ -2,12 +2,9 @@ package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
 import com.myne145.serverlauncher.server.Config;
 import dev.dewy.nbt.Nbt;
+import dev.dewy.nbt.api.registry.TagTypeRegistry;
 import dev.dewy.nbt.tags.collection.CompoundTag;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import oshi.util.FileUtil;
 
-import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +23,9 @@ public class MinecraftWorld {
     private String gameVersion;
     private final ImageIcon DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
 
+    public File getLevelDatFile(File worldPath) {
+        return new File("world_temp/worlds_level_dat/level_" + worldPath.getName() + ".dat");
+    }
     public MinecraftWorld(File worldPath) throws IOException {
         System.out.println(worldPath.getName());
         //Icon
@@ -35,7 +35,7 @@ public class MinecraftWorld {
         } catch (Exception e) {
             worldIcon = DEFAULT_WORLD_ICON_PACK_PNG;
         }
-        File levelDatFile = new File("world_temp/worlds_level_dat/level_" + worldPath.getName() + ".dat");
+        File levelDatFile = getLevelDatFile(worldPath);
 //        InputStream levelDatInputStream = new FileInputStream(levelDatFile);
 
         if(!levelDatFile.exists())
@@ -44,6 +44,9 @@ public class MinecraftWorld {
         //level.dat NBT reading
         Nbt levelDat = new Nbt();
         CompoundTag content = levelDat.fromFile(levelDatFile);
+//        CompoundTag compoundTag = new CompoundTag();
+
+//        System.out.println(content.toJson(4, new TagTypeRegistry()));
 //        levelDat.fromStream()
 
         if(content == null)
