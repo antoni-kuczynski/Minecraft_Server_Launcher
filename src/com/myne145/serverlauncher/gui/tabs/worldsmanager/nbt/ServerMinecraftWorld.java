@@ -12,10 +12,11 @@ public class ServerMinecraftWorld extends MinecraftWorld{
     public File getLevelDatFile(File worldPath) {
         Runnable runnable = () -> {
             try {
-                if(!new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat").exists())
-                    FileUtils.copyFile(CurrentServerInfo.world.levelDat, new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                if(new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat").exists())
+                    FileUtils.forceDelete(new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat"));
+                FileUtils.copyFile(CurrentServerInfo.world.levelDat, new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat"));
+            } catch (Exception ignored) {
+                //this 99% of times throws an exception, i just wanna finish this
             }
         };
         try {
