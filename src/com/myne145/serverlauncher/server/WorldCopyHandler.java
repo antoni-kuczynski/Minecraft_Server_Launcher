@@ -32,7 +32,7 @@ public class WorldCopyHandler extends Thread {
     private boolean copyFilesToServerDir;
     private static final Taskbar taskbar = Taskbar.getTaskbar();
 
-    private WorldCopyHandler(WorldsManagerTab worldsManagerTab, boolean copyFilesToServerDir) throws IOException {
+    private WorldCopyHandler(WorldsManagerTab worldsManagerTab, boolean copyFilesToServerDir) {
         ServerProperties.reloadLevelNameGlobalValue();
         this.worldsManagerTab = worldsManagerTab;
 
@@ -60,7 +60,7 @@ public class WorldCopyHandler extends Thread {
 
     /**
      * Sets the copy mode of a {@link com.myne145.serverlauncher.server.WorldCopyHandler} instance
-     * @param mode copy mode (true - copy files to the server, false - just unzip and set icon an title of the world. For archives only.
+     * @param mode copy mode (true - copy files to the server, false - just unzip and set icon a title of the world.) For archives only.
      * @return {@link com.myne145.serverlauncher.server.WorldCopyHandler} instance with the desired copy mode
      */
     public WorldCopyHandler setCopyMode(boolean mode) {
@@ -102,10 +102,6 @@ public class WorldCopyHandler extends Thread {
 
     private String findWorldDirectory(String dir) {
         ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
-        ArrayList<String> filenames = new ArrayList<>();
-        for (File f : arr) {
-            filenames.add(f.getName());
-        }
         File foundLevelDat = new File(dir);
         boolean containsLevelDat = false;
         boolean hasDirectory = false;
@@ -201,13 +197,10 @@ public class WorldCopyHandler extends Thread {
                 File extractedWorldsLevelDat = new File(predictedWorldDir.getAbsolutePath() + "/level.dat");
                 if(extractedWorldsLevelDat.exists()) {//copying world's level.dat file analogically like server ones
                     File worldLevelDat = new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat");
-//                    if(worldLevelDat.exists())
-//                        FileUtils.forceDelete(worldLevelDat);
                     FileUtils.copyFile(extractedWorldsLevelDat, worldLevelDat);
                 }
                 
                 worldsManagerTab.extractedWorldSize = FileSize.directorySizeWithConversion(new File(extractedDirTemp));
-//                worldsManagerTab.setIcons();
             }
             if (copyFilesToServerDir) {
                 startImportingButtonFromWorldManagerTab.setEnabled(false); //issue #15 fix
@@ -227,10 +220,6 @@ public class WorldCopyHandler extends Thread {
                 
 
                 CurrentServerInfo.world.levelDat = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat"); //trick the NBTParser into using extracted world's level.dat
-//                NBTParser nbtParser = NBTParser.createServerNBTParser();
-//                nbtParser.start();
-//                nbtParser.join();
-//                CurrentServerInfo.world.levelName = nbtParser.getLevelName();
                 CurrentServerInfo.world.levelDat = CurrentServerInfo.world.getLevelDat(); //restore the original level.dat file location for safety
             }
         }
@@ -251,7 +240,6 @@ public class WorldCopyHandler extends Thread {
             if(e.toString().startsWith("java.io.FileNotFoundException")) {
                 alert(AlertType.ERROR, "Incompatible archive found! Try unpacking it manually and adding it as a folder.\n" + getErrorDialogMessage(e));
             }
-//            throw new RuntimeException(e);
         }
         worldsManagerTab.getStartCopying().setEnabled(true);
     }

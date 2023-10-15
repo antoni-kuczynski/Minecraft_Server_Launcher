@@ -64,8 +64,6 @@ public class Window extends JFrame {
 
 
         ServerProperties.reloadLevelNameGlobalValue();
-//        NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
-//        nbtParser.start();
 
         ContainerPane containerPane = new ContainerPane();
         buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
@@ -193,9 +191,6 @@ public class Window extends JFrame {
             @Override
             public void windowOpened(WindowEvent e) {
                 super.windowOpened(e);
-//                File temporaryFilesDirectory = new File("world_temp");
-//                if(!temporaryFilesDirectory.exists())
-//                    temporaryFilesDirectory.mkdirs();
                 File temporaryWorldLevelDatFiles = new File("world_temp/worlds_level_dat");
                 if(!temporaryWorldLevelDatFiles.exists())
                     temporaryWorldLevelDatFiles.mkdirs();

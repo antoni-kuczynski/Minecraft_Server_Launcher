@@ -62,7 +62,7 @@ public class Config {
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
             String pathToJavaRuntime = jsonObject.getString("pathToJavaRuntimeExecutable");
             boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");
-            boolean isEmpty = serverName.equals("") && pathToServerIcon.equals("") && pathToServerFolder.equals("") && pathToServerJarFile.equals("") && pathToJavaRuntime.equals("");
+            boolean isEmpty = serverName.isEmpty() && pathToServerIcon.isEmpty() && pathToServerFolder.isEmpty() && pathToServerJarFile.isEmpty() && pathToJavaRuntime.isEmpty();
 
             String serverLaunchArgs;
             if(overrideGloballaunchArgs)

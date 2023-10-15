@@ -25,9 +25,14 @@ public class ContainerPane extends JTabbedPane {
         tabLabel.setIcon(icon);
     }
 
+    @Override
+    public Icon getIconAt(int index) {
+        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+        return tabLabel.getIcon();
+    }
+
     public ContainerPane() {
         setLayout(new BorderLayout());
-//        setUI(new CustomTabbedPaneUI(new Color(76, 76, 80), new Color(51, 51, 52)));
         ArrayList<MCServer> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
             ServerProperties.reloadLevelNameGlobalValue();
@@ -36,7 +41,6 @@ public class ContainerPane extends JTabbedPane {
             tabbedPane.addTab("Worlds", new WorldsManagerTab(this, i));
             tabbedPane.setTabComponentAt(0, new TabLabelWithFileTransfer("Console", tabbedPane,0));
             tabbedPane.setTabComponentAt(1, new TabLabelWithFileTransfer("Worlds", tabbedPane,1));
-//            tabbedPane.setIconAt(0, new FlatSVGIcon(new File("resources/console_icon.svg")).derive(16,16));
             serverTabbedPanes.add(tabbedPane);
         }
         this.setTabPlacement(LEFT);
@@ -93,20 +97,14 @@ public class ContainerPane extends JTabbedPane {
             new Thread(runnable).start();
 
             MCServer mcServerConfig = Config.getData().get(index);
-            try {
-                CurrentServerInfo.serverName = mcServerConfig.serverName();
-                CurrentServerInfo.serverPath = mcServerConfig.serverPath();
-                CurrentServerInfo.serverId = mcServerConfig.serverId();
-                com.myne145.serverlauncher.gui.window.Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
-                Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
-                ServerProperties.reloadLevelNameGlobalValue();
-//                NBTParser nbtParser = NBTParser.createServerNBTParser(); //reading NBT level.dat file for level name
-//                nbtParser.start();
-//                nbtParser.join();
-//                CurrentServerInfo.world.levelName = nbtParser.getLevelName();
-            } catch (Exception ex) {
-                // Frame.alert(AlertType.ERROR, Frame.getErrorDialogMessage(ex));
-            }
+
+            CurrentServerInfo.serverName = mcServerConfig.serverName();
+            CurrentServerInfo.serverPath = mcServerConfig.serverPath();
+            CurrentServerInfo.serverId = mcServerConfig.serverId();
+            com.myne145.serverlauncher.gui.window.Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
+            Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
+            ServerProperties.reloadLevelNameGlobalValue();
+
 
 
             WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
@@ -159,25 +157,4 @@ public class ContainerPane extends JTabbedPane {
             setIconAt(i, new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         }
     }
-
-//    public void updateServerButtonsSizes() {
-//        ArrayList<Icon> icons = new ArrayList<>();
-//        for(int i = 0; i < serverTabbedPanes.size(); i++) {
-//            TabLabelWithContextMenu tabLabel = (TabLabelWithContextMenu) getTabComponentAt(i);
-//            icons.add(tabLabel.getIcon());
-//        }
-////        FlatSVGIcon flatSVGIcon = (FlatSVGIcon) icons.get(0);
-////        flatSVGIcon.getImage()
-//
-//
-//        for(int i = 0; i < serverTabbedPanes.size(); i++) {
-//            ImageIcon imageIcon = (ImageIcon) icons.get(i);
-//            TabLabelWithContextMenu tabLabel = (TabLabelWithContextMenu) getTabComponentAt(i);
-//            tabLabel.setIcon(new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
-//        }
-//    }
-
-//    public void setServerState(ServerState serverState, int index) {
-//
-//    }
 }

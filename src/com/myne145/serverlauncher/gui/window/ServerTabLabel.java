@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ServerTabLabel extends TabLabelWithFileTransfer {
+public class ServerTabLabel extends TabLabelWithFileTransfer { //ALL OF THIS for future context menu
 
 //    private JPopupMenu contextMenu;
 //    private final int tabIndex;
