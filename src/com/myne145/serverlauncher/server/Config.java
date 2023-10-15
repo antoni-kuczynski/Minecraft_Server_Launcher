@@ -34,16 +34,13 @@ public class Config {
             configWriter.write("""
                     [
                      {
-                         "globalLaunchArgs": "",
-                         "globalServerFolder": ""
+                         "globalLaunchArgs": ""
                      },
                      {
                          "serverName": "YOUR SERVER NAME",
-                         "pathToServerIcon": "PATH TO ICON",
                          "pathToServerJarFile": "PATH TO SERVER JAR",
                          "pathToJavaRuntimeExecutable": "PATH TO JAVA RUNTIME EXECUTABLE",
-                         "overrideDefaultLaunchArgs": false,
-                         "launchArgs": ""
+                         "overrideDefaultLaunchArgs": false
                        }
                      ]""");
             configWriter.close();
@@ -57,12 +54,11 @@ public class Config {
         for (int jsonIndex = 1; jsonIndex < configJSONObjects.length(); jsonIndex++) { //start on index 1 because index 0 are global variables
             JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
             String serverName = jsonObject.getString("serverName");
-            String pathToServerIcon = jsonObject.getString("pathToServerIcon");
             String pathToServerFolder = new File(jsonObject.getString("pathToServerJarFile")).getParent();
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
             String pathToJavaRuntime = jsonObject.getString("pathToJavaRuntimeExecutable");
             boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");
-            boolean isEmpty = serverName.isEmpty() && pathToServerIcon.isEmpty() && pathToServerFolder.isEmpty() && pathToServerJarFile.isEmpty() && pathToJavaRuntime.isEmpty();
+            boolean isEmpty = serverName.isEmpty() && pathToServerFolder.isEmpty() && pathToServerJarFile.isEmpty() && pathToJavaRuntime.isEmpty();
 
             String serverLaunchArgs;
             if(overrideGloballaunchArgs)
@@ -70,7 +66,7 @@ public class Config {
             else
                 serverLaunchArgs = javaArguments;
 
-            data.add(new MCServer(serverName, new File(pathToServerIcon), new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime), serverLaunchArgs, jsonIndex, isEmpty));
+            data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime), serverLaunchArgs, jsonIndex, isEmpty));
         }
     }
     public static ArrayList<MCServer> getData() {

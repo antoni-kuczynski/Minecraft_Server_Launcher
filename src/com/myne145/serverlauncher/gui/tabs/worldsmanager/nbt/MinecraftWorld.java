@@ -26,7 +26,6 @@ public class MinecraftWorld {
         return new File("world_temp/worlds_level_dat/level_" + worldPath.getName() + ".dat");
     }
     public MinecraftWorld(File worldPath) throws IOException {
-        System.out.println(worldPath.getName());
         //Icon
         File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
         try {

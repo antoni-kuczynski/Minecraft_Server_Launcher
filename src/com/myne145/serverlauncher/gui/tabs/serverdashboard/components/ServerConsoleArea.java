@@ -171,7 +171,6 @@ public class ServerConsoleArea extends JPanel {
         isVisible = true;
         boolean isSelectedJavaTheDefaultOne = MCServer.javaRuntimePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
                 MCServer.javaRuntimePath().getAbsolutePath().endsWith("java");
-        System.out.println("is java default" + isSelectedJavaTheDefaultOne);
         String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : MCServer.javaRuntimePath().getAbsolutePath();
         ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
 
