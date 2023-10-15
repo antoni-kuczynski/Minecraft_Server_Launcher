@@ -4,10 +4,7 @@ import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -35,7 +32,6 @@ public class ZipUtils {
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
         taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.NORMAL);
-
 
         String extractedDirectory = null;
         long totalSize = getTotalSize(archivePath);
@@ -85,7 +81,7 @@ public class ZipUtils {
 
     public static boolean isArchive(File file) {
         String extension = getFileExtension(file);
-        return extension.equals("zip") || extension.equals("jar") || extension.equals("tar") || extension.equals("tar.gz") || extension.equals("tgz");
+        return extension.equals("zip") || extension.equals("jar") || extension.equals("tar") || extension.equals("rar");
     }
 
 }

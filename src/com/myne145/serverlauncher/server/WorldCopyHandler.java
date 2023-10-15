@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static com.myne145.serverlauncher.gui.window.Window.alert;
+import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 import static com.myne145.serverlauncher.utils.ZipUtils.extractArchive;
 import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 
@@ -242,10 +243,16 @@ public class WorldCopyHandler extends Thread {
 
     @Override
     public void run() {
+        worldsManagerTab.getStartCopying().setEnabled(false);
         try {
             handler();
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            worldsManagerTab.getStartCopying().setEnabled(true);
+            if(e.toString().startsWith("java.io.FileNotFoundException")) {
+                alert(AlertType.ERROR, "Incompatible archive found! Try unpacking it manually and adding it as a folder.\n" + getErrorDialogMessage(e));
+            }
+//            throw new RuntimeException(e);
         }
+        worldsManagerTab.getStartCopying().setEnabled(true);
     }
 }
