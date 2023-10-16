@@ -7,6 +7,7 @@ import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -25,10 +26,10 @@ public class ServerConsoleArea extends JPanel {
     public JTextArea consoleOutput = new JTextArea();
     private final ArrayList<Process> processes = new ArrayList<>();
     private boolean isServerRunning;
-    public boolean isServerStopCausedByAButton = false;
+    public boolean wasServerStopCausedByAButton = false;
     public final JLabel serverPIDText = new JLabel("Process's PID:");
-    private final ContainerPane parentPane;
-    private final int index;
+    private ContainerPane parentPane;
+    private int index;
     private final ServerConsoleTab tab;
     public boolean isVisible = false;
     private final Runnable consoleRunner = () -> {
@@ -64,6 +65,14 @@ public class ServerConsoleArea extends JPanel {
                                 isServerRunning = false;
                                 howManyTimesLineWasNull = 0;
                                 processes.get(processes.size() - 1).destroy();
+                                if(wasServerStopCausedByAButton) {
+                                    parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
+                                    parentPane.setToolTipTextAt(index, "Offline");
+                                }
+                                else {
+                                    parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ERRORED));
+                                    parentPane.setToolTipTextAt(index, "Errored");
+                                }
                             }
                         }
                     } else {
@@ -162,7 +171,8 @@ public class ServerConsoleArea extends JPanel {
     public void killServer() {
         if (!processes.isEmpty())
             processes.get(processes.size() - 1).destroy();
-        parentPane.setToolTipTextAt(index, "Offline");
+//        parentPane.setToolTipTextAt(index, "Offline");
+        wasServerStopCausedByAButton = true;
         isVisible = false;
     }
 
@@ -185,7 +195,7 @@ public class ServerConsoleArea extends JPanel {
             if (processes.size() == 1)
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
-            parentPane.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+            parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ONLINE));
         } catch (Exception e) {
             consoleOutput.append(Window.getErrorDialogMessage(e));
             consoleOutput.append("(You probably specified a java executable that is not valid in the config file.)");
@@ -205,12 +215,13 @@ public class ServerConsoleArea extends JPanel {
             tab.stopServer.setVisible(true);
             tab.killServer.setEnabled(true);
             tab.getServerConsoleArea().serverPIDText.setVisible(true);
+            parentPane.setToolTipTextAt(index, "Running");
         }
         if (!processes.isEmpty()) {
             if (command.equals("stop")) {
-                isServerStopCausedByAButton = true;
-                parentPane.setToolTipTextAt(index, "Offline");
-                parentPane.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+                wasServerStopCausedByAButton = true;
+//                parentPane.setToolTipTextAt(index, "Offline");
+//                parentPane.setIconAt  (index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
                 serverPIDText.setVisible(false);
             }
             PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());

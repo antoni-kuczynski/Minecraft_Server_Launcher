@@ -1,14 +1,17 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -31,6 +34,27 @@ public class ContainerPane extends JTabbedPane {
         return tabLabel.getIcon();
     }
 
+//    @Override
+//    public void setToolTipTextAt(int index, String toolTipText) {
+//        super.setToolTipTextAt(index, toolTipText);
+//        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+//        tabLabel.setToolTipText(toolTipText);
+//    }
+
+
+    @Override
+    public void setTitleAt(int index, String title) {
+        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+        tabLabel.setText(title);
+    }
+
+    @Override
+    public void setEnabledAt(int index, boolean enabled) {
+        super.setEnabledAt(index, enabled);
+        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+        tabLabel.setEnabled(enabled);
+    }
+
     public ContainerPane() {
         setLayout(new BorderLayout());
         ArrayList<MCServer> configData = Config.getData();
@@ -51,13 +75,13 @@ public class ContainerPane extends JTabbedPane {
             addTab(serverName, serverTabbedPanes.get(i));
             setTabComponentAt(i, new ServerTabLabel(serverName, this, i));
 
-            if(Config.getData().get(i).serverPath().exists()) {
-                setIconAt(i, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION,SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+            if(Config.getData().get(i).serverJarPath().exists()) {
+                setIconAt(i, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
                 setToolTipTextAt(i, "Offline");
             } else {
                 setEnabledAt(i, false);
-                setIconAt(i, new FlatSVGIcon(new File(Config.RESOURCES_PATH + "/server_errored.svg")).derive(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION));
-                setToolTipTextAt(i, "Errored - Server file missing");
+                setIconAt(i, ServerIcon.getServerIcon(ServerIcon.ERRORED));
+                setToolTipTextAt(i, "Errored - Server executable missing");
             }
         }
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
