@@ -86,11 +86,12 @@ public class ContainerPane extends JTabbedPane {
         }
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(CurrentServerInfo.serverId - 1);
-        onTabSwitched(CurrentServerInfo.serverId - 1);
+//        onTabSwitched(CurrentServerInfo.serverId - 1);
 
         ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(CurrentServerInfo.serverId - 1).getComponentAt(0);
-        selectedConsoleTab.cpuChart.isEnabled = true;
-        selectedConsoleTab.cpuChart.updateChartData();
+//        selectedConsoleTab.cpuChart.isEnabled = true;
+//        selectedConsoleTab.cpuChart.updateChartData();
+
 
         onTabSwitched(CurrentServerInfo.serverId - 1);
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
@@ -104,11 +105,18 @@ public class ContainerPane extends JTabbedPane {
                 setBackgroundAt(index, new Color(51, 51, 52));
         }
 
-//        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
-            ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
 
-            if(com.myne145.serverlauncher.gui.window.Window.areChartsEnabled)
-                selectedConsoleTab.enableCharts();
+        for(int i = 0; i < getTabCount(); i++) {
+            ServerConsoleTab consoleTab = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
+            if(i != index) {
+                consoleTab.cpuChart.setVisible(false);
+            } else {
+                consoleTab.cpuChart.setVisible(true);
+            }
+            System.out.println(i + "\t" + consoleTab.cpuChart.isEnabled);
+        }
+//        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
+
 
             Runnable runnable = () -> {
                 for(int i = 0; i < serverTabbedPanes.size(); i++) {
@@ -119,6 +127,13 @@ public class ContainerPane extends JTabbedPane {
                 }
             };
             new Thread(runnable).start();
+
+            ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
+
+            if(com.myne145.serverlauncher.gui.window.Window.areChartsEnabled)
+                selectedConsoleTab.enableCharts();
+            else
+                setChartsVisibility(false);
 
             MCServer mcServerConfig = Config.getData().get(index);
 
@@ -157,10 +172,10 @@ public class ContainerPane extends JTabbedPane {
     public void setChartsVisibility(boolean isVisible) {
         for(JTabbedPane tabbedPane : serverTabbedPanes) {
             ServerConsoleTab serverConsoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
-            serverConsoleTab.cpuChart.isEnabled = isVisible;
+//            serverConsoleTab.cpuChart.isEnabled = isVisible;
             serverConsoleTab.cpuChart.setVisible(isVisible);
 
-            serverConsoleTab.ramChart.isEnabled = isVisible;
+//            serverConsoleTab.ramChart.isEnabled = isVisible;
             serverConsoleTab.ramChart.setVisible(isVisible);
         }
     }

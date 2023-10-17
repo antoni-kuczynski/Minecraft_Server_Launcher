@@ -18,6 +18,12 @@ public class RAMChart extends JPanel {
     private final double TOTAL_MEMORY_GB = (double) memory.getTotal() / 1073741824;
     public boolean isEnabled = true;
 
+    @Override
+    public void setVisible(boolean aFlag) {
+        super.setVisible(aFlag);
+        isEnabled = aFlag;
+    }
+
     public RAMChart() {
         setBorder(new FlatRoundBorder());
         chart = createChart();

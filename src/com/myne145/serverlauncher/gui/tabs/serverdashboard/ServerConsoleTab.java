@@ -102,14 +102,14 @@ public class ServerConsoleTab extends JPanel {
     public void disableCharts() {
         cpuChart.setVisible(false);
         ramChart.setVisible(false);
-        cpuChart.isEnabled = false;
-        ramChart.isEnabled = false;
+//        cpuChart.isEnabled = false;
+//        ramChart.isEnabled = false;
     }
     public void enableCharts() {
         cpuChart.setVisible(true);
         ramChart.setVisible(true);
-        cpuChart.isEnabled = true;
-        ramChart.isEnabled = true;
+//        cpuChart.isEnabled = true;
+//        ramChart.isEnabled = true;
     }
 
     public ServerConsoleArea getServerConsoleArea() {

@@ -3,22 +3,24 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard.charts;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
-import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.HardwareAbstractionLayer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.management.ManagementFactory;
+import com.sun.management.OperatingSystemMXBean;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class CPUChart extends JPanel {
     private final PieChart chart;
-    private static final SystemInfo si = new SystemInfo();
-    private static final HardwareAbstractionLayer hal = si.getHardware();
-    private final static CentralProcessor cpu = hal.getProcessor();
-    static long[] prevTicks = new long[CentralProcessor.TickType.values().length];
     public boolean isEnabled = true;
+    private final static OperatingSystemMXBean systemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+
+    @Override
+    public void setVisible(boolean aFlag) {
+        super.setVisible(aFlag);
+        isEnabled = aFlag;
+    }
 
     public CPUChart() {
         setBorder(new FlatRoundBorder());
@@ -59,14 +61,18 @@ public class CPUChart extends JPanel {
         return chart;
     }
 
+
     public void updateChartData() {
-        double cpuLoad = cpu.getSystemCpuLoadBetweenTicks(prevTicks) * 100;
-        prevTicks = cpu.getSystemCpuLoadTicks();
-        if (cpuLoad != 0) {
-            chart.updatePieSeries("cpu_usage", cpuLoad);
-            chart.getStyler().setSumFormat((int) cpuLoad + "%%");
-            chart.updatePieSeries("empty", 100 - cpuLoad);
-            repaint();  // Repaint the panel to update the chart
+        if (isEnabled) {
+            double cpuLoad = Math.ceil(systemMXBean.getCpuLoad() * 100);
+            System.out.println(cpuLoad);
+//            prevTicks = cpu.getSystemCpuLoadTicks();
+            if (cpuLoad != 0) {
+                chart.updatePieSeries("cpu_usage", cpuLoad);
+                chart.getStyler().setSumFormat(((int) cpuLoad + "%%"));
+                chart.updatePieSeries("empty", 100 - cpuLoad);
+                repaint();  // Repaint the panel to update the chart
+            }
         }
     }
 }
