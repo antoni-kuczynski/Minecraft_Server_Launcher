@@ -63,16 +63,12 @@ public class CPUChart extends JPanel {
 
 
     public void updateChartData() {
-        if (isEnabled) {
-            double cpuLoad = Math.ceil(systemMXBean.getCpuLoad() * 100);
-            System.out.println(cpuLoad);
-//            prevTicks = cpu.getSystemCpuLoadTicks();
-            if (cpuLoad != 0) {
-                chart.updatePieSeries("cpu_usage", cpuLoad);
-                chart.getStyler().setSumFormat(((int) cpuLoad + "%%"));
-                chart.updatePieSeries("empty", 100 - cpuLoad);
-                repaint();  // Repaint the panel to update the chart
-            }
-        }
+        int cpuLoad = (int) Math.ceil(systemMXBean.getCpuLoad() * 100);
+//        if (cpuLoad != 0) {
+            chart.updatePieSeries("cpu_usage", cpuLoad);
+            chart.getStyler().setSumFormat(((int) cpuLoad + "%%"));
+            chart.updatePieSeries("empty", 100 - cpuLoad);
+            repaint();  // Repaint the panel to update the chart
+//        }
     }
 }

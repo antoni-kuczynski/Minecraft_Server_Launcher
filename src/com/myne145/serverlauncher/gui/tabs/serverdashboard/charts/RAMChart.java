@@ -3,20 +3,23 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard.charts;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
-import oshi.SystemInfo;
-import oshi.hardware.GlobalMemory;
+
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.lang.management.ManagementFactory;
+import com.sun.management.OperatingSystemMXBean;
 
 public class RAMChart extends JPanel {
     private final PieChart chart;
-    private final SystemInfo systemInfo = new SystemInfo();
-    private final GlobalMemory memory = systemInfo.getHardware().getMemory();
-    private final double TOTAL_MEMORY_GB = (double) memory.getTotal() / 1073741824;
     public boolean isEnabled = true;
+    private final static OperatingSystemMXBean operatingSystem = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+    private final static double TOTAL_MEMORY_GB = (double) operatingSystem.getTotalMemorySize() / 1073741824;
+    private final static DecimalFormat memoryAmountFormat = new DecimalFormat("##.#");
+
 
     @Override
     public void setVisible(boolean aFlag) {
@@ -45,6 +48,8 @@ public class RAMChart extends JPanel {
         }, 0, 5000);
     }
 
+
+
     private PieChart createChart() {
         PieChart chart = new PieChartBuilder().width(130).height(150).build();
 
@@ -62,12 +67,12 @@ public class RAMChart extends JPanel {
     }
 
     private void updateChartData() {
-        double availableMemoryGB = (double) memory.getAvailable() / 1073741824;
-        double usedMemoryGB = TOTAL_MEMORY_GB - availableMemoryGB;
+//        double availableMemoryGB = (double)operatingSystem.getFreeMemorySize() / 1073741824;
+        double usedMemoryGB = TOTAL_MEMORY_GB - operatingSystem.getFreeMemorySize() / 1073741824;
         double usedMemoryPercentage = usedMemoryGB / TOTAL_MEMORY_GB * 100;
 
         chart.updatePieSeries("ram_usage", usedMemoryPercentage);
-        chart.getStyler().setSumFormat(String.valueOf(usedMemoryGB).split("\\.")[0] + "." +  String.valueOf(usedMemoryGB).split("\\.")[1].charAt(0) +
+        chart.getStyler().setSumFormat(Math.round(usedMemoryGB * 10.0) / 10.0 +
                 " / " + (int) Math.ceil(TOTAL_MEMORY_GB) + "GiB");
         chart.updatePieSeries("empty", 100 - usedMemoryPercentage);
         repaint();  // Repaint the panel to update the chart
