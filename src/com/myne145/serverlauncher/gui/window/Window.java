@@ -7,6 +7,7 @@ import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.DesktopOpener;
+import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -74,7 +75,7 @@ public class Window extends JFrame {
         JRadioButtonMenuItem scaleLarge = new JRadioButtonMenuItem("Large");
 
         JMenuItem openServerFolder = new JMenuItem("Open current server's folder");
-        JMenuItem openConfigFile = new JMenuItem("<html>Open config file\n<sub><center>" + Config.ABSOLUTE_PATH + "</center></sub></html>"); //TODO abbreviations at 30 chars
+        JMenuItem openConfigFile = new JMenuItem("<html>Open config file\n<sub><center>" + FileDetailsUtils.abbreviate(Config.ABSOLUTE_PATH, 28) + "</center></sub></html>"); //absolute garbage
         this.openServerFolder = openServerFolder;
 
         fileMenu.add(openServerFolder);

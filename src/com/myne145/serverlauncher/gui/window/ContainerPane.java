@@ -6,6 +6,7 @@ import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
@@ -90,7 +91,7 @@ public class ContainerPane extends JTabbedPane {
         }
 
         if(openServerFolderItem != null) {
-            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + Config.getData().get(index).serverPath() + "</sub></center></html>");
+            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + FileDetailsUtils.abbreviate(Config.getData().get(index).serverPath().getAbsolutePath(), 27) + "</sub></center></html>");
         }
 
         for(int i = 0; i < getTabCount(); i++) {
