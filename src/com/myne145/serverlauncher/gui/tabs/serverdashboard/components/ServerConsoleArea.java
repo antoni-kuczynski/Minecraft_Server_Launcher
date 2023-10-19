@@ -87,7 +87,8 @@ public class ServerConsoleArea extends JPanel {
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
     private ProcessBuilder processBuilder;
-
+    private final ArrayList<String> commandHistory = new ArrayList<>();
+    private int commandIndex;
 
     public ServerConsoleArea(ContainerPane parentPane, int index, ServerConsoleTab tab) {
         setLayout(new BorderLayout());
@@ -102,6 +103,21 @@ public class ServerConsoleArea extends JPanel {
 
         JTextField commandField = new JTextField();
         JButton executeButton = new JButton("Execute");
+
+        //.console_history file loading
+        File consoleHistory = new File(Config.getData().get(index).serverPath() + "/.console_history");
+        if(consoleHistory.exists()) {
+            String commands;
+            try {
+                commands = readFileString(consoleHistory);
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+            for(String s : commands.split("\n")) {
+                commandHistory.add(s.substring(14)); //this's gonna break on 20nov 2286
+            }
+            commandIndex = commandHistory.size();
+        }
 
         executeButton.addActionListener(e -> {
             String command = commandField.getText();
@@ -121,6 +137,16 @@ public class ServerConsoleArea extends JPanel {
                     String command = commandField.getText();
                     executeCommand(command);
                     commandField.setText("");
+                } else if(e.getKeyCode() == KeyEvent.VK_UP) {
+                    if(commandIndex == 0)
+                        return;
+                    commandField.setText(commandHistory.get(commandIndex - 1));
+                    commandIndex--;
+                } else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    if (commandIndex == commandHistory.size())
+                        return;
+                    commandField.setText(commandHistory.get(commandIndex));
+                    commandIndex++;
                 }
             }
 
@@ -217,6 +243,7 @@ public class ServerConsoleArea extends JPanel {
             tab.getServerConsoleArea().serverPIDText.setVisible(true);
             parentPane.setToolTipTextAt(index, "Running");
         }
+        
         if (!processes.isEmpty()) {
             if (command.equals("stop")) {
                 wasServerStopCausedByAButton = true;

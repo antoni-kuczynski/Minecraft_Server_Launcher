@@ -35,6 +35,8 @@ public class Window extends JFrame {
     public static int SERVER_STATUS_ICON_DIMENSION;
     private static Window window;
     private final static Taskbar taskbar = Taskbar.getTaskbar();
+    private static final JMenuBar menuBar = new JMenuBar();
+    private static JMenuItem openServerFolder;
 
     public Window() throws Exception {
         // Set up the JFrame
@@ -61,16 +63,6 @@ public class Window extends JFrame {
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", new Color(51, 51, 52));
         this.getRootPane().putClientProperty("JRootPane.titleBarForeground", new Color(204, 204, 204));
 
-
-
-        ServerProperties.reloadLevelNameGlobalValue();
-
-        ContainerPane containerPane = new ContainerPane();
-        buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
-        add(buttonAndWorldsPanel, BorderLayout.CENTER);
-        setVisible(true);
-
-        JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         JMenu viewMenu = new JMenu("View");
         JCheckBoxMenuItem showCharts = new JCheckBoxMenuItem("Show CPU & RAM usage graphs");
@@ -82,7 +74,8 @@ public class Window extends JFrame {
         JRadioButtonMenuItem scaleLarge = new JRadioButtonMenuItem("Large");
 
         JMenuItem openServerFolder = new JMenuItem("Open current server's folder");
-        JMenuItem openConfigFile = new JMenuItem("Open config file");
+        JMenuItem openConfigFile = new JMenuItem("<html>Open config file\n<sub><center>" + Config.ABSOLUTE_PATH + "</center></sub></html>"); //TODO abbreviations at 30 chars
+        this.openServerFolder = openServerFolder;
 
         fileMenu.add(openServerFolder);
         fileMenu.add(openConfigFile);
@@ -100,6 +93,15 @@ public class Window extends JFrame {
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         setJMenuBar(menuBar);
+
+        ServerProperties.reloadLevelNameGlobalValue();
+
+        ContainerPane containerPane = new ContainerPane();
+        buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
+        add(buttonAndWorldsPanel, BorderLayout.CENTER);
+        setVisible(true);
+
+
         areChartsEnabled = userValues.getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
         showCharts.setSelected(areChartsEnabled);
         containerPane.setChartsVisibility(areChartsEnabled);
@@ -246,6 +248,14 @@ public class Window extends JFrame {
 
     public static Window getWindow() {
         return window;
+    }
+
+    public static JMenuBar getMenu() {
+        return menuBar;
+    }
+
+    public static JMenuItem getOpenServerFolder() {
+        return openServerFolder;
     }
 
     public static void main(String[] args) throws Exception {

@@ -1,7 +1,5 @@
 package com.myne145.serverlauncher.gui.window;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
@@ -11,16 +9,15 @@ import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 
 import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
 
 
 public class ContainerPane extends JTabbedPane {
-    private final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
+    private static final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
+    private static final JMenuItem openServerFolderItem = Window.getMenu().getMenu(0).getItem(0);
 
     @Override
     public void setIconAt(int index, Icon icon) {
@@ -33,14 +30,6 @@ public class ContainerPane extends JTabbedPane {
         TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
         return tabLabel.getIcon();
     }
-
-//    @Override
-//    public void setToolTipTextAt(int index, String toolTipText) {
-//        super.setToolTipTextAt(index, toolTipText);
-//        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
-//        tabLabel.setToolTipText(toolTipText);
-//    }
-
 
     @Override
     public void setTitleAt(int index, String title) {
@@ -84,14 +73,9 @@ public class ContainerPane extends JTabbedPane {
                 setToolTipTextAt(i, "Errored - Server executable missing");
             }
         }
+        System.out.println(serverTabbedPanes);
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(CurrentServerInfo.serverId - 1);
-//        onTabSwitched(CurrentServerInfo.serverId - 1);
-
-        ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(CurrentServerInfo.serverId - 1).getComponentAt(0);
-//        selectedConsoleTab.cpuChart.isEnabled = true;
-//        selectedConsoleTab.cpuChart.updateChartData();
-
 
         onTabSwitched(CurrentServerInfo.serverId - 1);
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
@@ -105,6 +89,9 @@ public class ContainerPane extends JTabbedPane {
                 setBackgroundAt(index, new Color(51, 51, 52));
         }
 
+        if(openServerFolderItem != null) {
+            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + Config.getData().get(index).serverPath() + "</sub></center></html>");
+        }
 
         for(int i = 0; i < getTabCount(); i++) {
             ServerConsoleTab consoleTab = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
@@ -115,8 +102,6 @@ public class ContainerPane extends JTabbedPane {
             }
             System.out.println(i + "\t" + consoleTab.cpuChart.isEnabled);
         }
-//        if (index != this.getTabCount() - 1) { //code that runs when u click all the server tabs
-
 
             Runnable runnable = () -> {
                 for(int i = 0; i < serverTabbedPanes.size(); i++) {

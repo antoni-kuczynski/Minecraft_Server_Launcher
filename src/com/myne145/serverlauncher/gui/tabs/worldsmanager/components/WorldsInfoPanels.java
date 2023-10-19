@@ -19,8 +19,8 @@ public class WorldsInfoPanels extends JPanel {
 
     public WorldsInfoPanels() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        clientWorldInfo = createInformationPanel("Currently selected world");
-        serverWorldInfo = createInformationPanel("Current server world");
+        clientWorldInfo = createInformationPanel("World to import");
+        serverWorldInfo = createInformationPanel("Server world (to be replaced)");
 
         add(clientWorldInfo.infoPanel);
         add(Box.createVerticalStrut(30));

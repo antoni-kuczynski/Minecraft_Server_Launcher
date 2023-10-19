@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Config {
     private static final ArrayList<MCServer> data = new ArrayList<>();
     public static String RESOURCES_PATH = "src/com/myne145/serverlauncher/resources";
+    public static String ABSOLUTE_PATH;
 
     private static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
@@ -25,6 +26,7 @@ public class Config {
 
     public static void createConfig() throws Exception {
         File serverConfigFile = new File("servers.json");
+        ABSOLUTE_PATH = serverConfigFile.getAbsolutePath();
         if(!serverConfigFile.exists()) {
             if(!serverConfigFile.createNewFile()) {
                 Window.alert(AlertType.FATAL, "Cannot create config file");
