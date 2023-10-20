@@ -6,5 +6,5 @@ public class CurrentServerInfo {
     public static String serverName;
     public static File serverPath;
     public static int serverId;
-    public static CurrentServerWorld world;
+//    public static CurrentServerWorld world;
 }

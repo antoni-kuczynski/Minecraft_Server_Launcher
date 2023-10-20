@@ -228,8 +228,8 @@ public class WorldCopyHandler extends Thread {
         }
         startImportingButtonFromWorldManagerTab.setEnabled(true); //issue #15 fix
         worldsManagerTab.setIcons(); //non-removable
-        if(CurrentServerInfo.world.getPath().exists()) {
-            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(CurrentServerInfo.world.path);
+        if(Config.getData().get(worldsManagerTab.getTabIndex()).worldPath().exists()) {
+            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(Config.getData().get(worldsManagerTab.getTabIndex()).worldPath());
         }
     }
 

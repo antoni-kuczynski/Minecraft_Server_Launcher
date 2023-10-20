@@ -136,7 +136,7 @@ public class ContainerPane extends JTabbedPane {
             WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
             worldsManagerTab.setIcons();
             if(CurrentServerInfo.world.getPath().exists()) {
-                worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(CurrentServerInfo.world.path);
+                worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(mcServerConfig.worldPath());
             }
 
             for (JTabbedPane serverTabbedPane : serverTabbedPanes) {

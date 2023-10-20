@@ -18,7 +18,7 @@ public class ServerProperties {
         File serverProperties = new File(server.serverPath().getAbsolutePath() + "\\server.properties");
         if(!serverProperties.exists()) {
             worldName = "world";
-            CurrentServerInfo.world.path = new File(server.serverPath().getAbsolutePath() + "\\world");
+//            CurrentServerInfo.world.path = new File(server.serverPath().getAbsolutePath() + "\\world");
 //            CurrentServerInfo.world.levelDat = new File(server.serverPath().getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
             return;
         }
@@ -36,7 +36,7 @@ public class ServerProperties {
                 break;
             }
         }
-        CurrentServerInfo.world.path = new File(server.serverPath().getAbsolutePath() + "\\" + worldName);
+//        CurrentServerInfo.world.path = new File(server.serverPath().getAbsolutePath() + "\\" + worldName);
 //        CurrentServerInfo.world.levelDat = new File(server.serverPath().getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
     }
 

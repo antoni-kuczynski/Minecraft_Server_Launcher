@@ -5,5 +5,5 @@ import java.io.File;
 public record MCServer(String serverName,
                        File serverPath, File serverJarPath,
                        File javaRuntimePath, String serverLaunchArgs,
-                       int serverId, boolean isEmpty) {
+                       int serverId, File worldPath) {
 }

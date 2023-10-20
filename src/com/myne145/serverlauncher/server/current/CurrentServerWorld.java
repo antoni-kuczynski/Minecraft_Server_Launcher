@@ -13,7 +13,7 @@ public class CurrentServerWorld {
 //        this.lastPlayedDate = lastPlayedDate;
 //        this.levelName = levelName;
 //        this.levelDat = levelDat;
-        this.path = path;
+//        this.path = path;
     }
 
 //    public Calendar getLastPlayedDate() {
@@ -28,7 +28,7 @@ public class CurrentServerWorld {
 //        return levelDat;
 //    }
 
-    public File getPath() {
-        return path;
-    }
+//    public File getPath() {
+//        return path;
+//    }
 }

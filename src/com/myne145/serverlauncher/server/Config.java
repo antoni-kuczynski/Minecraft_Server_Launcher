@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.server;
 
+import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.json.JSONArray;
@@ -10,6 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+
+import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
 public class Config {
     private static final ArrayList<MCServer> data = new ArrayList<>();
@@ -22,6 +25,30 @@ public class Config {
             fileToReadReader.append(fileLine);
         }
         return fileToReadReader.toString();
+    }
+
+    public static String getServerWorldPath(String pathToServer) {
+        File serverProperties = new File(pathToServer + "/server.properties");
+        String worldName = "world";
+        if(!serverProperties.exists()) {
+            return pathToServer + "/" + worldName;
+        }
+
+        ArrayList<String> serverPropertiesContent;
+        try {
+            serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
+        } catch (IOException e) {
+            Window.alert(AlertType.FATAL, "Cannot read server.properties content.\n" + getErrorDialogMessage(e));
+            throw new RuntimeException(e);
+        }
+
+        for(String s : serverPropertiesContent) {
+            if(s.contains("level-name")) {
+                worldName = s.split("=")[1];
+                break;
+            }
+        }
+        return pathToServer + "/" + worldName;
     }
 
     public static void createConfig() throws Exception {
@@ -60,7 +87,7 @@ public class Config {
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
             String pathToJavaRuntime = jsonObject.getString("pathToJavaRuntimeExecutable");
             boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");
-            boolean isEmpty = serverName.isEmpty() && pathToServerFolder.isEmpty() && pathToServerJarFile.isEmpty() && pathToJavaRuntime.isEmpty();
+//            boolean isEmpty = serverName.isEmpty() && pathToServerFolder.isEmpty() && pathToServerJarFile.isEmpty() && pathToJavaRuntime.isEmpty();
 
             String serverLaunchArgs;
             if(overrideGloballaunchArgs)
@@ -68,7 +95,8 @@ public class Config {
             else
                 serverLaunchArgs = javaArguments;
 
-            data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime), serverLaunchArgs, jsonIndex, isEmpty));
+            data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime),
+                    serverLaunchArgs, jsonIndex, new File(getServerWorldPath(pathToServerFolder))));
         }
     }
     public static ArrayList<MCServer> getData() {

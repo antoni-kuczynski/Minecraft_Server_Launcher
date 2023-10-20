@@ -1,6 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
-import com.myne145.serverlauncher.server.current.CurrentServerWorld;
+//import com.myne145.serverlauncher.server.current.CurrentServerWorld;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.Config;
@@ -49,7 +49,7 @@ public class Window extends JFrame {
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
         buttonAndWorldsPanel.setBackground(new Color(51, 51, 52));
 
-        CurrentServerInfo.world = new CurrentServerWorld(null, null, null, null);
+//        CurrentServerInfo.world = new CurrentServerWorld(null, null, null, null);
         if(userValues.getInt(PREFS_SERVER_ID, 1) - 1 <= Config.getData().size()) {
             CurrentServerInfo.serverId = userValues.getInt(PREFS_SERVER_ID, 1);
 //            CurrentServerInfo.serverName = Config.getData().get(CurrentServerInfo.serverId - 1).serverName();

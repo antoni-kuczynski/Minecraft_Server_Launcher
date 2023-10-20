@@ -30,7 +30,7 @@ public class ServerMinecraftWorld extends MinecraftWorld{
         super(worldPath);
 //        CurrentServerInfo.world.levelDat = getLevelDatFile(worldPath);
 //        CurrentServerInfo.world.lastPlayedDate = getLastPlayedDate();
-        CurrentServerInfo.world.path = worldPath;
+//        CurrentServerInfo.world.path = worldPath;
 //        CurrentServerInfo.world.levelName = getLevelNameColors();
     }
 }
