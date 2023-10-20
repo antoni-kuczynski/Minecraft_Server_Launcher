@@ -1,6 +1,6 @@
 package com.myne145.serverlauncher.server;
 
-import com.myne145.serverlauncher.server.current.CurrentServerInfo;
+//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.json.JSONArray;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
-public class Config {
+public class Config extends ArrayList<MCServer> {
     private static final ArrayList<MCServer> data = new ArrayList<>();
     public static String RESOURCES_PATH = "src/com/myne145/serverlauncher/resources";
     public static String ABSOLUTE_PATH;

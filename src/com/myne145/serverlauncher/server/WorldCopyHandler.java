@@ -4,7 +4,7 @@ import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.current.ServerProperties;
-import com.myne145.serverlauncher.server.current.CurrentServerInfo;
+//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import org.apache.commons.io.FileUtils;
 

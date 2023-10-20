@@ -21,11 +21,18 @@ public class MinecraftWorld {
     private boolean isUsingCheats;
     private String gameVersion;
     private final ImageIcon DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+    private final int serverIndex;
 
     public File getLevelDatFile(File worldPath) {
         return new File("world_temp/worlds_level_dat/level_" + worldPath.getName() + ".dat");
     }
-    public MinecraftWorld(File worldPath) throws IOException {
+
+    public int getServerIndex() { //this is so bad
+        return serverIndex;
+    }
+
+    public MinecraftWorld(File worldPath, int serverIndex) throws IOException {
+        this.serverIndex = serverIndex;
         //Icon
         File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
         try {

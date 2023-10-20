@@ -6,6 +6,6 @@ import java.io.IOException;
 public class ClientMinecraftWorld extends MinecraftWorld{
 
     public ClientMinecraftWorld(File worldPath) throws IOException {
-        super(worldPath);
+        super(worldPath, 0);
     }
 }

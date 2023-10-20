@@ -1,7 +1,7 @@
 package com.myne145.serverlauncher.gui.window;
 
 //import com.myne145.serverlauncher.server.current.CurrentServerWorld;
-import com.myne145.serverlauncher.server.current.CurrentServerInfo;
+//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
@@ -51,11 +51,11 @@ public class Window extends JFrame {
 
 //        CurrentServerInfo.world = new CurrentServerWorld(null, null, null, null);
         if(userValues.getInt(PREFS_SERVER_ID, 1) - 1 <= Config.getData().size()) {
-            CurrentServerInfo.serverId = userValues.getInt(PREFS_SERVER_ID, 1);
+//            CurrentServerInfo.serverId = userValues.getInt(PREFS_SERVER_ID, 1);
 //            CurrentServerInfo.serverName = Config.getData().get(CurrentServerInfo.serverId - 1).serverName();
 //            CurrentServerInfo.serverPath = Config.getData().get(CurrentServerInfo.serverId - 1).serverPath();
         } else {
-            CurrentServerInfo.serverId = 1;
+//            CurrentServerInfo.serverId = 1;
 //            CurrentServerInfo.serverName = Config.getData().get(0).serverName();
 //            CurrentServerInfo.serverPath = Config.getData().get(0).serverPath();
         }
