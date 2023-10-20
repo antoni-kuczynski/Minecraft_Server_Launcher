@@ -5,29 +5,27 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 
 public class ServerMinecraftWorld extends MinecraftWorld{
 
     @Override
     public File getLevelDatFile(File worldPath) {
-        Runnable runnable = () -> {
-            try {
-                if(new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat").exists())
-                    FileUtils.forceDelete(new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat"));
-                FileUtils.copyFile(CurrentServerInfo.world.levelDat, new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat"));
-            } catch (Exception ignored) {
-                //this 99% of times throws an exception, i just wanna finish this
-            }
-        };
+        File tempLevelDatFile = new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + ".dat");
+
         try {
-            Thread thread = new Thread(runnable);
-            thread.start();
-            thread.join();
-        } catch (Exception e) {
+            try (FileChannel sourceChannel = FileChannel.open(CurrentServerInfo.world.levelDat.toPath(), StandardOpenOption.READ);
+                 FileChannel destChannel = FileChannel.open(tempLevelDatFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
+                sourceChannel.transferTo(0, sourceChannel.size(), destChannel);
+            }
+
+            return tempLevelDatFile;
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return new File("world_temp\\level_" + "server_id_" + CurrentServerInfo.serverId + "_" + ".dat");
     }
 
     public ServerMinecraftWorld(File worldPath) throws IOException {
