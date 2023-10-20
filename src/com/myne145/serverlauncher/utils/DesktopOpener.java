@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.utils;
 
+import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 
 import java.awt.*;
@@ -42,8 +43,8 @@ public class DesktopOpener {
         }
     }
 
-    public static void openServerFolder() {
-        File folder = CurrentServerInfo.serverPath;
+    public static void openServerFolder(int index) {
+        File folder = Config.getData().get(index).serverPath();
         if (!folder.exists()) {
             alert(AlertType.ERROR, "Directory not found: " + folder.getAbsolutePath());
             return;

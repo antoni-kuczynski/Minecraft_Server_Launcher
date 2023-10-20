@@ -49,7 +49,7 @@ public class ContainerPane extends JTabbedPane {
         setLayout(new BorderLayout());
         ArrayList<MCServer> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
-            ServerProperties.reloadLevelNameGlobalValue();
+//            ServerProperties.reloadLevelNameGlobalValue();
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
             tabbedPane.addTab("Worlds", new WorldsManagerTab(this, i));
@@ -76,9 +76,9 @@ public class ContainerPane extends JTabbedPane {
         }
         System.out.println(serverTabbedPanes);
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        setSelectedIndex(CurrentServerInfo.serverId - 1);
+        setSelectedIndex(Window.userValues.getInt("prefs_server_id", 1) - 1);
 
-        onTabSwitched(CurrentServerInfo.serverId - 1);
+        onTabSwitched(Window.userValues.getInt("prefs_server_id", 1) - 1);
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
     }
 
@@ -123,12 +123,13 @@ public class ContainerPane extends JTabbedPane {
 
             MCServer mcServerConfig = Config.getData().get(index);
 
-            CurrentServerInfo.serverName = mcServerConfig.serverName();
-            CurrentServerInfo.serverPath = mcServerConfig.serverPath();
+//            CurrentServerInfo.serverName = mcServerConfig.serverName();
+//            CurrentServerInfo.serverPath = mcServerConfig.serverPath();
             CurrentServerInfo.serverId = mcServerConfig.serverId();
-            com.myne145.serverlauncher.gui.window.Window.userValues.put("SELECTED_SERVER_NAME", CurrentServerInfo.serverName);
-            Window.userValues.put("SELECTED_SERVER_PATH", CurrentServerInfo.serverPath.getAbsolutePath());
-            ServerProperties.reloadLevelNameGlobalValue();
+            com.myne145.serverlauncher.gui.window.Window.userValues.put("SELECTED_SERVER_NAME", mcServerConfig.serverName());
+            Window.userValues.put("SELECTED_SERVER_PATH", mcServerConfig.serverPath().getAbsolutePath());
+            Window.userValues.putInt("prefs_server_id", index + 1);
+            ServerProperties.reloadLevelNameGlobalValue(mcServerConfig);
 
 
 

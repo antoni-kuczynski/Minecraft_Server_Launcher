@@ -31,13 +31,16 @@ public class WorldCopyHandler extends Thread {
     private final File serverWorldDir;
     private boolean copyFilesToServerDir;
     private static final Taskbar taskbar = Taskbar.getTaskbar();
+    private final String currentServerAbsPath;
 
     private WorldCopyHandler(WorldsManagerTab worldsManagerTab, boolean copyFilesToServerDir) {
-        ServerProperties.reloadLevelNameGlobalValue();
+        ServerProperties.reloadLevelNameGlobalValue(Config.getData().get(worldsManagerTab.getTabIndex()));
         this.worldsManagerTab = worldsManagerTab;
 
+        this.currentServerAbsPath = Config.getData().get(worldsManagerTab.getTabIndex()).serverPath().getAbsolutePath();
+
         this.serverWorldName = ServerProperties.getWorldName();
-        this.serverWorldDir = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + serverWorldName);
+        this.serverWorldDir = new File(currentServerAbsPath + "\\" + serverWorldName);
 
         this.selectedWorld = worldsManagerTab.getUserAddedWorld();
         WorldCopyHandler.progressBar = worldsManagerTab.getProgressBar();
@@ -142,11 +145,11 @@ public class WorldCopyHandler extends Thread {
     }
 
     private void handler() throws IOException, InterruptedException {
-         if (selectedWorld.isDirectory() && selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
+         if (selectedWorld.isDirectory() && selectedWorld.toString().contains(currentServerAbsPath)) {
             Window.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
         }
 
-        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(CurrentServerInfo.serverPath.getAbsolutePath())) {
+        if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(currentServerAbsPath)) {
             ArrayList<String> selectedWorldFilenamesList = new ArrayList<>(Arrays.asList(selectedWorld.list()));
             boolean isAddedWorldDirEmpty = serverWorldDir.list() == null || selectedWorld.list().length == 0;
             boolean containsWorldFiles =

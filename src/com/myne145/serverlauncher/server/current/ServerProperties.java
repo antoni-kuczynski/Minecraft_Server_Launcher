@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.server.current;
 
+import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
 
@@ -13,12 +14,12 @@ import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage
 public class ServerProperties {
     private static String worldName;
 
-    public static void reloadLevelNameGlobalValue() {
-        File serverProperties = new File(CurrentServerInfo.serverPath + "\\server.properties");
+    public static void reloadLevelNameGlobalValue(MCServer server) {
+        File serverProperties = new File(server.serverPath().getAbsolutePath() + "\\server.properties");
         if(!serverProperties.exists()) {
             worldName = "world";
-            CurrentServerInfo.world.path = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\world");
-            CurrentServerInfo.world.levelDat = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
+            CurrentServerInfo.world.path = new File(server.serverPath().getAbsolutePath() + "\\world");
+            CurrentServerInfo.world.levelDat = new File(server.serverPath().getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
             return;
         }
         ArrayList<String> serverPropertiesContent = null;
@@ -35,8 +36,8 @@ public class ServerProperties {
                 break;
             }
         }
-        CurrentServerInfo.world.path = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + worldName);
-        CurrentServerInfo.world.levelDat = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
+        CurrentServerInfo.world.path = new File(server.serverPath().getAbsolutePath() + "\\" + worldName);
+        CurrentServerInfo.world.levelDat = new File(server.serverPath().getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
     }
 
     public static String getWorldName() {

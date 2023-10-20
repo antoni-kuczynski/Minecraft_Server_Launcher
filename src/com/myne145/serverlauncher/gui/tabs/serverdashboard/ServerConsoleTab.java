@@ -70,7 +70,7 @@ public class ServerConsoleTab extends JPanel {
         killServer.setEnabled(false);
 
         startServer.addActionListener(e -> {
-            MCServer MCServerConfig = Config.getData().get(CurrentServerInfo.serverId - 1);
+            MCServer MCServerConfig = Config.getData().get(index);
             serverConsoleArea.startServer(MCServerConfig);
             startServer.setVisible(false);
             stopServer.setVisible(true);

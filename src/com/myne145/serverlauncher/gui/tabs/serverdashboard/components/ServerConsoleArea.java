@@ -236,7 +236,7 @@ public class ServerConsoleArea extends JPanel {
 
     public void executeCommand(String command) {
         if (!isServerRunning && command.equalsIgnoreCase("start")) {
-            startServer(Config.getData().get(CurrentServerInfo.serverId - 1));
+            startServer(Config.getData().get(index));
             tab.startServer.setVisible(false);
             tab.stopServer.setVisible(true);
             tab.killServer.setEnabled(true);
@@ -272,7 +272,7 @@ public class ServerConsoleArea extends JPanel {
 
     public void setTextFromLatestLogFile() throws IOException {
         if (isServerRunning) {
-            File latestLog = new File(CurrentServerInfo.serverPath.getAbsolutePath() + "\\logs\\latest.log");
+            File latestLog = new File(Config.getData().get(index).serverPath().getAbsolutePath() + "\\logs\\latest.log");
             consoleOutput.setText("");
             consoleOutput.append(readFileString(latestLog));
             isVisible = true;

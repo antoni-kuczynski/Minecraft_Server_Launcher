@@ -52,12 +52,12 @@ public class Window extends JFrame {
         CurrentServerInfo.world = new CurrentServerWorld(null, null, null, null);
         if(userValues.getInt(PREFS_SERVER_ID, 1) - 1 <= Config.getData().size()) {
             CurrentServerInfo.serverId = userValues.getInt(PREFS_SERVER_ID, 1);
-            CurrentServerInfo.serverName = Config.getData().get(CurrentServerInfo.serverId - 1).serverName();
-            CurrentServerInfo.serverPath = Config.getData().get(CurrentServerInfo.serverId - 1).serverPath();
+//            CurrentServerInfo.serverName = Config.getData().get(CurrentServerInfo.serverId - 1).serverName();
+//            CurrentServerInfo.serverPath = Config.getData().get(CurrentServerInfo.serverId - 1).serverPath();
         } else {
             CurrentServerInfo.serverId = 1;
-            CurrentServerInfo.serverName = Config.getData().get(0).serverName();
-            CurrentServerInfo.serverPath = Config.getData().get(0).serverPath();
+//            CurrentServerInfo.serverName = Config.getData().get(0).serverName();
+//            CurrentServerInfo.serverPath = Config.getData().get(0).serverPath();
         }
 
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -95,7 +95,7 @@ public class Window extends JFrame {
         menuBar.add(viewMenu);
         setJMenuBar(menuBar);
 
-        ServerProperties.reloadLevelNameGlobalValue();
+//        ServerProperties.reloadLevelNameGlobalValue();
 
         ContainerPane containerPane = new ContainerPane();
         buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
@@ -163,7 +163,7 @@ public class Window extends JFrame {
 
         openConfigFile.addActionListener(e -> DesktopOpener.openConfigFile());
 
-        openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder());
+        openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder(containerPane.getSelectedIndex()));
 
         // Save the window position to user preferences when the JFrame is closed
         addWindowListener(new WindowAdapter() {
@@ -175,7 +175,7 @@ public class Window extends JFrame {
                 userSavedValues.putInt(PREFS_KEY_Y, screenDimensions.y);
                 userSavedValues.putInt(PREFS_KEY_WIDTH, screenDimensions.width);
                 userSavedValues.putInt(PREFS_KEY_HEIGHT, screenDimensions.height);
-                userSavedValues.putInt(PREFS_SERVER_ID, CurrentServerInfo.serverId);
+//                userSavedValues.putInt(PREFS_SERVER_ID, CurrentServerInfo.serverId);
                 userSavedValues.putInt(PREFS_SERVER_ICONS_SCALE, SERVER_STATUS_ICON_DIMENSION);
                 userSavedValues.putBoolean(PREFS_ARE_CHARTS_ENABLED, areChartsEnabled);
 
