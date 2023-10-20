@@ -10,19 +10,19 @@ public class CurrentServerWorld {
     public File path;
 
     public CurrentServerWorld(Calendar lastPlayedDate, String levelName, File levelDat, File path) {
-        this.lastPlayedDate = lastPlayedDate;
-        this.levelName = levelName;
+//        this.lastPlayedDate = lastPlayedDate;
+//        this.levelName = levelName;
         this.levelDat = levelDat;
         this.path = path;
     }
 
-    public Calendar getLastPlayedDate() {
-        return lastPlayedDate;
-    }
+//    public Calendar getLastPlayedDate() {
+//        return lastPlayedDate;
+//    }
 
-    public String getLevelName() {
-        return levelName;
-    }
+//    public String getLevelName() {
+//        return levelName;
+//    }
 
     public File getLevelDat() {
         return levelDat;

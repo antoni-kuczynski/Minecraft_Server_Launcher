@@ -28,8 +28,8 @@ public class ServerMinecraftWorld extends MinecraftWorld{
     public ServerMinecraftWorld(File worldPath) throws IOException {
         super(worldPath);
         CurrentServerInfo.world.levelDat = getLevelDatFile(worldPath);
-        CurrentServerInfo.world.lastPlayedDate = getLastPlayedDate();
+//        CurrentServerInfo.world.lastPlayedDate = getLastPlayedDate();
         CurrentServerInfo.world.path = worldPath;
-        CurrentServerInfo.world.levelName = getLevelNameColors();
+//        CurrentServerInfo.world.levelName = getLevelNameColors();
     }
 }
