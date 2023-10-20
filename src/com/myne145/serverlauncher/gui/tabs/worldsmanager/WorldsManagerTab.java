@@ -35,13 +35,15 @@ public class WorldsManagerTab extends JPanel {
     private final WorldsManagerTab worldsManagerTab;
 
     private final JButton openButton =  new JButton("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
-    private final WorldsInfoPanels worldsInfoPanels = new WorldsInfoPanels();
     private final int tabIndex;
+    private final WorldsInfoPanels worldsInfoPanels;
 
     public WorldsManagerTab(ContainerPane parentPane, int tabSwitchingToIndex) {
         super(new BorderLayout());
         tabIndex = tabSwitchingToIndex;
         worldsManagerTab = this;
+        worldsInfoPanels = new WorldsInfoPanels(tabIndex);
+
         if(!Config.getData().get(tabSwitchingToIndex).serverPath().exists())
             return;
 

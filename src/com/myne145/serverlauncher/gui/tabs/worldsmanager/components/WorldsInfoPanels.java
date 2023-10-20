@@ -16,8 +16,10 @@ public class WorldsInfoPanels extends JPanel {
     private final ImageIcon DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
     private final WorldInformationPanel clientWorldInfo;
     private final WorldInformationPanel serverWorldInfo;
+    private final int tabIndex;
 
-    public WorldsInfoPanels() {
+    public WorldsInfoPanels(int tabIndex) {
+        this.tabIndex = tabIndex;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         clientWorldInfo = createInformationPanel("World to import");
         serverWorldInfo = createInformationPanel("Server world (to be replaced)");

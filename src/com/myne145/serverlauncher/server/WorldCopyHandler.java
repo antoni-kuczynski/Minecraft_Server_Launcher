@@ -222,8 +222,8 @@ public class WorldCopyHandler extends Thread {
                 copyDirectoryWithProgressBar(predictedWorldDir, serverWorldDir);
                 
 
-                CurrentServerInfo.world.levelDat = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat");
-                CurrentServerInfo.world.levelDat = CurrentServerInfo.world.getLevelDat();
+//                CurrentServerInfo.world.levelDat = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat");
+//                CurrentServerInfo.world.levelDat = CurrentServerInfo.world.getLevelDat();
             }
         }
         startImportingButtonFromWorldManagerTab.setEnabled(true); //issue #15 fix
