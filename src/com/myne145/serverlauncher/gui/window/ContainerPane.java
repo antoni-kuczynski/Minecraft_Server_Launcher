@@ -21,26 +21,26 @@ public class ContainerPane extends JTabbedPane {
 
     @Override
     public void setIconAt(int index, Icon icon) {
-        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+        ServerTabLabel tabLabel = (ServerTabLabel) this.getTabComponentAt(index);
         tabLabel.setIcon(icon);
     }
 
     @Override
     public Icon getIconAt(int index) {
-        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+        ServerTabLabel tabLabel = (ServerTabLabel) this.getTabComponentAt(index);
         return tabLabel.getIcon();
     }
 
     @Override
     public void setTitleAt(int index, String title) {
-        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+        ServerTabLabel tabLabel = (ServerTabLabel) this.getTabComponentAt(index);
         tabLabel.setText(title);
     }
 
     @Override
     public void setEnabledAt(int index, boolean enabled) {
         super.setEnabledAt(index, enabled);
-        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
+        ServerTabLabel tabLabel = (ServerTabLabel) this.getTabComponentAt(index);
         tabLabel.setEnabled(enabled);
     }
 
@@ -62,11 +62,13 @@ public class ContainerPane extends JTabbedPane {
             if(serverName.length() > 25)
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
-            setTabComponentAt(i, new ServerTabLabel(serverName, this, i));
+            ServerTabLabel tabLabel = new ServerTabLabel(serverName, this, i);
+            setTabComponentAt(i, tabLabel);
 
             if(Config.getData().get(i).serverJarPath().exists()) {
                 setIconAt(i, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
                 setToolTipTextAt(i, "Offline");
+                tabLabel.enableContextMenu();
             } else {
                 setEnabledAt(i, false);
                 setIconAt(i, ServerIcon.getServerIcon(ServerIcon.ERRORED));
@@ -82,28 +84,28 @@ public class ContainerPane extends JTabbedPane {
     }
 
     public void onTabSwitched(int index) {
-        for(int i = 0; i <= getTabCount(); i++) {
-            if(i == index)
-                setBackgroundAt(index, new Color(64, 75, 93));
-            else
-                setBackgroundAt(index, new Color(51, 51, 52));
-        }
+//        for(int i = 0; i <= getTabCount(); i++) {
+//            if(i == index)
+//                setBackgroundAt(index, new Color(64, 75, 93));
+//            else
+//                setBackgroundAt(index, new Color(51, 51, 52));
+//        }
 
         if(openServerFolderItem != null) {
             openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + FileDetailsUtils.abbreviate(Config.getData().get(index).serverPath().getAbsolutePath(), 27) + "</sub></center></html>");
         }
 
-        for(int i = 0; i < getTabCount(); i++) {
-            ServerConsoleTab consoleTab = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
-            if(i != index) {
-                consoleTab.cpuChart.setVisible(false);
-            } else {
-                consoleTab.cpuChart.setVisible(true);
-            }
-            System.out.println(i + "\t" + consoleTab.cpuChart.isEnabled);
-        }
-
             Runnable runnable = () -> {
+                for(int i = 0; i < getTabCount(); i++) {
+                    ServerConsoleTab consoleTab = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
+                    if(i != index) {
+                        consoleTab.cpuChart.setVisible(false);
+                    } else {
+                        consoleTab.cpuChart.setVisible(true);
+                    }
+                    System.out.println(i + "\t" + consoleTab.cpuChart.isEnabled);
+                }
+
                 for(int i = 0; i < serverTabbedPanes.size(); i++) {
                     if(i != index) {
                         ServerConsoleTab serverConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(i).getComponentAt(0);
@@ -115,20 +117,16 @@ public class ContainerPane extends JTabbedPane {
 
             ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
 
-            if(com.myne145.serverlauncher.gui.window.Window.areChartsEnabled)
+            if(Window.areChartsEnabled)
                 selectedConsoleTab.enableCharts();
             else
                 setChartsVisibility(false);
 
             MCServer mcServerConfig = Config.getData().get(index);
 
-//            CurrentServerInfo.serverName = mcServerConfig.serverName();
-//            CurrentServerInfo.serverPath = mcServerConfig.serverPath();
-//            CurrentServerInfo.serverId = mcServerConfig.serverId();
             com.myne145.serverlauncher.gui.window.Window.userValues.put("SELECTED_SERVER_NAME", mcServerConfig.serverName());
             Window.userValues.put("SELECTED_SERVER_PATH", mcServerConfig.serverPath().getAbsolutePath());
             Window.userValues.putInt("prefs_server_id", index + 1);
-//            ServerProperties.reloadLevelNameGlobalValue(mcServerConfig);
             Config.reloadServersWorldPath(mcServerConfig);
 
 
