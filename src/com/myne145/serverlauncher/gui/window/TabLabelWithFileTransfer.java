@@ -6,6 +6,7 @@ public class TabLabelWithFileTransfer extends JLabel {
 
     public TabLabelWithFileTransfer(String text, JTabbedPane parentPane, int index) {
         super(text);
+//        setIconTextGap(100);
         TransferHandler transferHandler = new TransferHandler() {
             @Override
             public boolean canImport(TransferHandler.TransferSupport support) {

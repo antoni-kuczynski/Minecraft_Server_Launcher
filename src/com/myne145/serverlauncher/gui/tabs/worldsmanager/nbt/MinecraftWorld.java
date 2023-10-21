@@ -72,12 +72,12 @@ public class MinecraftWorld {
     }
 
     public String getLevelNameColors() {
-        System.out.println(convertColors(levelName));
+//        System.out.println(convertColors(levelName));
         return convertColors(levelName);
     }
 
     public String getLevelNameNoColors() {
-        System.out.println(levelName);
+//        System.out.println(levelName);
         return levelName;
     }
 

@@ -5,6 +5,7 @@ import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -19,6 +20,11 @@ public class ServerTabLabel extends TabLabelWithFileTransfer { //ALL OF THIS for
     public ServerTabLabel(String text, ContainerPane parentPane, int tabIndex) {
         super(text, parentPane, tabIndex);
         this.tabIndex = tabIndex;
+
+        this.setHorizontalAlignment(JLabel.CENTER);
+        this.setVerticalAlignment(JLabel.CENTER);
+        this.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add a border
+
         if(!parentPane.isEnabledAt(tabIndex)) {
             return;
         }
@@ -68,8 +74,9 @@ public class ServerTabLabel extends TabLabelWithFileTransfer { //ALL OF THIS for
         });
     }
 
-    private void showContextMenu(final MouseEvent e) {
+    public void showContextMenu(final MouseEvent e) {
         if (contextMenu != null) {
+            System.out.println("Showing context menu at: " + e.getPoint());
             SwingUtilities.invokeLater(() -> contextMenu.show(ServerTabLabel.this, e.getX(), e.getY()));
         }
     }

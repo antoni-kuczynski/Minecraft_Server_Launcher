@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
+import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 //import com.myne145.serverlauncher.server.current.ServerProperties;
@@ -9,7 +10,10 @@ import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
@@ -44,8 +48,26 @@ public class ContainerPane extends JTabbedPane {
         tabLabel.setEnabled(enabled);
     }
 
+    @Override
+    public void setTabComponentAt(int index, Component component) {
+        super.setTabComponentAt(index, component);
+    }
+
     public ContainerPane() {
         setLayout(new BorderLayout());
+
+        setUI(new FlatTabbedPaneUI() {
+            @Override
+            protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect) {
+                super.paintTab(g, tabPlacement, rects, tabIndex, iconRect, textRect);
+
+                if (tabIndex == tabPane.getSelectedIndex()) {
+                    g.setColor(new Color(64, 75, 93));
+                    g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
+                }
+            }
+        });
+
         ArrayList<MCServer> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
 //            ServerProperties.reloadLevelNameGlobalValue();
@@ -62,7 +84,12 @@ public class ContainerPane extends JTabbedPane {
             if(serverName.length() > 25)
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
-            ServerTabLabel tabLabel = new ServerTabLabel(serverName, this, i);
+
+            StringBuilder iconSpacing = new StringBuilder();
+            for(int j = 0; j < 14 - serverName.length(); j++)
+                iconSpacing.append(" ");
+
+            ServerTabLabel tabLabel = new ServerTabLabel(serverName + iconSpacing, this, i);
             setTabComponentAt(i, tabLabel);
 
             if(Config.getData().get(i).serverJarPath().exists()) {
@@ -75,12 +102,35 @@ public class ContainerPane extends JTabbedPane {
                 setToolTipTextAt(i, "Errored - Server executable missing");
             }
         }
-        System.out.println(serverTabbedPanes);
+//        System.out.println(serverTabbedPanes);
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(Window.userValues.getInt("prefs_server_id", 1) - 1);
 
         onTabSwitched(Window.userValues.getInt("prefs_server_id", 1) - 1);
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(SwingUtilities.isRightMouseButton(e)) {
+                    Point point = e.getPoint();
+
+                    System.out.println("Component at point " + point + "\t" + getComponentAt(point));
+                    Component component = getComponentAt(point);
+                    if(component instanceof ContainerPane) { //area below the tabs is unclickable
+                        return;
+                    }
+
+                    double index2 = (double) point.y / ((double) component.getHeight() / getTabCount());
+                    int index = point.y / (component.getHeight() / getTabCount());
+                    System.out.println(index2);
+                    System.out.println("Index of clicked component: " + index);
+                    ServerTabLabel serverTabLabel = (ServerTabLabel) getTabComponentAt(index);
+                    e.translatePoint(-serverTabLabel.getWidth() / 2, -serverTabLabel.getHeight() * (index));
+                    serverTabLabel.showContextMenu(e);
+                }
+            }
+        });
     }
 
     public void onTabSwitched(int index) {
@@ -103,7 +153,7 @@ public class ContainerPane extends JTabbedPane {
                     } else {
                         consoleTab.cpuChart.setVisible(true);
                     }
-                    System.out.println(i + "\t" + consoleTab.cpuChart.isEnabled);
+//                    System.out.println(i + "\t" + consoleTab.cpuChart.isEnabled);
                 }
 
                 for(int i = 0; i < serverTabbedPanes.size(); i++) {
