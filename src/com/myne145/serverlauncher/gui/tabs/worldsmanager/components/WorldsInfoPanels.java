@@ -1,7 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.components;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
-//import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ClientMinecraftWorld;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ServerMinecraftWorld;

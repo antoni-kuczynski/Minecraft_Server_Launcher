@@ -1,6 +1,5 @@
 package com.myne145.serverlauncher.server;
 
-//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.json.JSONArray;
@@ -27,7 +26,15 @@ public class Config extends ArrayList<MCServer> {
         return fileToReadReader.toString();
     }
 
-    public static String getServerWorldPath(String pathToServer) {
+    public static void reloadServersWorldPath(MCServer server) {
+        String path = getServerWorldPath(server.serverPath().getAbsolutePath());
+        if(!path.equals(server.worldPath().getAbsolutePath())) {
+            data.set(server.serverId() - 1, new MCServer(server.serverName(), server.serverPath(),
+                    server.serverJarPath(), server.javaRuntimePath(), server.serverLaunchArgs(), server.serverId(), new File(path)));
+        }
+    }
+
+    private static String getServerWorldPath(String pathToServer) {
         File serverProperties = new File(pathToServer + "/server.properties");
         String worldName = "world";
         if(!serverProperties.exists()) {

@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
 public class ServerProperties {
-    private static String worldName;
+//    private static String worldName;
 
     public static void reloadLevelNameGlobalValue(MCServer server) {
         File serverProperties = new File(server.serverPath().getAbsolutePath() + "\\server.properties");
         if(!serverProperties.exists()) {
-            worldName = "world";
+//            worldName = "world";
 //            CurrentServerInfo.world.path = new File(server.serverPath().getAbsolutePath() + "\\world");
 //            CurrentServerInfo.world.levelDat = new File(server.serverPath().getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
             return;
@@ -32,7 +32,7 @@ public class ServerProperties {
 
         for(String s : serverPropertiesContent) {
             if(s.contains("level-name")) {
-                worldName = s.split("=")[1];
+//                worldName = s.split("=")[1];
                 break;
             }
         }
@@ -40,7 +40,7 @@ public class ServerProperties {
 //        CurrentServerInfo.world.levelDat = new File(server.serverPath().getAbsolutePath() + "\\" + worldName + "\\" + "level.dat");
     }
 
-    public static String getWorldName() {
-        return worldName;
-    }
+//    public static String getWorldName() {
+//        return worldName;
+//    }
 }

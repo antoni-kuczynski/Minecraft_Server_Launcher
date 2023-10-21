@@ -2,8 +2,7 @@ package com.myne145.serverlauncher.gui.window;
 
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
-//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
-import com.myne145.serverlauncher.server.current.ServerProperties;
+//import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
@@ -129,8 +128,8 @@ public class ContainerPane extends JTabbedPane {
             com.myne145.serverlauncher.gui.window.Window.userValues.put("SELECTED_SERVER_NAME", mcServerConfig.serverName());
             Window.userValues.put("SELECTED_SERVER_PATH", mcServerConfig.serverPath().getAbsolutePath());
             Window.userValues.putInt("prefs_server_id", index + 1);
-            ServerProperties.reloadLevelNameGlobalValue(mcServerConfig);
-
+//            ServerProperties.reloadLevelNameGlobalValue(mcServerConfig);
+            Config.reloadServersWorldPath(mcServerConfig);
 
 
             WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);

@@ -3,8 +3,7 @@ package com.myne145.serverlauncher.server;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
-import com.myne145.serverlauncher.server.current.ServerProperties;
-//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
+//import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -34,12 +33,12 @@ public class WorldCopyHandler extends Thread {
     private final String currentServerAbsPath;
 
     private WorldCopyHandler(WorldsManagerTab worldsManagerTab, boolean copyFilesToServerDir) {
-        ServerProperties.reloadLevelNameGlobalValue(Config.getData().get(worldsManagerTab.getTabIndex()));
+//        ServerProperties.reloadLevelNameGlobalValue(Config.getData().get(worldsManagerTab.getTabIndex()));
         this.worldsManagerTab = worldsManagerTab;
 
         this.currentServerAbsPath = Config.getData().get(worldsManagerTab.getTabIndex()).serverPath().getAbsolutePath();
 
-        this.serverWorldName = ServerProperties.getWorldName();
+        this.serverWorldName = Config.getData().get(worldsManagerTab.getTabIndex()).worldPath().getName();
         this.serverWorldDir = new File(currentServerAbsPath + "\\" + serverWorldName);
 
         this.selectedWorld = worldsManagerTab.getUserAddedWorld();

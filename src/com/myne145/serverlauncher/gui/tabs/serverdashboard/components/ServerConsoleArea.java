@@ -3,7 +3,6 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard.components;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
-//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.AlertType;

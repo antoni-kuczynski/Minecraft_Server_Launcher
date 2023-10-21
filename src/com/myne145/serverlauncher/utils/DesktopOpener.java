@@ -1,7 +1,6 @@
 package com.myne145.serverlauncher.utils;
 
 import com.myne145.serverlauncher.server.Config;
-//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 
 import java.awt.*;
 import java.io.File;

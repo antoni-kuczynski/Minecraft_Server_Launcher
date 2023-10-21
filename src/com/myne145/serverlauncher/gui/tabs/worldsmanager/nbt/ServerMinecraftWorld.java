@@ -1,7 +1,5 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
-//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -22,15 +20,12 @@ public class ServerMinecraftWorld extends MinecraftWorld {
 
             return tempLevelDatFile;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+//            throw new RuntimeException(e);
+            return levelDat;
         }
     }
 
     public ServerMinecraftWorld(File worldPath, int serverIndex) throws IOException {
         super(worldPath, serverIndex);
-//        CurrentServerInfo.world.levelDat = getLevelDatFile(worldPath);
-//        CurrentServerInfo.world.lastPlayedDate = getLastPlayedDate();
-//        CurrentServerInfo.world.path = worldPath;
-//        CurrentServerInfo.world.levelName = getLevelNameColors();
     }
 }

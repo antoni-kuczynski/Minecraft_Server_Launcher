@@ -72,10 +72,12 @@ public class MinecraftWorld {
     }
 
     public String getLevelNameColors() {
+        System.out.println(convertColors(levelName));
         return convertColors(levelName);
     }
 
     public String getLevelNameNoColors() {
+        System.out.println(levelName);
         return levelName;
     }
 
@@ -129,12 +131,20 @@ public class MinecraftWorld {
     );
 
     private static String convertColors(String levelName) {
-        if(levelName == null) //issue #72 fix
+        if(levelName == null)
             return "Level.dat file does not exist";
+        int changeTagsCounter = 0;
         for(String s : MC_COLOR_CODES.keySet()) {
+            String tempLevelName = levelName;
             levelName = levelName.replace(s, MC_COLOR_CODES.get(s));
+            if(!levelName.equals(tempLevelName))
+                changeTagsCounter++;
         }
-        levelName = levelName + MC_COLOR_CODES.get("§r") + "<font color =\"#cccccc\">";
+        StringBuilder resettingTags = new StringBuilder();
+        for(int i = 0; i < changeTagsCounter - 1; i++)
+            resettingTags.append(MC_COLOR_CODES.get("§r"));
+
+        levelName = levelName + resettingTags + "<font color =\"#cccccc\">";
         return levelName;
     }
 

@@ -5,7 +5,6 @@ import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.RAMChart;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerConsoleArea;
 import com.myne145.serverlauncher.utils.DesktopOpener;
-//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 

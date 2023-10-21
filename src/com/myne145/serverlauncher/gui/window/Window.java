@@ -1,8 +1,5 @@
 package com.myne145.serverlauncher.gui.window;
 
-//import com.myne145.serverlauncher.server.current.CurrentServerWorld;
-//import com.myne145.serverlauncher.server.current.CurrentServerInfo;
-import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;

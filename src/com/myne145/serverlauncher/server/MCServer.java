@@ -6,4 +6,5 @@ public record MCServer(String serverName,
                        File serverPath, File serverJarPath,
                        File javaRuntimePath, String serverLaunchArgs,
                        int serverId, File worldPath) {
+
 }
