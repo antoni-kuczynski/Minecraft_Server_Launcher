@@ -14,7 +14,9 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
 
@@ -55,7 +57,6 @@ public class ContainerPane extends JTabbedPane {
 
     public ContainerPane() {
         setLayout(new BorderLayout());
-
         setUI(new FlatTabbedPaneUI() {
             @Override
             protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect) {
@@ -66,6 +67,7 @@ public class ContainerPane extends JTabbedPane {
                     g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
                 }
             }
+
         });
 
         ArrayList<MCServer> configData = Config.getData();
@@ -109,30 +111,39 @@ public class ContainerPane extends JTabbedPane {
         onTabSwitched(Window.userValues.getInt("prefs_server_id", 1) - 1);
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
 
+        for(MouseListener mouseListener : getMouseListeners())
+            removeMouseListener(mouseListener); //to remove the tab switching on right click
         addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(SwingUtilities.isRightMouseButton(e)) {
-                    Point point = e.getPoint();
+                handleTabMouseClicks(e);
+            }
 
-                    System.out.println("Component at point " + point + "\t" + getComponentAt(point));
-                    Component component = getComponentAt(point);
-                    if(component instanceof ContainerPane) { //area below the tabs is unclickable
-                        return;
-                    }
-
-                    double index2 = (double) point.y / ((double) component.getHeight() / getTabCount());
-                    int index = point.y / (component.getHeight() / getTabCount());
-                    System.out.println(index2);
-                    System.out.println("Index of clicked component: " + index);
-                    ServerTabLabel serverTabLabel = (ServerTabLabel) getTabComponentAt(index);
-                    e.translatePoint(-serverTabLabel.getWidth() / 2, -serverTabLabel.getHeight() * (index));
-                    serverTabLabel.showContextMenu(e);
-                }
+            @Override
+            public void mousePressed(MouseEvent e) {
+                handleTabMouseClicks(e);
             }
         });
     }
 
+    private void handleTabMouseClicks(MouseEvent e) {
+        Point point = e.getPoint();
+        int index = indexAtLocation(point.x, point.y);
+
+        if(e.getButton() == MouseEvent.BUTTON1) {
+            setSelectedIndex(index);
+        } else if(e.getButton() == MouseEvent.BUTTON3) {
+            Component component = getComponentAt(point);
+            if(component instanceof ContainerPane) { //area below the tabs is unclickable
+                return;
+            }
+            ServerTabLabel serverTabLabel = (ServerTabLabel) getTabComponentAt(index);
+            e.translatePoint(-(component.getWidth() - serverTabLabel.getWidth()) / 2, -e.getY() - ((component.getHeight() / getTabCount()) - serverTabLabel.getHeight()) / 2 + point.y / ((index + 1) + index * 2));
+            serverTabLabel.showContextMenu(e);
+            e.consume();
+        }
+    }
     public void onTabSwitched(int index) {
 //        for(int i = 0; i <= getTabCount(); i++) {
 //            if(i == index)

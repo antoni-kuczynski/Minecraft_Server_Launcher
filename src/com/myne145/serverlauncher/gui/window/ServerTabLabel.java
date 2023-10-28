@@ -23,7 +23,7 @@ public class ServerTabLabel extends TabLabelWithFileTransfer { //ALL OF THIS for
 
         this.setHorizontalAlignment(JLabel.CENTER);
         this.setVerticalAlignment(JLabel.CENTER);
-        this.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add a border
+//        this.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add a border
 
         if(!parentPane.isEnabledAt(tabIndex)) {
             return;
