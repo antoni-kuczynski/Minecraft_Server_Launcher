@@ -3,20 +3,17 @@ package com.myne145.serverlauncher.gui.window;
 import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
-//import com.myne145.serverlauncher.server.current.ServerProperties;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
 
@@ -67,12 +64,10 @@ public class ContainerPane extends JTabbedPane {
                     g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
                 }
             }
-
         });
 
         ArrayList<MCServer> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
-//            ServerProperties.reloadLevelNameGlobalValue();
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
             tabbedPane.addTab("Worlds", new WorldsManagerTab(this, i));
@@ -80,6 +75,7 @@ public class ContainerPane extends JTabbedPane {
             tabbedPane.setTabComponentAt(1, new TabLabelWithFileTransfer("Worlds", tabbedPane,1));
             serverTabbedPanes.add(tabbedPane);
         }
+
         this.setTabPlacement(LEFT);
         for(int i = 0; i < serverTabbedPanes.size(); i++) {
             String serverName = configData.get(i).serverName();
@@ -87,11 +83,7 @@ public class ContainerPane extends JTabbedPane {
                 serverName = serverName.substring(0, 25) + "...";
             addTab(serverName, serverTabbedPanes.get(i));
 
-            StringBuilder iconSpacing = new StringBuilder();
-            for(int j = 0; j < 14 - serverName.length(); j++)
-                iconSpacing.append(" ");
-
-            ServerTabLabel tabLabel = new ServerTabLabel(serverName + iconSpacing, this, i);
+            ServerTabLabel tabLabel = new ServerTabLabel(serverName, this, i);
             setTabComponentAt(i, tabLabel);
 
             if(Config.getData().get(i).serverJarPath().exists()) {
@@ -128,6 +120,9 @@ public class ContainerPane extends JTabbedPane {
     }
 
     private void handleTabMouseClicks(MouseEvent e) {
+        if(getComponentAt(e.getPoint()) instanceof ContainerPane) {
+            return;
+        }
         Point point = e.getPoint();
         int index = indexAtLocation(point.x, point.y);
 
@@ -242,3 +237,4 @@ public class ContainerPane extends JTabbedPane {
         }
     }
 }
+

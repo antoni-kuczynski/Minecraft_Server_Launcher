@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -162,7 +163,8 @@ public class Window extends JFrame {
 
         openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder(containerPane.getSelectedIndex()));
 
-        // Save the window position to user preferences when the JFrame is closed
+        for(WindowListener windowListener : getWindowListeners())
+            removeWindowListener(windowListener);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
@@ -196,6 +198,30 @@ public class Window extends JFrame {
                     temporaryWorldLevelDatFiles.mkdirs();
 
                 clearTempDirectory();
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                Window.getWindow().setState(Window.ICONIFIED);
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                Window.getWindow().setState(Window.NORMAL);
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                Window.getWindow().setState(Window.ICONIFIED);
+            }
+
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                Window.getWindow().setState(Window.NORMAL);
             }
         });
         window = this;

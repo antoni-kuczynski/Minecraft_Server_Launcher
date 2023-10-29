@@ -118,7 +118,7 @@ public class WorldsManagerTab extends JPanel {
         JPanel addingWorld = new JPanel(new BorderLayout());
         JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
-        JLabel title = new JLabel("World Manager");
+        JLabel title = new JLabel( "Worlds - " + Config.getData().get(tabSwitchingToIndex).serverName());
         title.setFont(new Font("Arial", Font.BOLD, 18));
 
 

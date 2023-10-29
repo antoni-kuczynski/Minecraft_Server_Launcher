@@ -158,17 +158,20 @@ public class ServerConsoleArea extends JPanel {
 
         JPanel optionsPanel = new JPanel(new BorderLayout());
         JPanel options = new JPanel();
+        JLabel serverConsoleTitle = new JLabel( "Console - " + Config.getData().get(index).serverName());
         JButton clearAll = new JButton("Clear All");
         JCheckBox wrapLines = new JCheckBox("Wrap lines");
-        JLabel serverConsoleTitle = new JLabel("Server Console");
         serverPIDText.setVisible(false);
         options.add(serverPIDText);
         options.add(wrapLines);
         options.add(clearAll);
+        options.setOpaque(true);
+        options.setBackground(new Color(56, 56, 56));
 
         serverConsoleTitle.setFont(new Font("Arial", Font.BOLD, 18));
-        optionsPanel.add(serverConsoleTitle, BorderLayout.LINE_START);
         optionsPanel.add(options, BorderLayout.LINE_END);
+        optionsPanel.add(serverConsoleTitle, BorderLayout.LINE_START);
+
 
         clearAll.addActionListener(e -> consoleOutput.setText(""));
 

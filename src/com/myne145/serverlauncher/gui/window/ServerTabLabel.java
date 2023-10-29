@@ -21,6 +21,7 @@ public class ServerTabLabel extends TabLabelWithFileTransfer { //ALL OF THIS for
         super(text, parentPane, tabIndex);
         this.tabIndex = tabIndex;
 
+        setText("<html><p style=\"text-align: left; width: 110px\">" + text + "</p></html>");
         this.setHorizontalAlignment(JLabel.CENTER);
         this.setVerticalAlignment(JLabel.CENTER);
 //        this.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add a border
