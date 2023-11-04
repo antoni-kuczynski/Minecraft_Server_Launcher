@@ -33,6 +33,7 @@ public class WorldCopyHandler extends Thread {
     private final String currentServerAbsPath;
 
     private WorldCopyHandler(WorldsManagerTab worldsManagerTab, boolean copyFilesToServerDir) {
+        setName("WORLD_COPY_HANDLER");
 //        ServerProperties.reloadLevelNameGlobalValue(Config.getData().get(worldsManagerTab.getTabIndex()));
         this.worldsManagerTab = worldsManagerTab;
 

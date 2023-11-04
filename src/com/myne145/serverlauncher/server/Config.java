@@ -87,6 +87,7 @@ public class Config extends ArrayList<MCServer> {
         String javaArguments = globalVariables.getString("globalLaunchArgs");
 
 
+        int serverId = 1;
         for (int jsonIndex = 1; jsonIndex < configJSONObjects.length(); jsonIndex++) { //start on index 1 because index 0 are global variables
             JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
             String serverName = jsonObject.getString("serverName");
@@ -102,8 +103,12 @@ public class Config extends ArrayList<MCServer> {
             else
                 serverLaunchArgs = javaArguments;
 
+            if(!new File(pathToServerJarFile).exists()) {
+                continue;
+            }
             data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime),
-                    serverLaunchArgs, jsonIndex, new File(getServerWorldPath(pathToServerFolder))));
+                serverLaunchArgs, serverId, new File(getServerWorldPath(pathToServerFolder))));
+            serverId++;
         }
     }
     public static ArrayList<MCServer> getData() {

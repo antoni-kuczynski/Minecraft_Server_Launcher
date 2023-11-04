@@ -1,5 +1,7 @@
 package com.myne145.serverlauncher.gui.window;
 
+import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.ui.FlatRoundBorder;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;
@@ -20,6 +22,8 @@ import java.io.InputStream;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 
 public class Window extends JFrame {
     private final String PREFS_KEY_X = "window_x";
@@ -36,6 +40,7 @@ public class Window extends JFrame {
     private final static Taskbar taskbar = Taskbar.getTaskbar();
     private static final JMenuBar menuBar = new JMenuBar();
     private static JMenuItem openServerFolder;
+    private static JFrame frame;
 
     public Window() throws Exception {
         // Set up the JFrame
@@ -46,17 +51,6 @@ public class Window extends JFrame {
         SERVER_STATUS_ICON_DIMENSION = userValues.getInt(PREFS_SERVER_ICONS_SCALE,  32); //this needs to be here cuz size needs to be loaded before actually loading the icons
         JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
         buttonAndWorldsPanel.setBackground(new Color(51, 51, 52));
-
-//        CurrentServerInfo.world = new CurrentServerWorld(null, null, null, null);
-        if(userValues.getInt(PREFS_SERVER_ID, 1) - 1 <= Config.getData().size()) {
-//            CurrentServerInfo.serverId = userValues.getInt(PREFS_SERVER_ID, 1);
-//            CurrentServerInfo.serverName = Config.getData().get(CurrentServerInfo.serverId - 1).serverName();
-//            CurrentServerInfo.serverPath = Config.getData().get(CurrentServerInfo.serverId - 1).serverPath();
-        } else {
-//            CurrentServerInfo.serverId = 1;
-//            CurrentServerInfo.serverName = Config.getData().get(0).serverName();
-//            CurrentServerInfo.serverPath = Config.getData().get(0).serverPath();
-        }
 
         JFrame.setDefaultLookAndFeelDecorated(true);
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", new Color(51, 51, 52));
@@ -74,7 +68,7 @@ public class Window extends JFrame {
 
         JMenuItem openServerFolder = new JMenuItem("Open current server's folder");
         JMenuItem openConfigFile = new JMenuItem("<html>Open config file\n<sub><center>" + FileDetailsUtils.abbreviate(Config.ABSOLUTE_PATH, 28) + "</center></sub></html>"); //absolute garbage
-        this.openServerFolder = openServerFolder;
+        Window.openServerFolder = openServerFolder;
 
         fileMenu.add(openServerFolder);
         fileMenu.add(openConfigFile);
@@ -89,11 +83,10 @@ public class Window extends JFrame {
         viewMenu.add(showCharts);
         viewMenu.add(serverButtonsScale);
 
+        menuBar.setBorder(new MatteBorder(0,0,1,0, new Color(43, 43, 43)));
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         setJMenuBar(menuBar);
-
-//        ServerProperties.reloadLevelNameGlobalValue();
 
         ContainerPane containerPane = new ContainerPane();
         buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
@@ -225,6 +218,7 @@ public class Window extends JFrame {
             }
         });
         window = this;
+        frame = this;
     }
 
     public static String getErrorDialogMessage(Exception e) {

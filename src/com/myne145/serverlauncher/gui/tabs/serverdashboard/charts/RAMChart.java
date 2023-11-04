@@ -7,6 +7,7 @@ import org.knowm.xchart.style.Styler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,7 +19,6 @@ public class RAMChart extends JPanel {
     public boolean isEnabled = true;
     private final static OperatingSystemMXBean operatingSystem = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
     private final static double TOTAL_MEMORY_GB = (double) operatingSystem.getTotalMemorySize() / 1073741824;
-    private final static DecimalFormat memoryAmountFormat = new DecimalFormat("##.#");
 
 
     @Override
@@ -34,6 +34,8 @@ public class RAMChart extends JPanel {
         // Create a ChartPanel to display the chart
         XChartPanel<PieChart> chartPanel = new XChartPanel<>(chart);
         chartPanel.setPreferredSize(new Dimension(130, 150));
+        for(MouseListener mouseListener : chartPanel.getMouseListeners())
+            chartPanel.removeMouseListener(mouseListener);
 
         add(chartPanel);
 

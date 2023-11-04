@@ -6,6 +6,7 @@ import org.knowm.xchart.style.Styler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
 import java.lang.management.ManagementFactory;
 import com.sun.management.OperatingSystemMXBean;
 import java.util.Timer;
@@ -15,11 +16,13 @@ public class CPUChart extends JPanel {
     private final PieChart chart;
     public boolean isEnabled = true;
     private final static OperatingSystemMXBean systemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+    private final XChartPanel<PieChart> chartPanel;
 
     @Override
     public void setVisible(boolean aFlag) {
         super.setVisible(aFlag);
         isEnabled = aFlag;
+        chartPanel.setVisible(aFlag);
     }
 
     public CPUChart() {
@@ -27,12 +30,15 @@ public class CPUChart extends JPanel {
         chart = createChart();
 
         // Create a ChartPanel to display the chart
-        XChartPanel<PieChart> chartPanel = new XChartPanel<>(chart);
+
+        chartPanel = new XChartPanel<>(chart);
         chartPanel.setPreferredSize(new Dimension(130, 150));
+        for(MouseListener mouseListener : chartPanel.getMouseListeners())
+            chartPanel.removeMouseListener(mouseListener);
 
         chart.getStyler().setSumFormat("100%%");
         add(chartPanel);
-        updateChartData();
+//        updateChartData();
         // Create a Timer to update the chart every second
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {

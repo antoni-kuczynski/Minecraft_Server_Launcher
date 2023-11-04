@@ -53,31 +53,32 @@ public class ServerConsoleArea extends JPanel {
 
                 int howManyTimesLineWasNull = 0;
                 while (true) {
+                    if (!isServerRunning) {
+                        break;
+                    }
                     line = bufferedReader.readLine();
                     if (line == null) {
-                        if (isServerRunning) {
-                            inputStream = processes.get(processes.size() - 1).getInputStream();
-                            reader = new InputStreamReader(inputStream);
-                            bufferedReader = new BufferedReader(reader);
-                            howManyTimesLineWasNull++;
-                            if (howManyTimesLineWasNull > 50) { //assuming that a server has been stopped
-                                isServerRunning = false;
-                                howManyTimesLineWasNull = 0;
-                                processes.get(processes.size() - 1).destroy();
-                                if(wasServerStopCausedByAButton) {
-                                    parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
-                                    parentPane.setToolTipTextAt(index, "Offline");
-                                }
-                                else {
-                                    parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ERRORED));
-                                    parentPane.setToolTipTextAt(index, "Errored");
-                                }
+                        inputStream = processes.get(processes.size() - 1).getInputStream();
+                        reader = new InputStreamReader(inputStream);
+                        bufferedReader = new BufferedReader(reader);
+                        howManyTimesLineWasNull++;
+                        if (howManyTimesLineWasNull > 50) { //assuming that a server has been stopped
+                            isServerRunning = false;
+                            howManyTimesLineWasNull = 0;
+                            processes.get(processes.size() - 1).destroy();
+                            if(wasServerStopCausedByAButton) {
+                                parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
+                                parentPane.setToolTipTextAt(index, "Offline");
+                            } else {
+                                parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ERRORED));
+                                parentPane.setToolTipTextAt(index, "Errored");
                             }
                         }
                     } else {
                         String finalLine = line;
                         SwingUtilities.invokeLater(() -> consoleOutput.append(finalLine + "\n"));
                     }
+                    System.out.println("Line: " + line);
                 }
             }
         } catch (IOException | InterruptedException e) {
@@ -97,6 +98,7 @@ public class ServerConsoleArea extends JPanel {
         JScrollPane scrollPane = new JScrollPane(consoleOutput);
         ServerConsoleContextMenu.addDefaultContextMenu(consoleOutput);
 
+        consoleMainThread.setName("SERVER_" + Config.getData().get(index).serverId() + "_CONSOLE");
         setBackground(new Color(56, 56, 56));
         consoleOutput.setBorder(null);
 
@@ -158,9 +160,9 @@ public class ServerConsoleArea extends JPanel {
 
         JPanel optionsPanel = new JPanel(new BorderLayout());
         JPanel options = new JPanel();
-        JLabel serverConsoleTitle = new JLabel( "Console - " + Config.getData().get(index).serverName());
+        JLabel serverConsoleTitle = new JLabel( "<html>Console - " + Config.getData().get(index).serverName() + "</html>");
         JButton clearAll = new JButton("Clear All");
-        JCheckBox wrapLines = new JCheckBox("Wrap lines");
+        JCheckBox wrapLines = new JCheckBox("Wrap Lines");
         serverPIDText.setVisible(false);
         options.add(serverPIDText);
         options.add(wrapLines);

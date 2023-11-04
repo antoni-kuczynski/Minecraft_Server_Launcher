@@ -64,7 +64,9 @@ public class WorldsManagerTab extends JPanel {
                 File fileToAdd = filePaths[0];
                 setUserAddedWorld(fileToAdd);
             };
-            new Thread(runnable).start();
+            Thread thread = new Thread(runnable);
+            thread.setName("WORLD_FILE_PICKER");
+            thread.start();
 
         });
         TransferHandler transferHandler = new TransferHandler() {
@@ -118,7 +120,7 @@ public class WorldsManagerTab extends JPanel {
         JPanel addingWorld = new JPanel(new BorderLayout());
         JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
-        JLabel title = new JLabel( "Worlds - " + Config.getData().get(tabSwitchingToIndex).serverName());
+        JLabel title = new JLabel( "<html>Worlds - " + Config.getData().get(tabSwitchingToIndex).serverName() + "</html>");
         title.setFont(new Font("Arial", Font.BOLD, 18));
 
 
