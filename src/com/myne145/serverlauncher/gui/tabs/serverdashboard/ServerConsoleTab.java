@@ -11,8 +11,6 @@ import com.myne145.serverlauncher.server.Config;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
-
 public class ServerConsoleTab extends JPanel {
     public final JButton startServer = new JButton("Start Server");
     public final JButton stopServer = new JButton("Stop Server");
@@ -68,25 +66,9 @@ public class ServerConsoleTab extends JPanel {
 
         killServer.setEnabled(false);
 
-        startServer.addActionListener(e -> {
-            MCServer MCServerConfig = Config.getData().get(index);
-            serverConsoleArea.startServer(MCServerConfig);
-            startServer.setVisible(false);
-            stopServer.setVisible(true);
-            killServer.setEnabled(true);
-            serverConsoleArea.serverPIDText.setVisible(true);
-//            parentPane.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_online.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
-        });
+        startServer.addActionListener(e -> startServer());
 
-        stopServer.addActionListener(e -> {
-            stopServer.setVisible(false);
-            startServer.setVisible(true);
-            killServer.setEnabled(false);
-            serverConsoleArea.executeCommand("stop");
-            serverConsoleArea.wasServerStopCausedByAButton = true;
-            serverConsoleArea.serverPIDText.setVisible(false);
-//            parent.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
-        });
+        stopServer.addActionListener(e -> stopServer());
 
         killServer.addActionListener(e -> {
             serverConsoleArea.killServer();
@@ -98,6 +80,25 @@ public class ServerConsoleTab extends JPanel {
             killServer.setEnabled(false);
         });
     }
+
+    public void startServer() {
+        MCServer MCServerConfig = Config.getData().get(index);
+        serverConsoleArea.startServerWithoutChangingTheButtons(MCServerConfig);
+        startServer.setVisible(false);
+        stopServer.setVisible(true);
+        killServer.setEnabled(true);
+        serverConsoleArea.serverPIDText.setVisible(true);
+    }
+
+    public void stopServer() {
+        stopServer.setVisible(false);
+        startServer.setVisible(true);
+        killServer.setEnabled(false);
+        serverConsoleArea.executeCommand("stop");
+        serverConsoleArea.wasServerStopCausedByAButton = true;
+        serverConsoleArea.serverPIDText.setVisible(false);
+    }
+
     public void disableCharts() {
         cpuChart.setVisible(false);
         ramChart.setVisible(false);

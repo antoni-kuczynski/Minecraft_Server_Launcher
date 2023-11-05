@@ -31,12 +31,15 @@ public class ServerConsoleArea extends JPanel {
     private int index;
     private final ServerConsoleTab tab;
     public boolean isVisible = false;
+    private ProcessBuilder processBuilder;
+    private final ArrayList<String> commandHistory = new ArrayList<>();
+    private int commandIndex;
     private final Runnable consoleRunner = () -> {
         try {
             while (true) {
                 synchronized (this) {
                     // Wait until isVisible is true
-                    while (!isVisible) {
+                    while (!isVisible || !isServerRunning) {
                         wait();
                     }
                 }
@@ -62,7 +65,7 @@ public class ServerConsoleArea extends JPanel {
                         reader = new InputStreamReader(inputStream);
                         bufferedReader = new BufferedReader(reader);
                         howManyTimesLineWasNull++;
-                        if (howManyTimesLineWasNull > 50) { //assuming that a server has been stopped
+                        if (howManyTimesLineWasNull >= 50) { //assuming that a server has been stopped
                             isServerRunning = false;
                             howManyTimesLineWasNull = 0;
                             processes.get(processes.size() - 1).destroy();
@@ -86,9 +89,6 @@ public class ServerConsoleArea extends JPanel {
         }
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
-    private ProcessBuilder processBuilder;
-    private final ArrayList<String> commandHistory = new ArrayList<>();
-    private int commandIndex;
 
     public ServerConsoleArea(ContainerPane parentPane, int index, ServerConsoleTab tab) {
         setLayout(new BorderLayout());
@@ -207,7 +207,7 @@ public class ServerConsoleArea extends JPanel {
     }
 
 
-    public void startServer(MCServer MCServer) {
+    public void startServerWithoutChangingTheButtons(MCServer MCServer) {
         isVisible = true;
         boolean isSelectedJavaTheDefaultOne = MCServer.javaRuntimePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
                 MCServer.javaRuntimePath().getAbsolutePath().endsWith("java");
@@ -240,11 +240,12 @@ public class ServerConsoleArea extends JPanel {
 
     public void executeCommand(String command) {
         if (!isServerRunning && command.equalsIgnoreCase("start")) {
-            startServer(Config.getData().get(index));
-            tab.startServer.setVisible(false);
-            tab.stopServer.setVisible(true);
-            tab.killServer.setEnabled(true);
-            tab.getServerConsoleArea().serverPIDText.setVisible(true);
+            tab.startServer();
+//            startServer(Config.getData().get(index));
+//            tab.startServer.setVisible(false);
+//            tab.stopServer.setVisible(true);
+//            tab.killServer.setEnabled(true);
+//            tab.getServerConsoleArea().serverPIDText.setVisible(true);
             parentPane.setToolTipTextAt(index, "Running");
         }
         
@@ -281,5 +282,9 @@ public class ServerConsoleArea extends JPanel {
             consoleOutput.append(readFileString(latestLog));
             isVisible = true;
         }
+    }
+
+    public boolean isServerRunning() {
+        return isServerRunning;
     }
 }

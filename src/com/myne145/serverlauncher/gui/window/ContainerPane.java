@@ -123,7 +123,14 @@ public class ContainerPane extends JTabbedPane {
         int index = indexAtLocation(point.x, point.y);
 
         if(e.getButton() == MouseEvent.BUTTON1) {
-            setSelectedIndex(index);
+            if(e.getClickCount() == 1)
+                setSelectedIndex(index);
+            else if(e.getClickCount() == 2) {
+                ServerConsoleTab consoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
+                if(!consoleTab.getServerConsoleArea().isServerRunning())
+                    consoleTab.startServer();
+            }
+
         } else if(e.getButton() == MouseEvent.BUTTON3) {
             ServerTabLabel serverTabLabel = (ServerTabLabel) getTabComponentAt(index);
             serverTabLabel.showContextMenu(e, this);
