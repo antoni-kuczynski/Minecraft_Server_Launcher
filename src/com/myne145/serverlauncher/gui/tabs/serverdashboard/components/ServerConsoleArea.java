@@ -40,7 +40,7 @@ public class ServerConsoleArea extends JPanel {
                 synchronized (this) {
                     // Wait until isVisible is true
                     while (!isVisible || !isServerRunning) {
-                        wait();
+                        wait(500);
                     }
                 }
 
@@ -56,7 +56,7 @@ public class ServerConsoleArea extends JPanel {
 
                 int howManyTimesLineWasNull = 0;
                 while (true) {
-                    if (!isServerRunning) {
+                    if (!isServerRunning || !isVisible) {
                         break;
                     }
                     line = bufferedReader.readLine();
@@ -71,10 +71,10 @@ public class ServerConsoleArea extends JPanel {
                             processes.get(processes.size() - 1).destroy();
                             if(wasServerStopCausedByAButton) {
                                 parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
-                                parentPane.setToolTipTextAt(index, "Offline");
+//                                parentPane.setToolTipTextAt(index, "Offline");
                             } else {
                                 parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ERRORED));
-                                parentPane.setToolTipTextAt(index, "Errored");
+//                                parentPane.setToolTipTextAt(index, "Errored");
                             }
                         }
                     } else {
@@ -213,6 +213,7 @@ public class ServerConsoleArea extends JPanel {
                 MCServer.javaRuntimePath().getAbsolutePath().endsWith("java");
         String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : MCServer.javaRuntimePath().getAbsolutePath();
         ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
+        consoleOutput.setText("");
 
         try {
             processBuilder = new ProcessBuilder(command);
@@ -224,7 +225,7 @@ public class ServerConsoleArea extends JPanel {
             processes.add(process1);
             if (processes.size() == 1)
                 consoleMainThread.start();
-            parentPane.setToolTipTextAt(index, "Running");
+//            parentPane.setToolTipTextAt(index, "Running");
             parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ONLINE));
         } catch (Exception e) {
             consoleOutput.append(Window.getErrorDialogMessage(e));
@@ -246,7 +247,7 @@ public class ServerConsoleArea extends JPanel {
 //            tab.stopServer.setVisible(true);
 //            tab.killServer.setEnabled(true);
 //            tab.getServerConsoleArea().serverPIDText.setVisible(true);
-            parentPane.setToolTipTextAt(index, "Running");
+//            parentPane.setToolTipTextAt(index, "Running");
         }
         
         if (!processes.isEmpty()) {

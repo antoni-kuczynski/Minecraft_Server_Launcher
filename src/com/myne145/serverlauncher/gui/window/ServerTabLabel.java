@@ -15,13 +15,13 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     private final int tabIndex;
     private static ContainerPane parentPane;
 
-
     public ServerTabLabel(String text, ContainerPane parentPane, int tabIndex) {
         super(text, parentPane, tabIndex);
         this.tabIndex = tabIndex;
         setBackground(UIManager.getColor("TabbedPane.background"));
 
         setText("<html><p style=\"text-align: left; width: 110px\">" + text + "</p></html>");
+//        setToolTipText(null);
 
         this.setHorizontalAlignment(JLabel.CENTER);
         this.setVerticalAlignment(JLabel.CENTER);
@@ -29,8 +29,8 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
         if(!parentPane.isEnabledAt(tabIndex))
             return;
         ServerTabLabel.parentPane = parentPane;
-        for(MouseListener mouseListener : getMouseListeners())
-            removeMouseListener(mouseListener);
+//        for(MouseListener mouseListener : getMouseListeners())
+//            removeMouseListener(mouseListener);
     }
 
     public void enableContextMenu() {
