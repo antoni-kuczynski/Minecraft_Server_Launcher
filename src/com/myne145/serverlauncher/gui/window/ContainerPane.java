@@ -92,7 +92,6 @@ public class ContainerPane extends JTabbedPane {
 //            setToolTipTextAt(i, "Offline");
             tabLabel.enableContextMenu();
         }
-//        System.out.println(serverTabbedPanes);
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setSelectedIndex(Window.userValues.getInt("prefs_server_id", 1) - 1);
 
@@ -122,15 +121,12 @@ public class ContainerPane extends JTabbedPane {
         }
         int index = indexAtLocation(point.x, point.y);
 
-        if(e.getButton() == MouseEvent.BUTTON1) {
-            if(e.getClickCount() == 1)
-                setSelectedIndex(index);
-            else if(e.getClickCount() == 2) {
-                ServerConsoleTab consoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
-                if(!consoleTab.getServerConsoleArea().isServerRunning())
-                    consoleTab.startServer();
-            }
-
+        if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1) {
+            setSelectedIndex(index);
+        } else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2){
+            ServerConsoleTab consoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
+            if(!consoleTab.getServerConsoleArea().isServerRunning())
+                consoleTab.startServer();
         } else if(e.getButton() == MouseEvent.BUTTON3) {
             ServerTabLabel serverTabLabel = (ServerTabLabel) getTabComponentAt(index);
             serverTabLabel.showContextMenu(e, this);
@@ -145,17 +141,10 @@ public class ContainerPane extends JTabbedPane {
 
         ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
 
-        if(Window.areChartsEnabled)
-            selectedConsoleTab.enableCharts();
-        else
-            selectedConsoleTab.disableCharts();
-
         setChartsVisibility(Window.areChartsEnabled);
 
         MCServer mcServerConfig = Config.getData().get(index);
 
-        Window.userValues.put("SELECTED_SERVER_NAME", mcServerConfig.serverName());
-        Window.userValues.put("SELECTED_SERVER_PATH", mcServerConfig.serverPath().getAbsolutePath());
         Window.userValues.putInt("prefs_server_id", index + 1);
         Config.reloadServersWorldPath(mcServerConfig);
 
@@ -182,16 +171,13 @@ public class ContainerPane extends JTabbedPane {
     public void setChartsVisibility(boolean isVisible) {
         for(JTabbedPane tabbedPane : serverTabbedPanes) {
             ServerConsoleTab serverConsoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
-//            serverConsoleTab.cpuChart.isEnabled = isVisible;
-            serverConsoleTab.cpuChart.setVisible(isVisible);
+            serverConsoleTab.getCpuChart().setVisible(isVisible);
+            serverConsoleTab.getRamChart().setVisible(isVisible);
 
             if(!isVisible)
                 serverConsoleTab.disableCharts();
             else
                 serverConsoleTab.enableCharts();
-
-//            serverConsoleTab.ramChart.isEnabled = isVisible;
-            serverConsoleTab.ramChart.setVisible(isVisible);
         }
     }
     public void killAllServerProcesses() {

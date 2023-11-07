@@ -8,7 +8,6 @@ import org.knowm.xchart.style.Styler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
-import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.lang.management.ManagementFactory;
@@ -69,14 +68,13 @@ public class RAMChart extends JPanel {
     }
 
     private void updateChartData() {
-//        double availableMemoryGB = (double)operatingSystem.getFreeMemorySize() / 1073741824;
-        double usedMemoryGB = TOTAL_MEMORY_GB - operatingSystem.getFreeMemorySize() / 1073741824;
+        double usedMemoryGB = TOTAL_MEMORY_GB - (double) operatingSystem.getFreeMemorySize() / 1073741824;
         double usedMemoryPercentage = usedMemoryGB / TOTAL_MEMORY_GB * 100;
 
         chart.updatePieSeries("ram_usage", usedMemoryPercentage);
         chart.getStyler().setSumFormat(Math.round(usedMemoryGB * 10.0) / 10.0 +
                 " / " + (int) Math.ceil(TOTAL_MEMORY_GB) + "GiB");
         chart.updatePieSeries("empty", 100 - usedMemoryPercentage);
-        repaint();  // Repaint the panel to update the chart
+        repaint();
     }
 }

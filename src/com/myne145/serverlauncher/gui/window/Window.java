@@ -1,7 +1,5 @@
 package com.myne145.serverlauncher.gui.window;
 
-import com.formdev.flatlaf.ui.FlatLineBorder;
-import com.formdev.flatlaf.ui.FlatRoundBorder;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;
@@ -22,7 +20,6 @@ import java.io.InputStream;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
 public class Window extends JFrame {
@@ -31,7 +28,6 @@ public class Window extends JFrame {
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
     private final String PREFS_ARE_CHARTS_ENABLED = "are_charts_enabled";
-    private final String PREFS_SERVER_ID = "prefs_server_id";
     private final String PREFS_SERVER_ICONS_SCALE = "prefs_server_icons_scale";
     public static Preferences userValues = Preferences.userNodeForPackage(Window.class);
     public static boolean areChartsEnabled;
@@ -39,8 +35,6 @@ public class Window extends JFrame {
     private static Window window;
     private final static Taskbar taskbar = Taskbar.getTaskbar();
     private static final JMenuBar menuBar = new JMenuBar();
-    private static JMenuItem openServerFolder;
-    private static JFrame frame;
 
     public Window() throws Exception {
         // Set up the JFrame
@@ -48,9 +42,7 @@ public class Window extends JFrame {
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        SERVER_STATUS_ICON_DIMENSION = userValues.getInt(PREFS_SERVER_ICONS_SCALE,  32); //this needs to be here cuz size needs to be loaded before actually loading the icons
-        JPanel buttonAndWorldsPanel = new JPanel(new BorderLayout(10,10));
-        buttonAndWorldsPanel.setBackground(new Color(51, 51, 52));
+        SERVER_STATUS_ICON_DIMENSION = userValues.getInt(PREFS_SERVER_ICONS_SCALE,  32);
 
         JFrame.setDefaultLookAndFeelDecorated(true);
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", new Color(51, 51, 52));
@@ -68,7 +60,6 @@ public class Window extends JFrame {
 
         JMenuItem openServerFolder = new JMenuItem("Open current server's folder");
         JMenuItem openConfigFile = new JMenuItem("<html>Open config file\n<sub><center>" + FileDetailsUtils.abbreviate(Config.ABSOLUTE_PATH, 28) + "</center></sub></html>"); //absolute garbage
-        Window.openServerFolder = openServerFolder;
 
         fileMenu.add(openServerFolder);
         fileMenu.add(openConfigFile);
@@ -89,8 +80,7 @@ public class Window extends JFrame {
         setJMenuBar(menuBar);
 
         ContainerPane containerPane = new ContainerPane();
-        buttonAndWorldsPanel.add(containerPane, BorderLayout.CENTER);
-        add(buttonAndWorldsPanel, BorderLayout.CENTER);
+        add(containerPane, BorderLayout.CENTER);
         setVisible(true);
 
 
@@ -104,22 +94,11 @@ public class Window extends JFrame {
             case 48 -> scaleLarge.setSelected(true);
         }
 
-        // Set the initial size and position of the JFrame
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int windowWidth = (int) (screenSize.getWidth() * 0.5);
-        int windowHeight = (int) (screenSize.getHeight() * 0.5);
-        int xWindowPosiotion = (int) (screenSize.getWidth() * 0.25);
-        int yWindowPosiotion = (int) (screenSize.getHeight() * 0.25);
-        setBounds(xWindowPosiotion, yWindowPosiotion, windowWidth, windowHeight);
-
-        // Load the window position from user preferences
-        int savedXPosition = userValues.getInt(PREFS_KEY_X, Integer.MIN_VALUE);
-        int savedYPosition = userValues.getInt(PREFS_KEY_Y, Integer.MIN_VALUE);
-        int savedWidth = userValues.getInt(PREFS_KEY_WIDTH, Integer.MIN_VALUE);
-        int savedHeight = userValues.getInt(PREFS_KEY_HEIGHT, Integer.MIN_VALUE);
-        if (savedXPosition != Integer.MIN_VALUE && savedYPosition != Integer.MIN_VALUE && savedWidth != Integer.MIN_VALUE && savedHeight != Integer.MIN_VALUE) {
-            setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
-        }
+        int savedXPosition = userValues.getInt(PREFS_KEY_X, 0);
+        int savedYPosition = userValues.getInt(PREFS_KEY_Y, 0);
+        int savedWidth = userValues.getInt(PREFS_KEY_WIDTH, 1000);
+        int savedHeight = userValues.getInt(PREFS_KEY_HEIGHT, 550);
+        setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
 
         showCharts.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -167,17 +146,16 @@ public class Window extends JFrame {
                 userSavedValues.putInt(PREFS_KEY_Y, screenDimensions.y);
                 userSavedValues.putInt(PREFS_KEY_WIDTH, screenDimensions.width);
                 userSavedValues.putInt(PREFS_KEY_HEIGHT, screenDimensions.height);
-//                userSavedValues.putInt(PREFS_SERVER_ID, CurrentServerInfo.serverId);
                 userSavedValues.putInt(PREFS_SERVER_ICONS_SCALE, SERVER_STATUS_ICON_DIMENSION);
                 userSavedValues.putBoolean(PREFS_ARE_CHARTS_ENABLED, areChartsEnabled);
 
                 containerPane.killAllServerProcesses();
 
                 File temporaryFilesDirectory = new File("world_temp");
-                if(!temporaryFilesDirectory.exists()) //issue #55 fix by checking if the folder exitst and creating it (if somehow it doesn't exist here)
+                if(!temporaryFilesDirectory.exists())
                     temporaryFilesDirectory.mkdirs();
 
-                if(temporaryFilesDirectory.exists()) //another issue #55 check for some reason
+                if(temporaryFilesDirectory.exists())
                     clearTempDirectory();
                 else
                     System.exit(1);
@@ -185,11 +163,9 @@ public class Window extends JFrame {
 
             @Override
             public void windowOpened(WindowEvent e) {
-                super.windowOpened(e);
                 File temporaryWorldLevelDatFiles = new File("world_temp/worlds_level_dat");
                 if(!temporaryWorldLevelDatFiles.exists())
                     temporaryWorldLevelDatFiles.mkdirs();
-
                 clearTempDirectory();
             }
 
@@ -218,7 +194,6 @@ public class Window extends JFrame {
             }
         });
         window = this;
-        frame = this;
     }
 
     public static String getErrorDialogMessage(Exception e) {
@@ -270,10 +245,6 @@ public class Window extends JFrame {
 
     public static JMenuBar getMenu() {
         return menuBar;
-    }
-
-    public static JMenuItem getOpenServerFolder() {
-        return openServerFolder;
     }
 
     public static void main(String[] args) throws Exception {

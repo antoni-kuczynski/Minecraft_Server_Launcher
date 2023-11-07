@@ -7,22 +7,21 @@ import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerCons
 import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ServerConsoleTab extends JPanel {
-    public final JButton startServer = new JButton("Start Server");
-    public final JButton stopServer = new JButton("Stop Server");
-    public final JButton killServer = new JButton("Kill Server");
-    private final ContainerPane parentPane;
-    public final int index;
+    private final JButton startServer = new JButton("Start Server");
+    private final JButton stopServer = new JButton("Stop Server");
+    private final JButton killServer = new JButton("Kill Server");
+    private final int index;
     private final ServerConsoleArea serverConsoleArea;
-    public final CPUChart cpuChart = new CPUChart();
-    public final RAMChart ramChart = new RAMChart();
+    private final CPUChart cpuChart = new CPUChart();
+    private final RAMChart ramChart = new RAMChart();
 
-    public ServerConsoleTab(ContainerPane parent, int index) {
-        parentPane = parent;
+    public ServerConsoleTab(ContainerPane parentPane, int index) {
         this.index = index;
         setLayout(new BorderLayout());
         JPanel upperPanel = new JPanel(new BorderLayout());
@@ -68,15 +67,15 @@ public class ServerConsoleTab extends JPanel {
 
         startServer.addActionListener(e -> startServer());
 
-        stopServer.addActionListener(e -> stopServer());
+        stopServer.addActionListener(e -> serverConsoleArea.executeCommand("stop"));
 
         killServer.addActionListener(e -> {
             serverConsoleArea.killServer();
             stopServer.setVisible(false);
             startServer.setVisible(true);
             serverConsoleArea.serverPIDText.setVisible(false);
-            serverConsoleArea.wasServerStopCausedByAButton = true;
-//            parent.setIconAt(index, new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/server_offline.png").getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+            serverConsoleArea.wasServerStopCausedByUser = true;
+            parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
             killServer.setEnabled(false);
         });
     }
@@ -90,29 +89,36 @@ public class ServerConsoleTab extends JPanel {
         serverConsoleArea.serverPIDText.setVisible(true);
     }
 
-    public void stopServer() {
-        stopServer.setVisible(false);
-        startServer.setVisible(true);
-        killServer.setEnabled(false);
-        serverConsoleArea.executeCommand("stop");
-        serverConsoleArea.wasServerStopCausedByAButton = true;
-        serverConsoleArea.serverPIDText.setVisible(false);
-    }
-
     public void disableCharts() {
         cpuChart.setVisible(false);
         ramChart.setVisible(false);
-//        cpuChart.isEnabled = false;
-//        ramChart.isEnabled = false;
     }
     public void enableCharts() {
         cpuChart.setVisible(true);
         ramChart.setVisible(true);
-//        cpuChart.isEnabled = true;
-//        ramChart.isEnabled = true;
     }
 
     public ServerConsoleArea getServerConsoleArea() {
         return serverConsoleArea;
+    }
+
+    public CPUChart getCpuChart() {
+        return cpuChart;
+    }
+
+    public RAMChart getRamChart() {
+        return ramChart;
+    }
+
+    public JButton getStartServerButton() {
+        return startServer;
+    }
+
+    public JButton getStopServerButton() {
+        return stopServer;
+    }
+
+    public JButton getKillServerButton() {
+        return killServer;
     }
 }

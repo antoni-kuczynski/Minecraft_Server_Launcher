@@ -25,11 +25,11 @@ public class ServerConsoleArea extends JPanel {
     public JTextArea consoleOutput = new JTextArea();
     private final ArrayList<Process> processes = new ArrayList<>();
     private boolean isServerRunning;
-    public boolean wasServerStopCausedByAButton = false;
+    public boolean wasServerStopCausedByUser = false;
     public final JLabel serverPIDText = new JLabel("Process's PID:");
     private ContainerPane parentPane;
     private int index;
-    private final ServerConsoleTab tab;
+    private ServerConsoleTab parentConsoleTab;
     public boolean isVisible = false;
     private ProcessBuilder processBuilder;
     private final ArrayList<String> commandHistory = new ArrayList<>();
@@ -38,7 +38,6 @@ public class ServerConsoleArea extends JPanel {
         try {
             while (true) {
                 synchronized (this) {
-                    // Wait until isVisible is true
                     while (!isVisible || !isServerRunning) {
                         wait(500);
                     }
@@ -51,14 +50,10 @@ public class ServerConsoleArea extends JPanel {
                 InputStreamReader reader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(reader);
 
-                // Read the output from the server and append it to the JTextArea
                 String line;
-
                 int howManyTimesLineWasNull = 0;
-                while (true) {
-                    if (!isServerRunning || !isVisible) {
-                        break;
-                    }
+
+                while (isServerRunning && isVisible) {
                     line = bufferedReader.readLine();
                     if (line == null) {
                         inputStream = processes.get(processes.size() - 1).getInputStream();
@@ -69,13 +64,18 @@ public class ServerConsoleArea extends JPanel {
                             isServerRunning = false;
                             howManyTimesLineWasNull = 0;
                             processes.get(processes.size() - 1).destroy();
-                            if(wasServerStopCausedByAButton) {
+                            if (wasServerStopCausedByUser) {
                                 parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
 //                                parentPane.setToolTipTextAt(index, "Offline");
                             } else {
                                 parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ERRORED));
 //                                parentPane.setToolTipTextAt(index, "Errored");
                             }
+                            parentConsoleTab.getStopServerButton().setVisible(false);
+                            parentConsoleTab.getStartServerButton().setVisible(true);
+                            serverPIDText.setVisible(false);
+                            wasServerStopCausedByUser = true;
+                            parentConsoleTab.getKillServerButton().setEnabled(false);
                         }
                     } else {
                         String finalLine = line;
@@ -94,7 +94,7 @@ public class ServerConsoleArea extends JPanel {
         setLayout(new BorderLayout());
         this.index = index;
         this.parentPane = parentPane;
-        this.tab = tab;
+        this.parentConsoleTab = tab;
         JScrollPane scrollPane = new JScrollPane(consoleOutput);
         ServerConsoleContextMenu.addDefaultContextMenu(consoleOutput);
 
@@ -127,9 +127,10 @@ public class ServerConsoleArea extends JPanel {
         });
 
         commandField.addKeyListener(new KeyListener() {
+
             @Override
             public void keyTyped(KeyEvent e) {
-
+                
             }
 
             @Override
@@ -202,7 +203,7 @@ public class ServerConsoleArea extends JPanel {
         if (!processes.isEmpty())
             processes.get(processes.size() - 1).destroy();
 //        parentPane.setToolTipTextAt(index, "Offline");
-        wasServerStopCausedByAButton = true;
+        wasServerStopCausedByUser = true;
         isVisible = false;
     }
 
@@ -220,16 +221,16 @@ public class ServerConsoleArea extends JPanel {
             processBuilder.directory(MCServer.serverPath());
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
-            Process process1 = processBuilder.start();
-            serverPIDText.setText("Process's PID: " + process1.pid());
-            processes.add(process1);
+            Process serverProcess = processBuilder.start();
+            serverPIDText.setText("Process's PID: " + serverProcess.pid());
+            processes.add(serverProcess);
             if (processes.size() == 1)
                 consoleMainThread.start();
 //            parentPane.setToolTipTextAt(index, "Running");
             parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ONLINE));
         } catch (Exception e) {
-            consoleOutput.append(Window.getErrorDialogMessage(e));
-            consoleOutput.append("(You probably specified a java executable that is not valid in the config file.)");
+            consoleOutput.append(Window.getErrorDialogMessage(e) +
+                    "\n(You probably specified a java executable that is not valid in the config file.)");
         }
         if (consoleMainThread.isAlive()) {
             processBuilder = new ProcessBuilder(command);
@@ -241,26 +242,18 @@ public class ServerConsoleArea extends JPanel {
 
     public void executeCommand(String command) {
         if (!isServerRunning && command.equalsIgnoreCase("start")) {
-            tab.startServer();
-//            startServer(Config.getData().get(index));
-//            tab.startServer.setVisible(false);
-//            tab.stopServer.setVisible(true);
-//            tab.killServer.setEnabled(true);
-//            tab.getServerConsoleArea().serverPIDText.setVisible(true);
-//            parentPane.setToolTipTextAt(index, "Running");
+            parentConsoleTab.startServer();
         }
-        
-        if (!processes.isEmpty()) {
-            if (command.equals("stop")) {
-                wasServerStopCausedByAButton = true;
-//                parentPane.setToolTipTextAt(index, "Offline");
-//                parentPane.setIconAt  (index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
-                serverPIDText.setVisible(false);
-            }
-            PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());
-            writer.println(command);
-            writer.flush();
+        if(processes.isEmpty())
+            return;
+
+        if (command.equals("stop")) {
+            wasServerStopCausedByUser = true;
+            serverPIDText.setVisible(false);
         }
+        PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());
+        writer.println(command);
+        writer.flush();
     }
 
     public void killAllProcesses() {
