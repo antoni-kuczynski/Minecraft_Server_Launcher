@@ -20,7 +20,6 @@ public class ServerMinecraftWorld extends MinecraftWorld {
 
             return tempLevelDatFile;
         } catch (IOException e) {
-//            throw new RuntimeException(e);
             return levelDat;
         }
     }

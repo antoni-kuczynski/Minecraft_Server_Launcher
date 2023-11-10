@@ -19,7 +19,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serial;
 
 import static com.myne145.serverlauncher.gui.window.Window.alert;
 import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
@@ -70,9 +69,6 @@ public class WorldsManagerTab extends JPanel {
 
         });
         TransferHandler transferHandler = new TransferHandler() {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
             @Override
             public boolean canImport(TransferHandler.TransferSupport support) {
                 return true;

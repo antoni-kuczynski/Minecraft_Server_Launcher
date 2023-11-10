@@ -5,32 +5,21 @@ import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 
 public class ServerTabLabel extends TabLabelWithFileTransfer {
 
-    private JPopupMenu contextMenu = new JPopupMenu();
+    private final JPopupMenu contextMenu = new JPopupMenu();
     private final int tabIndex;
-    private static ContainerPane parentPane;
 
-    public ServerTabLabel(String text, ContainerPane parentPane, int tabIndex) {
-        super(text, parentPane, tabIndex);
+    public ServerTabLabel(String text, int tabIndex) {
+        super(text, tabIndex);
         this.tabIndex = tabIndex;
-        setBackground(UIManager.getColor("TabbedPane.background"));
-
-        setText("<html><p style=\"text-align: left; width: 110px\">" + text + "</p></html>");
-//        setToolTipText(null);
-
         this.setHorizontalAlignment(JLabel.CENTER);
         this.setVerticalAlignment(JLabel.CENTER);
-
-        if(!parentPane.isEnabledAt(tabIndex))
-            return;
-        ServerTabLabel.parentPane = parentPane;
-//        for(MouseListener mouseListener : getMouseListeners())
-//            removeMouseListener(mouseListener);
+        setBackground(UIManager.getColor("TabbedPane.background"));
+        setText("<html><p style=\"text-align: left; width: 110px\">" + text + "</p></html>");
     }
 
     public void enableContextMenu() {

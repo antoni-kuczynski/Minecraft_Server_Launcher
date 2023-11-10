@@ -5,6 +5,7 @@ import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import com.myne145.serverlauncher.utils.ServerIcon;
 
@@ -16,12 +17,14 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
+import static com.myne145.serverlauncher.gui.window.Window.alert;
 
 
 public class ContainerPane extends JTabbedPane {
     private static final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
     private static final JMenuItem openServerFolderItem = Window.getMenu().getMenu(0).getItem(0);
     private final Color TAB_SELECTION_COLOR = new Color(64, 75, 93);
+    private static ContainerPane currentPane;
 
     @Override
     public void setIconAt(int index, Icon icon) {
@@ -65,8 +68,15 @@ public class ContainerPane extends JTabbedPane {
                     g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
                 }
             }
+
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                g.setColor(new Color(51, 51, 52));
+                g.fillRect(0,0, getWidth(), getHeight());
+            }
         });
 
+        setBackground(new Color(51, 51, 52));
         ArrayList<MCServer> configData = Config.getData();
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
@@ -85,7 +95,7 @@ public class ContainerPane extends JTabbedPane {
                 serverName = serverName.substring(0, 52);
             addTab(serverName, serverTabbedPanes.get(i));
 
-            ServerTabLabel tabLabel = new ServerTabLabel(serverName, this, i);
+            ServerTabLabel tabLabel = new ServerTabLabel(serverName, i);
             setTabComponentAt(i, tabLabel);
 
             setIconAt(i, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
@@ -93,7 +103,13 @@ public class ContainerPane extends JTabbedPane {
             tabLabel.enableContextMenu();
         }
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        setSelectedIndex(Window.userValues.getInt("prefs_server_id", 1) - 1);
+
+        int index = Window.userValues.getInt("prefs_server_id", 1) - 1;
+        if(index + 1 > Config.getData().size()) {
+          alert(AlertType.ERROR, "Add at least one server to continue!");
+          System.exit(1);
+        } else
+            setSelectedIndex(index);
 
         onTabSwitched(Window.userValues.getInt("prefs_server_id", 1) - 1);
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
@@ -112,6 +128,7 @@ public class ContainerPane extends JTabbedPane {
                 handleTabMouseClicks(e);
             }
         });
+        ContainerPane.currentPane = this;
     }
 
     private void handleTabMouseClicks(MouseEvent e) {
@@ -196,6 +213,10 @@ public class ContainerPane extends JTabbedPane {
             ImageIcon imageIcon = (ImageIcon) icons.get(i);
             setIconAt(i, new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         }
+    }
+
+    public static ContainerPane getCurrentPane() {
+        return currentPane;
     }
 }
 
