@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
+import com.myne145.serverlauncher.gui.addserver.AddServerPanel;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.MCServer;
@@ -10,6 +11,7 @@ import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -76,8 +78,14 @@ public class ContainerPane extends JTabbedPane {
             }
         });
 
+        this.setTabPlacement(LEFT);
         setBackground(new Color(51, 51, 52));
         ArrayList<MCServer> configData = Config.getData();
+        if(configData.isEmpty()) {
+            addTab("Add a server", new AddServerPanel());
+            setTabComponentAt(0, new ServerTabLabel("Add a server", 0));
+            return;
+        }
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.setUI(new FlatTabbedPaneUI());
@@ -88,7 +96,7 @@ public class ContainerPane extends JTabbedPane {
             serverTabbedPanes.add(tabbedPane);
         }
 
-        this.setTabPlacement(LEFT);
+
         for(int i = 0; i < serverTabbedPanes.size(); i++) {
             String serverName = configData.get(i).serverName();
             if(serverName.length() > 52)
