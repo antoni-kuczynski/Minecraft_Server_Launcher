@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.gui.addserver;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class AddServerPanel extends javax.swing.JPanel {
     private final JButton browseJavaPath = new JButton("...");
@@ -28,6 +29,14 @@ public class AddServerPanel extends javax.swing.JPanel {
 
         add(titlePanel, BorderLayout.PAGE_START);
 
+
+//        launchArgsInput.setDisabledTextColor(new Color(140, 140, 140));
+//        launchArgsInput.setPlaceholder("nogui");
+
+        new TextPrompt("nogui", launchArgsInput);
+        new TextPrompt("java", javaPathInput);
+
+        confirmButton.setEnabled(false);
 
         JPanel serverNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         serverNamePanel.setMaximumSize(new Dimension(32767, 40));
@@ -120,5 +129,47 @@ public class AddServerPanel extends javax.swing.JPanel {
         confirmButton.addActionListener(evt -> {
 
         });
+
+        KeyAdapter keyAdapter = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                handleKeyTyping(e);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                handleKeyTyping(e);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                handleKeyTyping(e);
+            }
+        };
+
+        MouseListener mouseListener = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JTextField textField = (JTextField) e.getSource();
+                System.out.println(textField);
+//                System.out.println(e.getSource());
+            }
+        };
+
+        serverNameInput.addKeyListener(keyAdapter);
+        serverJarInput.addKeyListener(keyAdapter);
+        javaPathInput.addKeyListener(keyAdapter);
+        launchArgsInput.addKeyListener(keyAdapter);
+
+        javaPathInput.addMouseListener(mouseListener);
+        launchArgsInput.addMouseListener(mouseListener);
+    }
+
+    private static boolean isEmpty(JTextField t) {
+        return t.getText().isEmpty() || t.getText() == null;
+    }
+
+    private void handleKeyTyping(KeyEvent e) {
+        confirmButton.setEnabled(!isEmpty(serverNameInput) && !isEmpty(serverJarInput));
     }
 }
