@@ -1,7 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
-import com.myne145.serverlauncher.gui.addserver.AddServerPanel;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.MCServer;
@@ -82,9 +81,9 @@ public class ContainerPane extends JTabbedPane {
         setBackground(new Color(51, 51, 52));
         ArrayList<MCServer> configData = Config.getData();
         if(configData.isEmpty()) {
-            addTab("Add a server", new AddServerPanel());
-            setTabComponentAt(0, new ServerTabLabel("Add a server", 0));
-            return;
+//            addTab("Add a server", new AddServerPanel());
+//            setTabComponentAt(0, new ServerTabLabel("Add a server", 0));
+//            return;
         }
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
@@ -112,14 +111,15 @@ public class ContainerPane extends JTabbedPane {
         }
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        int index = Window.userValues.getInt("prefs_server_id", 1) - 1;
+        int index = Window.userValues.getInt("prefs_server_id", 1);
+//        int index = 0;
         if(index + 1 > Config.getData().size()) {
           alert(AlertType.ERROR, "Add at least one server to continue!");
           System.exit(1);
         } else
             setSelectedIndex(index);
 
-        onTabSwitched(Window.userValues.getInt("prefs_server_id", 1) - 1);
+        onTabSwitched(Window.userValues.getInt("prefs_server_id", 1));
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
 
         for(MouseListener mouseListener : getMouseListeners())
@@ -170,7 +170,7 @@ public class ContainerPane extends JTabbedPane {
 
         MCServer mcServerConfig = Config.getData().get(index);
 
-        Window.userValues.putInt("prefs_server_id", index + 1);
+        Window.userValues.putInt("prefs_server_id", index);
         Config.reloadServersWorldPath(mcServerConfig);
 
 

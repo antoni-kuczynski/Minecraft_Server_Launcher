@@ -7,6 +7,7 @@ import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import org.apache.commons.io.FileUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -14,7 +15,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.prefs.Preferences;
@@ -35,10 +35,11 @@ public class Window extends JFrame {
     private static Window window;
     private final static Taskbar taskbar = Taskbar.getTaskbar();
     private static final JMenuBar menuBar = new JMenuBar();
+    public static ClassLoader classLoader = Window.class.getClassLoader();
 
     public Window() throws Exception {
         // Set up the JFrame
-        setIconImage(new ImageIcon(Config.RESOURCES_PATH + "/app_icon.png").getImage());
+        setIconImage(new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/app_icon.png"))).getImage());
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -239,6 +240,10 @@ public class Window extends JFrame {
         new File(tempFilesDirectory.getAbsolutePath() + "/worlds_level_dat").mkdirs();
     }
 
+    public static ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
     public static Window getWindow() {
         return window;
     }
@@ -249,13 +254,15 @@ public class Window extends JFrame {
 
     public static void main(String[] args) throws Exception {
         Config.createConfig();
-        InputStream inputStream = new FileInputStream(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
+
+        InputStream inputStream = classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
 
         SwingUtilities.invokeLater(() -> {
             try {
                 new Window();
             } catch (Exception e) {
+                alert(AlertType.ERROR, getErrorDialogMessage(e));
                 throw new RuntimeException(e);
             }
         });

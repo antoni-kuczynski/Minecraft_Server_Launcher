@@ -4,15 +4,19 @@ import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ClientMinecraftWorld;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ServerMinecraftWorld;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.utils.AlertType;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 
 public class WorldsInfoPanels extends JPanel {
-    private final ImageIcon DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+    private ImageIcon DEFAULT_WORLD_ICON_PACK_PNG;
     private final WorldInformationPanel clientWorldInfo;
     private final WorldInformationPanel serverWorldInfo;
     private final int tabIndex;
@@ -20,6 +24,12 @@ public class WorldsInfoPanels extends JPanel {
     public WorldsInfoPanels(int tabIndex) {
         this.tabIndex = tabIndex;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        try {
+            DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(ImageIO.read(Window.getClassLoader().getResourceAsStream(Config.RESOURCES_PATH + "/defaultworld.jpg")).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
+        }
+
         clientWorldInfo = createInformationPanel("World to import");
         serverWorldInfo = createInformationPanel("Server world (to be replaced)");
 

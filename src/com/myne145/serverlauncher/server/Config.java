@@ -15,7 +15,7 @@ import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage
 
 public class Config extends ArrayList<MCServer> {
     private static final ArrayList<MCServer> data = new ArrayList<>();
-    public static String RESOURCES_PATH = "src/com/myne145/serverlauncher/resources";
+    public static String RESOURCES_PATH = "com/myne145/serverlauncher/resources";
     public static String ABSOLUTE_PATH;
 
     private static String readFileString(File fileToRead) throws IOException {

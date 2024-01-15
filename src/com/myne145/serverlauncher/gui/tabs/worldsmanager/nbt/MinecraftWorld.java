@@ -1,6 +1,8 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.utils.AlertType;
 import dev.dewy.nbt.Nbt;
 import dev.dewy.nbt.tags.collection.CompoundTag;
 
@@ -20,7 +22,7 @@ public class MinecraftWorld {
     private String gamemode;
     private boolean isUsingCheats;
     private String gameVersion;
-    private final ImageIcon DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(new ImageIcon(Config.RESOURCES_PATH + "/defaultworld.jpg").getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+    private ImageIcon DEFAULT_WORLD_ICON_PACK_PNG;
     private final int serverIndex;
 
     public File getLevelDatFile(File worldPath) {
@@ -33,6 +35,13 @@ public class MinecraftWorld {
 
     public MinecraftWorld(File worldPath, int serverIndex) throws IOException {
         this.serverIndex = serverIndex;
+
+        try {
+            DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(ImageIO.read(Window.getClassLoader().getResourceAsStream(Config.RESOURCES_PATH + "/defaultworld.jpg")).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            com.myne145.serverlauncher.gui.window.Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
+        }
+
         //Icon
         File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
         try {
