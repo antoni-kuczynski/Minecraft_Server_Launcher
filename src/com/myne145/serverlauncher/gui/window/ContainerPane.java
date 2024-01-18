@@ -6,11 +6,11 @@ import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -72,13 +72,13 @@ public class ContainerPane extends JTabbedPane {
 
             @Override
             public void paint(Graphics g, JComponent c) {
-                g.setColor(new Color(51, 51, 52));
+                g.setColor(Colors.TABBEDPANE_BACKGROUND_COLOR);
                 g.fillRect(0,0, getWidth(), getHeight());
             }
         });
 
         this.setTabPlacement(LEFT);
-        setBackground(new Color(51, 51, 52));
+        setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
         ArrayList<MCServer> configData = Config.getData();
         if(configData.isEmpty()) {
 //            addTab("Add a server", new AddServerPanel());
@@ -196,13 +196,7 @@ public class ContainerPane extends JTabbedPane {
     public void setChartsVisibility(boolean isVisible) {
         for(JTabbedPane tabbedPane : serverTabbedPanes) {
             ServerConsoleTab serverConsoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
-            serverConsoleTab.getCpuChart().setVisible(isVisible);
-            serverConsoleTab.getRamChart().setVisible(isVisible);
-
-            if(!isVisible)
-                serverConsoleTab.disableCharts();
-            else
-                serverConsoleTab.enableCharts();
+            serverConsoleTab.setChartsEnabled(isVisible);
         }
     }
     public void killAllServerProcesses() {

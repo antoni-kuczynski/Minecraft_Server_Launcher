@@ -14,7 +14,7 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     private final JPopupMenu contextMenu = new JPopupMenu();
     private final int tabIndex;
     private JMenuItem serverRunAction;
-    private int serverActionMode = 0;
+    private boolean isServerActionStartServer = true;
 
     public ServerTabLabel(String text, int tabIndex) {
         super(text, tabIndex);
@@ -31,9 +31,9 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
         serverRunAction.addActionListener(e -> {
             JTabbedPane tabbedPane = (JTabbedPane) ContainerPane.getCurrentPane().getComponentAt(tabIndex);
             ServerConsoleTab tab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
-            if(serverActionMode == 0)
+            if(isServerActionStartServer)
                 tab.startServer();
-            else if(serverActionMode == 1)
+            else
                 tab.stopServer();
         });
 
@@ -42,16 +42,13 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
         contextMenu.add(serverRunAction);
     }
 
-    /**
-     * @param mode 0=start, 1=stop
-     */
-    public void changeServerActionContextMenu(int mode) {
-        if(mode == 0) {
+    public void changeServerActionContextMenuToServerStart(boolean changeToStart) {
+        if(changeToStart) {
             serverRunAction.setText("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
-            serverActionMode = 0;
-        } else if(mode == 1) {
+            isServerActionStartServer = false;
+        } else {
             serverRunAction.setText("<html>Stop server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
-            serverActionMode = 1;
+            isServerActionStartServer = true;
         }
     }
 

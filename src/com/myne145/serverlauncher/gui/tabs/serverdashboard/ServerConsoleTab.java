@@ -3,7 +3,6 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.CPUChart;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.RAMChart;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
-import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerConsoleArea;
 import com.myne145.serverlauncher.gui.window.ServerTabLabel;
 import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.server.MCServer;
@@ -76,46 +75,44 @@ public class ServerConsoleTab extends JPanel {
         killServer.addActionListener(e -> killServer());
     }
 
+    protected void setWaitingStop(boolean isWaiting) {
+        if(isWaiting)
+            stopServer.setText("Stopping server...");
+        else
+            stopServer.setText("Stop server");
+        stopServer.setEnabled(!isWaiting);
+    }
+
+    protected void changeServerActionButtonsVisibility(boolean isServerStarting) {
+        startServer.setVisible(!isServerStarting);
+        stopServer.setVisible(isServerStarting);
+        killServer.setEnabled(isServerStarting);
+        serverConsoleArea.serverPIDText.setVisible(isServerStarting);
+
+        ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
+        tabLabel.changeServerActionContextMenuToServerStart(!isServerStarting);
+    }
+
     public void startServer() {
         MCServer MCServerConfig = Config.getData().get(index);
         serverConsoleArea.startServerWithoutChangingTheButtons(MCServerConfig);
-        startServer.setVisible(false);
-        stopServer.setVisible(true);
-        killServer.setEnabled(true);
-        serverConsoleArea.serverPIDText.setVisible(true);
-
-        ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
-        tabLabel.changeServerActionContextMenu(1);
+        changeServerActionButtonsVisibility(true);
     }
 
     public void stopServer() {
         serverConsoleArea.executeCommand("stop");
-        startServer.setVisible(true);
-        stopServer.setVisible(false);
-        killServer.setEnabled(false);
-        serverConsoleArea.serverPIDText.setVisible(true);
-
-        ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
-        tabLabel.changeServerActionContextMenu(0);
+        setWaitingStop(true);
     }
 
     private void killServer() {
         serverConsoleArea.killServer();
-        stopServer.setVisible(false);
-        startServer.setVisible(true);
-        serverConsoleArea.serverPIDText.setVisible(false);
-        serverConsoleArea.wasServerStopCausedByUser = true;
+        changeServerActionButtonsVisibility(false);
         parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
-        killServer.setEnabled(false);
     }
 
-    public void disableCharts() {
-        cpuChart.setVisible(false);
-        ramChart.setVisible(false);
-    }
-    public void enableCharts() {
-        cpuChart.setVisible(true);
-        ramChart.setVisible(true);
+    public void setChartsEnabled(boolean setEnabled) {
+        cpuChart.setVisible(setEnabled);
+        ramChart.setVisible(setEnabled);
     }
 
     public ServerConsoleArea getServerConsoleArea() {

@@ -3,6 +3,7 @@ package com.myne145.serverlauncher.gui.window;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import org.apache.commons.io.FileUtils;
@@ -46,8 +47,8 @@ public class Window extends JFrame {
         SERVER_STATUS_ICON_DIMENSION = userValues.getInt(PREFS_SERVER_ICONS_SCALE,  32);
 
         JFrame.setDefaultLookAndFeelDecorated(true);
-        this.getRootPane().putClientProperty("JRootPane.titleBarBackground", new Color(51, 51, 52));
-        this.getRootPane().putClientProperty("JRootPane.titleBarForeground", new Color(204, 204, 204));
+        this.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
+        this.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
 
         JMenu fileMenu = new JMenu("File");
         JMenu viewMenu = new JMenu("View");
@@ -75,7 +76,7 @@ public class Window extends JFrame {
         viewMenu.add(showCharts);
         viewMenu.add(serverButtonsScale);
 
-        menuBar.setBorder(new MatteBorder(0,0,1,0, new Color(43, 43, 43)));
+        menuBar.setBorder(new MatteBorder(0,0,1,0, Colors.BORDER_COLOR));
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         setJMenuBar(menuBar);

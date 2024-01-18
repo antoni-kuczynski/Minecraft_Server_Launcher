@@ -7,6 +7,7 @@ import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ServerMinecraftWorl
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.utils.Colors;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -89,7 +90,7 @@ public class WorldsInfoPanels extends JPanel {
         JLabel titleLabel = new JLabel(title);
         JLabel iconAndWorldInfo = new JLabel("<html><font size=4>World details will appear here.</font></html>");
 
-        worldPanel.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 0), new Color(44, 44, 44), 1, 32));
+        worldPanel.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 0), Colors.BORDER_COLOR, 1, 16));
         worldPanel.setBackground(new Color(60, 63, 65));
         worldPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
 
