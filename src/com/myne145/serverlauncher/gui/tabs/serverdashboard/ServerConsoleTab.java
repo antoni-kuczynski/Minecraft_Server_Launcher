@@ -4,6 +4,7 @@ import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.CPUChart;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.RAMChart;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerConsoleArea;
+import com.myne145.serverlauncher.gui.window.ServerTabLabel;
 import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
@@ -13,16 +14,19 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ServerConsoleTab extends JPanel {
-    private final JButton startServer = new JButton("Start Server");
-    private final JButton stopServer = new JButton("Stop Server");
-    private final JButton killServer = new JButton("Kill Server");
+    private final JButton startServer = new JButton("Start server");
+    private final JButton stopServer = new JButton("Stop server");
+    private final JButton killServer = new JButton("Kill server");
     private final int index;
     private final ServerConsoleArea serverConsoleArea;
+    private final ContainerPane parentPane;
     private final CPUChart cpuChart = new CPUChart();
     private final RAMChart ramChart = new RAMChart();
 
     public ServerConsoleTab(ContainerPane parentPane, int index) {
         this.index = index;
+        this.parentPane = parentPane;
+
         setLayout(new BorderLayout());
         JPanel upperPanel = new JPanel(new BorderLayout());
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -67,17 +71,9 @@ public class ServerConsoleTab extends JPanel {
 
         startServer.addActionListener(e -> startServer());
 
-        stopServer.addActionListener(e -> serverConsoleArea.executeCommand("stop"));
+        stopServer.addActionListener(e -> stopServer());
 
-        killServer.addActionListener(e -> {
-            serverConsoleArea.killServer();
-            stopServer.setVisible(false);
-            startServer.setVisible(true);
-            serverConsoleArea.serverPIDText.setVisible(false);
-            serverConsoleArea.wasServerStopCausedByUser = true;
-            parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
-            killServer.setEnabled(false);
-        });
+        killServer.addActionListener(e -> killServer());
     }
 
     public void startServer() {
@@ -87,6 +83,30 @@ public class ServerConsoleTab extends JPanel {
         stopServer.setVisible(true);
         killServer.setEnabled(true);
         serverConsoleArea.serverPIDText.setVisible(true);
+
+        ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
+        tabLabel.changeServerActionText(1);
+    }
+
+    public void stopServer() {
+        serverConsoleArea.executeCommand("stop");
+        startServer.setVisible(true);
+        stopServer.setVisible(false);
+        killServer.setEnabled(false);
+        serverConsoleArea.serverPIDText.setVisible(true);
+
+        ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
+        tabLabel.changeServerActionText(0);
+    }
+
+    private void killServer() {
+        serverConsoleArea.killServer();
+        stopServer.setVisible(false);
+        startServer.setVisible(true);
+        serverConsoleArea.serverPIDText.setVisible(false);
+        serverConsoleArea.wasServerStopCausedByUser = true;
+        parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
+        killServer.setEnabled(false);
     }
 
     public void disableCharts() {

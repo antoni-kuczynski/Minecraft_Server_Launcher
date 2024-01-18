@@ -61,7 +61,7 @@ public class RAMChart extends JPanel {
 
         chart.addSeries("ram_usage", 0);
         chart.addSeries("empty", 100);
-        chart.setTitle("RAM Usage");
+        chart.setTitle("RAM usage");
 
         ChartDecorator.decorateChart(chart);
         return chart;

@@ -58,7 +58,7 @@ public class CPUChart extends JPanel {
 
         chart.addSeries("cpu_usage", 100);
         chart.addSeries("empty", 0);
-        chart.setTitle("CPU Usage");
+        chart.setTitle("CPU usage");
 
 
         ChartDecorator.decorateChart(chart);

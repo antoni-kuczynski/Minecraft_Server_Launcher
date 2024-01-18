@@ -32,13 +32,20 @@ public class WorldsManagerTab extends JPanel {
     private boolean isInArchiveMode;
     public FileDetailsUtils extractedWorldSize;
     private final WorldsManagerTab worldsManagerTab;
-
     private final JButton openButton =  new JButton("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
     private final int tabIndex;
     private final WorldsInfoPanels worldsInfoPanels;
+    private FlatSVGIcon ERROR_ICON;
 
     public WorldsManagerTab(ContainerPane parentPane, int tabSwitchingToIndex) {
         super(new BorderLayout());
+
+        try {
+            ERROR_ICON = new FlatSVGIcon(Window.getClassLoader().getResourceAsStream(Config.RESOURCES_PATH + "/error.svg")).derive(16, 16);
+        } catch (IOException e) {
+            Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
+        }
+
         tabIndex = tabSwitchingToIndex;
         worldsManagerTab = this;
         worldsInfoPanels = new WorldsInfoPanels(tabIndex);
@@ -97,7 +104,8 @@ public class WorldsManagerTab extends JPanel {
 
         startCopying.addActionListener(e -> WorldCopyHandler.createWorldCopyHandler(this).setCopyMode(true).start());
 
-        JButton refreshButton = new JButton("Refresh");
+        JButton refreshButton = new JButton("Refresh worlds");
+        refreshButton.setToolTipText("Refreshes the server world, if it was replaced meanwhile.\nNote: This isn't for refreshing the server list.");
 
         refreshButton.addActionListener(e -> parentPane.onTabSwitched(tabSwitchingToIndex));
 
@@ -186,7 +194,7 @@ public class WorldsManagerTab extends JPanel {
     }
 
     public void setImportButtonWarning(String message) {
-        openButton.setIcon(new FlatSVGIcon(new File("src/com/myne145/serverlauncher/resources/error.svg")).derive(16, 16));
+        openButton.setIcon(ERROR_ICON);
         if(openButton.getToolTipText() != null) {
             openButton.setToolTipText(openButton.getToolTipText() + "\n" + message);
         } else

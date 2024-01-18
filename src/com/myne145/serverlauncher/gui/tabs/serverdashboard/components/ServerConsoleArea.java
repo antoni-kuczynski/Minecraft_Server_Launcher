@@ -162,8 +162,8 @@ public class ServerConsoleArea extends JPanel {
         JPanel optionsPanel = new JPanel(new BorderLayout());
         JPanel options = new JPanel();
         JLabel serverConsoleTitle = new JLabel( "<html>Console - " + Config.getData().get(index).serverName() + "</html>");
-        JButton clearAll = new JButton("Clear All");
-        JCheckBox wrapLines = new JCheckBox("Wrap Lines");
+        JButton clearAll = new JButton("Clear all");
+        JCheckBox wrapLines = new JCheckBox("Wrap lines");
         serverPIDText.setVisible(false);
         options.add(serverPIDText);
         options.add(wrapLines);

@@ -66,19 +66,7 @@ public class Config extends ArrayList<MCServer> {
                 Window.alert(AlertType.FATAL, "Cannot create config file");
                 System.exit(1);
             }
-            FileWriter configWriter = new FileWriter(serverConfigFile);
-            configWriter.write("""
-                    [
-                     {
-                         "globalLaunchArgs": ""
-                     },
-                     {
-                         "serverName": "YOUR SERVER NAME",
-                         "pathToServerJarFile": "PATH TO SERVER JAR",
-                         "pathToJavaRuntimeExecutable": "PATH TO JAVA RUNTIME EXECUTABLE",
-                         "overrideDefaultLaunchArgs": false
-                       }
-                     ]""");
+            FileWriter configWriter = getConfigWriter(serverConfigFile);
             configWriter.close();
         }
 
@@ -111,6 +99,24 @@ public class Config extends ArrayList<MCServer> {
             serverId++;
         }
     }
+
+    private static FileWriter getConfigWriter(File serverConfigFile) throws IOException {
+        FileWriter configWriter = new FileWriter(serverConfigFile);
+        configWriter.write("""
+                [
+                 {
+                     "globalLaunchArgs": ""
+                 },
+                 {
+                     "serverName": "YOUR SERVER NAME",
+                     "pathToServerJarFile": "PATH TO SERVER JAR",
+                     "pathToJavaRuntimeExecutable": "PATH TO JAVA RUNTIME EXECUTABLE",
+                     "overrideDefaultLaunchArgs": false
+                   }
+                 ]""");
+        return configWriter;
+    }
+
     public static ArrayList<MCServer> getData() {
         return data;
     }
