@@ -19,7 +19,7 @@ public enum ServerIcon {
     }
 
     public static ImageIcon getServerIcon(ServerIcon iconType) {
-        return iconType.icon;
+        return new ImageIcon(iconType.icon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
     }
 }
 
@@ -29,9 +29,9 @@ class ServerIcons {
     static ImageIcon errored;
     static {
         try {
-            online = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_online.png")).getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-            offline = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_offline.png")).getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-            errored = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_errored.png")).getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
+            online = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_online.png")));
+            offline = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_offline.png")));
+            errored = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_errored.png")));
         } catch (Exception e) {
             alert(AlertType.ERROR, getErrorDialogMessage(e));
         }
