@@ -45,18 +45,20 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     /**
      * @param mode 0=start, 1=stop
      */
-    public void changeServerActionText(int mode) {
+    public void changeServerActionContextMenu(int mode) {
         if(mode == 0) {
             serverRunAction.setText("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
+            serverActionMode = 0;
         } else if(mode == 1) {
             serverRunAction.setText("<html>Stop server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
+            serverActionMode = 1;
         }
     }
 
     public void showContextMenu(final MouseEvent e, Component component) {
-        if (contextMenu != null) {
-            System.out.println("Showing context menu at: " + e.getPoint());
-            SwingUtilities.invokeLater(() -> contextMenu.show(component, e.getX(), e.getY()));
+        if (contextMenu == null) {
+            return;
         }
+        SwingUtilities.invokeLater(() -> contextMenu.show(component, e.getX(), e.getY()));
     }
 }

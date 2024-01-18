@@ -85,7 +85,7 @@ public class ServerConsoleTab extends JPanel {
         serverConsoleArea.serverPIDText.setVisible(true);
 
         ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
-        tabLabel.changeServerActionText(1);
+        tabLabel.changeServerActionContextMenu(1);
     }
 
     public void stopServer() {
@@ -96,7 +96,7 @@ public class ServerConsoleTab extends JPanel {
         serverConsoleArea.serverPIDText.setVisible(true);
 
         ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
-        tabLabel.changeServerActionText(0);
+        tabLabel.changeServerActionContextMenu(0);
     }
 
     private void killServer() {
