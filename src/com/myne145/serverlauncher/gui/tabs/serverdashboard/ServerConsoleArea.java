@@ -79,11 +79,11 @@ public class ServerConsoleArea extends JPanel {
                         parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
                         parentConsoleTab.changeServerActionButtonsVisibility(false);
                         parentConsoleTab.setWaitingStop(false);
-
+                        parentPane.setToolTipTextAt(index, "Offline");
                     } else {
                         parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ERRORED));
                         parentConsoleTab.changeServerActionButtonsVisibility(false);
-//                        parentPane.setToolTipTextAt(index, "Errored");
+                        parentPane.setToolTipTextAt(index, "Errored");
 
                     }
                     parentConsoleTab.setWaitingStop(false);
@@ -208,7 +208,7 @@ public class ServerConsoleArea extends JPanel {
     public void killServer() {
         if (!processes.isEmpty())
             processes.get(processes.size() - 1).destroy();
-//        parentPane.setToolTipTextAt(index, "Offline");
+        parentPane.setToolTipTextAt(index, "Offline");
         wasServerStopCausedByUser = true;
         isVisible = false;
     }
@@ -232,7 +232,7 @@ public class ServerConsoleArea extends JPanel {
             processes.add(serverProcess);
             if (processes.size() == 1)
                 consoleMainThread.start();
-//            parentPane.setToolTipTextAt(index, "Running");
+            parentPane.setToolTipTextAt(index, "Running");
             parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ONLINE));
         } catch (Exception e) {
             consoleOutput.append(Window.getErrorDialogMessage(e) +

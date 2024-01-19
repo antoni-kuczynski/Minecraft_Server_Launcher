@@ -12,9 +12,7 @@ import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
@@ -26,6 +24,7 @@ public class ContainerPane extends JTabbedPane {
     private static final JMenuItem openServerFolderItem = Window.getMenu().getMenu(0).getItem(0);
     private final Color TAB_SELECTION_COLOR = new Color(64, 75, 93);
     private static ContainerPane currentPane;
+    private boolean isTabbedPaneFocused = true;
 
     @Override
     public void setIconAt(int index, Icon icon) {
@@ -57,14 +56,24 @@ public class ContainerPane extends JTabbedPane {
         super.setTabComponentAt(index, component);
     }
 
+    @Override
+    public void setToolTipTextAt(int index, String toolTipText) {
+        super.setToolTipTextAt(index, toolTipText);
+    }
+
     public ContainerPane() {
         setLayout(new BorderLayout());
         setUI(new FlatTabbedPaneUI() {
             @Override
             protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect) {
-                super.paintTab(g, tabPlacement, rects, tabIndex, iconRect, textRect);
+                boolean isSelected = tabIndex == tabPane.getSelectedIndex();
+                Rectangle currentTabRects = rects[tabIndex];
 
-                if (tabIndex == tabPane.getSelectedIndex()) {
+                if (isTabbedPaneFocused) {
+                    this.paintTabBackground(g, tabPlacement, tabIndex, currentTabRects.x, currentTabRects.y, currentTabRects.width, currentTabRects.height, isSelected);
+                }
+
+                if (isSelected) {
                     g.setColor(TAB_SELECTION_COLOR);
                     g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
                 }
@@ -80,11 +89,11 @@ public class ContainerPane extends JTabbedPane {
         this.setTabPlacement(LEFT);
         setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
         ArrayList<MCServer> configData = Config.getData();
-        if(configData.isEmpty()) {
+//        if(configData.isEmpty()) {
 //            addTab("Add a server", new AddServerPanel());
 //            setTabComponentAt(0, new ServerTabLabel("Add a server", 0));
 //            return;
-        }
+//        }
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.setUI(new FlatTabbedPaneUI());
@@ -106,7 +115,7 @@ public class ContainerPane extends JTabbedPane {
             setTabComponentAt(i, tabLabel);
 
             setIconAt(i, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
-//            setToolTipTextAt(i, "Offline");
+            setToolTipTextAt(i, "Offline");
             tabLabel.enableContextMenu();
         }
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -135,7 +144,20 @@ public class ContainerPane extends JTabbedPane {
             public void mousePressed(MouseEvent e) {
                 handleTabMouseClicks(e);
             }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                isTabbedPaneFocused = false;
+                repaint();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                isTabbedPaneFocused = true;
+                repaint();
+            }
         });
+
         ContainerPane.currentPane = this;
     }
 
