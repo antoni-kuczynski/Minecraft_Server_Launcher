@@ -22,7 +22,6 @@ import static com.myne145.serverlauncher.gui.window.Window.alert;
 public class ContainerPane extends JTabbedPane {
     private static final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
     private static final JMenuItem openServerFolderItem = Window.getMenu().getMenu(0).getItem(0);
-    private final Color TAB_SELECTION_COLOR = new Color(64, 75, 93);
     private static ContainerPane currentPane;
     private boolean isTabbedPaneFocused = true;
 
@@ -74,7 +73,7 @@ public class ContainerPane extends JTabbedPane {
                 }
 
                 if (isSelected) {
-                    g.setColor(TAB_SELECTION_COLOR);
+                    g.setColor(Colors.TAB_SELECTION_COLOR);
                     g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
                 }
             }

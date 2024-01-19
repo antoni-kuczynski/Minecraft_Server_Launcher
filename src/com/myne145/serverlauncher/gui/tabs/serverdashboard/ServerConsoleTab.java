@@ -76,11 +76,13 @@ public class ServerConsoleTab extends JPanel {
     }
 
     protected void setWaitingStop(boolean isWaiting) {
-        if(isWaiting)
-            stopServer.setText("Stopping server...");
-        else
-            stopServer.setText("Stop server");
         stopServer.setEnabled(!isWaiting);
+        if(isWaiting) {
+            stopServer.setText("Stopping server...");
+
+            return;
+        }
+        stopServer.setText("Stop server");
     }
 
     protected void changeServerActionButtonsVisibility(boolean isServerStarting) {
