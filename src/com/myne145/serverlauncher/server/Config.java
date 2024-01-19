@@ -117,6 +117,76 @@ public class Config extends ArrayList<MCServer> {
         return configWriter;
     }
 
+    public static String abbreviateConfigPath() {
+        return abbreviateConfig(Config.ABSOLUTE_PATH, 27);
+    }
+
+    public static String abbreviateServerPath(int serverIndex) {
+        return abbreviateConfig(Config.getData().get(serverIndex).serverPath().getAbsolutePath(), 27);
+    }
+
+    private static String abbreviateConfig(String fileName, int maxLen) {
+        if (fileName.length() <= maxLen)
+            return fileName;
+
+        File f = new File(fileName);
+        ArrayList<String> coll = new ArrayList<String>();
+        String name;
+        StringBuffer begBuf = new StringBuffer();
+        StringBuffer endBuf = new StringBuffer();
+        int len;
+        boolean b;
+
+        while ((f != null) && (name = f.getName()) != null) {
+            coll.add(0, name);
+            f = f.getParentFile();
+        }
+        if (coll.isEmpty())
+            return fileName;
+
+        len = coll.size() << 1; // ellipsis character per subdir and filename, separator per subdir
+        name = (String) coll.remove(coll.size() - 1);
+        endBuf.insert(0, name);
+        len += name.length();
+        if (!coll.isEmpty()) {
+            name = (String) coll.remove(0);
+            begBuf.append(name);
+            begBuf.append(File.separator);
+            len += name.length() - 1;
+        }
+        if (!coll.isEmpty()) {
+            name = (String) coll.remove(0);
+            if (name.equals("Volumes")) { // ok dis wan me don want
+                begBuf.append('…');
+                begBuf.append(File.separator);
+            } else {
+                begBuf.append(name);
+                begBuf.append(File.separator);
+                len += name.length() - 1;
+            }
+        }
+        for (b = true; !coll.isEmpty() && len <= maxLen; b = !b) {
+            if (b) {
+                name = (String) coll.remove(coll.size() - 1);
+                endBuf.insert(0, File.separator);
+                endBuf.insert(0, name);
+            } else {
+                name = (String) coll.remove(0);
+                begBuf.append(name);
+                begBuf.append(File.separator);
+            }
+            len += name.length() - 1; // full name instead of single character ellipsis
+        }
+
+        while (!coll.isEmpty()) {
+            coll.remove(0);
+            begBuf.append('…');
+            begBuf.append(File.separator);
+        }
+
+        return (begBuf.append(endBuf).toString());
+    }
+
     public static ArrayList<MCServer> getData() {
         return data;
     }

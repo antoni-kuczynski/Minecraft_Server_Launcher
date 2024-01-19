@@ -12,17 +12,17 @@ import com.myne145.serverlauncher.utils.ServerIcon;
 import javax.swing.*;
 import java.awt.*;
 
-public class ServerConsoleTab extends JPanel {
+public class ServerDashboardTab extends JPanel {
     private final JButton startServer = new JButton("Start server");
     private final JButton stopServer = new JButton("Stop server");
     private final JButton killServer = new JButton("Kill server");
     private final int index;
-    private final ServerConsoleArea serverConsoleArea;
+    private final ServerConsole serverConsole;
     private final ContainerPane parentPane;
     private final CPUChart cpuChart = new CPUChart();
     private final RAMChart ramChart = new RAMChart();
 
-    public ServerConsoleTab(ContainerPane parentPane, int index) {
+    public ServerDashboardTab(ContainerPane parentPane, int index) {
         this.index = index;
         this.parentPane = parentPane;
 
@@ -30,7 +30,7 @@ public class ServerConsoleTab extends JPanel {
         JPanel upperPanel = new JPanel(new BorderLayout());
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
-        serverConsoleArea = new ServerConsoleArea(parentPane, index, this);
+        serverConsole = new ServerConsole(parentPane, index, this);
 
         if(!Config.getData().get(index).serverPath().exists()) {
             JButton button = new JButton("Open config file");
@@ -43,7 +43,7 @@ public class ServerConsoleTab extends JPanel {
 
 
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_START);
-        upperPanel.add(serverConsoleArea, BorderLayout.CENTER);
+        upperPanel.add(serverConsole, BorderLayout.CENTER);
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_END);
 
         serverButtons.add(startServer);
@@ -89,7 +89,7 @@ public class ServerConsoleTab extends JPanel {
         startServer.setVisible(!isServerStarting);
         stopServer.setVisible(isServerStarting);
         killServer.setEnabled(isServerStarting);
-        serverConsoleArea.serverPIDText.setVisible(isServerStarting);
+        serverConsole.setPIDTextVisible(isServerStarting);
 
         ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
         tabLabel.changeServerActionContextMenuToServerStart(!isServerStarting);
@@ -97,17 +97,17 @@ public class ServerConsoleTab extends JPanel {
 
     public void startServer() {
         MCServer MCServerConfig = Config.getData().get(index);
-        serverConsoleArea.startServerWithoutChangingTheButtons(MCServerConfig);
+        serverConsole.startServerWithoutChangingTheButtons(MCServerConfig);
         changeServerActionButtonsVisibility(true);
     }
 
     public void stopServer() {
-        serverConsoleArea.executeCommand("stop");
+        serverConsole.executeCommand("stop");
         setWaitingStop(true);
     }
 
     private void killServer() {
-        serverConsoleArea.killServer();
+        serverConsole.killServer();
         changeServerActionButtonsVisibility(false);
         parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
     }
@@ -117,8 +117,8 @@ public class ServerConsoleTab extends JPanel {
         ramChart.setVisible(setEnabled);
     }
 
-    public ServerConsoleArea getServerConsoleArea() {
-        return serverConsoleArea;
+    public ServerConsole getServerConsoleArea() {
+        return serverConsole;
     }
 
     public CPUChart getCpuChart() {

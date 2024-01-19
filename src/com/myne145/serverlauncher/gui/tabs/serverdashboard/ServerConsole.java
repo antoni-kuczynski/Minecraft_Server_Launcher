@@ -22,17 +22,16 @@ import java.util.Arrays;
 
 import static com.myne145.serverlauncher.gui.window.Window.*;
 
-public class ServerConsoleArea extends JPanel {
-    public JTextArea consoleOutput = new JTextArea();
+public class ServerConsole extends JPanel {
+    private final JTextArea consoleOutput = new JTextArea();
     private final ArrayList<Process> processes = new ArrayList<>();
     private boolean isServerRunning;
-    public boolean wasServerStopCausedByUser = false;
-    public final JLabel serverPIDText = new JLabel("Process's PID:");
+    private boolean wasServerStopCausedByUser = false;
+    private final JLabel serverPIDText = new JLabel("Process's PID:");
     private ContainerPane parentPane;
     private int index;
-    private ServerConsoleTab parentConsoleTab;
+    private ServerDashboardTab parentConsoleTab;
     public boolean isVisible = false;
-    private ProcessBuilder processBuilder;
     private final ArrayList<String> commandHistory = new ArrayList<>();
     private int commandIndex;
     private final Runnable consoleRunner = () -> {
@@ -96,7 +95,7 @@ public class ServerConsoleArea extends JPanel {
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
 
-    public ServerConsoleArea(ContainerPane parentPane, int index, ServerConsoleTab tab) {
+    protected ServerConsole(ContainerPane parentPane, int index, ServerDashboardTab tab) {
         setLayout(new BorderLayout());
         this.index = index;
         this.parentPane = parentPane;
@@ -205,7 +204,7 @@ public class ServerConsoleArea extends JPanel {
         add(commandPanel, BorderLayout.PAGE_END);
     }
 
-    public void killServer() {
+    protected void killServer() {
         if (!processes.isEmpty())
             processes.get(processes.size() - 1).destroy();
         parentPane.setToolTipTextAt(index, "Offline");
@@ -214,7 +213,7 @@ public class ServerConsoleArea extends JPanel {
     }
 
 
-    public void startServerWithoutChangingTheButtons(MCServer MCServer) {
+    protected void startServerWithoutChangingTheButtons(MCServer MCServer) {
         isVisible = true;
         boolean isSelectedJavaTheDefaultOne = MCServer.javaRuntimePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
                 MCServer.javaRuntimePath().getAbsolutePath().endsWith("java");
@@ -222,6 +221,7 @@ public class ServerConsoleArea extends JPanel {
         ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
         consoleOutput.setText("");
 
+        ProcessBuilder processBuilder;
         try {
             processBuilder = new ProcessBuilder(command);
             processBuilder.directory(MCServer.serverPath());
@@ -246,7 +246,7 @@ public class ServerConsoleArea extends JPanel {
         }
     }
 
-    public void executeCommand(String command) {
+    protected void executeCommand(String command) {
         if (!isServerRunning && command.equalsIgnoreCase("start"))
             parentConsoleTab.startServer();
 
@@ -266,7 +266,7 @@ public class ServerConsoleArea extends JPanel {
             p.destroy();
     }
 
-    private String readFileString(File fileToRead) throws IOException {
+    private static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
         for (String fileLine : Files.readAllLines(fileToRead.toPath())) {
             fileToReadReader.append(fileLine).append("\n");
@@ -285,5 +285,9 @@ public class ServerConsoleArea extends JPanel {
 
     public boolean isServerRunning() {
         return isServerRunning;
+    }
+
+    protected void setPIDTextVisible(boolean b) {
+        serverPIDText.setVisible(b);
     }
 }

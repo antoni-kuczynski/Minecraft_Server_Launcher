@@ -6,7 +6,6 @@ import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
@@ -30,7 +29,6 @@ public class WorldsManagerTab extends JPanel {
     private File userAddedWorld;
     private String extractedWorldDir;
     private boolean isInArchiveMode;
-    public FileDetailsUtils extractedWorldSize;
     private final WorldsManagerTab worldsManagerTab;
     private final JButton openButton =  new JButton("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
     private final int tabIndex;

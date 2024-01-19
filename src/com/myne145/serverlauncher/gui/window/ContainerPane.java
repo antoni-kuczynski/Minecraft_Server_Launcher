@@ -1,13 +1,12 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
-import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
+import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
-import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import com.myne145.serverlauncher.utils.ServerIcon;
 
 import javax.swing.*;
@@ -96,7 +95,7 @@ public class ContainerPane extends JTabbedPane {
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.setUI(new FlatTabbedPaneUI());
-            tabbedPane.addTab("Console", new ServerConsoleTab(this, i));
+            tabbedPane.addTab("Console", new ServerDashboardTab(this, i));
             tabbedPane.addTab("Worlds", new WorldsManagerTab(this, i));
             tabbedPane.setTabComponentAt(0, new TabLabelWithFileTransfer("Console", tabbedPane,0));
             tabbedPane.setTabComponentAt(1, new TabLabelWithFileTransfer("Worlds", tabbedPane,1));
@@ -170,7 +169,7 @@ public class ContainerPane extends JTabbedPane {
         if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1) {
             setSelectedIndex(index);
         } else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2){
-            ServerConsoleTab consoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
+            ServerDashboardTab consoleTab = (ServerDashboardTab) serverTabbedPanes.get(index).getComponentAt(0);
             if(!consoleTab.getServerConsoleArea().isServerRunning())
                 consoleTab.startServer();
         } else if(e.getButton() == MouseEvent.BUTTON3) {
@@ -180,29 +179,29 @@ public class ContainerPane extends JTabbedPane {
         e.consume();
     }
 
-    public void onTabSwitched(int index) {
+    public void onTabSwitched(int tabIndex) {
         if(openServerFolderItem != null) {
-            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + FileDetailsUtils.abbreviate(Config.getData().get(index).serverPath().getAbsolutePath(), 27) + "</sub></center></html>");
+            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
         }
 
-        ServerConsoleTab selectedConsoleTab = (ServerConsoleTab) serverTabbedPanes.get(index).getComponentAt(0);
+        ServerDashboardTab selectedConsoleTab = (ServerDashboardTab) serverTabbedPanes.get(tabIndex).getComponentAt(0);
 
         setChartsVisibility(Window.areChartsEnabled);
 
-        MCServer mcServerConfig = Config.getData().get(index);
+        MCServer mcServerConfig = Config.getData().get(tabIndex);
 
-        Window.userValues.putInt("prefs_server_id", index);
+        Window.userValues.putInt("prefs_server_id", tabIndex);
         Config.reloadServersWorldPath(mcServerConfig);
 
 
-        WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(index).getComponentAt(1);
+        WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(tabIndex).getComponentAt(1);
         worldsManagerTab.setIcons();
         if(mcServerConfig.worldPath().exists()) {
             worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(mcServerConfig.worldPath());
         }
 
         for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
-            ServerConsoleTab c = (ServerConsoleTab) serverTabbedPane.getComponentAt(0);
+            ServerDashboardTab c = (ServerDashboardTab) serverTabbedPane.getComponentAt(0);
             c.getServerConsoleArea().isVisible = false;
         }
 
@@ -216,14 +215,14 @@ public class ContainerPane extends JTabbedPane {
 
     public void setChartsVisibility(boolean isVisible) {
         for(JTabbedPane tabbedPane : serverTabbedPanes) {
-            ServerConsoleTab serverConsoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
-            serverConsoleTab.setChartsEnabled(isVisible);
+            ServerDashboardTab serverDashboardTab = (ServerDashboardTab) tabbedPane.getComponentAt(0);
+            serverDashboardTab.setChartsEnabled(isVisible);
         }
     }
     public void killAllServerProcesses() {
         for(JTabbedPane tabbedPane : serverTabbedPanes) {
-            ServerConsoleTab serverConsoleTab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
-            serverConsoleTab.getServerConsoleArea().killAllProcesses();
+            ServerDashboardTab serverDashboardTab = (ServerDashboardTab) tabbedPane.getComponentAt(0);
+            serverDashboardTab.getServerConsoleArea().killAllProcesses();
         }
     }
 

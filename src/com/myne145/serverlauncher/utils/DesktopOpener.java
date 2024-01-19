@@ -12,26 +12,16 @@ import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage
 public class DesktopOpener {
 
     public static void openConfigFile() {
-        File file = new File("servers.json");
-
-        if (!file.exists()) {
-            alert(AlertType.ERROR, "Config file " + file.getAbsolutePath() + " not found.");
-            return;
-        }
-
-        if (!Desktop.isDesktopSupported()) {
-            alert(AlertType.ERROR, "Desktop API is not supported on this platform.");
-            return;
-        }
-
+        File file = new File(Config.ABSOLUTE_PATH);
         Desktop desktop = Desktop.getDesktop();
 
-        if (file.isDirectory()) {
+        if (!file.exists()) {
+            alert(AlertType.ERROR, "Config file at " + Config.ABSOLUTE_PATH + " not found.");
             return;
         }
 
-        if (!desktop.isSupported(Desktop.Action.OPEN)) {
-            alert(AlertType.ERROR, "Open Action is not supported on this platform.");
+        if (!Desktop.isDesktopSupported() || !desktop.isSupported(Desktop.Action.OPEN)) {
+            alert(AlertType.ERROR, "Desktop API is not supported on this platform.");
             return;
         }
 
@@ -42,23 +32,19 @@ public class DesktopOpener {
         }
     }
 
-    public static void openServerFolder(int index) {
-        File folder = Config.getData().get(index).serverPath();
+    public static void openServerFolder(int serverIndex) {
+        File folder = Config.getData().get(serverIndex).serverPath();
+        Desktop desktop = Desktop.getDesktop();
+
         if (!folder.exists()) {
             alert(AlertType.ERROR, "Directory not found: " + folder.getAbsolutePath());
             return;
         }
-        if (!Desktop.isDesktopSupported()) {
+        if (!Desktop.isDesktopSupported() || !desktop.isSupported(Desktop.Action.OPEN)) {
             alert(AlertType.ERROR, "Desktop API is not supported on this platform");
             return;
         }
 
-        Desktop desktop = Desktop.getDesktop();
-
-        if (!desktop.isSupported(Desktop.Action.OPEN)) {
-            alert(AlertType.ERROR, "Open action is not supported on this platform");
-            return;
-        }
         try {
             desktop.open(folder);
         } catch (IOException e) {

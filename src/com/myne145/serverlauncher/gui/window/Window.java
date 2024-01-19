@@ -5,7 +5,6 @@ import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DesktopOpener;
-import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -61,7 +60,7 @@ public class Window extends JFrame {
         JRadioButtonMenuItem scaleLarge = new JRadioButtonMenuItem("Large");
 
         JMenuItem openServerFolder = new JMenuItem("Open current server's folder");
-        JMenuItem openConfigFile = new JMenuItem("<html>Open config file\n<sub><center>" + FileDetailsUtils.abbreviate(Config.ABSOLUTE_PATH, 28) + "</center></sub></html>"); //absolute garbage
+        JMenuItem openConfigFile = new JMenuItem("<html>Open config file\n<sub><center>" +Config.abbreviateConfigPath() + "</center></sub></html>"); //absolute garbage
 
         fileMenu.add(openServerFolder);
         fileMenu.add(openConfigFile);

@@ -1,9 +1,8 @@
 package com.myne145.serverlauncher.gui.window;
 
-import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerConsoleTab;
+import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.DesktopOpener;
-import com.myne145.serverlauncher.utils.FileDetailsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,11 +25,11 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     }
 
     public void enableContextMenu() {
-        JMenuItem openFolder = new JMenuItem("<html>Open folder\n<center><sub>" + FileDetailsUtils.abbreviate(Config.getData().get(tabIndex).serverPath().getAbsolutePath(), 27) + "</sub></center></html>");
+        JMenuItem openFolder = new JMenuItem("<html>Open folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
         serverRunAction = new JMenuItem("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
         serverRunAction.addActionListener(e -> {
             JTabbedPane tabbedPane = (JTabbedPane) ContainerPane.getCurrentPane().getComponentAt(tabIndex);
-            ServerConsoleTab tab = (ServerConsoleTab) tabbedPane.getComponentAt(0);
+            ServerDashboardTab tab = (ServerDashboardTab) tabbedPane.getComponentAt(0);
             if(isServerActionStartServer)
                 tab.startServer();
             else

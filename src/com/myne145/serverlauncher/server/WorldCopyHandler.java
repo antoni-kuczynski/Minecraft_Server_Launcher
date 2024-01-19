@@ -3,8 +3,6 @@ package com.myne145.serverlauncher.server;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
-//import com.myne145.serverlauncher.server.current.ServerProperties;
-import com.myne145.serverlauncher.utils.FileDetailsUtils;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -34,7 +32,6 @@ public class WorldCopyHandler extends Thread {
 
     private WorldCopyHandler(WorldsManagerTab worldsManagerTab, boolean copyFilesToServerDir) {
         setName("WORLD_COPY_HANDLER");
-//        ServerProperties.reloadLevelNameGlobalValue(Config.getData().get(worldsManagerTab.getTabIndex()));
         this.worldsManagerTab = worldsManagerTab;
 
         this.currentServerAbsPath = Config.getData().get(worldsManagerTab.getTabIndex()).serverPath().getAbsolutePath();
@@ -202,8 +199,6 @@ public class WorldCopyHandler extends Thread {
                     File worldLevelDat = new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat");
                     FileUtils.copyFile(extractedWorldsLevelDat, worldLevelDat);
                 }
-                
-                worldsManagerTab.extractedWorldSize = FileDetailsUtils.directorySizeWithConversion(new File(extractedDirTemp));
             }
             if (copyFilesToServerDir) {
                 startImportingButtonFromWorldManagerTab.setEnabled(false); //issue #15 fix
@@ -220,10 +215,6 @@ public class WorldCopyHandler extends Thread {
 
                 File predictedWorldDir = new File(findWorldDirectory(dir.getParent()));
                 copyDirectoryWithProgressBar(predictedWorldDir, serverWorldDir);
-                
-
-//                CurrentServerInfo.world.levelDat = new File(predictedWorldDir.getAbsolutePath() + "\\level.dat");
-//                CurrentServerInfo.world.levelDat = CurrentServerInfo.world.getLevelDat();
             }
         }
         startImportingButtonFromWorldManagerTab.setEnabled(true); //issue #15 fix
