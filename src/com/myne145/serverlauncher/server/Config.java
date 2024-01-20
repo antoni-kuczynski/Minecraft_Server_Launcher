@@ -118,14 +118,14 @@ public class Config extends ArrayList<MCServer> {
     }
 
     public static String abbreviateConfigPath() {
-        return abbreviateConfig(Config.ABSOLUTE_PATH, 27);
+        return abbreviateFile(Config.ABSOLUTE_PATH, 27);
     }
 
     public static String abbreviateServerPath(int serverIndex) {
-        return abbreviateConfig(Config.getData().get(serverIndex).serverPath().getAbsolutePath(), 27);
+        return abbreviateFile(Config.getData().get(serverIndex).serverPath().getAbsolutePath(), 27);
     }
 
-    private static String abbreviateConfig(String fileName, int maxLen) {
+    public static String abbreviateFile(String fileName, int maxLen) {
         if (fileName.length() <= maxLen)
             return fileName;
 

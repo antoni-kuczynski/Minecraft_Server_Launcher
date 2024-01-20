@@ -33,7 +33,10 @@ public class DesktopOpener {
     }
 
     public static void openServerFolder(int serverIndex) {
-        File folder = Config.getData().get(serverIndex).serverPath();
+        openFolder(Config.getData().get(serverIndex).serverPath());
+    }
+
+    public static void openFolder(File folder) {
         Desktop desktop = Desktop.getDesktop();
 
         if (!folder.exists()) {

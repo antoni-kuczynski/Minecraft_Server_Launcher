@@ -12,6 +12,8 @@ import com.myne145.serverlauncher.utils.Colors;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -21,9 +23,12 @@ public class WorldsInfoPanels extends JPanel {
     private final WorldInformationPanel clientWorldInfo;
     private final WorldInformationPanel serverWorldInfo;
     private final int tabIndex;
+    private final WorldsContextMenu clientWorldContextMenu = new WorldsContextMenu();
+    private final WorldsContextMenu serverWorldContextMenu = new WorldsContextMenu();
 
     public WorldsInfoPanels(int tabIndex) {
         this.tabIndex = tabIndex;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         try {
             DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(ImageIO.read(Window.getClassLoader().getResourceAsStream(Config.RESOURCES_PATH + "/default_world_icon.png")).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
@@ -37,15 +42,42 @@ public class WorldsInfoPanels extends JPanel {
         add(clientWorldInfo.infoPanel);
         add(Box.createVerticalStrut(30));
         add(serverWorldInfo.infoPanel);
+
+//        clientWorldContextMenu.enableContextMenu();
+        clientWorldInfo.infoPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                clientWorldContextMenu.showContextMenu(e, clientWorldInfo.infoPanel);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                clientWorldContextMenu.showContextMenu(e, clientWorldInfo.infoPanel);
+            }
+        });
+
+        serverWorldInfo.infoPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                serverWorldContextMenu.showContextMenu(e, serverWorldInfo.infoPanel);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                serverWorldContextMenu.showContextMenu(e, serverWorldInfo.infoPanel);
+            }
+        });
     }
 
 
     public void updateClientWorldInformation(File worldPath) {
         updatePanel(clientWorldInfo, worldPath, "CLIENT");
+        clientWorldContextMenu.updateDirectory(worldPath);
     }
 
     public void updateServerWorldInformation(File serverWorldPath) {
         updatePanel(serverWorldInfo, serverWorldPath, "SERVER");
+        serverWorldContextMenu.updateDirectory(serverWorldPath);
     }
 
 
@@ -85,6 +117,7 @@ public class WorldsInfoPanels extends JPanel {
         worldInformationPanel.worldInformationLabel.setText(details);
         worldInformationPanel.worldInformationLabel.setIcon(minecraftWorld.getWorldIcon());
     }
+
     private WorldInformationPanel createInformationPanel(String title) {
         JPanel worldPanel = new JPanel(new BorderLayout());
         JLabel titleLabel = new JLabel(title);
