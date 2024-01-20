@@ -93,6 +93,7 @@ public class ContainerPane extends JTabbedPane {
 //            setTabComponentAt(0, new ServerTabLabel("Add a server", 0));
 //            return;
 //        }
+
         for(int i = 0; i < Config.getData().size(); i++) {
             JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
             tabbedPane.setUI(new FlatTabbedPaneUI());
@@ -119,15 +120,22 @@ public class ContainerPane extends JTabbedPane {
         }
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        int index = Window.userValues.getInt("prefs_server_id", 1);
+        int index = Window.userValues.getInt("prefs_server_id", 0);
 //        int index = 0;
-        if(index + 1 > Config.getData().size()) {
+//        index = 0;
+        if(configData.isEmpty()) {
           alert(AlertType.ERROR, "Add at least one server to continue!");
           System.exit(1);
+        }
+
+        if(index >= configData.size()) {
+            index = 0;
+//            setSelectedIndex(0);
+
         } else
             setSelectedIndex(index);
 
-        onTabSwitched(Window.userValues.getInt("prefs_server_id", 1));
+        onTabSwitched(index);
         addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
 
         for(MouseListener mouseListener : getMouseListeners())

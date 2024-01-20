@@ -83,23 +83,7 @@ public class Window extends JFrame {
         ContainerPane containerPane = new ContainerPane();
         add(containerPane, BorderLayout.CENTER);
         setVisible(true);
-
-
-        areChartsEnabled = userValues.getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
-        showCharts.setSelected(areChartsEnabled);
         containerPane.setChartsVisibility(areChartsEnabled);
-
-        switch(SERVER_STATUS_ICON_DIMENSION) {
-            case 16 -> scaleSmall.setSelected(true);
-            case 32 -> scaleMedium.setSelected(true);
-            case 48 -> scaleLarge.setSelected(true);
-        }
-
-        int savedXPosition = userValues.getInt(PREFS_KEY_X, 0);
-        int savedYPosition = userValues.getInt(PREFS_KEY_Y, 0);
-        int savedWidth = userValues.getInt(PREFS_KEY_WIDTH, 1000);
-        int savedHeight = userValues.getInt(PREFS_KEY_HEIGHT, 550);
-        setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
 
         showCharts.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -131,10 +115,29 @@ public class Window extends JFrame {
                 containerPane.updateServerButtonsSizes();
             }
         });
+        openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder(containerPane.getSelectedIndex()));
+
+        areChartsEnabled = userValues.getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
+        showCharts.setSelected(areChartsEnabled);
+
+
+        switch(SERVER_STATUS_ICON_DIMENSION) {
+            case 16 -> scaleSmall.setSelected(true);
+            case 32 -> scaleMedium.setSelected(true);
+            case 48 -> scaleLarge.setSelected(true);
+        }
+
+        int savedXPosition = userValues.getInt(PREFS_KEY_X, 0);
+        int savedYPosition = userValues.getInt(PREFS_KEY_Y, 0);
+        int savedWidth = userValues.getInt(PREFS_KEY_WIDTH, 1000);
+        int savedHeight = userValues.getInt(PREFS_KEY_HEIGHT, 550);
+        setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
+
+
 
         openConfigFile.addActionListener(e -> DesktopOpener.openConfigFile());
 
-        openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder(containerPane.getSelectedIndex()));
+
 
         for(WindowListener windowListener : getWindowListeners())
             removeWindowListener(windowListener);

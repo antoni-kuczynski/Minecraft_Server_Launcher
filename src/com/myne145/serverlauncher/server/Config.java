@@ -61,14 +61,24 @@ public class Config extends ArrayList<MCServer> {
     public static void createConfig() throws Exception {
         File serverConfigFile = new File("servers.json");
         ABSOLUTE_PATH = serverConfigFile.getAbsolutePath();
-        if(!serverConfigFile.exists()) {
-            if(!serverConfigFile.createNewFile()) {
+
+        boolean isConfigAValidJSON = true;
+        try {
+            new JSONArray(readFileString(new File("servers.json")));
+        } catch (Exception e) {
+            isConfigAValidJSON = false;
+        }
+
+        if(!serverConfigFile.exists() || !isConfigAValidJSON) {
+            if(!serverConfigFile.exists() && !serverConfigFile.createNewFile()) {
                 Window.alert(AlertType.FATAL, "Cannot create config file");
                 System.exit(1);
             }
             FileWriter configWriter = getConfigWriter(serverConfigFile);
             configWriter.close();
         }
+
+
 
         JSONArray configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
         JSONObject globalVariables = configJSONObjects.getJSONObject(0);
@@ -130,10 +140,10 @@ public class Config extends ArrayList<MCServer> {
             return fileName;
 
         File f = new File(fileName);
-        ArrayList<String> coll = new ArrayList<String>();
+        ArrayList<String> coll = new ArrayList<>();
         String name;
-        StringBuffer begBuf = new StringBuffer();
-        StringBuffer endBuf = new StringBuffer();
+        StringBuilder begBuf = new StringBuilder();
+        StringBuilder endBuf = new StringBuilder();
         int len;
         boolean b;
 
@@ -145,17 +155,17 @@ public class Config extends ArrayList<MCServer> {
             return fileName;
 
         len = coll.size() << 1; // ellipsis character per subdir and filename, separator per subdir
-        name = (String) coll.remove(coll.size() - 1);
+        name = coll.remove(coll.size() - 1);
         endBuf.insert(0, name);
         len += name.length();
         if (!coll.isEmpty()) {
-            name = (String) coll.remove(0);
+            name = coll.remove(0);
             begBuf.append(name);
             begBuf.append(File.separator);
             len += name.length() - 1;
         }
         if (!coll.isEmpty()) {
-            name = (String) coll.remove(0);
+            name = coll.remove(0);
             if (name.equals("Volumes")) { // ok dis wan me don want
                 begBuf.append('…');
                 begBuf.append(File.separator);
@@ -167,11 +177,11 @@ public class Config extends ArrayList<MCServer> {
         }
         for (b = true; !coll.isEmpty() && len <= maxLen; b = !b) {
             if (b) {
-                name = (String) coll.remove(coll.size() - 1);
+                name = coll.remove(coll.size() - 1);
                 endBuf.insert(0, File.separator);
                 endBuf.insert(0, name);
             } else {
-                name = (String) coll.remove(0);
+                name = coll.remove(0);
                 begBuf.append(name);
                 begBuf.append(File.separator);
             }
