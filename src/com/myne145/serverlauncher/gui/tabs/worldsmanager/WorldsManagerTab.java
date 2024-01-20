@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
@@ -55,15 +56,25 @@ public class WorldsManagerTab extends JPanel {
         openButton.setMaximumSize(new Dimension(300, 40));
         openButton.addActionListener(e -> {
             Runnable runnable = () -> {
-                JnaFileChooser fileDialog = new JnaFileChooser();
-                fileDialog.showOpenDialog(Window.getWindow());
+                File[] filePaths = {};
+                if(SystemInfo.isWindows) {
+                    JnaFileChooser fileDialog = new JnaFileChooser();
+                    fileDialog.showOpenDialog(Window.getWindow());
+                    filePaths = fileDialog.getSelectedFiles();
+                    if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null)
+                        return;
+
+                } else if(SystemInfo.isLinux) {
+                    FileDialog fileDialog = new FileDialog(Window.getWindow());
+                    fileDialog.setVisible(true);
+                    filePaths = fileDialog.getFiles();
+                    if (fileDialog.getFiles().length == 0 || filePaths == null || filePaths[0] == null)
+                        return;
+                }
 
                 removeImportButtonWarning();
-                File[] filePaths = fileDialog.getSelectedFiles();
 
-                if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
-                    return;
-                }
+
 
                 File fileToAdd = filePaths[0];
                 setUserAddedWorld(fileToAdd);

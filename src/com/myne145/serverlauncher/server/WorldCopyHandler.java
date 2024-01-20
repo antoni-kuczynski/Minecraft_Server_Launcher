@@ -27,7 +27,7 @@ public class WorldCopyHandler extends Thread {
     private final File selectedWorld;
     private final File serverWorldDir;
     private boolean copyFilesToServerDir;
-    private static final Taskbar taskbar = Taskbar.getTaskbar();
+    private static final Taskbar taskbar = Window.getTaskbar();
     private final String currentServerAbsPath;
 
     private WorldCopyHandler(WorldsManagerTab worldsManagerTab, boolean copyFilesToServerDir) {
@@ -92,11 +92,14 @@ public class WorldCopyHandler extends Thread {
                 copiedBytes += basicFileAttributes.size();
                 int progress = (int) Math.round((double) copiedBytes / totalBytes * 100);
                 progressBar.setValue(progress);
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.INDETERMINATE);
-                taskbar.setWindowProgressValue(Window.getWindow(), 100);
+                if(Taskbar.isTaskbarSupported()) {
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.INDETERMINATE);
+                    taskbar.setWindowProgressValue(Window.getWindow(), 100);
+                }
             }
         }
-        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+        if(Taskbar.isTaskbarSupported())
+            taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
     }
 
 

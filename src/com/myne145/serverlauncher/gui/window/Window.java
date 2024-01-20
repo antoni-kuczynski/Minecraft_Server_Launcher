@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;
@@ -33,7 +34,7 @@ public class Window extends JFrame {
     public static boolean areChartsEnabled;
     public static int SERVER_STATUS_ICON_DIMENSION;
     private static Window window;
-    private final static Taskbar taskbar = Taskbar.getTaskbar();
+    private static Taskbar taskbar;
     private static final JMenuBar menuBar = new JMenuBar();
     public static ClassLoader classLoader = Window.class.getClassLoader();
 
@@ -175,25 +176,29 @@ public class Window extends JFrame {
 
             @Override
             public void windowIconified(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                if(Taskbar.isTaskbarSupported())
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.ICONIFIED);
             }
 
             @Override
             public void windowDeiconified(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                if(Taskbar.isTaskbarSupported())
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.NORMAL);
             }
 
             @Override
             public void windowLostFocus(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                if(Taskbar.isTaskbarSupported())
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.ICONIFIED);
             }
 
             @Override
             public void windowGainedFocus(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                if(Taskbar.isTaskbarSupported())
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.NORMAL);
             }
         });
@@ -202,8 +207,10 @@ public class Window extends JFrame {
 
     public static String getErrorDialogMessage(Exception e) {
         Toolkit.getDefaultToolkit().beep();
-        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
-        taskbar.setWindowProgressValue(Window.getWindow(), 100);
+        if(Taskbar.isTaskbarSupported()) {
+            taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
+            taskbar.setWindowProgressValue(Window.getWindow(), 100);
+        }
         StringBuilder errorMessage = new StringBuilder();
         errorMessage.append(e).append("\n");
         errorMessage.append("Caused by:\n");
@@ -222,7 +229,9 @@ public class Window extends JFrame {
             case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
             case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
         }
-        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+        if(Taskbar.isTaskbarSupported()) {
+            taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+        }
     }
 
     private static void clearTempDirectory() {
@@ -255,11 +264,24 @@ public class Window extends JFrame {
         return menuBar;
     }
 
+    public static Taskbar getTaskbar() {
+        return taskbar;
+    }
+
     public static void main(String[] args) throws Exception {
+        System.getProperties().list(System.out);
         Config.createConfig();
 
         InputStream inputStream = classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
+
+        if(Taskbar.isTaskbarSupported())
+            taskbar = Taskbar.getTaskbar();
+
+        if(SystemInfo.isLinux) {
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            JDialog.setDefaultLookAndFeelDecorated(true);
+        }
 
         SwingUtilities.invokeLater(() -> {
             try {
