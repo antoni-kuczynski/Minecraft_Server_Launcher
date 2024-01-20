@@ -13,20 +13,14 @@ public class WorldsContextMenu extends JPopupMenu {
     private final JMenuItem openFolder;
     private File currentFolder;
 
-    public WorldsContextMenu() {
+    protected WorldsContextMenu() {
         openFolder = new JMenuItem("<html>Open folder\n<center><sub> </sub></center></html>");
 
-
-        openFolder.addActionListener(e -> DesktopOpener.openFolder(currentFolder));
-
-        openFolder.setVisible(false);
-        contextMenu.setVisible(false);
         contextMenu.add(openFolder);
     }
 
-    public void enableContextMenu() {
-        openFolder.setVisible(true);
-        contextMenu.setVisible(true);
+    protected void enableContextMenu() {
+        openFolder.addActionListener(e -> DesktopOpener.openFolder(currentFolder));
     }
 
     protected void updateDirectory(File file) {
@@ -36,8 +30,8 @@ public class WorldsContextMenu extends JPopupMenu {
         currentFolder = file;
     }
 
-    public void showContextMenu(final MouseEvent e, Component component) {
-        if (contextMenu == null) {
+    protected void showContextMenu(final MouseEvent e, Component component) {
+        if (contextMenu == null || currentFolder == null) {
             return;
         }
         SwingUtilities.invokeLater(() -> contextMenu.show(component, e.getX(), e.getY()));
