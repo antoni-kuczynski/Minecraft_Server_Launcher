@@ -37,7 +37,7 @@ public class WorldCopyHandler extends Thread {
         this.currentServerAbsPath = Config.getData().get(worldsManagerTab.getTabIndex()).serverPath().getAbsolutePath();
 
         this.serverWorldName = Config.getData().get(worldsManagerTab.getTabIndex()).worldPath().getName();
-        this.serverWorldDir = new File(currentServerAbsPath + "\\" + serverWorldName);
+        this.serverWorldDir = new File(currentServerAbsPath + "/" + serverWorldName);
 
         this.selectedWorld = worldsManagerTab.getUserAddedWorld();
         WorldCopyHandler.progressBar = worldsManagerTab.getProgressBar();
@@ -140,8 +140,8 @@ public class WorldCopyHandler extends Thread {
     }
 
     private void deleteEndAndNetherDirs() throws IOException {
-        FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_the_end"));
-        FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "\\" + serverWorldName + "_nether"));
+        FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_the_end"));
+        FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_nether"));
     }
 
     private void handler() throws IOException, InterruptedException {
@@ -182,7 +182,7 @@ public class WorldCopyHandler extends Thread {
             }
         } else if (isArchive(selectedWorld)) {
             if (!copyFilesToServerDir) {
-                File worldExtractDirectory = new File(".\\world_temp\\" + selectedWorld.getName());
+                File worldExtractDirectory = new File("world_temp/" + selectedWorld.getName());
                 if (worldExtractDirectory.exists())
                     FileUtils.deleteDirectory(worldExtractDirectory);
                 

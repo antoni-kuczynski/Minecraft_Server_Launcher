@@ -64,7 +64,7 @@ public class WorldsManagerTab extends JPanel {
                     if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null)
                         return;
 
-                } else if(SystemInfo.isLinux) {
+                } else {
                     FileDialog fileDialog = new FileDialog(Window.getWindow());
                     fileDialog.setVisible(true);
                     filePaths = fileDialog.getFiles();
