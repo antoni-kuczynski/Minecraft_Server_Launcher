@@ -269,7 +269,6 @@ public class Window extends JFrame {
     }
 
     public static void main(String[] args) throws Exception {
-        System.getProperties().list(System.out);
         Config.createConfig();
 
         InputStream inputStream = classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");

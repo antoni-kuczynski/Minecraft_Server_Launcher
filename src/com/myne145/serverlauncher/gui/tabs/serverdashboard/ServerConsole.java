@@ -236,7 +236,7 @@ public class ServerConsole extends JPanel {
             parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ONLINE));
         } catch (Exception e) {
             consoleOutput.append(Window.getErrorDialogMessage(e) +
-                    "\n(You probably specified a java executable that is not valid in the config file.)");
+                    "\n(You probably specified an invalid Java executable)");
         }
         if (consoleMainThread.isAlive()) {
             processBuilder = new ProcessBuilder(command);
@@ -253,7 +253,7 @@ public class ServerConsole extends JPanel {
         if(processes.isEmpty())
             return;
 
-        if (command.equalsIgnoreCase("stop"))
+        if (isServerRunning && command.equalsIgnoreCase("stop"))
             wasServerStopCausedByUser = true;
 
         PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());

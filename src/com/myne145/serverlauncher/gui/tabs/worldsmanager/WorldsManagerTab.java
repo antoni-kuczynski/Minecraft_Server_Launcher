@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.ui.FlatRoundBorder;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
 import com.myne145.serverlauncher.utils.AlertType;
@@ -31,7 +32,7 @@ public class WorldsManagerTab extends JPanel {
     private String extractedWorldDir;
     private boolean isInArchiveMode;
     private final WorldsManagerTab worldsManagerTab;
-    private final JButton openButton =  new JButton("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
+    private final JButton openButton =  new JButton("Import existing world");
     private final int tabIndex;
     private final WorldsInfoPanels worldsInfoPanels;
     private FlatSVGIcon ERROR_ICON;
@@ -176,6 +177,7 @@ public class WorldsManagerTab extends JPanel {
         add(addingWorld, BorderLayout.PAGE_START);
         add(startCopyingPanel, BorderLayout.PAGE_END);
 
+        openButton.setPreferredSize(new Dimension(180, 45));
         setIcons();
     }
 
@@ -218,7 +220,7 @@ public class WorldsManagerTab extends JPanel {
         if(userAddedWorld != null) {
             openButton.setText("<html><b>Currently selected:</b><br><small>" + userAddedWorld.getAbsolutePath() + "</small></html>");
         } else {
-            openButton.setText("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
+            openButton.setText("<html>Import existing world<</html>");
         }
 
         if(userAddedWorld != null)
