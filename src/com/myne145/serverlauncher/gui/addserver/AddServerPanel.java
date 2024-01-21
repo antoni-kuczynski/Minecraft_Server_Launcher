@@ -151,8 +151,7 @@ public class AddServerPanel extends javax.swing.JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 JTextField textField = (JTextField) e.getSource();
-                System.out.println(textField);
-//                System.out.println(e.getSource());
+
             }
         };
 

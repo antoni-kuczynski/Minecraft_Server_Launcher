@@ -8,7 +8,7 @@ public class CPUChart extends BasicChart {
     private final static OperatingSystemMXBean systemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
     public CPUChart() {
-        super();
+        super("CPU_CHART");
     }
 
     @Override

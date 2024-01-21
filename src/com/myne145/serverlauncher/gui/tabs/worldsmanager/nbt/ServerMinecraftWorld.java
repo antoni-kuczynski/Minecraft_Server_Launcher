@@ -10,7 +10,7 @@ public class ServerMinecraftWorld extends MinecraftWorld {
     @Override
     public File getLevelDatFile(File worldPath) {
         File levelDat = new File(worldPath.getAbsolutePath() + "/level.dat");
-        File tempLevelDatFile = new File("world_temp\\level_" + "server_id_" + getServerIndex() + ".dat");
+        File tempLevelDatFile = new File("world_temp/level_" + "server_id_" + getServerIndex() + ".dat");
 
         try {
             try (FileChannel sourceChannel = FileChannel.open(levelDat.toPath(), StandardOpenOption.READ);

@@ -9,7 +9,7 @@ public class RAMChart extends BasicChart {
     private final static double TOTAL_MEMORY_GB = (double) operatingSystem.getTotalMemorySize() / 1073741824;
 
     public RAMChart() {
-        super();
+        super("RAM_CHART");
     }
 
     @Override

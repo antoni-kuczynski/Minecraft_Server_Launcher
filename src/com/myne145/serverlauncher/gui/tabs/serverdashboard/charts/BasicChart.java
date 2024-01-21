@@ -25,7 +25,7 @@ class BasicChart extends JPanel {
         isEnabled = aFlag;
     }
 
-    protected BasicChart() {
+    protected BasicChart(String threadName) {
         setBorder(new FlatRoundBorder());
         chart = createChart();
 
@@ -36,7 +36,7 @@ class BasicChart extends JPanel {
 
         add(chartPanel);
 
-        Timer timer = new Timer();
+        Timer timer = new Timer(threadName);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -44,6 +44,7 @@ class BasicChart extends JPanel {
                     updateChartData();
             }
         }, 0, 5000);
+
         chart.getStyler().setSumFormat("100%%");
     }
 

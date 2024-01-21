@@ -11,7 +11,7 @@ import java.util.zip.ZipInputStream;
 import static com.myne145.serverlauncher.gui.window.Window.alert;
 
 public class ZipUtils {
-    private static final Taskbar taskbar = Taskbar.getTaskbar();
+    private static final Taskbar taskbar = Window.getTaskbar();
     private static long getTotalSize(String archivePath) throws IOException {
         long totalSize = 0;
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
@@ -31,7 +31,8 @@ public class ZipUtils {
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath));
         ZipEntry zipEntry = zis.getNextEntry();
-        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.NORMAL);
+        if(Taskbar.isTaskbarSupported())
+            taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.NORMAL);
 
         String extractedDirectory = null;
         long totalSize = getTotalSize(archivePath);
@@ -55,7 +56,8 @@ public class ZipUtils {
                     fos.write(buffer, 0, len);
                     extractedSize += len;
                     worldsManagerTab.getProgressBar().setValue((int) (extractedSize * 100 / totalSize)); // Set progress bar value based on the extracted size
-                    taskbar.setWindowProgressValue( Window.getWindow(), (int) (extractedSize * 100 / totalSize)); //same for taskbar
+                    if(Taskbar.isTaskbarSupported())
+                        taskbar.setWindowProgressValue( Window.getWindow(), (int) (extractedSize * 100 / totalSize)); //same for taskbar
                 }
                 fos.close();
             }
@@ -65,7 +67,8 @@ public class ZipUtils {
         zis.close();
 
         worldsManagerTab.getStartCopying().setEnabled(true);
-        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+        if(Taskbar.isTaskbarSupported())
+            taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
         return extractedDirectory;
     }
 
