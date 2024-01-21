@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
@@ -15,8 +16,10 @@ import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage
 
 public class Config extends ArrayList<MCServer> {
     private static final ArrayList<MCServer> data = new ArrayList<>();
+    public static final ClassLoader classLoader = Window.class.getClassLoader();
     public static String RESOURCES_PATH = "com/myne145/serverlauncher/resources";
     public static String ABSOLUTE_PATH;
+
 
     private static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
@@ -127,6 +130,10 @@ public class Config extends ArrayList<MCServer> {
         return configWriter;
     }
 
+    public static InputStream getResource(String resource) {
+        return classLoader.getResourceAsStream(resource);
+    }
+
     public static String abbreviateConfigPath() {
         return abbreviateFile(Config.ABSOLUTE_PATH, 27);
     }
@@ -154,7 +161,7 @@ public class Config extends ArrayList<MCServer> {
         if (coll.isEmpty())
             return fileName;
 
-        len = coll.size() << 1; // ellipsis character per subdir and filename, separator per subdir
+        len = coll.size() << 1;
         name = coll.remove(coll.size() - 1);
         endBuf.insert(0, name);
         len += name.length();
@@ -166,7 +173,7 @@ public class Config extends ArrayList<MCServer> {
         }
         if (!coll.isEmpty()) {
             name = coll.remove(0);
-            if (name.equals("Volumes")) { // ok dis wan me don want
+            if (name.equals("Volumes")) {
                 begBuf.append('…');
                 begBuf.append(File.separator);
             } else {
@@ -185,7 +192,7 @@ public class Config extends ArrayList<MCServer> {
                 begBuf.append(name);
                 begBuf.append(File.separator);
             }
-            len += name.length() - 1; // full name instead of single character ellipsis
+            len += name.length() - 1;
         }
 
         while (!coll.isEmpty()) {

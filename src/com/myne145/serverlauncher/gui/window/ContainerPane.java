@@ -120,7 +120,7 @@ public class ContainerPane extends JTabbedPane {
         }
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        int index = Window.userValues.getInt("prefs_server_id", 0);
+        int index = Window.getUserValues().getInt("prefs_server_id", 0);
 //        int index = 0;
 //        index = 0;
         if(configData.isEmpty()) {
@@ -195,11 +195,11 @@ public class ContainerPane extends JTabbedPane {
 
         ServerDashboardTab selectedConsoleTab = (ServerDashboardTab) serverTabbedPanes.get(tabIndex).getComponentAt(0);
 
-        setChartsVisibility(Window.areChartsEnabled);
+        setChartsVisibility(Window.areChartsEnabled());
 
         MCServer mcServerConfig = Config.getData().get(tabIndex);
 
-        Window.userValues.putInt("prefs_server_id", tabIndex);
+        Window.getUserValues().putInt("prefs_server_id", tabIndex);
         Config.reloadServersWorldPath(mcServerConfig);
 
 

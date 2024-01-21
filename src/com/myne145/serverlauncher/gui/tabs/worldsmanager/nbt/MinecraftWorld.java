@@ -14,6 +14,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import static com.myne145.serverlauncher.server.Config.getResource;
+
 public class MinecraftWorld {
     private ImageIcon worldIcon;
     private String levelName;
@@ -37,7 +39,7 @@ public class MinecraftWorld {
         this.serverIndex = serverIndex;
 
         try {
-            DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(ImageIO.read(Window.getClassLoader().getResourceAsStream(Config.RESOURCES_PATH + "/default_world_icon.png")).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+            DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
         } catch (IOException e) {
             com.myne145.serverlauncher.gui.window.Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
         }

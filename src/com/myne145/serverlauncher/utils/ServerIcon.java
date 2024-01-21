@@ -29,9 +29,9 @@ class ServerIcons {
     static ImageIcon errored;
     static {
         try {
-            online = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_online.png")));
-            offline = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_offline.png")));
-            errored = new ImageIcon(ImageIO.read(Window.classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/server_errored.png")));
+            online = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_online.png")));
+            offline = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_offline.png")));
+            errored = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_errored.png")));
         } catch (Exception e) {
             alert(AlertType.ERROR, getErrorDialogMessage(e));
         }

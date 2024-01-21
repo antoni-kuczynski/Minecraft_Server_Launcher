@@ -103,7 +103,6 @@ public class ServerDashboardTab extends JPanel {
 
     public void stopServer() {
         serverConsole.executeCommand("stop");
-        setWaitingStop(true);
     }
 
     private void killServer() {

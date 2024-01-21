@@ -30,7 +30,7 @@ public class WorldsManagerTab extends JPanel {
     private String extractedWorldDir;
     private boolean isInArchiveMode;
     private final WorldsManagerTab worldsManagerTab;
-    private final JButton openButton =  new JButton("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
+    private final JButton openButton =  new JButton("<html>Import existing world</html>");
     private final int tabIndex;
     private final WorldsInfoPanels worldsInfoPanels;
     private FlatSVGIcon ERROR_ICON;
@@ -39,7 +39,7 @@ public class WorldsManagerTab extends JPanel {
         super(new BorderLayout());
 
         try {
-            ERROR_ICON = new FlatSVGIcon(Window.getClassLoader().getResourceAsStream(Config.RESOURCES_PATH + "/error.svg")).derive(16, 16);
+            ERROR_ICON = new FlatSVGIcon(Config.getResource(Config.RESOURCES_PATH + "/error.svg")).derive(16, 16);
         } catch (IOException e) {
             Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
         }
@@ -100,6 +100,7 @@ public class WorldsManagerTab extends JPanel {
 
         this.setTransferHandler(transferHandler);
 
+        openButton.setPreferredSize(new Dimension(160, 40));
         startCopying.addActionListener(e -> WorldCopyHandler.createWorldCopyHandler(this).setCopyMode(true).start());
 
         JButton refreshButton = new JButton("Refresh worlds");
@@ -207,7 +208,7 @@ public class WorldsManagerTab extends JPanel {
         if(userAddedWorld != null) {
             openButton.setText("<html><b>Currently selected:</b><br><small>" + userAddedWorld.getAbsolutePath() + "</small></html>");
         } else {
-            openButton.setText("<html><sub>\u200E </sub>Import existing world<sup>\u200E </sup></html>");
+            openButton.setText("<html>Import existing world</html>");
         }
 
         if(userAddedWorld != null)

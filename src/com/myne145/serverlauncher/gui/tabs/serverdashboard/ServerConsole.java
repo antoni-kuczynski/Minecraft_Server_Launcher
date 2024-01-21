@@ -59,6 +59,7 @@ public class ServerConsole extends JPanel {
                     if(line != null) {
                         String finalLine = line;
                         SwingUtilities.invokeLater(() -> consoleOutput.append(finalLine + "\n"));
+                        System.out.println(line + "\n");
                         continue;
                     }
 
@@ -183,12 +184,17 @@ public class ServerConsole extends JPanel {
 
         clearAll.addActionListener(e -> consoleOutput.setText(""));
 
+        wrapLines.setSelected(getUserValues().getBoolean("is_wrap_lines_enabled", false));
+
         wrapLines.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 consoleOutput.setLineWrap(true);
+                getUserValues().putBoolean("is_wrap_lines_enabled", true);
             } else if (e.getStateChange() == ItemEvent.DESELECTED) {
                 consoleOutput.setLineWrap(false);
+                getUserValues().putBoolean("is_wrap_lines_enabled", false);
             }
+
         });
 
         DefaultCaret caret = (DefaultCaret) consoleOutput.getCaret();
@@ -210,6 +216,7 @@ public class ServerConsole extends JPanel {
         parentPane.setToolTipTextAt(index, "Offline");
         wasServerStopCausedByUser = true;
         isVisible = false;
+        parentConsoleTab.setWaitingStop(false);
     }
 
 
@@ -253,8 +260,10 @@ public class ServerConsole extends JPanel {
         if(processes.isEmpty())
             return;
 
-        if (command.equalsIgnoreCase("stop"))
+        if (isServerRunning && command.equalsIgnoreCase("stop")) {
             wasServerStopCausedByUser = true;
+            parentConsoleTab.setWaitingStop(true);
+        }
 
         PrintWriter writer = new PrintWriter(processes.get(processes.size() - 1).getOutputStream());
         writer.println(command);

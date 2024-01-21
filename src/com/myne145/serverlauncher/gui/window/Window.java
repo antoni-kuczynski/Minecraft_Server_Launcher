@@ -22,6 +22,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
+import static com.myne145.serverlauncher.server.Config.getResource;
+
 public class Window extends JFrame {
     private final String PREFS_KEY_X = "window_x";
     private final String PREFS_KEY_Y = "window_y";
@@ -29,21 +31,20 @@ public class Window extends JFrame {
     private final String PREFS_KEY_HEIGHT = "window_height";
     private final String PREFS_ARE_CHARTS_ENABLED = "are_charts_enabled";
     private final String PREFS_SERVER_ICONS_SCALE = "prefs_server_icons_scale";
-    public static Preferences userValues = Preferences.userNodeForPackage(Window.class);
-    public static boolean areChartsEnabled;
+    private static final Preferences userValues = Preferences.userNodeForPackage(Window.class);
+    private static boolean areChartsEnabled;
     public static int SERVER_STATUS_ICON_DIMENSION;
     private static Window window;
     private final static Taskbar taskbar = Taskbar.getTaskbar();
     private static final JMenuBar menuBar = new JMenuBar();
-    public static ClassLoader classLoader = Window.class.getClassLoader();
 
     public Window() throws Exception {
         // Set up the JFrame
-        setIconImage(new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/app_icon.png"))).getImage());
+        setIconImage(new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png"))).getImage());
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        SERVER_STATUS_ICON_DIMENSION = userValues.getInt(PREFS_SERVER_ICONS_SCALE,  32);
+        SERVER_STATUS_ICON_DIMENSION = getUserValues().getInt(PREFS_SERVER_ICONS_SCALE,  32);
 
         JFrame.setDefaultLookAndFeelDecorated(true);
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
@@ -117,7 +118,7 @@ public class Window extends JFrame {
         });
         openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder(containerPane.getSelectedIndex()));
 
-        areChartsEnabled = userValues.getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
+        areChartsEnabled = getUserValues().getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
         showCharts.setSelected(areChartsEnabled);
 
 
@@ -127,10 +128,10 @@ public class Window extends JFrame {
             case 48 -> scaleLarge.setSelected(true);
         }
 
-        int savedXPosition = userValues.getInt(PREFS_KEY_X, 0);
-        int savedYPosition = userValues.getInt(PREFS_KEY_Y, 0);
-        int savedWidth = userValues.getInt(PREFS_KEY_WIDTH, 1000);
-        int savedHeight = userValues.getInt(PREFS_KEY_HEIGHT, 550);
+        int savedXPosition = getUserValues().getInt(PREFS_KEY_X, 0);
+        int savedYPosition = getUserValues().getInt(PREFS_KEY_Y, 0);
+        int savedWidth = getUserValues().getInt(PREFS_KEY_WIDTH, 1000);
+        int savedHeight = getUserValues().getInt(PREFS_KEY_HEIGHT, 550);
         setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
 
 
@@ -243,10 +244,6 @@ public class Window extends JFrame {
         new File(tempFilesDirectory.getAbsolutePath() + "/worlds_level_dat").mkdirs();
     }
 
-    public static ClassLoader getClassLoader() {
-        return classLoader;
-    }
-
     public static Window getWindow() {
         return window;
     }
@@ -255,10 +252,18 @@ public class Window extends JFrame {
         return menuBar;
     }
 
+    public static Preferences getUserValues() {
+        return userValues;
+    }
+
+    protected static boolean areChartsEnabled() {
+        return areChartsEnabled;
+    }
+
     public static void main(String[] args) throws Exception {
         Config.createConfig();
 
-        InputStream inputStream = classLoader.getResourceAsStream(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
+        InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
 
         SwingUtilities.invokeLater(() -> {

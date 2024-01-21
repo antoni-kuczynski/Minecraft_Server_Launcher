@@ -31,7 +31,7 @@ public class WorldsInfoPanels extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         try {
-            DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(ImageIO.read(Window.getClassLoader().getResourceAsStream(Config.RESOURCES_PATH + "/default_world_icon.png")).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+            DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
         } catch (IOException e) {
             Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
         }
