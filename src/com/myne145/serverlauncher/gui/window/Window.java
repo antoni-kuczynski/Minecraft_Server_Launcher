@@ -260,6 +260,10 @@ public class Window extends JFrame {
         return areChartsEnabled;
     }
 
+    public static Taskbar getTaskbar() {
+        return taskbar;
+    }
+
     public static void main(String[] args) throws Exception {
         Config.createConfig();
 

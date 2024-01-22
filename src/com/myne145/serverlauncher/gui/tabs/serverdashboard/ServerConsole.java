@@ -242,7 +242,7 @@ public class ServerConsole extends JPanel {
             parentPane.setToolTipTextAt(index, "Running");
             parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ONLINE));
         } catch (Exception e) {
-            consoleOutput.append(Window.getErrorDialogMessage(e) +
+            consoleOutput.append(e.getMessage() +
                     "\n(You probably specified a java executable that is not valid in the config file.)");
         }
         if (consoleMainThread.isAlive()) {
@@ -286,7 +286,12 @@ public class ServerConsole extends JPanel {
     public void setTextFromLatestLogFile() throws IOException {
         if(!isServerRunning)
             return;
-        File latestLog = new File(Config.getData().get(index).serverPath().getAbsolutePath() + "\\logs\\latest.log");
+        File latestLog = new File(Config.getData().get(index).serverPath().getAbsolutePath() + "\\logs\\latest1.log");
+        if(!latestLog.exists()) {
+            consoleOutput.append("[LAUNCHER WARNING]: Console won't update when unfocused (latest.log file not found)\n");
+            isVisible = true;
+            return;
+        }
         consoleOutput.setText("");
         consoleOutput.append(readFileString(latestLog));
         isVisible = true;
