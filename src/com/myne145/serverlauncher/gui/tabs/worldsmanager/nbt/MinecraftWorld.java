@@ -1,8 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
-import com.myne145.serverlauncher.gui.window.Window;
-import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.utils.DefaultIcons;
 import dev.dewy.nbt.Nbt;
 import dev.dewy.nbt.tags.collection.CompoundTag;
 
@@ -14,8 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import static com.myne145.serverlauncher.server.Config.getResource;
-
 public class MinecraftWorld {
     private ImageIcon worldIcon;
     private String levelName;
@@ -24,7 +20,7 @@ public class MinecraftWorld {
     private String gamemode;
     private boolean isUsingCheats;
     private String gameVersion;
-    private ImageIcon DEFAULT_WORLD_ICON_PACK_PNG;
+//    private ImageIcon DEFAULT_WORLD_ICON_PACK_PNG;
     private final int serverIndex;
 
     public File getLevelDatFile(File worldPath) {
@@ -38,18 +34,12 @@ public class MinecraftWorld {
     public MinecraftWorld(File worldPath, int serverIndex) throws IOException {
         this.serverIndex = serverIndex;
 
-        try {
-            DEFAULT_WORLD_ICON_PACK_PNG = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-        } catch (IOException e) {
-            com.myne145.serverlauncher.gui.window.Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
-        }
-
         //Icon
         File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
         try {
             worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
         } catch (Exception e) {
-            worldIcon = DEFAULT_WORLD_ICON_PACK_PNG;
+            worldIcon = DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING);
         }
         File levelDatFile = getLevelDatFile(worldPath);
 

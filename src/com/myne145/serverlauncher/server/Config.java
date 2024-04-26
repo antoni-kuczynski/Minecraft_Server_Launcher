@@ -16,7 +16,7 @@ import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage
 
 public class Config extends ArrayList<MCServer> {
     private static final ArrayList<MCServer> data = new ArrayList<>();
-    public static final ClassLoader classLoader = Window.class.getClassLoader();
+    public static final ClassLoader classLoader = Config.class.getClassLoader();
     public static String RESOURCES_PATH = "com/myne145/serverlauncher/resources";
     public static String ABSOLUTE_PATH;
 
@@ -111,6 +111,10 @@ public class Config extends ArrayList<MCServer> {
                 serverLaunchArgs, serverId, new File(getServerWorldPath(pathToServerFolder))));
             serverId++;
         }
+    }
+
+    public static void clearConfig() {
+        data.clear();
     }
 
     private static FileWriter getConfigWriter(File serverConfigFile) throws IOException {

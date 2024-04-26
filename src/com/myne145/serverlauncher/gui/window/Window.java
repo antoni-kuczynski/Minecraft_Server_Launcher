@@ -2,8 +2,10 @@ package com.myne145.serverlauncher.gui.window;
 
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
+import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
+import com.myne145.serverlauncher.utils.DateFormat;
 import com.myne145.serverlauncher.utils.DesktopOpener;
 import org.apache.commons.io.FileUtils;
 
@@ -34,6 +36,7 @@ public class Window extends JFrame {
     private static final Preferences userValues = Preferences.userNodeForPackage(Window.class);
     private static boolean areChartsEnabled;
     public static int SERVER_STATUS_ICON_DIMENSION;
+    public static DateFormat dateFormat = DateFormat.YYYY_MM_DD;
     private static Window window;
     private final static Taskbar taskbar = Taskbar.getTaskbar();
     private static final JMenuBar menuBar = new JMenuBar();
@@ -45,6 +48,7 @@ public class Window extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         SERVER_STATUS_ICON_DIMENSION = getUserValues().getInt(PREFS_SERVER_ICONS_SCALE,  32);
+
 
         JFrame.setDefaultLookAndFeelDecorated(true);
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
@@ -76,15 +80,40 @@ public class Window extends JFrame {
         viewMenu.add(showCharts);
         viewMenu.add(serverButtonsScale);
 
+
+        JButton debugShit1 = new JButton("Destroy config");
+        JButton debugShit2 = new JButton("Create config");
+
+
         menuBar.setBorder(new MatteBorder(0,0,1,0, Colors.BORDER_COLOR));
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
+        menuBar.add(debugShit1);
+        menuBar.add(debugShit2);
         setJMenuBar(menuBar);
 
         ContainerPane containerPane = new ContainerPane();
         add(containerPane, BorderLayout.CENTER);
         setVisible(true);
         containerPane.setChartsVisibility(areChartsEnabled);
+
+
+        debugShit1.addActionListener(e -> {
+            Config.clearConfig();
+//            remove(containerPane);
+//            repaint();
+        });
+
+        debugShit2.addActionListener(e -> {
+//            try {
+//                Config.createConfig();
+//            } catch (Exception ex) {
+//                throw new RuntimeException(ex);
+//            }
+
+            ContainerPane.addServer(Config.getData().get(1));
+//            ContainerPane.addServer(new MCServer("Test", new File(""), new File(""), new File(""), "", Config.getData().size() + 1, new File("")));
+        });
 
         showCharts.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -262,6 +291,10 @@ public class Window extends JFrame {
 
     public static Taskbar getTaskbar() {
         return taskbar;
+    }
+
+    public static DateFormat getDateFormat() {
+        return dateFormat;
     }
 
     public static void main(String[] args) throws Exception {

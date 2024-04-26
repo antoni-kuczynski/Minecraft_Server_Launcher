@@ -1,6 +1,7 @@
-package com.myne145.serverlauncher.gui.addserver;
+package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,19 +16,21 @@ public class AddServerPanel extends javax.swing.JPanel {
     private final JTextField serverNameInput = new JTextField();
 
     public AddServerPanel() {
-        setPreferredSize(new Dimension(428, 324));
         setLayout(new BorderLayout());
         JPanel fieldsPanel = new JPanel();
         fieldsPanel.setLayout(new javax.swing.BoxLayout(fieldsPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        setBorder(new LineBorder(Color.RED));
+        setOpaque(true);
 
         JLabel titleText = new JLabel("Add a Server");
         titleText.setFont(new Font("Arial", Font.BOLD, 18));
 //        titleText.setText("Add a Server");
         titleText.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        JPanel titlePanel = new JPanel(new BorderLayout());
-        titlePanel.add(titleText, BorderLayout.CENTER);
+//        JPanel titlePanel = new JPanel(new BorderLayout());
+//        titlePanel.add(titleText, BorderLayout.CENTER);
 
-        add(titlePanel, BorderLayout.PAGE_START);
+        add(titleText, BorderLayout.PAGE_START);
 
 
 //        launchArgsInput.setDisabledTextColor(new Color(140, 140, 140));
@@ -42,6 +45,7 @@ public class AddServerPanel extends javax.swing.JPanel {
         serverNamePanel.setMaximumSize(new Dimension(32767, 40));
         serverNamePanel.setMinimumSize(new Dimension(128, 25));
         serverNamePanel.setPreferredSize(new Dimension(944, 50));
+
 
 //        serverNameLabel.setText("Name:");
         JLabel serverNameLabel = new JLabel("Name: ");
@@ -155,6 +159,7 @@ public class AddServerPanel extends javax.swing.JPanel {
             }
         };
 
+        
         serverNameInput.addKeyListener(keyAdapter);
         serverJarInput.addKeyListener(keyAdapter);
         javaPathInput.addKeyListener(keyAdapter);

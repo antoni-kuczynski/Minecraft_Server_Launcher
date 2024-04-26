@@ -7,7 +7,7 @@ import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
-import com.myne145.serverlauncher.utils.ServerIcon;
+import com.myne145.serverlauncher.utils.DefaultIcons;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -27,13 +27,14 @@ public class ServerConsole extends JPanel {
     private final ArrayList<Process> processes = new ArrayList<>();
     private boolean isServerRunning;
     private boolean wasServerStopCausedByUser = false;
-    private final JLabel serverPIDText = new JLabel("Process's PID:");
+    private final JLabel serverPIDText = new JLabel();
     private ContainerPane parentPane;
     private int index;
     private ServerDashboardTab parentConsoleTab;
     public boolean isVisible = false;
     private final ArrayList<String> commandHistory = new ArrayList<>();
     private int commandIndex;
+    private final JLabel serverConsoleTitle = new JLabel( "<html>Console - " + Config.getData().get(index).serverName() + "</html>");
     private final Runnable consoleRunner = () -> {
         try {
             while (true) {
@@ -76,12 +77,12 @@ public class ServerConsole extends JPanel {
                     howManyTimesLineWasNull = 0;
                     processes.get(processes.size() - 1).destroy();
                     if (wasServerStopCausedByUser) {
-                        parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
+                        parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
                         parentConsoleTab.changeServerActionButtonsVisibility(false);
                         parentConsoleTab.setWaitingStop(false);
                         parentPane.setToolTipTextAt(index, "Offline");
                     } else {
-                        parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ERRORED));
+                        parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
                         parentConsoleTab.changeServerActionButtonsVisibility(false);
                         parentPane.setToolTipTextAt(index, "Errored");
 
@@ -166,7 +167,6 @@ public class ServerConsole extends JPanel {
 
         JPanel optionsPanel = new JPanel(new BorderLayout());
         JPanel options = new JPanel();
-        JLabel serverConsoleTitle = new JLabel( "<html>Console - " + Config.getData().get(index).serverName() + "</html>");
         JButton clearAll = new JButton("Clear all");
         JCheckBox wrapLines = new JCheckBox("Wrap lines");
 
@@ -221,6 +221,7 @@ public class ServerConsole extends JPanel {
 
 
     protected void startServerWithoutChangingTheButtons(MCServer MCServer) {
+        serverConsoleTitle.setIcon(null);
         isVisible = true;
         boolean isSelectedJavaTheDefaultOne = MCServer.javaRuntimePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
                 MCServer.javaRuntimePath().getAbsolutePath().endsWith("java");
@@ -235,16 +236,29 @@ public class ServerConsole extends JPanel {
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
             Process serverProcess = processBuilder.start();
+
+
             serverPIDText.setText("Process's PID: " + serverProcess.pid());
             processes.add(serverProcess);
             if (processes.size() == 1)
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
-            parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.ONLINE));
+            parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ONLINE));
         } catch (Exception e) {
+//            System.out.println(Window.getErrorDialogMessage(e));
+
+            parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
+            parentPane.setToolTipTextAt(index, "Errored");
+
+
+            serverConsoleTitle.setIcon(DefaultIcons.getSVGIcon(DefaultIcons.ERROR).derive(16,16));
+
+
             consoleOutput.append(e.getMessage() +
                     "\n(You probably specified a java executable that is not valid in the config file.)");
         }
+
+
         if (consoleMainThread.isAlive()) {
             processBuilder = new ProcessBuilder(command);
             processBuilder.directory(MCServer.serverPath());
@@ -286,9 +300,11 @@ public class ServerConsole extends JPanel {
     public void setTextFromLatestLogFile() throws IOException {
         if(!isServerRunning)
             return;
-        File latestLog = new File(Config.getData().get(index).serverPath().getAbsolutePath() + "\\logs\\latest1.log");
+        File latestLog = new File(Config.getData().get(index).serverPath().getAbsolutePath() + "\\logs\\latest.log");
         if(!latestLog.exists()) {
-            consoleOutput.append("[LAUNCHER WARNING]: Console won't update when unfocused (latest.log file not found)\n");
+//            System.out.println(ServerIcon.getServerIconSVG(ServerIcon.WARNING));
+//            serverConsoleTitle.setIcon(ServerIcon.getServerIconSVG(ServerIcon.WARNING));
+            consoleOutput.append("\n[LAUNCHER WARNING]: Console won't update when unfocused (latest.log file not found)\n");
             isVisible = true;
             return;
         }

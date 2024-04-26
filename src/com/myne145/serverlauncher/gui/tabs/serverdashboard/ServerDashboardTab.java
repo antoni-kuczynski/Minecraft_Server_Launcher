@@ -7,9 +7,10 @@ import com.myne145.serverlauncher.gui.window.ServerTabLabel;
 import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.utils.ServerIcon;
+import com.myne145.serverlauncher.utils.DefaultIcons;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class ServerDashboardTab extends JPanel {
@@ -27,6 +28,7 @@ public class ServerDashboardTab extends JPanel {
         this.parentPane = parentPane;
 
         setLayout(new BorderLayout());
+
         JPanel upperPanel = new JPanel(new BorderLayout());
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
@@ -108,7 +110,7 @@ public class ServerDashboardTab extends JPanel {
     private void killServer() {
         serverConsole.killServer();
         changeServerActionButtonsVisibility(false);
-        parentPane.setIconAt(index, ServerIcon.getServerIcon(ServerIcon.OFFLINE));
+        parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
     }
 
     public void setChartsEnabled(boolean setEnabled) {

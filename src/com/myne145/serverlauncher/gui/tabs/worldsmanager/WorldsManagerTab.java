@@ -7,6 +7,7 @@ import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
+import com.myne145.serverlauncher.utils.DefaultIcons;
 import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 
@@ -33,16 +34,16 @@ public class WorldsManagerTab extends JPanel {
     private final JButton openButton =  new JButton("<html>Import existing world</html>");
     private final int tabIndex;
     private final WorldsInfoPanels worldsInfoPanels;
-    private FlatSVGIcon ERROR_ICON;
+//    private FlatSVGIcon ERROR_ICON;
 
     public WorldsManagerTab(ContainerPane parentPane, int tabSwitchingToIndex) {
         super(new BorderLayout());
 
-        try {
-            ERROR_ICON = new FlatSVGIcon(Config.getResource(Config.RESOURCES_PATH + "/error.svg")).derive(16, 16);
-        } catch (IOException e) {
-            Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
-        }
+//        try {
+//            ERROR_ICON = new FlatSVGIcon(Config.getResource(Config.RESOURCES_PATH + "/error.svg")).derive(16, 16);
+//        } catch (IOException e) {
+//            Window.alert(AlertType.ERROR, Window.getErrorDialogMessage(e));
+//        }
 
         tabIndex = tabSwitchingToIndex;
         worldsManagerTab = this;
@@ -100,7 +101,10 @@ public class WorldsManagerTab extends JPanel {
 
         this.setTransferHandler(transferHandler);
 
-        openButton.setPreferredSize(new Dimension(160, 40));
+//        openButton.setPreferredSize(new Dimension(160, 40));
+        openButton.setMinimumSize(new Dimension(160, 40));
+        openButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
         startCopying.addActionListener(e -> WorldCopyHandler.createWorldCopyHandler(this).setCopyMode(true).start());
 
         JButton refreshButton = new JButton("Refresh worlds");
@@ -193,7 +197,7 @@ public class WorldsManagerTab extends JPanel {
     }
 
     public void setImportButtonWarning(String message) {
-        openButton.setIcon(ERROR_ICON);
+        openButton.setIcon(DefaultIcons.getSVGIcon(DefaultIcons.ERROR).derive(16,16));
         if(openButton.getToolTipText() != null) {
             openButton.setToolTipText(openButton.getToolTipText() + "\n" + message);
         } else

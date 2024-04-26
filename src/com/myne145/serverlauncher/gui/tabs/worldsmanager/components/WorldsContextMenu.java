@@ -20,7 +20,19 @@ public class WorldsContextMenu extends JPopupMenu {
     }
 
     protected void enableContextMenu() {
-        openFolder.addActionListener(e -> DesktopOpener.openFolder(currentFolder));
+        openFolder.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton() == MouseEvent.BUTTON1)
+                    DesktopOpener.openFolder(currentFolder);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if(e.getButton() == MouseEvent.BUTTON1)
+                    DesktopOpener.openFolder(currentFolder);
+            }
+        });
     }
 
     protected void updateDirectory(File file) {
