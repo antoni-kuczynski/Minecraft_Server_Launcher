@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
+import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.server.MCServer;
@@ -81,7 +82,7 @@ public class Window extends JFrame {
         viewMenu.add(serverButtonsScale);
 
 
-        JButton debugShit1 = new JButton("Destroy config");
+        JButton debugShit1 = new JButton("Add server (temp)");
         JButton debugShit2 = new JButton("Create config");
 
 
@@ -99,9 +100,11 @@ public class Window extends JFrame {
 
 
         debugShit1.addActionListener(e -> {
-            Config.clearConfig();
-//            remove(containerPane);
-//            repaint();
+            JDialog dialog = new JDialog();
+            dialog.setTitle("Add server");
+            dialog.add(new AddServerPanel());
+            dialog.setSize(800, 500);
+            dialog.setVisible(true);
         });
 
         debugShit2.addActionListener(e -> {

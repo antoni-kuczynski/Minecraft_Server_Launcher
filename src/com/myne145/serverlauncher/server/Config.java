@@ -48,7 +48,7 @@ public class Config extends ArrayList<MCServer> {
         try {
             serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
         } catch (IOException e) {
-            Window.alert(AlertType.FATAL, "Cannot read server.properties content.\n" + getErrorDialogMessage(e));
+            Window.alert(AlertType.ERROR, "Cannot read server.properties content.\n" + getErrorDialogMessage(e));
             throw new RuntimeException(e);
         }
 

@@ -1,19 +1,25 @@
 package com.myne145.serverlauncher.gui.tabs.addserver;
 
+import com.myne145.serverlauncher.gui.window.Window;
+import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.server.MCServer;
+import jnafilechooser.api.JnaFileChooser;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 
 public class AddServerPanel extends javax.swing.JPanel {
-    private final JButton browseJavaPath = new JButton("...");
-    private final JButton browseServerJar = new JButton("...");
     private final JButton confirmButton = new JButton("Add server");
 
     private final JTextField javaPathInput = new JTextField();
     private final JTextField launchArgsInput = new JTextField();
     private final JTextField serverJarInput = new JTextField();
     private final JTextField serverNameInput = new JTextField();
+    private static File serverJarPath;
+    private static File javaBinPath;
 
     public AddServerPanel() {
         setLayout(new BorderLayout());
@@ -23,23 +29,53 @@ public class AddServerPanel extends javax.swing.JPanel {
         setBorder(new LineBorder(Color.RED));
         setOpaque(true);
 
-        JLabel titleText = new JLabel("Add a Server");
+        JLabel titleText = new JLabel("Add a server");
         titleText.setFont(new Font("Arial", Font.BOLD, 18));
-//        titleText.setText("Add a Server");
         titleText.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-//        JPanel titlePanel = new JPanel(new BorderLayout());
-//        titlePanel.add(titleText, BorderLayout.CENTER);
+
 
         add(titleText, BorderLayout.PAGE_START);
 
 
-//        launchArgsInput.setDisabledTextColor(new Color(140, 140, 140));
-//        launchArgsInput.setPlaceholder("nogui");
 
         new TextPrompt("nogui", launchArgsInput);
         new TextPrompt("java", javaPathInput);
 
         confirmButton.setEnabled(false);
+
+        confirmButton.addActionListener(e -> {
+            MCServer currentServer = new MCServer(
+                    serverNameInput.getText(),
+                    serverJarPath.getParentFile(),
+                    serverJarPath,
+                    javaBinPath,
+                    launchArgsInput.getText(),
+                    Config.getData().size() + 1,
+                    getSer
+
+
+
+            );
+
+        });
+
+
+        serverJarInput.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setServerJarPath(new File[]{serverJarPath}, serverJarInput);
+                repaint();
+            }
+        });
+
+        javaPathInput.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setServerJarPath(new File[]{javaBinPath}, javaPathInput);
+                repaint();
+            }
+        });
+
 
         JPanel serverNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         serverNamePanel.setMaximumSize(new Dimension(32767, 40));
@@ -72,10 +108,6 @@ public class AddServerPanel extends javax.swing.JPanel {
 
         serverJarPanel.add(serverJarInput);
 
-//        browseServerJar.setText("...");
-
-        serverJarPanel.add(browseServerJar);
-
         fieldsPanel.add(serverJarPanel);
 
         JPanel javaPathPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
@@ -94,14 +126,10 @@ public class AddServerPanel extends javax.swing.JPanel {
 
         javaPathPanel.add(javaPathInput);
 
-//        browseJavaPath.setText("...");
-        javaPathPanel.add(browseJavaPath);
 
         fieldsPanel.add(javaPathPanel);
 
-//        launchArgsPanel.setMaximumSize(new Dimension(32767, 40));
 
-//        launchArgsLabel.setText("Launch args:");
         JLabel launchArgsLabel = new JLabel("Launch args: ");
         JPanel launchArgsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         launchArgsPanel.add(launchArgsLabel);
@@ -121,18 +149,6 @@ public class AddServerPanel extends javax.swing.JPanel {
 
         add(addAServerButtonPanel, BorderLayout.PAGE_END);
 
-
-        browseJavaPath.addActionListener(evt -> {
-
-        });
-
-        browseServerJar.addActionListener(evt -> {
-
-        });
-
-        confirmButton.addActionListener(evt -> {
-
-        });
 
         KeyAdapter keyAdapter = new KeyAdapter() {
             @Override
@@ -168,6 +184,27 @@ public class AddServerPanel extends javax.swing.JPanel {
         javaPathInput.addMouseListener(mouseListener);
         launchArgsInput.addMouseListener(mouseListener);
     }
+
+
+    private void setServerJarPath(File[] f, JTextField field) {
+        Runnable runnable = () -> {
+            JnaFileChooser fileDialog = new JnaFileChooser();
+            fileDialog.showOpenDialog(Window.getWindow());
+
+            File[] filePaths = fileDialog.getSelectedFiles();
+
+            if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
+                return;
+            }
+
+            f[0] = filePaths[0];
+            field.setText(f[0].getAbsolutePath());
+        };
+        Thread thread = new Thread(runnable);
+        thread.setName("FILE_PICKER");
+        thread.start();
+    }
+
 
     private static boolean isEmpty(JTextField t) {
         return t.getText().isEmpty() || t.getText() == null;
