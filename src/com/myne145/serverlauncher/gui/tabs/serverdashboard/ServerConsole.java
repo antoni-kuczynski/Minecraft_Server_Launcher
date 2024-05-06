@@ -112,6 +112,9 @@ public class ServerConsole extends JPanel {
         JTextField commandField = new JTextField();
         JButton executeButton = new JButton("Execute");
 
+
+        serverConsoleTitle.setText("<html>Console - " + Config.getData().get(index).serverName() + "</html>");
+
         //.console_history file loading
         File consoleHistory = new File(Config.getData().get(index).serverPath() + "/.console_history");
         if(consoleHistory.exists()) {

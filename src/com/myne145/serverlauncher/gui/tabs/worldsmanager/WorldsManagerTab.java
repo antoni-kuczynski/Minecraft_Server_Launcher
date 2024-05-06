@@ -1,10 +1,8 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
-import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -34,6 +32,7 @@ public class WorldsManagerTab extends JPanel {
     private final JButton openButton =  new JButton("<html>Import existing world</html>");
     private final int tabIndex;
     private final WorldsInfoPanels worldsInfoPanels;
+    private final JnaFileChooser WORLD_CHOOSER = new JnaFileChooser();
 //    private FlatSVGIcon ERROR_ICON;
 
     public WorldsManagerTab(ContainerPane parentPane, int tabSwitchingToIndex) {
@@ -56,13 +55,13 @@ public class WorldsManagerTab extends JPanel {
         openButton.setMaximumSize(new Dimension(300, 40));
         openButton.addActionListener(e -> {
             Runnable runnable = () -> {
-                JnaFileChooser fileDialog = new JnaFileChooser();
-                fileDialog.showOpenDialog(Window.getWindow());
+
+                WORLD_CHOOSER.showOpenDialog(null); //TODO here it gets stuck sometimes
 
                 removeImportButtonWarning();
-                File[] filePaths = fileDialog.getSelectedFiles();
+                File[] filePaths = WORLD_CHOOSER.getSelectedFiles();
 
-                if (fileDialog.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
+                if (WORLD_CHOOSER.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
                     return;
                 }
 
@@ -70,7 +69,7 @@ public class WorldsManagerTab extends JPanel {
                 setUserAddedWorld(fileToAdd);
             };
             Thread thread = new Thread(runnable);
-            thread.setName("WORLD_FILE_PICKER");
+            thread.setName("WORLD_PICKER");
             thread.start();
 
         });

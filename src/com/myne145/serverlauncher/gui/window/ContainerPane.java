@@ -173,7 +173,7 @@ public class ContainerPane extends JTabbedPane {
         ContainerPane.currentPane = this;
     }
 
-    public static void addServer(MCServer server) {
+    public void addServer(MCServer server) {
         Config.getData().add(server);
 
         int serverIndex = Config.getData().size() - 1;

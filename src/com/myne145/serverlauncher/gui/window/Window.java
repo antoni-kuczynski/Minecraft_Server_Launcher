@@ -3,7 +3,6 @@ package com.myne145.serverlauncher.gui.window;
 import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
-import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
@@ -13,10 +12,7 @@ import org.apache.commons.io.FileUtils;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +20,6 @@ import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
-
-import static com.myne145.serverlauncher.server.Config.getResource;
 
 public class Window extends JFrame {
     private final String PREFS_KEY_X = "window_x";
@@ -83,7 +77,7 @@ public class Window extends JFrame {
 
 
         JButton debugShit1 = new JButton("Add server (temp)");
-        JButton debugShit2 = new JButton("Create config");
+        JButton debugShit2 = new JButton("Filechooser bullshit");
 
 
         menuBar.setBorder(new MatteBorder(0,0,1,0, Colors.BORDER_COLOR));
@@ -102,19 +96,28 @@ public class Window extends JFrame {
         debugShit1.addActionListener(e -> {
             JDialog dialog = new JDialog();
             dialog.setTitle("Add server");
-            dialog.add(new AddServerPanel());
+            dialog.add(new AddServerPanel(containerPane));
             dialog.setSize(800, 500);
             dialog.setVisible(true);
         });
 
+        //TEMP
+//        JDialog dialog = new JDialog();
+//        dialog.setTitle("Add server");
+//        dialog.add(new AddServerPanel(containerPane));
+//        dialog.setSize(800, 500);
+//        dialog.setVisible(true);
+
+
         debugShit2.addActionListener(e -> {
+
 //            try {
 //                Config.createConfig();
 //            } catch (Exception ex) {
 //                throw new RuntimeException(ex);
 //            }
 
-            ContainerPane.addServer(Config.getData().get(1));
+//            ContainerPane.addServer(Config.getData().get(1));
 //            ContainerPane.addServer(new MCServer("Test", new File(""), new File(""), new File(""), "", Config.getData().size() + 1, new File("")));
         });
 
@@ -303,6 +306,7 @@ public class Window extends JFrame {
     public static void main(String[] args) throws Exception {
         Config.createConfig();
 
+        System.out.println(Config.getData());
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
 

@@ -37,7 +37,7 @@ public class Config extends ArrayList<MCServer> {
         }
     }
 
-    private static String getServerWorldPath(String pathToServer) {
+    public static String getServerWorldPath(String pathToServer) {
         File serverProperties = new File(pathToServer + "/server.properties");
         String worldName = "world";
         if(!serverProperties.exists()) {
