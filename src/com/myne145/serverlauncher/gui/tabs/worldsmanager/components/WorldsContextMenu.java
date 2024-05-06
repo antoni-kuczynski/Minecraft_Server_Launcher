@@ -1,6 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.components;
 
-import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.utils.DesktopOpener;
 
 import javax.swing.*;
@@ -10,17 +10,15 @@ import java.io.File;
 
 public class WorldsContextMenu extends JPopupMenu {
     private final JPopupMenu contextMenu = new JPopupMenu();
-    private final JMenuItem openFolder;
+    private final OpenContextMenuItem openFolderItem = new OpenContextMenuItem("Open folder");
     private File currentFolder;
 
     protected WorldsContextMenu() {
-        openFolder = new JMenuItem("<html>Open folder\n<center><sub> </sub></center></html>");
-
-        contextMenu.add(openFolder);
+        contextMenu.add(openFolderItem);
     }
 
     protected void enableContextMenu() {
-        openFolder.addMouseListener(new MouseAdapter() {
+        openFolderItem.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getButton() == MouseEvent.BUTTON1)
@@ -38,7 +36,8 @@ public class WorldsContextMenu extends JPopupMenu {
     protected void updateDirectory(File file) {
         if(currentFolder == null && file != null)
             enableContextMenu();
-        openFolder.setText("<html>Open folder\n<center><sub>" + Config.abbreviateFile(file.getAbsolutePath(), 27) + "</sub></center></html>");
+//        openFolder.setText("<html>Open folder\n<center><sub>" + Config.abbreviateFile(file.getAbsolutePath(), 27) + "</sub></center></html>");
+        openFolderItem.updatePath(file);
         currentFolder = file;
     }
 

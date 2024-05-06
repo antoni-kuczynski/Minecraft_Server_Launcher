@@ -1,12 +1,12 @@
 package com.myne145.serverlauncher.gui.window;
 
+import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
-import com.myne145.serverlauncher.utils.DesktopOpener;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -59,10 +59,11 @@ public class Window extends JFrame {
         JRadioButtonMenuItem scaleMedium = new JRadioButtonMenuItem("Medium");
         JRadioButtonMenuItem scaleLarge = new JRadioButtonMenuItem("Large");
 
-        JMenuItem openServerFolder = new JMenuItem("Open current server's folder");
-        JMenuItem openConfigFile = new JMenuItem("<html>Open config file\n<sub><center>" +Config.abbreviateConfigPath() + "</center></sub></html>"); //absolute garbage
+//        JMenuItem openServerFolder = new JMenuItem("Open current server's folder");
+        OpenContextMenuItem openConfigFile = new OpenContextMenuItem("Open config file");
+        openConfigFile.updatePath(new File(Config.ABSOLUTE_PATH));
 
-        fileMenu.add(openServerFolder);
+        fileMenu.add(new OpenContextMenuItem("Open current server's folder"));
         fileMenu.add(openConfigFile);
 
         buttonGroup.add(scaleSmall);
@@ -151,7 +152,7 @@ public class Window extends JFrame {
                 containerPane.updateServerButtonsSizes();
             }
         });
-        openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder(containerPane.getSelectedIndex()));
+//        openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder(containerPane.getSelectedIndex()));
 
         areChartsEnabled = getUserValues().getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
         showCharts.setSelected(areChartsEnabled);
@@ -171,7 +172,7 @@ public class Window extends JFrame {
 
 
 
-        openConfigFile.addActionListener(e -> DesktopOpener.openConfigFile());
+//        openConfigFile.addActionListener(e -> DesktopOpener.openConfigFile());
 
 
 

@@ -118,7 +118,7 @@ public class WorldCopyHandler extends Thread {
             }
         }
         if(!hasDirectory && !copyFilesToServerDir) {
-            worldsManagerTab.setImportButtonWarning("Not a Minecraft world!");
+            worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
         }
         if (containsLevelDat) {
             return foundLevelDat.getParent();
@@ -162,7 +162,7 @@ public class WorldCopyHandler extends Thread {
                     alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
                 }
                 if (!isAddedWorldDirEmpty && !containsWorldFiles) {
-                    worldsManagerTab.setImportButtonWarning("Not a Minecraft world!");
+                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
                 }
 
                 if(new File(selectedWorld.getAbsolutePath() + "/level.dat").exists()) {
@@ -172,7 +172,7 @@ public class WorldCopyHandler extends Thread {
             }
             if(copyFilesToServerDir) {
                 if (!isAddedWorldDirEmpty && !containsWorldFiles) {
-                    worldsManagerTab.setImportButtonWarning("Not a Minecraft world!");
+                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
                 } else if (serverWorldDir.list() != null && serverWorldDir.list().length > 0) { //world dir is not empty
                     FileUtils.deleteDirectory(serverWorldDir);
                 }
@@ -188,7 +188,7 @@ public class WorldCopyHandler extends Thread {
                 
                 String extractedDirectory = extractArchive(selectedWorld.getAbsolutePath(), worldExtractDirectory.getAbsolutePath(), worldsManagerTab);
                 if(!worldExtractDirectory.exists()) {
-                    worldsManagerTab.setImportButtonWarning("File is probably not a minecraft world. Continue at your own risk.");
+                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
                     return;
                 }
 

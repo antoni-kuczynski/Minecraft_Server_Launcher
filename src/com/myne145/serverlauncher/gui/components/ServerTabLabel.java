@@ -1,8 +1,8 @@
-package com.myne145.serverlauncher.gui.window;
+package com.myne145.serverlauncher.gui.components;
 
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
+import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.utils.DesktopOpener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     }
 
     public void enableContextMenu() {
-        JMenuItem openFolder = new JMenuItem("<html>Open folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
+//        JMenuItem openFolder = new JMenuItem("<html>Open folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
         serverRunAction = new JMenuItem("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
         serverRunAction.addActionListener(e -> {
             JTabbedPane tabbedPane = (JTabbedPane) ContainerPane.getCurrentPane().getComponentAt(tabIndex);
@@ -36,8 +36,8 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
                 tab.stopServer();
         });
 
-        openFolder.addActionListener(e -> DesktopOpener.openServerFolder(tabIndex));
-        contextMenu.add(openFolder);
+//        openFolder.addActionListener(e -> DesktopOpener.openServerFolder(tabIndex));
+        contextMenu.add(new OpenContextMenuItem("Open folder\n"));
         contextMenu.add(serverRunAction);
     }
 

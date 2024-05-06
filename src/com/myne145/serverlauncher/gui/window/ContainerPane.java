@@ -1,7 +1,9 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
-import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
+import com.myne145.serverlauncher.gui.components.ServerTabLabel;
+import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
+import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.MCServer;
@@ -19,7 +21,7 @@ import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DI
 
 public class ContainerPane extends JTabbedPane {
     private static final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
-    private static final JMenuItem openServerFolderItem = Window.getMenu().getMenu(0).getItem(0);
+    private static final OpenContextMenuItem openServerFolderItem = (OpenContextMenuItem) Window.getMenu().getMenu(0).getItem(0);
     private static ContainerPane currentPane;
     private boolean isTabbedPaneFocused = true;
 
@@ -227,7 +229,8 @@ public class ContainerPane extends JTabbedPane {
 //            return;
 
         if(openServerFolderItem != null && tabIndex != getTabCount() - 1) {
-            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
+//            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
+            openServerFolderItem.updatePath(Config.getData().get(tabIndex).serverPath());
         }
 
         ServerDashboardTab selectedConsoleTab = (ServerDashboardTab) serverTabbedPanes.get(tabIndex).getComponentAt(0);

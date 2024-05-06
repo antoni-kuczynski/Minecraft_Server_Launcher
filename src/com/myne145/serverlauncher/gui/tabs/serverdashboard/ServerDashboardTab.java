@@ -3,14 +3,13 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.CPUChart;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.RAMChart;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
-import com.myne145.serverlauncher.gui.window.ServerTabLabel;
+import com.myne145.serverlauncher.gui.components.ServerTabLabel;
 import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class ServerDashboardTab extends JPanel {
@@ -33,15 +32,6 @@ public class ServerDashboardTab extends JPanel {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
         serverConsole = new ServerConsole(parentPane, index, this);
-
-        if(!Config.getData().get(index).serverPath().exists()) {
-            JButton button = new JButton("Open config file");
-            button.addActionListener(e -> DesktopOpener.openConfigFile());
-            add(new JLabel("Add a server in servers.json file to access the server panel!"), BorderLayout.LINE_START);
-            add(button, BorderLayout.PAGE_END);
-
-            return;
-        }
 
 
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_START);

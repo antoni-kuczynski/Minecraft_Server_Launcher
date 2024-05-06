@@ -1,4 +1,6 @@
-package com.myne145.serverlauncher.gui.window;
+package com.myne145.serverlauncher.gui.components;
+
+import com.myne145.serverlauncher.gui.window.ContainerPane;
 
 import javax.swing.*;
 
