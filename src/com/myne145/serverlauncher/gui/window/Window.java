@@ -78,14 +78,12 @@ public class Window extends JFrame {
 
 
         JButton debugShit1 = new JButton("Add server (temp)");
-        JButton debugShit2 = new JButton("Filechooser bullshit");
 
 
         menuBar.setBorder(new MatteBorder(0,0,1,0, Colors.BORDER_COLOR));
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         menuBar.add(debugShit1);
-        menuBar.add(debugShit2);
         setJMenuBar(menuBar);
 
         ContainerPane containerPane = new ContainerPane();
@@ -109,18 +107,6 @@ public class Window extends JFrame {
 //        dialog.setSize(800, 500);
 //        dialog.setVisible(true);
 
-
-        debugShit2.addActionListener(e -> {
-
-//            try {
-//                Config.createConfig();
-//            } catch (Exception ex) {
-//                throw new RuntimeException(ex);
-//            }
-
-//            ContainerPane.addServer(Config.getData().get(1));
-//            ContainerPane.addServer(new MCServer("Test", new File(""), new File(""), new File(""), "", Config.getData().size() + 1, new File("")));
-        });
 
         showCharts.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {

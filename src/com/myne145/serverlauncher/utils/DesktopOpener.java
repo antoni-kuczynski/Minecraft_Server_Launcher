@@ -11,31 +11,6 @@ import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage
 
 public class DesktopOpener {
 
-//    public static void openConfigFile() {
-//        File file = new File(Config.ABSOLUTE_PATH);
-//        Desktop desktop = Desktop.getDesktop();
-//
-//        if (!file.exists()) {
-//            alert(AlertType.ERROR, "Config file at " + Config.ABSOLUTE_PATH + " not found.");
-//            return;
-//        }
-//
-//        if (!Desktop.isDesktopSupported() || !desktop.isSupported(Desktop.Action.OPEN)) {
-//            alert(AlertType.ERROR, "Desktop API is not supported on this platform.");
-//            return;
-//        }
-//
-//        try {
-//            desktop.open(file);
-//        } catch (IOException e) {
-//            alert(AlertType.ERROR, "Cannot open \"servers.json\" file.\n" + getErrorDialogMessage(e));
-//        }
-//    }
-
-//    public static void openServerFolder(int serverIndex) {
-//        openFolder(Config.getData().get(serverIndex).serverPath());
-//    }
-
     public static void openFolder(File folder) {
         Desktop desktop = Desktop.getDesktop();
 

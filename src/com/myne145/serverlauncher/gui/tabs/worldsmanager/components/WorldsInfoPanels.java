@@ -124,7 +124,7 @@ public class WorldsInfoPanels extends JPanel {
         JLabel iconAndWorldInfo = new JLabel("<html><font size=4>World details will appear here.</font></html>");
 
         worldPanel.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 0), Colors.BORDER_COLOR, 1, 16));
-        worldPanel.setBackground(new Color(60, 63, 65));
+        worldPanel.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
         worldPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
 
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));

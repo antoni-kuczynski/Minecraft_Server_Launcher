@@ -25,7 +25,6 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     }
 
     public void enableContextMenu() {
-//        JMenuItem openFolder = new JMenuItem("<html>Open folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
         serverRunAction = new JMenuItem("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
         serverRunAction.addActionListener(e -> {
             JTabbedPane tabbedPane = (JTabbedPane) ContainerPane.getCurrentPane().getComponentAt(tabIndex);
@@ -36,7 +35,6 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
                 tab.stopServer();
         });
 
-//        openFolder.addActionListener(e -> DesktopOpener.openServerFolder(tabIndex));
         contextMenu.add(new OpenContextMenuItem("Open folder\n"));
         contextMenu.add(serverRunAction);
     }

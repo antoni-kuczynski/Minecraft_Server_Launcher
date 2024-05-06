@@ -20,7 +20,6 @@ public class MinecraftWorld {
     private String gamemode;
     private boolean isUsingCheats;
     private String gameVersion;
-//    private ImageIcon DEFAULT_WORLD_ICON_PACK_PNG;
     private final int serverIndex;
 
     public File getLevelDatFile(File worldPath) {
