@@ -14,12 +14,12 @@ public class OpenContextMenuItem extends JMenuItem {
         if(f == null)
             return;
         file = f;
-        this.setText("<html>" + defaultTitle + "\n<center><sub>" + Config.abbreviateFile(f.getAbsolutePath(), 27) + "</html>");
+        this.setText("<html>" + defaultTitle + "\n<center><sub>" + Config.abbreviateFilePath(f.getAbsolutePath(), 27) + "</html>");
     }
 
     public OpenContextMenuItem(String defaultTitle) {
         this.defaultTitle = defaultTitle;
-        this.setText("<html>" + defaultTitle);
+        this.setText("<html>" + defaultTitle + "</html>");
         this.addActionListener(e -> {
             if(file.isFile()) {
                 DesktopOpener.openFile(file);

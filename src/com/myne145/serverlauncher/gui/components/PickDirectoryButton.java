@@ -63,7 +63,7 @@ public class PickDirectoryButton extends JButton {
                 File fileToAdd = filePaths[0];
                 afterFileIsSelected.run(fileToAdd);
 
-                this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFile(fileToAdd.getAbsolutePath(), 60) + "</small></html>");
+                this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(fileToAdd.getAbsolutePath(), 60) + "</small></html>");
 
                 double ONE_GIGABYTE = 1073741824;
                 if (FileUtils.sizeOf(fileToAdd) >= ONE_GIGABYTE) {

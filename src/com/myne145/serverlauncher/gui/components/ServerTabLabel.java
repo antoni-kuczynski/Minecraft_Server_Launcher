@@ -34,8 +34,10 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
             else
                 tab.stopServer();
         });
+        OpenContextMenuItem openContextMenuItem = new OpenContextMenuItem("Open server folder");
+        openContextMenuItem.updatePath(Config.getData().get(tabIndex).serverPath());
 
-        contextMenu.add(new OpenContextMenuItem("Open folder\n"));
+        contextMenu.add(openContextMenuItem);
         contextMenu.add(serverRunAction);
     }
 

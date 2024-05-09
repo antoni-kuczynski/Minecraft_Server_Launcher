@@ -139,18 +139,46 @@ public class Config extends ArrayList<MCServer> {
     }
 
     public static String abbreviateConfigPath() {
-        return abbreviateFile(Config.ABSOLUTE_PATH, 27);
+        return abbreviateFilePath(Config.ABSOLUTE_PATH, 27);
     }
 
     public static String abbreviateServerPath(int serverIndex) {
-        return abbreviateFile(Config.getData().get(serverIndex).serverPath().getAbsolutePath(), 27);
+        return abbreviateFilePath(Config.getData().get(serverIndex).serverPath().getAbsolutePath(), 27);
     }
 
-    public static String abbreviateFile(String fileName, int maxLen) {
-        if (fileName.length() <= maxLen)
-            return fileName;
+//    public static String abbreviateFilePath(String filePath, int maxLength) {
+//        if (filePath.length() <= maxLength) {
+//            return filePath;
+//        }
+//
+//        String separator = "/";
+//        int separatorIndex = filePath.lastIndexOf(separator);
+//
+//        if (separatorIndex == -1) {
+//            // Handle case where there is no separator in the path
+//            return filePath.substring(0, maxLength);
+//        }
+//
+//        String filename = filePath.substring(separatorIndex + 1);
+//        int filenameLength = filename.length();
+//
+//        int prefixLength = maxLength - (filenameLength + 3); // 3 for "..."
+//
+//        if (prefixLength <= 0) {
+//            return "..." + filename;
+//        }
+//
+//        String prefix = filePath.substring(0, separatorIndex);
+//        return prefix.substring(0, Math.min(prefix.length(), prefixLength)) + "..." + filename;
+//    }
 
-        File f = new File(fileName);
+
+    public static String abbreviateFilePath(String path, int maxLength) {
+
+        if (path.length() <= maxLength)
+            return path;
+
+        File f = new File(path);
         ArrayList<String> coll = new ArrayList<>();
         String name;
         StringBuilder begBuf = new StringBuilder();
@@ -163,7 +191,7 @@ public class Config extends ArrayList<MCServer> {
             f = f.getParentFile();
         }
         if (coll.isEmpty())
-            return fileName;
+            return path;
 
         len = coll.size() << 1;
         name = coll.remove(coll.size() - 1);
@@ -186,7 +214,7 @@ public class Config extends ArrayList<MCServer> {
                 len += name.length() - 1;
             }
         }
-        for (b = true; !coll.isEmpty() && len <= maxLen; b = !b) {
+        for (b = true; !coll.isEmpty() && len <= maxLength; b = !b) {
             if (b) {
                 name = coll.remove(coll.size() - 1);
                 endBuf.insert(0, File.separator);
@@ -205,7 +233,13 @@ public class Config extends ArrayList<MCServer> {
             begBuf.append(File.separator);
         }
 
-        return (begBuf.append(endBuf).toString());
+        StringBuilder result = begBuf.append(endBuf);
+        if(result.length() > maxLength) {
+            result.delete(0, result.length() - maxLength);
+        }
+
+        return result.toString();
+//        return (begBuf.append(endBuf).toString());
     }
 
     public static ArrayList<MCServer> getData() {

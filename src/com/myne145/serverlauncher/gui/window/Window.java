@@ -101,11 +101,11 @@ public class Window extends JFrame {
         });
 
         //TEMP
-//        JDialog dialog = new JDialog();
-//        dialog.setTitle("Add server");
-//        dialog.add(new AddServerPanel(containerPane));
-//        dialog.setSize(800, 500);
-//        dialog.setVisible(true);
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Add server");
+        dialog.add(new AddServerPanel(containerPane));
+        dialog.setSize(800, 500);
+        dialog.setVisible(true);
 
 
         showCharts.addItemListener(e -> {

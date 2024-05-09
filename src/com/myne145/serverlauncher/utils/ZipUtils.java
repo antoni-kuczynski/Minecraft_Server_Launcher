@@ -72,7 +72,7 @@ public class ZipUtils {
         return extractedDirectory;
     }
 
-    private static String getFileExtension(File file) {
+    public static String getFileExtension(File file) {
         String fileName = file.getName();
         int lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex == -1) {

@@ -1,28 +1,79 @@
 package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.ui.FlatRoundBorder;
 import com.myne145.serverlauncher.gui.components.PickDirectoryButton;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
-import com.myne145.serverlauncher.gui.window.Window;
+import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.Colors;
-import jnafilechooser.api.JnaFileChooser;
+import com.myne145.serverlauncher.utils.DirectoryPickerButtonAction;
+import com.myne145.serverlauncher.utils.ZipUtils;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 
 public class AddServerPanel extends JPanel {
-    private static File serverJarPath;
-    private static File javaBinPath;
+    private File serverJarPath;
+    private File javaBinPath;
+    private String serverName;
+    private String launchArgs;
+
+    private JPanel getOpenDirButtonPanel(String titleText, DirectoryPickerButtonAction action) {
+        PickDirectoryButton pickDirectoryButton = new PickDirectoryButton("Open directory", new Dimension(130, 40), new Dimension(300, 40), action);
+        JLabel titleLabel = new JLabel(titleText);
+        JPanel result = new JPanel();
+
+        titleLabel.setAlignmentX(LEFT_ALIGNMENT);
+        pickDirectoryButton.setAlignmentX(LEFT_ALIGNMENT);
+
+        result.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
+        result.add(titleLabel);
+        result.add(pickDirectoryButton);
+
+        return result;
+    }
+
+    private JPanel getTextInputPanel(String titleText) {
+        JTextField field = new JTextField();
+        JLabel titleLabel = new JLabel(titleText);
+        JPanel result = new JPanel();
+
+        titleLabel.setAlignmentX(LEFT_ALIGNMENT);
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setBorder(new FlatLineBorder(new Insets(1,1,1,1), Colors.COMPONENT_PRIMARY_COLOR.darker(), 1, 3));
+        field.setBackground(Colors.BACKGROUND_PRIMARY_COLOR);
+        field.setPreferredSize(new Dimension(130, 20));
+
+        result.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
+        result.add(titleLabel);
+        result.add(field);
+
+        return result;
+    }
+
+    private void setServerJarPath(File path) {
+        if(!path.isFile())
+            return;
+        if(ZipUtils.getFileExtension(path).equals("jar"))
+            serverJarPath = path;
+    }
+
+    private void setJavaBinPath(File path) {
+        if(path.isFile()) {
+            javaBinPath = path.getParentFile();
+        } else if(path.isDirectory()) {
+            javaBinPath = path;
+        }
+    }
 
     public AddServerPanel(ContainerPane parentPane) {
         setLayout(new BorderLayout());
 
-        PickDirectoryButton serverJarPathButton = new PickDirectoryButton("Open directory", new Dimension(130, 40), new Dimension(300, 40), fileToAdd -> serverJarPath = fileToAdd);
-        PickDirectoryButton javaBinPathButton = new PickDirectoryButton("Open directory", new Dimension(130, 40), new Dimension(300, 40), fileToAdd -> javaBinPath = fileToAdd);
-//        serverJarPathButton.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-//        javaBinPathButton.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        JButton confirmButton = new JButton("Add server");
 
         JPanel titlePanel = new JPanel(new BorderLayout());
         JLabel title = new JLabel("Add server");
@@ -31,47 +82,69 @@ public class AddServerPanel extends JPanel {
         titlePanel.add(title, BorderLayout.LINE_START);
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+
 
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(new FlatLineBorder(new Insets(10, 100, 10, 100), Colors.BORDER_COLOR, 1, 16));
         mainPanel.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
+        mainPanel.setAlignmentX(LEFT_ALIGNMENT);
 
-        JPanel serverJar = new JPanel();
-//        serverJar.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 0), Colors.BORDER_COLOR, 1, 16));
-        serverJar.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
+        JPanel openServerJarPanel = getOpenDirButtonPanel("Server jar", this::setServerJarPath);
+        JPanel openJavaBinPanel = getOpenDirButtonPanel("Java bin", this::setJavaBinPath);
+        JPanel serverNamePanel = getTextInputPanel("Server name");
+        JPanel launchArgsPanel = getTextInputPanel("Launch args");
 
-        JPanel javaBin = new JPanel();
-//        javaBin.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 0), Colors.BORDER_COLOR, 1, 16));
-        javaBin.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
+        mainPanel.add(openServerJarPanel);
+        mainPanel.add(openJavaBinPanel);
+        mainPanel.add(serverNamePanel);
+        mainPanel.add(launchArgsPanel);
 
-        serverJar.add(serverJarPathButton);
-        javaBin.add(javaBinPathButton);
+        bottomPanel.add(confirmButton, BorderLayout.LINE_END);
 
-        mainPanel.add(serverJar);
-        mainPanel.add(javaBin);
 
-        bottomPanel.add(new JButton("fosdaosdjfojisdf"));
+        ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
+        serverInfoPanel.setBorder(new FlatLineBorder(new Insets(10, 20, 100, 20), Colors.BORDER_COLOR, 1, 16));
+        serverInfoPanel.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
+        serverInfoPanel.setAlignmentX(LEFT_ALIGNMENT);
+
+
+        JPanel mainPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        mainPanel2.add(Box.createRigidArea(new Dimension(10,10)));
+        mainPanel2.add(mainPanel);
+
+        JPanel serverInfoPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        serverInfoPanel2.add(serverInfoPanel);
+        serverInfoPanel2.add(Box.createRigidArea(new Dimension(10,10)));
+
 
         add(titlePanel, BorderLayout.PAGE_START);
-        add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.LINE_START);
-        add(mainPanel, BorderLayout.CENTER);
-        add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.LINE_END);
+        add(mainPanel2, BorderLayout.LINE_START);
+        add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.CENTER);
+        add(serverInfoPanel2, BorderLayout.LINE_END);
         add(bottomPanel, BorderLayout.PAGE_END);
-//        confirmButton.addActionListener(e -> {
-//            MCServer currentServer = new MCServer(
-//                    serverNameInput.getText(),
-//                    serverJarPath.getParentFile(),
-//                    serverJarPath,
-//                    javaBinPath,
-//                    launchArgsInput.getText(),
-//                    Config.getData().size() + 1,
-//                    new File(Config.getServerWorldPath(serverJarPath.getParent()))
-//            );
-//            Config.getData().add(currentServer);
-//            parentPane.addServer(currentServer);
-//        });
+
+        JTextField serverNameField = (JTextField) serverNamePanel.getComponent(1);
+        JTextField launchArgsField = (JTextField) launchArgsPanel.getComponent(1);
+
+        confirmButton.addActionListener(e -> {
+            serverName = serverNameField.getText();
+            launchArgs = launchArgsField.getText();
+
+            MCServer currentServer = new MCServer(
+                    serverName,
+                    serverJarPath,
+                    serverJarPath,
+                    javaBinPath,
+                    launchArgs,
+                    Config.getData().size() + 1,
+                    new File(Config.getServerWorldPath(serverJarPath.getParent()))
+            );
+            Config.getData().add(currentServer);
+            parentPane.addServer(currentServer);
+        });
 
 
 //        serverJarInput.addMouseListener(new MouseAdapter() {
