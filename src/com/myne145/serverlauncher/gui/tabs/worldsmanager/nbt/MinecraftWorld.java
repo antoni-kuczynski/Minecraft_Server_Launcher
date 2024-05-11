@@ -14,12 +14,12 @@ import java.util.Map;
 
 public class MinecraftWorld {
     private ImageIcon worldIcon;
-    private String levelName;
-    private String folderName;
-    private Calendar lastPlayedDate;
-    private String gamemode;
-    private boolean isUsingCheats;
-    private String gameVersion;
+    private String levelName = "";
+    private String folderName = "";
+    private Calendar lastPlayedDate = Calendar.getInstance();
+    private String gamemode = "";
+    private boolean isUsingCheats = false;
+    private String gameVersion = "";
     private final int serverIndex;
 
     public File getLevelDatFile(File worldPath) {
@@ -49,10 +49,13 @@ public class MinecraftWorld {
         Nbt levelDat = new Nbt();
         CompoundTag content = levelDat.fromFile(levelDatFile);
 
-        if(content == null)
+        if(content == null || content.isEmpty())
             return;
 
         CompoundTag levelDatData = content.get("Data");
+        if(levelDatData == null)
+            return;
+
         levelName = levelDatData.getString("LevelName").toString().replace("\"", "");
         folderName = worldPath.getName();
 
@@ -68,7 +71,11 @@ public class MinecraftWorld {
             default -> gamemode = "Unknown";
         }
         isUsingCheats = levelDatData.getByte("allowCommands").intValue() == 1;
-        gameVersion = levelDatData.getCompound("Version").getString("Name").getValue();
+
+        if(levelDatData.getCompound("Version") == null)
+            gameVersion = "Unknown";
+        else
+            gameVersion = levelDatData.getCompound("Version").getString("Name").getValue();
     }
 
     public String getLevelNameColors() {

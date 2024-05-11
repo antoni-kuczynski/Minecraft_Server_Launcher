@@ -29,38 +29,6 @@ public class Config extends ArrayList<MCServer> {
         return fileToReadReader.toString();
     }
 
-    public static void reloadServersWorldPath(MCServer server) {
-        String path = getServerWorldPath(server.serverPath().getAbsolutePath());
-        if(!path.equals(server.worldPath().getAbsolutePath())) {
-            data.set(server.serverId() - 1, new MCServer(server.serverName(), server.serverPath(),
-                    server.serverJarPath(), server.javaRuntimePath(), server.serverLaunchArgs(), server.serverId(), new File(path)));
-        }
-    }
-
-    public static String getServerWorldPath(String pathToServer) {
-        File serverProperties = new File(pathToServer + "/server.properties");
-        String worldName = "world";
-        if(!serverProperties.exists()) {
-            return pathToServer + "/" + worldName;
-        }
-
-        ArrayList<String> serverPropertiesContent;
-        try {
-            serverPropertiesContent = (ArrayList<String>) Files.readAllLines(serverProperties.toPath());
-        } catch (IOException e) {
-            Window.alert(AlertType.ERROR, "Cannot read server.properties content.\n" + getErrorDialogMessage(e));
-            throw new RuntimeException(e);
-        }
-
-        for(String s : serverPropertiesContent) {
-            if(s.contains("level-name")) {
-                worldName = s.split("=")[1];
-                break;
-            }
-        }
-        return pathToServer + "/" + worldName;
-    }
-
     public static void createConfig() throws Exception {
         File serverConfigFile = new File("servers.json");
         ABSOLUTE_PATH = serverConfigFile.getAbsolutePath();
@@ -107,14 +75,10 @@ public class Config extends ArrayList<MCServer> {
             if(!new File(pathToServerJarFile).exists()) {
                 continue;
             }
-            data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), new File(pathToJavaRuntime),
-                serverLaunchArgs, serverId, new File(getServerWorldPath(pathToServerFolder))));
+            data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), pathToJavaRuntime,
+                serverLaunchArgs, serverId));
             serverId++;
         }
-    }
-
-    public static void clearConfig() {
-        data.clear();
     }
 
     private static FileWriter getConfigWriter(File serverConfigFile) throws IOException {
@@ -136,14 +100,6 @@ public class Config extends ArrayList<MCServer> {
 
     public static InputStream getResource(String resource) {
         return classLoader.getResourceAsStream(resource);
-    }
-
-    public static String abbreviateConfigPath() {
-        return abbreviateFilePath(Config.ABSOLUTE_PATH, 27);
-    }
-
-    public static String abbreviateServerPath(int serverIndex) {
-        return abbreviateFilePath(Config.getData().get(serverIndex).serverPath().getAbsolutePath(), 27);
     }
 
 //    public static String abbreviateFilePath(String filePath, int maxLength) {

@@ -38,7 +38,7 @@ public class WorldsManagerTab extends JPanel {
         worldsManagerTab = this;
         worldsInfoPanels = new WorldsInfoPanels(tabIndex);
 
-        if(!Config.getData().get(tabSwitchingToIndex).serverPath().exists())
+        if(!Config.getData().get(tabSwitchingToIndex).getServerPath().exists())
             return;
 
         startCopying.setEnabled(false);
@@ -58,7 +58,6 @@ public class WorldsManagerTab extends JPanel {
                     List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
                     File fileToAdd = l.get(l.size() - 1);
                     setUserAddedWorld(fileToAdd);
-
                 } catch (UnsupportedFlavorException | IOException e) {
                     alert(AlertType.ERROR, getErrorDialogMessage(e));
                     return false;
@@ -93,7 +92,7 @@ public class WorldsManagerTab extends JPanel {
         JPanel addingWorld = new JPanel(new BorderLayout());
         JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
-        JLabel title = new JLabel( "<html>Worlds - " + Config.getData().get(tabSwitchingToIndex).serverName() + "</html>");
+        JLabel title = new JLabel( "<html>Worlds - " + Config.getData().get(tabSwitchingToIndex).getServerName() + "</html>");
         title.setFont(new Font("Arial", Font.BOLD, 18));
 
 

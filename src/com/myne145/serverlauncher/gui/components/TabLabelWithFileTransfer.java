@@ -5,6 +5,7 @@ import com.myne145.serverlauncher.gui.window.ContainerPane;
 import javax.swing.*;
 
 public class TabLabelWithFileTransfer extends JLabel {
+    protected static ContainerPane parentPane;
     public TabLabelWithFileTransfer(String text, JTabbedPane parentPane, int index) {
         super(text);
         TransferHandler transferHandler = new TransferHandler() {
@@ -23,11 +24,15 @@ public class TabLabelWithFileTransfer extends JLabel {
         TransferHandler transferHandler = new TransferHandler() {
             @Override
             public boolean canImport(TransferHandler.TransferSupport support) {
-                ContainerPane.getCurrentPane().setSelectedIndex(index);
+                parentPane.setSelectedIndex(index);
                 return true;
             }
         };
 
         this.setTransferHandler(transferHandler);
+    }
+
+    public static void setParentPane(ContainerPane parentPane) {
+        TabLabelWithFileTransfer.parentPane = parentPane;
     }
 }

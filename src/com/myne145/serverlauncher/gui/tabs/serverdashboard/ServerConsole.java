@@ -2,7 +2,6 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerConsoleContextMenu;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
-import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.AlertType;
@@ -34,7 +33,7 @@ public class ServerConsole extends JPanel {
     public boolean isVisible = false;
     private final ArrayList<String> commandHistory = new ArrayList<>();
     private int commandIndex;
-    private final JLabel serverConsoleTitle = new JLabel( "<html>Console - " + Config.getData().get(index).serverName() + "</html>");
+    private final JLabel serverConsoleTitle = new JLabel( "<html>Console - " + Config.getData().get(index).getServerName() + "</html>");
     private final Runnable consoleRunner = () -> {
         try {
             while (true) {
@@ -105,7 +104,7 @@ public class ServerConsole extends JPanel {
         JScrollPane scrollPane = new JScrollPane(consoleOutput);
         ServerConsoleContextMenu.addDefaultContextMenu(consoleOutput);
 
-        consoleMainThread.setName("SERVER_" + Config.getData().get(index).serverId() + "_CONSOLE");
+        consoleMainThread.setName("SERVER_" + Config.getData().get(index).getServerId() + "_CONSOLE");
         setBackground(Colors.BACKGROUND_PRIMARY_COLOR);
         consoleOutput.setBorder(null);
 
@@ -113,10 +112,10 @@ public class ServerConsole extends JPanel {
         JButton executeButton = new JButton("Execute");
 
 
-        serverConsoleTitle.setText("<html>Console - " + Config.getData().get(index).serverName() + "</html>");
+        serverConsoleTitle.setText("<html>Console - " + Config.getData().get(index).getServerName() + "</html>");
 
         //.console_history file loading
-        File consoleHistory = new File(Config.getData().get(index).serverPath() + "/.console_history");
+        File consoleHistory = new File(Config.getData().get(index).getServerPath() + "/.console_history");
         if(consoleHistory.exists()) {
             String commands;
             try {
@@ -226,16 +225,16 @@ public class ServerConsole extends JPanel {
     protected void startServerWithoutChangingTheButtons(MCServer MCServer) {
         serverConsoleTitle.setIcon(null);
         isVisible = true;
-        boolean isSelectedJavaTheDefaultOne = MCServer.javaRuntimePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
-                MCServer.javaRuntimePath().getAbsolutePath().endsWith("java");
-        String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : MCServer.javaRuntimePath().getAbsolutePath();
-        ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", MCServer.serverJarPath().getAbsolutePath(), "nogui"));
+        boolean isSelectedJavaTheDefaultOne = MCServer.getJavaRuntimePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
+                MCServer.getJavaRuntimePath().getAbsolutePath().endsWith("java");
+        String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : MCServer.getJavaRuntimePath().getAbsolutePath();
+        ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", MCServer.getServerJarPath().getAbsolutePath(), "nogui"));
         consoleOutput.setText("");
 
         ProcessBuilder processBuilder;
         try {
             processBuilder = new ProcessBuilder(command);
-            processBuilder.directory(MCServer.serverPath());
+            processBuilder.directory(MCServer.getServerPath());
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
             Process serverProcess = processBuilder.start();
@@ -264,7 +263,7 @@ public class ServerConsole extends JPanel {
 
         if (consoleMainThread.isAlive()) {
             processBuilder = new ProcessBuilder(command);
-            processBuilder.directory(MCServer.serverPath());
+            processBuilder.directory(MCServer.getServerPath());
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
         }
@@ -303,7 +302,7 @@ public class ServerConsole extends JPanel {
     public void setTextFromLatestLogFile() throws IOException {
         if(!isServerRunning)
             return;
-        File latestLog = new File(Config.getData().get(index).serverPath().getAbsolutePath() + "\\logs\\latest.log");
+        File latestLog = new File(Config.getData().get(index).getServerPath().getAbsolutePath() + "\\logs\\latest.log");
         if(!latestLog.exists()) {
 //            System.out.println(ServerIcon.getServerIconSVG(ServerIcon.WARNING));
 //            serverConsoleTitle.setIcon(ServerIcon.getServerIconSVG(ServerIcon.WARNING));

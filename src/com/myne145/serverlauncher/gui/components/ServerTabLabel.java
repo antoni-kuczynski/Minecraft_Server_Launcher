@@ -15,6 +15,7 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     private JMenuItem serverRunAction;
     private boolean isServerActionStartServer = true;
 
+
     public ServerTabLabel(String text, int tabIndex) {
         super(text, tabIndex);
         this.tabIndex = tabIndex;
@@ -25,9 +26,9 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     }
 
     public void enableContextMenu() {
-        serverRunAction = new JMenuItem("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
+        serverRunAction = new JMenuItem("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).getServerName() + "</sub></center></html>");
         serverRunAction.addActionListener(e -> {
-            JTabbedPane tabbedPane = (JTabbedPane) ContainerPane.getCurrentPane().getComponentAt(tabIndex);
+            JTabbedPane tabbedPane = (JTabbedPane) parentPane.getComponentAt(tabIndex);
             ServerDashboardTab tab = (ServerDashboardTab) tabbedPane.getComponentAt(0);
             if(isServerActionStartServer)
                 tab.startServer();
@@ -35,7 +36,7 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
                 tab.stopServer();
         });
         OpenContextMenuItem openContextMenuItem = new OpenContextMenuItem("Open server folder");
-        openContextMenuItem.updatePath(Config.getData().get(tabIndex).serverPath());
+        openContextMenuItem.updatePath(Config.getData().get(tabIndex).getServerPath());
 
         contextMenu.add(openContextMenuItem);
         contextMenu.add(serverRunAction);
@@ -43,10 +44,10 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
 
     public void changeServerActionContextMenuToServerStart(boolean changeToStart) {
         if(changeToStart) {
-            serverRunAction.setText("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
+            serverRunAction.setText("<html>Start server\n<center><sub>" + Config.getData().get(tabIndex).getServerName() + "</sub></center></html>");
             isServerActionStartServer = false;
         } else {
-            serverRunAction.setText("<html>Stop server\n<center><sub>" + Config.getData().get(tabIndex).serverName() + "</sub></center></html>");
+            serverRunAction.setText("<html>Stop server\n<center><sub>" + Config.getData().get(tabIndex).getServerName() + "</sub></center></html>");
             isServerActionStartServer = true;
         }
     }

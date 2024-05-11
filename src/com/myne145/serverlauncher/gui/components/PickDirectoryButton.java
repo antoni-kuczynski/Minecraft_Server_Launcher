@@ -16,6 +16,7 @@ public class PickDirectoryButton extends JButton {
     private final Dimension defaultSize;
 
 
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(super.getPreferredSize().width, defaultSize.height);
@@ -39,6 +40,24 @@ public class PickDirectoryButton extends JButton {
         }
     }
 
+    public void click(File[] filePaths, DirectoryPickerButtonAction afterFileIsSelected) {
+        if (FILE_CHOOSER.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
+            return;
+        }
+
+        File fileToAdd = filePaths[0];
+        afterFileIsSelected.run(fileToAdd);
+
+        this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(fileToAdd.getAbsolutePath(), 60) + "</small></html>");
+
+        double ONE_GIGABYTE = 1073741824;
+        if (FileUtils.sizeOf(fileToAdd) >= ONE_GIGABYTE) {
+            setImportButtonWarning("File larger than 1GiB");
+        } else if (!ZipUtils.isArchive(fileToAdd) && FileUtils.sizeOfDirectory(fileToAdd.getParentFile()) >= ONE_GIGABYTE) {
+            setImportButtonWarning("Folder larger than 1GiB");
+        }
+    }
+
     public PickDirectoryButton(String defaultTitle, Dimension defaultSize, Dimension maximumSize, DirectoryPickerButtonAction afterFileIsSelected) {
         this.defaultSize = defaultSize;
 
@@ -55,23 +74,7 @@ public class PickDirectoryButton extends JButton {
                 removeImportButtonWarning();
 
                 File[] filePaths = FILE_CHOOSER.getSelectedFiles();
-
-                if (FILE_CHOOSER.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
-                    return;
-                }
-
-                File fileToAdd = filePaths[0];
-                afterFileIsSelected.run(fileToAdd);
-
-                this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(fileToAdd.getAbsolutePath(), 60) + "</small></html>");
-
-                double ONE_GIGABYTE = 1073741824;
-                if (FileUtils.sizeOf(fileToAdd) >= ONE_GIGABYTE) {
-                    setImportButtonWarning("File larger than 1GiB");
-                } else if (!ZipUtils.isArchive(fileToAdd) && FileUtils.sizeOfDirectory(fileToAdd.getParentFile()) >= ONE_GIGABYTE) {
-                    setImportButtonWarning("Folder larger than 1GiB");
-                }
-
+                click(filePaths, afterFileIsSelected);
             };
             Thread thread = new Thread(runnable);
             thread.setName("FILECHOOSER");

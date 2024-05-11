@@ -34,9 +34,9 @@ public class WorldCopyHandler extends Thread {
         setName("WORLD_COPY_HANDLER");
         this.worldsManagerTab = worldsManagerTab;
 
-        this.currentServerAbsPath = Config.getData().get(worldsManagerTab.getTabIndex()).serverPath().getAbsolutePath();
+        this.currentServerAbsPath = Config.getData().get(worldsManagerTab.getTabIndex()).getServerPath().getAbsolutePath();
 
-        this.serverWorldName = Config.getData().get(worldsManagerTab.getTabIndex()).worldPath().getName();
+        this.serverWorldName = Config.getData().get(worldsManagerTab.getTabIndex()).getWorldPath().getName();
         this.serverWorldDir = new File(currentServerAbsPath + "/" + serverWorldName);
 
         this.selectedWorld = worldsManagerTab.getUserAddedWorld();
@@ -222,8 +222,8 @@ public class WorldCopyHandler extends Thread {
         }
         startImportingButtonFromWorldManagerTab.setEnabled(true); //issue #15 fix
         worldsManagerTab.setIcons(); //non-removable
-        if(Config.getData().get(worldsManagerTab.getTabIndex()).worldPath().exists()) {
-            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(Config.getData().get(worldsManagerTab.getTabIndex()).worldPath());
+        if(Config.getData().get(worldsManagerTab.getTabIndex()).getWorldPath().exists()) {
+            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(Config.getData().get(worldsManagerTab.getTabIndex()).getWorldPath());
         }
     }
 
