@@ -42,7 +42,7 @@ public class MCServer {
     public void setServerJarPath(File serverJarPath) {
         this.serverJarPath = serverJarPath;
         this.serverPath = serverJarPath.getParentFile();
-        this.platform = getPlatform();
+        this.platform = getPlatformFromManifestFile();
         try {
             updateProperties();
         } catch (Exception e) {
@@ -62,13 +62,12 @@ public class MCServer {
 
 
     public MCServer(String serverName, File serverPath, File serverJarPath, String javaRuntimePath, String serverLaunchArgs, int serverId) {
-        System.out.println(System.getProperty("java.home"));
         this.serverName = serverName;
         this.serverPath = serverPath;
         this.serverJarPath = serverJarPath;
 
         if(javaRuntimePath.equalsIgnoreCase("java")) {
-            this.javaRuntimePath = new File(System.getProperty("java.home"));
+            this.javaRuntimePath = Config.getDefaultJava();
         } else {
             this.javaRuntimePath = new File(javaRuntimePath);
         }

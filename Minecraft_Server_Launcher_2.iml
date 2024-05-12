@@ -31,7 +31,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="formdev.flatlaf" level="project" />
-    <orderEntry type="library" name="jnafilechooser-1.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="apache.commons.lang3" level="project" />
+    <orderEntry type="library" name="swing-jnafilechooser" level="project" />
   </component>
 </module>

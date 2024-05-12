@@ -4,7 +4,6 @@ import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 import com.myne145.serverlauncher.utils.DirectoryPickerButtonAction;
 import com.myne145.serverlauncher.utils.ZipUtils;
-import jnafilechooser.api.JnaFileChooser;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -12,7 +11,9 @@ import java.awt.*;
 import java.io.File;
 
 public class PickDirectoryButton extends JButton {
-    private final JnaFileChooser FILE_CHOOSER = new JnaFileChooser();
+//    private static final FileDialog FILE_CHOOSER = new FileDialog((Frame) null);
+
+    private static final jnafilechooser.api.JnaFileChooser FILE_CHOOSER = new jnafilechooser.api.JnaFileChooser();
     private final Dimension defaultSize;
 
 
@@ -40,22 +41,17 @@ public class PickDirectoryButton extends JButton {
         }
     }
 
-    public void click(File[] filePaths, DirectoryPickerButtonAction afterFileIsSelected) {
-        if (FILE_CHOOSER.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
+    public void click(File filePaths, DirectoryPickerButtonAction afterFileIsSelected) {
+//        if (FILE_CHOOSER.getSelectedFiles().length == 0 || filePaths == null || filePaths[0] == null) {
+//            return;
+//        }
+        if(filePaths == null)
             return;
-        }
 
-        File fileToAdd = filePaths[0];
-        afterFileIsSelected.run(fileToAdd);
+//        File fileToAdd = filePaths[0];
+        afterFileIsSelected.run(filePaths);
 
-        this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(fileToAdd.getAbsolutePath(), 60) + "</small></html>");
-
-        double ONE_GIGABYTE = 1073741824;
-        if (FileUtils.sizeOf(fileToAdd) >= ONE_GIGABYTE) {
-            setImportButtonWarning("File larger than 1GiB");
-        } else if (!ZipUtils.isArchive(fileToAdd) && FileUtils.sizeOfDirectory(fileToAdd.getParentFile()) >= ONE_GIGABYTE) {
-            setImportButtonWarning("Folder larger than 1GiB");
-        }
+        this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(filePaths.getAbsolutePath(), 60) + "</small></html>");
     }
 
     public PickDirectoryButton(String defaultTitle, Dimension defaultSize, Dimension maximumSize, DirectoryPickerButtonAction afterFileIsSelected) {
@@ -66,19 +62,31 @@ public class PickDirectoryButton extends JButton {
         this.setMaximumSize(maximumSize);
         this.setToolTipText("");
 
-        FILE_CHOOSER.setMode(JnaFileChooser.Mode.Files);
+        FILE_CHOOSER.setMode(jnafilechooser.api.JnaFileChooser.Mode.Files);
+//            FILE_CHOOSER.setMultipleMode(false);
 
         this.addActionListener(e -> {
-            Runnable runnable = () -> {
-                FILE_CHOOSER.showOpenDialog(null);
-                removeImportButtonWarning();
 
-                File[] filePaths = FILE_CHOOSER.getSelectedFiles();
-                click(filePaths, afterFileIsSelected);
-            };
-            Thread thread = new Thread(runnable);
-            thread.setName("FILECHOOSER");
-            thread.start();
+            FILE_CHOOSER.showOpenDialog(null);
+            removeImportButtonWarning();
+
+//                File[] filePaths = FILE_CHOOSER.getSelectedFiles();
+//                click(FILE_CHOOSER.getFiles()[0], afterFileIsSelected);
+            click(FILE_CHOOSER.getSelectedFile(), afterFileIsSelected);
+
+
+//            Runnable runnable = () -> {
+////                FILE_CHOOSER.setVisible(true);
+//                FILE_CHOOSER.showOpenDialog(null);
+//                removeImportButtonWarning();
+//
+////                File[] filePaths = FILE_CHOOSER.getSelectedFiles();
+////                click(FILE_CHOOSER.getFiles()[0], afterFileIsSelected);
+//                click(FILE_CHOOSER.getSelectedFile(), afterFileIsSelected);
+//            };
+//            Thread thread = new Thread(runnable);
+//            thread.setName("FILECHOOSER");
+//            thread.start();
         });
     }
 }

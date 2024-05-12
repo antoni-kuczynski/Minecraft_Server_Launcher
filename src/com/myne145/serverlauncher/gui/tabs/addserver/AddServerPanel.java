@@ -8,14 +8,19 @@ import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DirectoryPickerButtonAction;
 import com.myne145.serverlauncher.utils.ZipUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.Arrays;
 
 public class AddServerPanel extends JPanel {
     private final JButton confirmButton = new JButton("Add server");
+    private final Pair<JPanel, PickDirectoryButton> openServerJarPanel = getOpenDirButtonPanel("Server jar", this::setServerJarPath);
+    private final Pair<JPanel, PickDirectoryButton> openJavaBinPanel = getOpenDirButtonPanel("Java bin", this::setJavaBinPath);
+    private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
 //    private File serverJarPath;
 //    private File javaBinPath;
 //    private String serverName;
@@ -23,7 +28,7 @@ public class AddServerPanel extends JPanel {
 //    private boolean isServerComplete = false;
     private final MCServer currentServer = new MCServer();
 
-    private JPanel getOpenDirButtonPanel(String titleText, DirectoryPickerButtonAction action) {
+    private Pair<JPanel, PickDirectoryButton> getOpenDirButtonPanel(String titleText, DirectoryPickerButtonAction action) {
         PickDirectoryButton pickDirectoryButton = new PickDirectoryButton("Open directory", new Dimension(130, 40), new Dimension(300, 40), action);
         JLabel titleLabel = new JLabel(titleText);
         JPanel result = new JPanel();
@@ -35,7 +40,7 @@ public class AddServerPanel extends JPanel {
         result.add(titleLabel);
         result.add(pickDirectoryButton);
 
-        return result;
+        return Pair.of(result, pickDirectoryButton);
     }
 
     private JPanel getTextInputPanel(String titleText) {
@@ -57,14 +62,21 @@ public class AddServerPanel extends JPanel {
     }
 
     private void setServerJarPath(File path) {
-        if(!path.isFile())
+        if(!path.isFile()) {
+            openServerJarPanel.getValue().setImportButtonWarning("Not a file");
             return;
+        }
         if(ZipUtils.getFileExtension(path).equals("jar")) {
 //            serverJarPath = path;
             currentServer.setServerJarPath(path);
+        } else {
+            openServerJarPanel.getValue().setImportButtonWarning("Not a jar file");
         }
         if(currentServer.isComplete())
             confirmButton.setEnabled(true);
+
+        Thread thread  = new Thread(() -> serverInfoPanel.updateText(currentServer));
+        thread.start();
     }
 
     private void setJavaBinPath(File path) {
@@ -77,12 +89,16 @@ public class AddServerPanel extends JPanel {
         }
         if(currentServer.isComplete())
             confirmButton.setEnabled(true);
+        serverInfoPanel.updateText(currentServer);
     }
 
     public AddServerPanel(ContainerPane parentPane) {
         setLayout(new BorderLayout());
 
-        currentServer.setJavaRuntimePath(new File(System.getProperty("java.home")));
+        if(Config.getDefaultJava() == null) {
+
+        }
+        currentServer.setJavaRuntimePath(Config.getDefaultJava());
         currentServer.setServerLaunchArgs("nogui");
         confirmButton.setEnabled(false);
 
@@ -103,20 +119,18 @@ public class AddServerPanel extends JPanel {
         mainPanel.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
         mainPanel.setAlignmentX(LEFT_ALIGNMENT);
 
-        JPanel openServerJarPanel = getOpenDirButtonPanel("Server jar", this::setServerJarPath);
-        JPanel openJavaBinPanel = getOpenDirButtonPanel("Java bin", this::setJavaBinPath);
         JPanel serverNamePanel = getTextInputPanel("Server name");
         JPanel launchArgsPanel = getTextInputPanel("Launch args");
 
-        mainPanel.add(openServerJarPanel);
-        mainPanel.add(openJavaBinPanel);
+        mainPanel.add(openServerJarPanel.getKey());
+        mainPanel.add(openJavaBinPanel.getKey());
         mainPanel.add(serverNamePanel);
         mainPanel.add(launchArgsPanel);
 
 //        bottomPanel.add(confirmButton, BorderLayout.LINE_END);
 
 
-        ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
+
 //        serverInfoPanel.setBorder(new FlatLineBorder(new Insets(10, 20, 100, 20), Colors.BORDER_COLOR, 1, 16));
         serverInfoPanel.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
         serverInfoPanel.setAlignmentX(LEFT_ALIGNMENT);
@@ -241,6 +255,7 @@ public class AddServerPanel extends JPanel {
 
         if(currentServer.isComplete())
             confirmButton.setEnabled(true);
+        serverInfoPanel.updateText(currentServer);
     }
 
     private KeyAdapter getKeyAdapter(JTextField field) {

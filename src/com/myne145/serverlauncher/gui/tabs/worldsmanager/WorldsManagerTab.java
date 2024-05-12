@@ -6,6 +6,8 @@ import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
+import com.myne145.serverlauncher.utils.ZipUtils;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.util.List;
@@ -140,12 +142,19 @@ public class WorldsManagerTab extends JPanel {
     }
 
     private void setUserAddedWorld(File world) {
+        double ONE_GIGABYTE = 1073741824;
         if (isArchive(world)) {
+            if (FileUtils.sizeOf(world) >= ONE_GIGABYTE) {
+                pickDirectoryButton.setImportButtonWarning("File larger than 1GiB");
+            }
             userAddedWorld = world;
             isInArchiveMode = true;
             WorldCopyHandler worldCopyHandler = WorldCopyHandler.createWorldCopyHandler(worldsManagerTab);
             worldCopyHandler.start();
         } else {
+            if (FileUtils.sizeOfDirectory(world.getParentFile()) >= ONE_GIGABYTE) {
+                pickDirectoryButton.setImportButtonWarning("Folder larger than 1GiB");
+            }
             isInArchiveMode = false;
             if(world.isFile()) {
                 world = new File(world.getParent());

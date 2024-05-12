@@ -7,5 +7,31 @@ public enum ServerPlatform {
     SPIGOT,
     VANILLA,
     FABRIC,
-    UNKNOWN
+    UNKNOWN;
+
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case PAPER_MC -> {
+                return "PaperMC";
+            }
+            case FORGE -> {
+                return "Forge";
+            }
+            case BUKKIT -> {
+                return "CraftBukkit";
+            }
+            case SPIGOT -> {
+                return "Spigot";
+            }
+            case VANILLA -> {
+                return "Vanilla";
+            }
+            case FABRIC -> {
+                return "Fabric";
+            }
+        }
+        return "Unknown platform";
+    }
 }

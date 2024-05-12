@@ -21,6 +21,12 @@ public class Config extends ArrayList<MCServer> {
     public static String ABSOLUTE_PATH;
 
 
+    public static File getDefaultJava() {
+        if(System.getProperty("java.home") == null)
+            return null;
+        return new File(System.getProperty("java.home") + "/bin/javaw.exe");
+    }
+
     private static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
         for(String fileLine : Files.readAllLines(fileToRead.toPath())) {
