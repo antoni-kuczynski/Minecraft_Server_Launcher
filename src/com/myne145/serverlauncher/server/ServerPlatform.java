@@ -14,22 +14,22 @@ public enum ServerPlatform {
     public String toString() {
         switch (this) {
             case PAPER_MC -> {
-                return "PaperMC";
+                return "PaperMC server";
             }
             case FORGE -> {
-                return "Forge";
+                return "Forge server";
             }
             case BUKKIT -> {
-                return "CraftBukkit";
+                return "CraftBukkit server";
             }
             case SPIGOT -> {
-                return "Spigot";
+                return "Spigot server";
             }
             case VANILLA -> {
-                return "Vanilla";
+                return "Vanilla server";
             }
             case FABRIC -> {
-                return "Fabric";
+                return "Fabric server";
             }
         }
         return "Unknown platform";

@@ -19,7 +19,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="knowm.xchart" level="project" />
-    <orderEntry type="library" name="knowm.xchart.demo" level="project" />
     <orderEntry type="library" name="formdev.flatlaf.extras" level="project" />
     <orderEntry type="module-library">
       <library>

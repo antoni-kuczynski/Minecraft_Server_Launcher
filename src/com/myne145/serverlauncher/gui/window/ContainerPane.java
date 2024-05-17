@@ -4,6 +4,7 @@ import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
 import com.myne145.serverlauncher.gui.components.ServerTabLabel;
 import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
+import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.MCServer;
@@ -89,16 +90,46 @@ public class ContainerPane extends JTabbedPane {
                     this.paintTabBackground(g, tabPlacement, tabIndex, currentTabRects.x, currentTabRects.y, currentTabRects.width, currentTabRects.height, isSelected);
                 }
 
+//                if(tabIndex == 1) {
+//                    g.setColor(Color.RED);
+//                    g.fillRect(0, ContainerPane.this.getHeight() - 50, 100, 50);
+//                    return;
+//                }
+
                 if (isSelected) {
                     g.setColor(Colors.TAB_SELECTION_COLOR);
                     g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
                 }
+
             }
 
             @Override
             public void paint(Graphics g, JComponent c) {
                 g.setColor(Colors.TABBEDPANE_BACKGROUND_COLOR);
                 g.fillRect(0,0, getWidth(), getHeight());
+            }
+
+            @Override
+            protected int calculateTabAreaWidth(int tabPlacement, int vertRunCount, int maxTabWidth) {
+//                int width = super.calculateTabAreaWidth(tabPlacement, vertRunCount, maxTabWidth);
+//                if(Window.getWindow() != null) {
+//                    Window.getWindow().updateAddServerButtonsSize(width);
+//                }
+//                return width;
+//                return super.calculateTabAreaWidth(tabPlacement, vertRunCount, maxTabWidth);
+                return 220;
+            }
+
+            @Override
+            protected Insets getRealTabAreaInsets(int tabPlacement) {
+                Insets insets = super.getRealTabAreaInsets(tabPlacement);
+                insets.bottom = 50;
+                return insets;
+            }
+
+            @Override
+            protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
+                return 220;
             }
         });
         setTabPlacement(LEFT);
@@ -121,7 +152,7 @@ public class ContainerPane extends JTabbedPane {
             onTabSwitched(index);
             addChangeListener(e -> onTabSwitched(this.getSelectedIndex()));
         }
-
+        
 
         for(MouseListener mouseListener : getMouseListeners())
             removeMouseListener(mouseListener); //to remove the tab switching on right click

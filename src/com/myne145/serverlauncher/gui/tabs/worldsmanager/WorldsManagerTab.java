@@ -1,12 +1,11 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
-import com.myne145.serverlauncher.gui.components.PickDirectoryButton;
+import com.myne145.serverlauncher.gui.components.PickFileButton;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
-import com.myne145.serverlauncher.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -31,7 +30,7 @@ public class WorldsManagerTab extends JPanel {
     private final WorldsManagerTab worldsManagerTab;
     private final int tabIndex;
     private final WorldsInfoPanels worldsInfoPanels;
-    private final PickDirectoryButton pickDirectoryButton = new PickDirectoryButton("Import existing world", new Dimension(130, 40), new Dimension(130, 40), this::setUserAddedWorld);
+    private final PickFileButton pickFileButton = new PickFileButton("Import existing world", new Dimension(130, 40), new Dimension(130, 40), this::setUserAddedWorld);
 
     public WorldsManagerTab(ContainerPane parentPane, int tabSwitchingToIndex) {
         super(new BorderLayout());
@@ -44,30 +43,8 @@ public class WorldsManagerTab extends JPanel {
             return;
 
         startCopying.setEnabled(false);
-        TransferHandler transferHandler = new TransferHandler() {
-            @Override
-            public boolean canImport(TransferHandler.TransferSupport support) {
-                return true;
-            }
 
-            @Override
-            public boolean importData(TransferSupport support) {
-                if (!canImport(support)) {
-                    return false;
-                }
-                Transferable t = support.getTransferable();
-                try {
-                    List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
-                    File fileToAdd = l.get(l.size() - 1);
-                    setUserAddedWorld(fileToAdd);
-                } catch (UnsupportedFlavorException | IOException e) {
-                    alert(AlertType.ERROR, getErrorDialogMessage(e));
-                    return false;
-                }
-                return true;
-            }
-        };
-
+        TransferHandler transferHandler = pickFileButton.getCustomTransferHandler(this::setUserAddedWorld);
         this.setTransferHandler(transferHandler);
 
 
@@ -103,7 +80,7 @@ public class WorldsManagerTab extends JPanel {
         titlePanel.add(title, BorderLayout.CENTER);
         titlePanel.add(Box.createRigidArea(new Dimension(5,10)), BorderLayout.PAGE_END);
 
-        openButtonInCorrectPlacement.add(pickDirectoryButton, BorderLayout.LINE_START);
+        openButtonInCorrectPlacement.add(pickFileButton, BorderLayout.LINE_START);
 
 
         buttonAndText.add(titlePanel, BorderLayout.PAGE_START);
@@ -145,7 +122,7 @@ public class WorldsManagerTab extends JPanel {
         double ONE_GIGABYTE = 1073741824;
         if (isArchive(world)) {
             if (FileUtils.sizeOf(world) >= ONE_GIGABYTE) {
-                pickDirectoryButton.setImportButtonWarning("File larger than 1GiB");
+                pickFileButton.setImportButtonWarning("File larger than 1GiB");
             }
             userAddedWorld = world;
             isInArchiveMode = true;
@@ -153,7 +130,7 @@ public class WorldsManagerTab extends JPanel {
             worldCopyHandler.start();
         } else {
             if (FileUtils.sizeOfDirectory(world.getParentFile()) >= ONE_GIGABYTE) {
-                pickDirectoryButton.setImportButtonWarning("Folder larger than 1GiB");
+                pickFileButton.setImportButtonWarning("Folder larger than 1GiB");
             }
             isInArchiveMode = false;
             if(world.isFile()) {
@@ -208,7 +185,7 @@ public class WorldsManagerTab extends JPanel {
         return tabIndex;
     }
 
-    public PickDirectoryButton getPickDirectoryButton() {
-        return pickDirectoryButton;
+    public PickFileButton getPickDirectoryButton() {
+        return pickFileButton;
     }
 }

@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
+import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
 import com.myne145.serverlauncher.server.Config;
@@ -7,6 +8,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
+import com.myne145.serverlauncher.utils.DefaultIcons;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -35,10 +37,12 @@ public class Window extends JFrame {
     private static Window window;
     private final static Taskbar taskbar = Taskbar.getTaskbar();
     private static final JMenuBar menuBar = new JMenuBar();
+    private final JButton addServerButton = new JButton("Add server");
+    private final Container glassPane = (Container) getRootPane().getGlassPane();
 
     public Window() throws Exception {
         // Set up the JFrame
-        setIconImage(new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png"))).getImage());
+        setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -77,35 +81,65 @@ public class Window extends JFrame {
         viewMenu.add(serverButtonsScale);
 
 
-        JButton debugShit1 = new JButton("Add server (temp)");
+//        JButton debugShit1 = new JButton("Add server (temp)");
 
 
         menuBar.setBorder(new MatteBorder(0,0,1,0, Colors.BORDER_COLOR));
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
-        menuBar.add(debugShit1);
+//        menuBar.add(debugShit1);
         setJMenuBar(menuBar);
 
         ContainerPane containerPane = new ContainerPane();
+
+
+
+        glassPane.setVisible(true);
+        glassPane.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets = new Insets(130, 0, 0, 15);
+        gbc.anchor = GridBagConstraints.SOUTHWEST;
+        glassPane.add(addServerButton, gbc);
+
+        addServerButton.setPreferredSize(new Dimension(220, 50));
+        addServerButton.setBorder(new FlatLineBorder(new Insets(5,5,5,5), Colors.BORDER_COLOR));
+        addServerButton.setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
+
+
+        addServerButton.addActionListener(e -> {
+            JDialog dialog = new JDialog((Dialog) null);
+
+            dialog.setTitle("Add server");
+            dialog.setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
+            dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
+            dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
+
+            dialog.setBounds((this.getWidth() - this.getX()) / 2 - 380, (this.getHeight() - this.getY()) / 2 + 225, 760, 450);
+            dialog.add(new AddServerPanel(containerPane));
+            dialog.setResizable(false);
+
+//            dialog.setSize(300, 400);
+            dialog.setSize(new Dimension(760, 450));
+//            dialog.setMinimumSize(new Dimension(800, 550));
+            dialog.setVisible(true);
+        });
+
         add(containerPane, BorderLayout.CENTER);
+
+
         setVisible(true);
         containerPane.setChartsVisibility(areChartsEnabled);
 
 
-        debugShit1.addActionListener(e -> {
-            JDialog dialog = new JDialog();
-            dialog.setTitle("Add server");
-            dialog.add(new AddServerPanel(containerPane));
-            dialog.setSize(800, 500);
-            dialog.setVisible(true);
-        });
-
         //TEMP
-        JDialog dialog = new JDialog();
-        dialog.setTitle("Add server");
-        dialog.add(new AddServerPanel(containerPane));
-        dialog.setSize(800, 500);
-        dialog.setVisible(true);
+//        JDialog dialog = new JDialog();
+//        dialog.setTitle("Add server");
+//        dialog.add(new AddServerPanel(containerPane));
+//        dialog.setSize(800, 500);
+//        dialog.setVisible(true);
 
 
         showCharts.addItemListener(e -> {
@@ -222,6 +256,12 @@ public class Window extends JFrame {
         });
         window = this;
     }
+
+//    protected void updateAddServerButtonsSize(int width) {
+//        Dimension d = new Dimension(width, addServerButton.getPreferredSize().height);
+//        addServerButton.setPreferredSize(d);
+//        addServerButton.setSize(d);
+//    }
 
     public static String getErrorDialogMessage(Exception e) {
         Toolkit.getDefaultToolkit().beep();

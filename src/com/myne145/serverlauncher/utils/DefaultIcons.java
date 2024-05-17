@@ -15,7 +15,8 @@ public enum DefaultIcons {
     SERVER_OFFLINE(DefaultIcon.serverOffline),
     SERVER_ERRORED(DefaultIcon.serverErrored),
     ERROR(DefaultIcon.error),
-    WORLD_MISSING(DefaultIcon.defaultWorld);
+    WORLD_MISSING(DefaultIcon.defaultWorld),
+    APP_ICON(DefaultIcon.appIcon);
 
     private ImageIcon icon;
     private FlatSVGIcon svgIcon;
@@ -45,6 +46,7 @@ class DefaultIcon {
     static ImageIcon serverOffline;
     static ImageIcon serverErrored;
     static ImageIcon defaultWorld;
+    static ImageIcon appIcon;
 
     static FlatSVGIcon error;
     static {
@@ -53,6 +55,8 @@ class DefaultIcon {
             serverOffline = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_offline.png")));
             serverErrored = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_errored.png")));
             defaultWorld = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH));
+            appIcon = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH));
+//            new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png"))).getImage()
 
             error = new FlatSVGIcon(Config.RESOURCES_PATH + "/error.svg", Config.classLoader);
         } catch (Exception e) {

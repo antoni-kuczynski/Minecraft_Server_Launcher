@@ -1,6 +1,5 @@
 package com.myne145.serverlauncher.server;
 
-import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.utils.AlertType;
 
 import java.io.File;
@@ -24,6 +23,7 @@ public class MCServer {
     private File worldPath;
     private final LinkedHashMap<String, String> properties = new LinkedHashMap<>();
     private ServerPlatform platform;
+    private String javaVersion;
 
     public boolean isComplete() {
         return serverName != null && serverPath != null
@@ -53,6 +53,15 @@ public class MCServer {
 
     public void setJavaRuntimePath(File javaRuntimePath) {
         this.javaRuntimePath = javaRuntimePath;
+        try {
+            javaVersion = getJavaVersionFromReleaseFile();
+        } catch (Exception e) {
+            alert(AlertType.ERROR, getErrorDialogMessage(e));
+        }
+    }
+
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
     }
 
     public void setServerLaunchArgs(String serverLaunchArgs) {
@@ -141,7 +150,7 @@ public class MCServer {
         worldPath = new File(serverPath.getAbsolutePath() + "/" + worldName);
     }
 
-    private String getJavaVersion() throws IOException {
+    public String getJavaVersionFromReleaseFile() throws IOException {
         File javaPath = getJavaRuntimePath();
         String javaVersion = "Unknown";
         if(javaPath == null || javaPath.getParentFile().list() == null || javaPath.getParentFile().list().length == 0)
@@ -151,10 +160,18 @@ public class MCServer {
             javaPath = javaPath.getParentFile();
 
         List<String> files = Arrays.asList(javaPath.list());
-        while(!files.contains("release")) {
-            files = Arrays.asList(javaPath.getParentFile().list());
+//        while(!files.contains("release")) {
+//            if(javaPath.getParentFile() == null) {
+//                return javaVersion;
+//            }
+//            files = Arrays.asList(javaPath.getParentFile().list());
+//            javaPath = javaPath.getParentFile();
+//        }
+        if(!files.contains("release") && javaPath.getParentFile() != null) {
+            files = Arrays.asList(javaPath.getParentFile().list()); //one folder back if user selected the "bin" folder
             javaPath = javaPath.getParentFile();
         }
+
 
         if(!files.contains("release"))
             return javaVersion;
@@ -238,5 +255,9 @@ public class MCServer {
 
     public ServerPlatform getPlatform() {
         return platform;
+    }
+
+    public String getJavaVersion() {
+        return javaVersion;
     }
 }

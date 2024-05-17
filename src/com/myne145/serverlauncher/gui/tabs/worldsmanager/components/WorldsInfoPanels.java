@@ -121,7 +121,7 @@ public class WorldsInfoPanels extends JPanel {
     private WorldInformationPanel createInformationPanel(String title, boolean isServer) {
         JPanel worldPanel = new JPanel(new BorderLayout());
         JLabel titleLabel = new JLabel(title);
-        JLabel iconAndWorldInfo = new JLabel("<html><font size=4>World details will appear here.</font></html>");
+        JLabel iconAndWorldInfo = new JLabel("<html><font size=4>World details are going to appear here.</font></html>");
 
         worldPanel.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 0), Colors.BORDER_COLOR, 1, 16));
         worldPanel.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
