@@ -2,23 +2,14 @@ package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
 import com.myne145.serverlauncher.gui.components.PickFileButton;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
-import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import java.util.List;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
-import java.io.IOException;
-
-import static com.myne145.serverlauncher.gui.window.Window.alert;
-import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 
 public class WorldsManagerTab extends JPanel {

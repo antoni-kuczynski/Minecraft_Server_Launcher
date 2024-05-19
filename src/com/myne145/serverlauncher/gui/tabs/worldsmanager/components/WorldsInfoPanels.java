@@ -5,20 +5,16 @@ import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ClientMinecraftWorl
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ServerMinecraftWorld;
 import com.myne145.serverlauncher.gui.window.Window;
-import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 
 public class WorldsInfoPanels extends JPanel {
@@ -81,7 +77,7 @@ public class WorldsInfoPanels extends JPanel {
             } else {
                 minecraftWorld = new ClientMinecraftWorld(worldPath);
             }
-        } catch (Exception e) {
+        } catch (Exception e) { //TODO
             throw new RuntimeException(e);
         }
 

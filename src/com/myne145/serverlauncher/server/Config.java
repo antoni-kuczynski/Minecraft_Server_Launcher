@@ -1,6 +1,5 @@
 package com.myne145.serverlauncher.server;
 
-import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,7 +11,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
-import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
 public class Config extends ArrayList<MCServer> {
     private static final ArrayList<MCServer> data = new ArrayList<>();
@@ -39,18 +37,24 @@ public class Config extends ArrayList<MCServer> {
         File serverConfigFile = new File("servers.json");
         ABSOLUTE_PATH = serverConfigFile.getAbsolutePath();
 
-        boolean isConfigAValidJSON = true;
+        if(!serverConfigFile.exists() && !serverConfigFile.createNewFile()) {
+            Window.showErrorMessage("Cannot create the " + serverConfigFile.getName() + " file.", new IOException());
+            System.exit(1);
+        }
+
+//        boolean isConfigAValidJSON = true;
         try {
             new JSONArray(readFileString(new File("servers.json")));
         } catch (Exception e) {
-            isConfigAValidJSON = false;
+            Window.showErrorMessage(serverConfigFile.getName() + " file is not a valid JSON.", e);
+            System.exit(1);
+//            isConfigAValidJSON = false;
         }
 
-        if(!serverConfigFile.exists() || !isConfigAValidJSON) {
-            if(!serverConfigFile.exists() && !serverConfigFile.createNewFile()) {
-                Window.alert(AlertType.FATAL, "Cannot create config file");
-                System.exit(1);
-            }
+
+
+        if(!serverConfigFile.exists()) {
+
             FileWriter configWriter = getConfigWriter(serverConfigFile);
             configWriter.close();
         }

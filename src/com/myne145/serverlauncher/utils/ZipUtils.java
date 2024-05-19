@@ -6,9 +6,10 @@ import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import java.awt.*;
 import java.io.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
-import static com.myne145.serverlauncher.gui.window.Window.alert;
+import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 
 public class ZipUtils {
     private static final Taskbar taskbar = Window.getTaskbar();
@@ -45,7 +46,7 @@ public class ZipUtils {
             }
             if (zipEntry.isDirectory()) {
                 if(!newFile.mkdirs()) {
-                    alert(AlertType.ERROR, "Cannot create a directory.\nWorldCopyHandler.java extractingArchive()");
+                    showErrorMessage("Cannot extract the archive.", new ZipException());
                     break;
                 }
             } else {

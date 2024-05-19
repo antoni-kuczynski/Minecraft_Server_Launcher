@@ -4,10 +4,10 @@ import com.myne145.serverlauncher.server.Config;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import static com.myne145.serverlauncher.gui.window.Window.alert;
-import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 
 public class DesktopOpener {
 
@@ -15,18 +15,18 @@ public class DesktopOpener {
         Desktop desktop = Desktop.getDesktop();
 
         if (!folder.exists()) {
-            alert(AlertType.ERROR, "Directory not found: " + folder.getAbsolutePath());
+            showErrorMessage("Directory not found: " + folder.getAbsolutePath(), new FileNotFoundException());
             return;
         }
         if (!Desktop.isDesktopSupported() || !desktop.isSupported(Desktop.Action.OPEN)) {
-            alert(AlertType.ERROR, "Desktop API is not supported on this platform");
+            showErrorMessage("Desktop API is not supported on this platform", new UnsupportedOperationException());
             return;
         }
 
         try {
             desktop.open(folder);
         } catch (IOException e) {
-            alert(AlertType.ERROR, "Cannot open server's directory.\n" + getErrorDialogMessage(e));
+            showErrorMessage("I/O error opening server's directory.\n", e);
         }
     }
 
@@ -34,19 +34,19 @@ public class DesktopOpener {
         Desktop desktop = Desktop.getDesktop();
 
         if (!file.exists()) {
-            alert(AlertType.ERROR, "Config file at " + Config.ABSOLUTE_PATH + " not found.");
+            showErrorMessage(Config.ABSOLUTE_PATH + " file not found.", new FileNotFoundException());
             return;
         }
 
         if (!Desktop.isDesktopSupported() || !desktop.isSupported(Desktop.Action.OPEN)) {
-            alert(AlertType.ERROR, "Desktop API is not supported on this platform.");
+            showErrorMessage("Desktop API is not supported on this platform.", new UnsupportedOperationException());
             return;
         }
 
         try {
             desktop.open(file);
         } catch (IOException e) {
-            alert(AlertType.ERROR, "Cannot open \"servers.json\" file.\n" + getErrorDialogMessage(e));
+            showErrorMessage("I/O error opening " + Config.ABSOLUTE_PATH + "file.\n", e);
         }
     }
 }

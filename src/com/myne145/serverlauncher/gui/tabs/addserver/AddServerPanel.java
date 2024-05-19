@@ -16,6 +16,7 @@ import java.awt.event.*;
 import java.io.File;
 
 public class AddServerPanel extends JPanel {
+    private final Window owner;
     private final JButton confirmButton = new JButton("Add server");
     private final Pair<JPanel, PickFileButton> openServerJarPanel = getOpenDirButtonPanel("Server jar", this::setServerJarPath);
     private final Pair<JPanel, PickFileButton> openJavaBinPanel = getOpenDirButtonPanel("Java bin", this::setJavaBinPath);
@@ -69,8 +70,18 @@ public class AddServerPanel extends JPanel {
         if(currentServer.isComplete())
             confirmButton.setEnabled(true);
 
-        openServerJarPanel.getValue().setCustomButtonText(path.getName());
+
+        String s = path.getName();
+        if(s.length() > 27) { //max 27chars
+            s = s.substring(0, s.length() / 2 - (s.length() - 27) / 2) + "..." + s.substring(s.length() / 2 + (s.length() - 27) / 2);
+        }
+        openServerJarPanel.getValue().setCustomButtonText(s);
         serverInfoPanel.updateText(currentServer);
+
+        if(serverInfoPanel.isVisible())
+            return;
+        serverInfoPanel.setVisible(true);
+        owner.setBounds(owner.getX(), owner.getY(), 760, 450);
     }
 
     private void setJavaBinPath(File path) {
@@ -82,14 +93,19 @@ public class AddServerPanel extends JPanel {
         serverInfoPanel.updateText(currentServer);
     }
 
-    public AddServerPanel(ContainerPane parentPane) {
+    public AddServerPanel(ContainerPane parentPane, Window owner) {
         setLayout(new BorderLayout());
+        this.owner = owner;
 
         if (Config.getDefaultJava() == null) {
             openJavaBinPanel.getValue().setImportButtonWarning("No default java installation found");
+        } else {
+            setJavaBinPath(Config.getDefaultJava());
         }
 
-        currentServer.setJavaRuntimePath(Config.getDefaultJava());
+        serverInfoPanel.setVisible(false);
+
+
         currentServer.setServerLaunchArgs("nogui");
 
         confirmButton.setEnabled(false);

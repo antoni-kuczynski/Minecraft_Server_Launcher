@@ -1,7 +1,6 @@
 package com.myne145.serverlauncher.gui.components;
 
 import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 import com.myne145.serverlauncher.utils.FilePickerButtonAction;
 import jnafilechooser.api.JnaFileChooser;
@@ -15,8 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.myne145.serverlauncher.gui.window.Window.alert;
-import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 
 public class PickFileButton extends JButton {
     private static final JnaFileChooser FILE_CHOOSER = new JnaFileChooser();
@@ -103,9 +101,11 @@ public class PickFileButton extends JButton {
                     List<File> l = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
                     File fileToAdd = l.get(l.size() - 1);
                     updateFileRelatedStuff(fileToAdd, action);
-                } catch (UnsupportedFlavorException | IOException e) {
-                    alert(AlertType.ERROR, getErrorDialogMessage(e));
+                } catch (UnsupportedFlavorException e) {
+                    showErrorMessage("Requested data not supported in this flavor.", e);
                     return false;
+                } catch (IOException ee) {
+                    showErrorMessage("I/O error.", ee);
                 }
                 return true;
             }

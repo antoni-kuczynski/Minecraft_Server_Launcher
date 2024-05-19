@@ -5,13 +5,12 @@ import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
-import com.myne145.serverlauncher.utils.AlertType;
+//import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 import org.apache.commons.io.FileUtils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -40,7 +39,7 @@ public class Window extends JFrame {
     private final JButton addServerButton = new JButton("Add server");
     private final Container glassPane = (Container) getRootPane().getGlassPane();
 
-    public Window() throws Exception {
+    public Window() {
         // Set up the JFrame
         setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
         setTitle("Minecraft Server Launcher");
@@ -81,9 +80,6 @@ public class Window extends JFrame {
         viewMenu.add(serverButtonsScale);
 
 
-//        JButton debugShit1 = new JButton("Add server (temp)");
-
-
         menuBar.setBorder(new MatteBorder(0,0,1,0, Colors.BORDER_COLOR));
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
@@ -117,12 +113,13 @@ public class Window extends JFrame {
             dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
             dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
 
-            dialog.setBounds((this.getWidth() - this.getX()) / 2 - 380, (this.getHeight() - this.getY()) / 2 + 225, 760, 450);
-            dialog.add(new AddServerPanel(containerPane));
+//            dialog.setBounds((this.getWidth() - this.getX()) / 2 - 380, (this.getHeight() - this.getY()) / 2 + 225, 760, 450);
+            dialog.setBounds((this.getWidth() - this.getX()) / 2 - 225, (this.getHeight() - this.getY()) / 2 + 225, 450, 450);
+            dialog.add(new AddServerPanel(containerPane, dialog));
             dialog.setResizable(false);
 
 //            dialog.setSize(300, 400);
-            dialog.setSize(new Dimension(760, 450));
+//            dialog.setSize(new Dimension(760, 450));
 //            dialog.setMinimumSize(new Dimension(800, 550));
             dialog.setVisible(true);
         });
@@ -263,29 +260,33 @@ public class Window extends JFrame {
 //        addServerButton.setSize(d);
 //    }
 
-    public static String getErrorDialogMessage(Exception e) {
-        Toolkit.getDefaultToolkit().beep();
-        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
-        taskbar.setWindowProgressValue(Window.getWindow(), 100);
-        StringBuilder errorMessage = new StringBuilder();
-        errorMessage.append(e).append("\n");
-        errorMessage.append("Caused by:\n");
-        StackTraceElement[] errorStackTrace = e.getStackTrace();
-        for (StackTraceElement element : errorStackTrace) {
-            errorMessage.append(element.toString());
-            errorMessage.append("\n");
-        }
-        return errorMessage.toString();
-    }
+//    public static String getErrorDialogMessage(Exception e) {
+//        Toolkit.getDefaultToolkit().beep();
+//        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
+//        taskbar.setWindowProgressValue(Window.getWindow(), 100);
+//        StringBuilder errorMessage = new StringBuilder();
+//        errorMessage.append(e).append("\n");
+//        errorMessage.append("Caused by:\n");
+//        StackTraceElement[] errorStackTrace = e.getStackTrace();
+//        for (StackTraceElement element : errorStackTrace) {
+//            errorMessage.append(element.toString());
+//            errorMessage.append("\n");
+//        }
+//        return errorMessage.toString();
+//    }
 
-    public static void alert(AlertType alertType, String message) {
-        switch(alertType) {
-            case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
-            case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-            case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-            case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
-        }
-        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+//    public static void alert(AlertType alertType, String message) {
+//        switch(alertType) {
+//            case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+//            case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+//            case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+//            case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+//    }
+
+    public static void showErrorMessage(String basicInfo, Exception e) {
+        new ErrorDialog(basicInfo, e).setVisible(true);
     }
 
     private static void clearTempDirectory() {
@@ -299,7 +300,7 @@ public class Window extends JFrame {
                     FileUtils.deleteDirectory(tempFile);
                 else
                     tempFile.delete();
-            } catch (IOException e) {
+            } catch (IOException e) { //TODO
 //                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }
@@ -337,13 +338,11 @@ public class Window extends JFrame {
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
 
-        SwingUtilities.invokeLater(() -> {
-            try {
-                new Window();
-            } catch (Exception e) {
-                alert(AlertType.ERROR, getErrorDialogMessage(e));
-                throw new RuntimeException(e);
-            }
-        });
+        //            try {
+        //            } catch (Exception e) {
+        //                alert(, getErrorDialogMessage(e));
+        //                throw new RuntimeException(e);
+        //            }
+        SwingUtilities.invokeLater(Window::new);
     }
 }

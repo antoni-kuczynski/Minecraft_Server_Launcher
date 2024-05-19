@@ -4,7 +4,7 @@ import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerCons
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.utils.AlertType;
+//import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 
@@ -35,11 +35,15 @@ public class ServerConsole extends JPanel {
     private int commandIndex;
     private final JLabel serverConsoleTitle = new JLabel( "<html>Console - " + Config.getData().get(index).getServerName() + "</html>");
     private final Runnable consoleRunner = () -> {
-        try {
+//        try {
             while (true) {
                 synchronized (this) {
                     while (!isVisible || !isServerRunning) {
-                        wait(500);
+                        try {
+                            wait(500);
+                        } catch (InterruptedException e) {
+                            showErrorMessage("Console thread for " + Config.getData().get(index).getServerName() + " was interrupted.", e);
+                        }
                     }
                 }
 
@@ -50,11 +54,15 @@ public class ServerConsole extends JPanel {
                 InputStreamReader reader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(reader);
 
-                String line;
+                String line = null;
                 int howManyTimesLineWasNull = 0;
 
                 while (isServerRunning && isVisible) {
-                    line = bufferedReader.readLine();
+                    try {
+                        line = bufferedReader.readLine();
+                    } catch (IOException e) {
+                        showErrorMessage("I/O error in " + Config.getData().get(index).getServerName() + " thread - reading line.", e);
+                    }
 
                     if(line != null) {
                         String finalLine = line;
@@ -90,9 +98,9 @@ public class ServerConsole extends JPanel {
                     wasServerStopCausedByUser = true;
                 }
             }
-        } catch (IOException | InterruptedException e) {
-            alert(AlertType.ERROR, "Error in server console thread:\n" + getErrorDialogMessage(e));
-        }
+//        } catch (IOException | InterruptedException e) {
+//            alert(AlertType.ERROR, "Error in server console thread:\n" + getErrorDialogMessage(e));
+//        }
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
 
@@ -120,7 +128,7 @@ public class ServerConsole extends JPanel {
             String commands;
             try {
                 commands = readFileString(consoleHistory);
-            } catch (IOException e) {
+            } catch (IOException e) { //TODO
                 throw new RuntimeException();
             }
             for(String s : commands.split("\n")) {
@@ -246,7 +254,7 @@ public class ServerConsole extends JPanel {
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
             parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ONLINE));
-        } catch (Exception e) {
+        } catch (Exception e) { //TODO
 //            System.out.println(Window.getErrorDialogMessage(e));
 
             parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ServerInfoPanel extends JPanel{
-//    private final JLabel image = new JLabel(DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING)); //placeholder icon
     private final JLabel serverDetailsText = new JLabel("<html><center>Server details are going to appear here.</center></html>", SwingConstants.CENTER);
 
     protected void updateText(MCServer server) {
@@ -25,7 +24,14 @@ public class ServerInfoPanel extends JPanel{
             return;
 
         String gamemode = server.getProperty("gamemode");
-        gamemode = String.valueOf(gamemode.charAt(0)).toUpperCase() + gamemode.substring(1);
+        gamemode = switch (gamemode) {
+            case "0" -> "Survival";
+            case "1" -> "Creative";
+            case "2" -> "Adventure";
+            case "3" -> "Spectator";
+            default -> String.valueOf(gamemode.charAt(0)).toUpperCase() + gamemode.substring(1);
+        };
+
 
         boolean isInOnlineMode = server.getProperty("online-mode").equals("true");
 
@@ -38,6 +44,8 @@ public class ServerInfoPanel extends JPanel{
                         "<br>Port: " + server.getProperty("server-port") +
                         "<br>" + (isInOnlineMode ? "Online Mode" : "Offline Mode") +
                         "</center></html>");
+
+        serverDetailsText.setIcon(DefaultIcons.getIcon(server.getPlatform()));
     }
 
     protected ServerInfoPanel() {

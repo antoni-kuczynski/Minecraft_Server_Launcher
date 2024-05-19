@@ -37,7 +37,7 @@ public class MinecraftWorld {
         File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
         try {
             worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-        } catch (Exception e) {
+        } catch (Exception e) { //TODO
             worldIcon = DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING);
         }
         File levelDatFile = getLevelDatFile(worldPath);

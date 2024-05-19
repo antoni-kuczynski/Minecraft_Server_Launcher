@@ -70,10 +70,10 @@ public class ContainerPane extends JTabbedPane {
 
     @Override
     public void setToolTipTextAt(int index, String toolTipText) {
-//        String name = getTitleAt(index);
-//        if(name.length() > 52)
-//            super.setToolTipTextAt(index, toolTipText + "\n" + name);
-//        else
+        String name = Config.getData().get(index).getServerName();
+        if(name.length() > 52)
+            super.setToolTipTextAt(index, name + "\n" + toolTipText);
+        else
             super.setToolTipTextAt(index, toolTipText);
     }
 
@@ -263,7 +263,7 @@ public class ContainerPane extends JTabbedPane {
         selectedConsoleTab.getServerConsoleArea().isVisible = true;
         try {
             selectedConsoleTab.getServerConsoleArea().setTextFromLatestLogFile();
-        } catch (Exception e) {
+        } catch (Exception e) { //TODO
             throw new RuntimeException();
         }
     }

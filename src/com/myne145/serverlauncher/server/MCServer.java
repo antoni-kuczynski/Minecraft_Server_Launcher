@@ -1,6 +1,6 @@
 package com.myne145.serverlauncher.server;
 
-import com.myne145.serverlauncher.utils.AlertType;
+//import com.myne145.serverlauncher.utils.AlertType;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import static com.myne145.serverlauncher.gui.window.Window.alert;
-import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
+//import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
 public class MCServer {
     private String serverName;
@@ -45,8 +45,8 @@ public class MCServer {
         this.platform = getPlatformFromManifestFile();
         try {
             updateProperties();
-        } catch (Exception e) {
-            alert(AlertType.ERROR, getErrorDialogMessage(e));
+        } catch (IOException e) {
+            showErrorMessage("Cannot read " + serverName + " server.properties file.", e);
         }
 
     }
@@ -56,7 +56,8 @@ public class MCServer {
         try {
             javaVersion = getJavaVersionFromReleaseFile();
         } catch (Exception e) {
-            alert(AlertType.ERROR, getErrorDialogMessage(e));
+            showErrorMessage("Cannot read java release file.", e);
+            javaVersion = "Unknown";
         }
     }
 
@@ -87,7 +88,7 @@ public class MCServer {
         updateWorldPath();
         try {
             updateProperties();
-        } catch (Exception e) {
+        } catch (Exception e) { //TODO
             throw new RuntimeException(e);
         }
         platform = getPlatformFromManifestFile();
@@ -116,7 +117,7 @@ public class MCServer {
             }
             jarFile.close();
         } catch (IOException e) {
-            alert(AlertType.ERROR, getErrorDialogMessage(e));
+            showErrorMessage("I/O error reading " + serverJarPath.getName() + " file, when trying to obtain server's version.", e);
         }
 
         if(mainClass.contains("papermc")) {
@@ -150,7 +151,7 @@ public class MCServer {
         worldPath = new File(serverPath.getAbsolutePath() + "/" + worldName);
     }
 
-    public String getJavaVersionFromReleaseFile() throws IOException {
+    private String getJavaVersionFromReleaseFile() throws IOException {
         File javaPath = getJavaRuntimePath();
         String javaVersion = "Unknown";
         if(javaPath == null || javaPath.getParentFile().list() == null || javaPath.getParentFile().list().length == 0)

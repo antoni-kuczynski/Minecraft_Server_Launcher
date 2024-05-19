@@ -1,21 +1,21 @@
 package com.myne145.serverlauncher.server;
 
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
-import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.FileSystemException;
+import java.nio.file.FileSystemLoopException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.myne145.serverlauncher.gui.window.Window.alert;
-import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
+import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 import static com.myne145.serverlauncher.utils.ZipUtils.extractArchive;
 import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 
@@ -53,7 +53,7 @@ public class WorldCopyHandler extends Thread {
     public static WorldCopyHandler createWorldCopyHandler(WorldsManagerTab worldsManagerTab) {
         try {
             return new WorldCopyHandler(worldsManagerTab, false);
-        } catch (Exception e) {
+        } catch (Exception e) { //TODO
             throw new RuntimeException();
         }
     }
@@ -73,9 +73,8 @@ public class WorldCopyHandler extends Thread {
         long copiedBytes = 0;
 
         // Create the destination directory if it doesn't exist
-        if (!destDir.exists()) {
-            if(!destDir.mkdir())
-                alert(AlertType.ERROR, "Cannot create destination directory.\nAt line " + getStackTrace()[1].getLineNumber());
+        if(!destDir.exists() && !destDir.mkdir()) {
+            showErrorMessage("Cannot create " + destDir.getAbsolutePath() + " world directory", new IOException());
         }
 
         // Iterate through all files and directories in the source directory
@@ -139,14 +138,18 @@ public class WorldCopyHandler extends Thread {
         }
     }
 
-    private void deleteEndAndNetherDirs() throws IOException {
-        FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_the_end"));
-        FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_nether"));
+    private void deleteEndAndNetherDirs() {
+        try {
+            FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_the_end"));
+            FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_nether"));
+        } catch (IOException e) {
+            showErrorMessage("Cannot remove " + Config.getData().get(worldsManagerTab.getTabIndex()).getServerName() + "'s world nether or end dirs.", e);
+        }
     }
 
-    private void handler() throws IOException, InterruptedException {
+    private void handler() throws IOException {
          if (selectedWorld.isDirectory() && selectedWorld.toString().contains(currentServerAbsPath)) {
-            Window.alert(AlertType.ERROR, "Cannot copy files from server directory to the server.");
+            Window.showErrorMessage("Cannot copy world files from the same server.", new FileSystemLoopException(selectedWorld.getAbsolutePath()));
         }
 
         if (selectedWorld.isDirectory() && !selectedWorld.toString().contains(currentServerAbsPath)) {
@@ -159,7 +162,7 @@ public class WorldCopyHandler extends Thread {
 
             if(!copyFilesToServerDir) {
                 if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
-                    alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
+                    showErrorMessage("Cannot create " + serverWorldDir.getAbsolutePath() + " world directory.", new FileSystemException(serverWorldDir.getAbsolutePath()));
                 }
                 if (!isAddedWorldDirEmpty && !containsWorldFiles) {
                     worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
@@ -178,15 +181,26 @@ public class WorldCopyHandler extends Thread {
                 }
 
                 deleteEndAndNetherDirs();
-                copyDirectoryWithProgressBar(selectedWorld, serverWorldDir);
+                try {
+                    copyDirectoryWithProgressBar(selectedWorld, serverWorldDir);
+                } catch (IOException e) {
+                    showErrorMessage("Cannot copy the world files to the server.", e);
+                }
             }
         } else if (isArchive(selectedWorld)) {
             if (!copyFilesToServerDir) {
                 File worldExtractDirectory = new File("world_temp/" + selectedWorld.getName());
                 if (worldExtractDirectory.exists())
                     FileUtils.deleteDirectory(worldExtractDirectory);
-                
-                String extractedDirectory = extractArchive(selectedWorld.getAbsolutePath(), worldExtractDirectory.getAbsolutePath(), worldsManagerTab);
+
+
+                String extractedDirectory;
+                try {
+                    extractedDirectory = extractArchive(selectedWorld.getAbsolutePath(), worldExtractDirectory.getAbsolutePath(), worldsManagerTab);
+                } catch (IOException e) {
+                    showErrorMessage("I/O error extracting " + selectedWorld.getName() + " file.", e);
+                    return;
+                }
                 if(!worldExtractDirectory.exists()) {
                     worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
                     return;
@@ -201,12 +215,13 @@ public class WorldCopyHandler extends Thread {
                 if(extractedWorldsLevelDat.exists()) {//copying world's level.dat file analogically like server ones
                     File worldLevelDat = new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat");
                     FileUtils.copyFile(extractedWorldsLevelDat, worldLevelDat);
+
                 }
             }
             if (copyFilesToServerDir) {
-                startImportingButtonFromWorldManagerTab.setEnabled(false); //issue #15 fix
+                startImportingButtonFromWorldManagerTab.setEnabled(false);
                 if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
-                    alert(AlertType.ERROR, "Cannot create world directory \"" + serverWorldDir.getAbsolutePath() + "\".");
+                    showErrorMessage("Cannot create world directory.", new FileSystemException(serverWorldDir.getAbsolutePath()));
                 }
 
                 File dir = new File(worldsManagerTab.getExtractedWorldDir());
@@ -220,8 +235,8 @@ public class WorldCopyHandler extends Thread {
                 copyDirectoryWithProgressBar(predictedWorldDir, serverWorldDir);
             }
         }
-        startImportingButtonFromWorldManagerTab.setEnabled(true); //issue #15 fix
-        worldsManagerTab.setIcons(); //non-removable
+        startImportingButtonFromWorldManagerTab.setEnabled(true);
+        worldsManagerTab.setIcons();
         if(Config.getData().get(worldsManagerTab.getTabIndex()).getWorldPath().exists()) {
             worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(Config.getData().get(worldsManagerTab.getTabIndex()).getWorldPath());
         }
@@ -232,11 +247,9 @@ public class WorldCopyHandler extends Thread {
         worldsManagerTab.getStartCopying().setEnabled(false);
         try {
             handler();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             worldsManagerTab.getStartCopying().setEnabled(true);
-            if(e.toString().startsWith("java.io.FileNotFoundException")) {
-                alert(AlertType.ERROR, "Incompatible archive found! Try unpacking it manually and adding it as a folder.\n" + getErrorDialogMessage(e));
-            }
+            showErrorMessage("Incompatible archive found. Try unpacking it manually and adding the world from a folder.", e);
         }
         worldsManagerTab.getStartCopying().setEnabled(true);
     }
