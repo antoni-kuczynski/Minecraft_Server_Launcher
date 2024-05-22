@@ -138,7 +138,18 @@ public class ContainerPane extends JTabbedPane {
 
 
         ArrayList<MCServer> configData = Config.getData();
-        configData.forEach(this::addServer);
+        for(int i = 0; i < configData.size(); i++)
+            serverTabbedPanes.add(null); //initialize the array
+
+        for(int i = 0; i < configData.size(); i++) {
+            for(int j = 0; j < configData.size(); j++) {
+                if(configData.get(j).getServerId() == i + 1) {
+                    addServer(configData.get(j));
+                    break;
+                }
+            }
+        }
+//        configData.forEach(this::addServer);
 
         int index = Window.getUserValues().getInt("prefs_server_id", 0);
         if(index >= configData.size()) {
@@ -192,7 +203,12 @@ public class ContainerPane extends JTabbedPane {
         tabbedPane.addTab("Worlds", new WorldsManagerTab(this, server.getServerId() - 1));
         tabbedPane.setTabComponentAt(0, new TabLabelWithFileTransfer("Console", tabbedPane,0));
         tabbedPane.setTabComponentAt(1, new TabLabelWithFileTransfer("Worlds", tabbedPane,1));
-        serverTabbedPanes.add(tabbedPane);
+//        serverTabbedPanes.add(tabbedPane);
+        if(serverTabbedPanes.size() < server.getServerId()) {
+            for (int i = 0; i < server.getServerId() - serverTabbedPanes.size(); i++)
+                serverTabbedPanes.add(null);
+        }
+        serverTabbedPanes.set(server.getServerId() - 1, tabbedPane);
 
         String serverName = server.getServerName();
         if(serverName.length() > 52)

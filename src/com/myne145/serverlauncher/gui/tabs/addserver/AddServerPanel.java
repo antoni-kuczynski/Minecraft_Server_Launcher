@@ -76,6 +76,7 @@ public class AddServerPanel extends JPanel {
             s = s.substring(0, s.length() / 2 - (s.length() - 27) / 2) + "..." + s.substring(s.length() / 2 + (s.length() - 27) / 2);
         }
         openServerJarPanel.getValue().setCustomButtonText(s);
+        openServerJarPanel.getValue().setToolTipText(path.getAbsolutePath());
         serverInfoPanel.updateText(currentServer);
 
         if(serverInfoPanel.isVisible())
@@ -85,11 +86,12 @@ public class AddServerPanel extends JPanel {
     }
 
     private void setJavaBinPath(File path) {
-        currentServer.setJavaRuntimePath(path);
+        currentServer.setJavaExecutablePath(path);
         if(currentServer.isComplete())
             confirmButton.setEnabled(true);
 
         openJavaBinPanel.getValue().setCustomButtonText(path.getName() + ", Version: " + currentServer.getJavaVersion());
+        openJavaBinPanel.getValue().setToolTipText(path.getAbsolutePath());
         serverInfoPanel.updateText(currentServer);
     }
 
@@ -107,6 +109,7 @@ public class AddServerPanel extends JPanel {
 
 
         currentServer.setServerLaunchArgs("nogui");
+//        currentServer.setServerId(Config.getData().get(Config.getData().size() - 1).getServerId() + 1);
 
         confirmButton.setEnabled(false);
         confirmButton.setAlignmentX(LEFT_ALIGNMENT);
@@ -181,6 +184,8 @@ public class AddServerPanel extends JPanel {
 
             Config.getData().add(currentServer);
             parentPane.addServer(currentServer);
+            currentServer.writeToConfig();
+            owner.dispose();
         });
     }
 

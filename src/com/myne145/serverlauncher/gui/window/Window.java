@@ -38,6 +38,7 @@ public class Window extends JFrame {
     private static final JMenuBar menuBar = new JMenuBar();
     private final JButton addServerButton = new JButton("Add server");
     private final Container glassPane = (Container) getRootPane().getGlassPane();
+//    public final JPopupMenu contextMenu = new JPopupMenu();
 
     public Window() {
         // Set up the JFrame
@@ -307,6 +308,16 @@ public class Window extends JFrame {
         new File(tempFilesDirectory.getAbsolutePath() + "/worlds_level_dat").mkdirs();
     }
 
+//    public void showContextMenu(final MouseEvent e, Component component) {
+//        if (contextMenu == null) {
+//            return;
+//        }
+//
+//        Point p = SwingUtilities.convertPoint(component, e.getPoint(), Window.getWindow().getAddServerButton());
+//        contextMenu.setComponentZOrder(Window.getWindow().getAddServerButton(), 0);
+//        SwingUtilities.invokeLater(() -> contextMenu.show(Window.getWindow().getAddServerButton(), p.x, p.y));
+//    }
+
     public static Window getWindow() {
         return window;
     }
@@ -329,6 +340,10 @@ public class Window extends JFrame {
 
     public static DateFormat getDateFormat() {
         return dateFormat;
+    }
+
+    public JButton getAddServerButton() {
+        return addServerButton;
     }
 
     public static void main(String[] args) throws Exception {

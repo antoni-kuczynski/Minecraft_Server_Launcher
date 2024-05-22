@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.gui.components;
 
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
 
 import javax.swing.*;
@@ -56,6 +57,8 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
         if (contextMenu == null) {
             return;
         }
-        SwingUtilities.invokeLater(() -> contextMenu.show(component, e.getX(), e.getY()));
+        Point p = SwingUtilities.convertPoint(component, e.getPoint(), Window.getWindow().getAddServerButton());
+//        contextMenu.setComponentZOrder(Window.getWindow().getGlassPane(), 0);
+        SwingUtilities.invokeLater(() -> contextMenu.show(Window.getWindow().getAddServerButton(), p.x, p.y));
     }
 }

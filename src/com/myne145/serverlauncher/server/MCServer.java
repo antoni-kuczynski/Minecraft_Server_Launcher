@@ -2,7 +2,12 @@ package com.myne145.serverlauncher.server;
 
 //import com.myne145.serverlauncher.utils.AlertType;
 
+import com.myne145.serverlauncher.gui.window.Window;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -17,9 +22,9 @@ public class MCServer {
     private String serverName;
     private File serverPath;
     private File serverJarPath;
-    private File javaRuntimePath;
+    private File javaExecutablePath;
     private String serverLaunchArgs;
-    private int serverId;
+    private final int serverId;
     private File worldPath;
     private final LinkedHashMap<String, String> properties = new LinkedHashMap<>();
     private ServerPlatform platform;
@@ -27,12 +32,12 @@ public class MCServer {
 
     public boolean isComplete() {
         return serverName != null && serverPath != null
-                && serverJarPath != null && javaRuntimePath != null
+                && serverJarPath != null && javaExecutablePath != null
                 && serverLaunchArgs != null;
     }
 
     public MCServer() {
-        this.serverId = Config.getData().size() + 1;
+        this.serverId = Config.getData().get(Config.getData().size() - 1).getServerId() + 1;
     }
 
     public void setServerName(String serverName) {
@@ -51,8 +56,8 @@ public class MCServer {
 
     }
 
-    public void setJavaRuntimePath(File javaRuntimePath) {
-        this.javaRuntimePath = javaRuntimePath;
+    public void setJavaExecutablePath(File javaExecutablePath) {
+        this.javaExecutablePath = javaExecutablePath;
         try {
             javaVersion = getJavaVersionFromReleaseFile();
         } catch (Exception e) {
@@ -61,25 +66,20 @@ public class MCServer {
         }
     }
 
-    public void setServerId(int serverId) {
-        this.serverId = serverId;
-    }
-
     public void setServerLaunchArgs(String serverLaunchArgs) {
-
-        this.serverLaunchArgs = "nogui" + serverLaunchArgs.replace("nogui", "");
+        this.serverLaunchArgs = "nogui " + serverLaunchArgs.replace("nogui", "");
     }
 
 
-    public MCServer(String serverName, File serverPath, File serverJarPath, String javaRuntimePath, String serverLaunchArgs, int serverId) {
+    public MCServer(String serverName, File serverPath, File serverJarPath, String javaExecutablePath, String serverLaunchArgs, int serverId) {
         this.serverName = serverName;
         this.serverPath = serverPath;
         this.serverJarPath = serverJarPath;
 
-        if(javaRuntimePath.equalsIgnoreCase("java")) {
-            this.javaRuntimePath = Config.getDefaultJava();
+        if(javaExecutablePath.equalsIgnoreCase("java")) {
+            this.javaExecutablePath = Config.getDefaultJava();
         } else {
-            this.javaRuntimePath = new File(javaRuntimePath);
+            this.javaExecutablePath = new File(javaExecutablePath);
         }
 
         this.serverLaunchArgs = serverLaunchArgs;
@@ -92,7 +92,6 @@ public class MCServer {
             throw new RuntimeException(e);
         }
         platform = getPlatformFromManifestFile();
-
     }
 
 
@@ -152,7 +151,7 @@ public class MCServer {
     }
 
     private String getJavaVersionFromReleaseFile() throws IOException {
-        File javaPath = getJavaRuntimePath();
+        File javaPath = getJavaExecutablePath();
         String javaVersion = "Unknown";
         if(javaPath == null || javaPath.getParentFile().list() == null || javaPath.getParentFile().list().length == 0)
             return javaVersion;
@@ -160,15 +159,11 @@ public class MCServer {
         if(javaPath.isFile())
             javaPath = javaPath.getParentFile();
 
+        if(javaPath.list() == null)
+            return javaVersion;
+
         List<String> files = Arrays.asList(javaPath.list());
-//        while(!files.contains("release")) {
-//            if(javaPath.getParentFile() == null) {
-//                return javaVersion;
-//            }
-//            files = Arrays.asList(javaPath.getParentFile().list());
-//            javaPath = javaPath.getParentFile();
-//        }
-        if(!files.contains("release") && javaPath.getParentFile() != null) {
+        if(!files.contains("release") && javaPath.getParentFile() != null && javaPath.getParentFile().list() != null) {
             files = Arrays.asList(javaPath.getParentFile().list()); //one folder back if user selected the "bin" folder
             javaPath = javaPath.getParentFile();
         }
@@ -226,6 +221,27 @@ public class MCServer {
         return properties.get(key);
     }
 
+    public void writeToConfig() {
+        Config.getData().add(this);
+        JSONObject object = new JSONObject();
+        object.put("serverName", serverName);
+        object.put("pathToServerJarFile", serverJarPath);
+        object.put("pathToJavaRuntimeExecutable", javaExecutablePath);
+        object.put("launchArgs", serverLaunchArgs);
+        object.put("tabIndex", serverId);
+
+        JSONArray array = Config.getJSONArray();
+        array.put(object);
+        System.out.println(array.toString(4));
+
+        try(FileWriter writer = new FileWriter(Config.ABSOLUTE_PATH)) {
+            writer.write("");
+            writer.write(array.toString(4));
+        } catch (IOException e) {
+            Window.showErrorMessage("I/O error writing the server to config. Server will not be added.", e);
+        }
+    }
+
     public String getServerName() {
         return serverName;
     }
@@ -238,8 +254,8 @@ public class MCServer {
         return serverJarPath;
     }
 
-    public File getJavaRuntimePath() {
-        return javaRuntimePath;
+    public File getJavaExecutablePath() {
+        return javaExecutablePath;
     }
 
     public String getServerLaunchArgs() {

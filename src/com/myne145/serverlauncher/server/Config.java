@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class Config extends ArrayList<MCServer> {
@@ -17,6 +19,7 @@ public class Config extends ArrayList<MCServer> {
     public static final ClassLoader classLoader = Config.class.getClassLoader();
     public static String RESOURCES_PATH = "com/myne145/serverlauncher/resources";
     public static String ABSOLUTE_PATH;
+    private static JSONArray configJSONObjects;
 
 
     public static File getDefaultJava() {
@@ -48,47 +51,46 @@ public class Config extends ArrayList<MCServer> {
         } catch (Exception e) {
             Window.showErrorMessage(serverConfigFile.getName() + " file is not a valid JSON.", e);
             System.exit(1);
-//            isConfigAValidJSON = false;
         }
 
-
-
         if(!serverConfigFile.exists()) {
-
             FileWriter configWriter = getConfigWriter(serverConfigFile);
             configWriter.close();
         }
 
-
-
-        JSONArray configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
+        configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
         JSONObject globalVariables = configJSONObjects.getJSONObject(0);
-        String javaArguments = globalVariables.getString("globalLaunchArgs");
+//        String javaArguments = globalVariables.getString("globalLaunchArgs");
 
 
-        int serverId = 1;
-        for (int jsonIndex = 1; jsonIndex < configJSONObjects.length(); jsonIndex++) { //start on index 1 because index 0 are global variables
+//        int serverId = 1;
+        for (int jsonIndex = 0; jsonIndex < configJSONObjects.length(); jsonIndex++) {
             JSONObject jsonObject = configJSONObjects.getJSONObject(jsonIndex);
             String serverName = jsonObject.getString("serverName");
             String pathToServerFolder = new File(jsonObject.getString("pathToServerJarFile")).getParent();
             String pathToServerJarFile = jsonObject.getString("pathToServerJarFile");
             String pathToJavaRuntime = jsonObject.getString("pathToJavaRuntimeExecutable");
-            boolean overrideGloballaunchArgs = jsonObject.getBoolean("overrideDefaultLaunchArgs");
-//            boolean isEmpty = serverName.isEmpty() && pathToServerFolder.isEmpty() && pathToServerJarFile.isEmpty() && pathToJavaRuntime.isEmpty();
+            String serverLaunchArgs = jsonObject.getString("launchArgs");
+            int tabIndex = jsonObject.getInt("tabIndex");
 
-            String serverLaunchArgs;
-            if(overrideGloballaunchArgs)
-                serverLaunchArgs = jsonObject.getString("launchArgs");
-            else
-                serverLaunchArgs = javaArguments;
+            if(!serverLaunchArgs.contains("nogui"))
+                serverLaunchArgs = serverLaunchArgs + " nogui";
 
             if(!new File(pathToServerJarFile).exists()) {
                 continue;
             }
             data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), pathToJavaRuntime,
-                serverLaunchArgs, serverId));
-            serverId++;
+                serverLaunchArgs, tabIndex));
+//            serverId++;
         }
+
+        data.sort((o1, o2) -> {
+            if (o1.getServerId() > o2.getServerId())
+                return 1;
+            else if (o1.getServerId() < o2.getServerId())
+                return -1;
+            return 0;
+        });
     }
 
     private static FileWriter getConfigWriter(File serverConfigFile) throws IOException {
@@ -96,13 +98,11 @@ public class Config extends ArrayList<MCServer> {
         configWriter.write("""
                 [
                  {
-                     "globalLaunchArgs": ""
-                 },
-                 {
                      "serverName": "YOUR SERVER NAME",
                      "pathToServerJarFile": "PATH TO SERVER JAR",
                      "pathToJavaRuntimeExecutable": "PATH TO JAVA RUNTIME EXECUTABLE",
-                     "overrideDefaultLaunchArgs": false
+                     "launchArgs": "nogui",
+                     "tabIndex": 0
                    }
                  ]""");
         return configWriter;
@@ -210,5 +210,9 @@ public class Config extends ArrayList<MCServer> {
 
     public static ArrayList<MCServer> getData() {
         return data;
+    }
+
+    public static JSONArray getJSONArray() {
+        return configJSONObjects;
     }
 }

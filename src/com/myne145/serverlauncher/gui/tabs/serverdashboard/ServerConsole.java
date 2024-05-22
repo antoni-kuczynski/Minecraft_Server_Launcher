@@ -233,9 +233,9 @@ public class ServerConsole extends JPanel {
     protected void startServerWithoutChangingTheButtons(MCServer MCServer) {
         serverConsoleTitle.setIcon(null);
         isVisible = true;
-        boolean isSelectedJavaTheDefaultOne = MCServer.getJavaRuntimePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
-                MCServer.getJavaRuntimePath().getAbsolutePath().endsWith("java");
-        String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : MCServer.getJavaRuntimePath().getAbsolutePath();
+        boolean isSelectedJavaTheDefaultOne = MCServer.getJavaExecutablePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
+                MCServer.getJavaExecutablePath().getAbsolutePath().endsWith("java");
+        String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : MCServer.getJavaExecutablePath().getAbsolutePath();
         ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", MCServer.getServerJarPath().getAbsolutePath(), "nogui"));
         consoleOutput.setText("");
 
