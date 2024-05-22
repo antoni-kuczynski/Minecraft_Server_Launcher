@@ -11,6 +11,4 @@ Minecraft server GUI launcher, intended for better server management in one plac
 - Runs on all platforms (cross-platform)
 
 # Features currently in progress:
-- Ability to add and modify servers in-app
-- Support for the server.properties file
-- Auto-updater
+TODO
