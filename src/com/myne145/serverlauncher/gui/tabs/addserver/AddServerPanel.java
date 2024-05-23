@@ -11,6 +11,7 @@ import com.myne145.serverlauncher.utils.ZipUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.*;
+import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -43,6 +44,8 @@ public class AddServerPanel extends JPanel {
         JLabel titleLabel = new JLabel(titleText);
         JPanel result = new JPanel();
 
+        Action beep = field.getActionMap().get(DefaultEditorKit.deletePrevCharAction);
+        beep.setEnabled(false);
         titleLabel.setAlignmentX(LEFT_ALIGNMENT);
         field.setAlignmentX(LEFT_ALIGNMENT);
         field.setBorder(new FlatLineBorder(new Insets(1,1,1,1), Colors.COMPONENT_PRIMARY_COLOR.darker(), 1, 3));
@@ -82,7 +85,7 @@ public class AddServerPanel extends JPanel {
         if(serverInfoPanel.isVisible())
             return;
         serverInfoPanel.setVisible(true);
-        owner.setBounds(owner.getX(), owner.getY(), 760, 450);
+        owner.setBounds(owner.getX() - 155, owner.getY(), 760, 450);
     }
 
     private void setJavaBinPath(File path) {
@@ -184,7 +187,7 @@ public class AddServerPanel extends JPanel {
 
             Config.getData().add(currentServer);
             parentPane.addServer(currentServer);
-            currentServer.writeToConfig();
+            MCServer.writeAllToConfig();
             owner.dispose();
         });
     }

@@ -14,12 +14,11 @@ import java.util.Collections;
 import java.util.Comparator;
 
 
-public class Config extends ArrayList<MCServer> {
+public abstract class Config extends ArrayList<MCServer> {
     private static final ArrayList<MCServer> data = new ArrayList<>();
     public static final ClassLoader classLoader = Config.class.getClassLoader();
     public static String RESOURCES_PATH = "com/myne145/serverlauncher/resources";
     public static String ABSOLUTE_PATH;
-    private static JSONArray configJSONObjects;
 
 
     public static File getDefaultJava() {
@@ -58,8 +57,7 @@ public class Config extends ArrayList<MCServer> {
             configWriter.close();
         }
 
-        configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
-        JSONObject globalVariables = configJSONObjects.getJSONObject(0);
+        JSONArray configJSONObjects = new JSONArray(readFileString(new File("servers.json")));
 //        String javaArguments = globalVariables.getString("globalLaunchArgs");
 
 
@@ -76,9 +74,10 @@ public class Config extends ArrayList<MCServer> {
             if(!serverLaunchArgs.contains("nogui"))
                 serverLaunchArgs = serverLaunchArgs + " nogui";
 
-            if(!new File(pathToServerJarFile).exists()) {
+            if(!new File(pathToServerJarFile).exists() || (pathToJavaRuntime.equals("java") && Config.getDefaultJava() == null)) {
                 continue;
             }
+
             data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), pathToJavaRuntime,
                 serverLaunchArgs, tabIndex));
 //            serverId++;
@@ -91,6 +90,11 @@ public class Config extends ArrayList<MCServer> {
                 return -1;
             return 0;
         });
+
+        for(int i = 0; i < data.size(); i++) {
+            data.get(i).setServerId(i + 1);
+        }
+        MCServer.writeAllToConfig();
     }
 
     private static FileWriter getConfigWriter(File serverConfigFile) throws IOException {
@@ -210,9 +214,5 @@ public class Config extends ArrayList<MCServer> {
 
     public static ArrayList<MCServer> getData() {
         return data;
-    }
-
-    public static JSONArray getJSONArray() {
-        return configJSONObjects;
     }
 }

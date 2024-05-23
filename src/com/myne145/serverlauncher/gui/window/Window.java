@@ -6,6 +6,7 @@ import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 //import com.myne145.serverlauncher.utils.AlertType;
+import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -105,23 +106,16 @@ public class Window extends JFrame {
         addServerButton.setBorder(new FlatLineBorder(new Insets(5,5,5,5), Colors.BORDER_COLOR));
         addServerButton.setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
 
-
         addServerButton.addActionListener(e -> {
             JDialog dialog = new JDialog((Dialog) null);
-
             dialog.setTitle("Add server");
             dialog.setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
             dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
             dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
 
-//            dialog.setBounds((this.getWidth() - this.getX()) / 2 - 380, (this.getHeight() - this.getY()) / 2 + 225, 760, 450);
-            dialog.setBounds((this.getWidth() - this.getX()) / 2 - 225, (this.getHeight() - this.getY()) / 2 + 225, 450, 450);
+            dialog.setBounds(this.getX() + (this.getWidth() / 2) - 225, this.getY() + (this.getHeight() / 2) - 225, 450, 450);
             dialog.add(new AddServerPanel(containerPane, dialog));
             dialog.setResizable(false);
-
-//            dialog.setSize(300, 400);
-//            dialog.setSize(new Dimension(760, 450));
-//            dialog.setMinimumSize(new Dimension(800, 550));
             dialog.setVisible(true);
         });
 
@@ -130,15 +124,6 @@ public class Window extends JFrame {
 
         setVisible(true);
         containerPane.setChartsVisibility(areChartsEnabled);
-
-
-        //TEMP
-//        JDialog dialog = new JDialog();
-//        dialog.setTitle("Add server");
-//        dialog.add(new AddServerPanel(containerPane));
-//        dialog.setSize(800, 500);
-//        dialog.setVisible(true);
-
 
         showCharts.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -170,8 +155,6 @@ public class Window extends JFrame {
                 containerPane.updateServerButtonsSizes();
             }
         });
-//        openServerFolder.addActionListener(e -> DesktopOpener.openServerFolder(containerPane.getSelectedIndex()));
-
         areChartsEnabled = getUserValues().getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
         showCharts.setSelected(areChartsEnabled);
 
@@ -188,12 +171,6 @@ public class Window extends JFrame {
         int savedHeight = getUserValues().getInt(PREFS_KEY_HEIGHT, 550);
         setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
 
-
-
-//        openConfigFile.addActionListener(e -> DesktopOpener.openConfigFile());
-
-
-
         for(WindowListener windowListener : getWindowListeners())
             removeWindowListener(windowListener);
         addWindowListener(new WindowAdapter() {
@@ -209,6 +186,7 @@ public class Window extends JFrame {
                 userSavedValues.putBoolean(PREFS_ARE_CHARTS_ENABLED, areChartsEnabled);
 
                 containerPane.killAllServerProcesses();
+                MCServer.writeAllToConfig();
 
                 File temporaryFilesDirectory = new File("world_temp");
                 if(!temporaryFilesDirectory.exists())
@@ -255,37 +233,6 @@ public class Window extends JFrame {
         window = this;
     }
 
-//    protected void updateAddServerButtonsSize(int width) {
-//        Dimension d = new Dimension(width, addServerButton.getPreferredSize().height);
-//        addServerButton.setPreferredSize(d);
-//        addServerButton.setSize(d);
-//    }
-
-//    public static String getErrorDialogMessage(Exception e) {
-//        Toolkit.getDefaultToolkit().beep();
-//        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
-//        taskbar.setWindowProgressValue(Window.getWindow(), 100);
-//        StringBuilder errorMessage = new StringBuilder();
-//        errorMessage.append(e).append("\n");
-//        errorMessage.append("Caused by:\n");
-//        StackTraceElement[] errorStackTrace = e.getStackTrace();
-//        for (StackTraceElement element : errorStackTrace) {
-//            errorMessage.append(element.toString());
-//            errorMessage.append("\n");
-//        }
-//        return errorMessage.toString();
-//    }
-
-//    public static void alert(AlertType alertType, String message) {
-//        switch(alertType) {
-//            case INFO -> JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
-//            case ERROR -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-//            case WARNING -> JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-//            case FATAL -> JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
-//        }
-//        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
-//    }
-
     public static void showErrorMessage(String basicInfo, Exception e) {
         new ErrorDialog(basicInfo, e).setVisible(true);
     }
@@ -308,15 +255,6 @@ public class Window extends JFrame {
         new File(tempFilesDirectory.getAbsolutePath() + "/worlds_level_dat").mkdirs();
     }
 
-//    public void showContextMenu(final MouseEvent e, Component component) {
-//        if (contextMenu == null) {
-//            return;
-//        }
-//
-//        Point p = SwingUtilities.convertPoint(component, e.getPoint(), Window.getWindow().getAddServerButton());
-//        contextMenu.setComponentZOrder(Window.getWindow().getAddServerButton(), 0);
-//        SwingUtilities.invokeLater(() -> contextMenu.show(Window.getWindow().getAddServerButton(), p.x, p.y));
-//    }
 
     public static Window getWindow() {
         return window;
@@ -348,16 +286,8 @@ public class Window extends JFrame {
 
     public static void main(String[] args) throws Exception {
         Config.createConfig();
-
-        System.out.println(Config.getData());
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
-
-        //            try {
-        //            } catch (Exception e) {
-        //                alert(, getErrorDialogMessage(e));
-        //                throw new RuntimeException(e);
-        //            }
         SwingUtilities.invokeLater(Window::new);
     }
 }

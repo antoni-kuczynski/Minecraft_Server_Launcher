@@ -24,7 +24,7 @@ public class MCServer {
     private File serverJarPath;
     private File javaExecutablePath;
     private String serverLaunchArgs;
-    private final int serverId;
+    private int serverId;
     private File worldPath;
     private final LinkedHashMap<String, String> properties = new LinkedHashMap<>();
     private ServerPlatform platform;
@@ -70,6 +70,9 @@ public class MCServer {
         this.serverLaunchArgs = "nogui " + serverLaunchArgs.replace("nogui", "");
     }
 
+    public void setServerId(int id) {
+        this.serverId = id;
+    }
 
     public MCServer(String serverName, File serverPath, File serverJarPath, String javaExecutablePath, String serverLaunchArgs, int serverId) {
         this.serverName = serverName;
@@ -221,18 +224,22 @@ public class MCServer {
         return properties.get(key);
     }
 
-    public void writeToConfig() {
-        Config.getData().add(this);
+    private static JSONObject getJSONObject(MCServer server) {
         JSONObject object = new JSONObject();
-        object.put("serverName", serverName);
-        object.put("pathToServerJarFile", serverJarPath);
-        object.put("pathToJavaRuntimeExecutable", javaExecutablePath);
-        object.put("launchArgs", serverLaunchArgs);
-        object.put("tabIndex", serverId);
+        object.put("serverName", server.serverName);
+        object.put("pathToServerJarFile", server.serverJarPath);
+        object.put("pathToJavaRuntimeExecutable", server.javaExecutablePath);
+        object.put("launchArgs", server.serverLaunchArgs);
+        object.put("tabIndex", server.serverId);
+        return object;
+    }
 
-        JSONArray array = Config.getJSONArray();
-        array.put(object);
-        System.out.println(array.toString(4));
+    public static void writeAllToConfig() {
+        JSONArray array = new JSONArray();
+        for(MCServer server : Config.getData()) {
+            JSONObject object = getJSONObject(server);
+            array.put(object);
+        }
 
         try(FileWriter writer = new FileWriter(Config.ABSOLUTE_PATH)) {
             writer.write("");

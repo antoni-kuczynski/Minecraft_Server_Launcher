@@ -131,6 +131,8 @@ public class ContainerPane extends JTabbedPane {
             protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
                 return 220;
             }
+
+
         });
         setTabPlacement(LEFT);
         setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
@@ -141,15 +143,7 @@ public class ContainerPane extends JTabbedPane {
         for(int i = 0; i < configData.size(); i++)
             serverTabbedPanes.add(null); //initialize the array
 
-        for(int i = 0; i < configData.size(); i++) {
-            for(int j = 0; j < configData.size(); j++) {
-                if(configData.get(j).getServerId() == i + 1) {
-                    addServer(configData.get(j));
-                    break;
-                }
-            }
-        }
-//        configData.forEach(this::addServer);
+        configData.forEach(this::addServer);
 
         int index = Window.getUserValues().getInt("prefs_server_id", 0);
         if(index >= configData.size()) {
