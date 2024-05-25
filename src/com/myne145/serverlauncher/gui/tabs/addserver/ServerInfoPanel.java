@@ -39,7 +39,7 @@ public class ServerInfoPanel extends JPanel{
                 "<html><center>" +
                         "<b>" + server.getPlatform().toString() + "</b>" +
                         "<br>" + gamemode + " Mode" +
-                        "<br>Version: " + "PLACEHOLDER" +
+                        "<br>Version: " + server.getMinecraftVersion() +
                         "<br>World: " + "a really long world name for testing purposes lol" +
                         "<br>Port: " + server.getProperty("server-port") +
                         "<br>" + (isInOnlineMode ? "Online Mode" : "Offline Mode") +

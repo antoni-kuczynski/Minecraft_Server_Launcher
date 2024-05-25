@@ -11,7 +11,6 @@ import com.myne145.serverlauncher.utils.ZipUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.*;
-import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -24,83 +23,11 @@ public class AddServerPanel extends JPanel {
     private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
     private final MCServer currentServer = new MCServer();
 
-    private Pair<JPanel, PickFileButton> getOpenDirButtonPanel(String titleText, FilePickerButtonAction action) {
-        PickFileButton pickFileButton = new PickFileButton("Open directory", new Dimension(130, 40), new Dimension(300, 40), action);
-        JLabel titleLabel = new JLabel(titleText);
-        JPanel result = new JPanel();
-
-        titleLabel.setAlignmentX(LEFT_ALIGNMENT);
-        pickFileButton.setAlignmentX(LEFT_ALIGNMENT);
-
-        result.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
-        result.add(titleLabel);
-        result.add(pickFileButton);
-
-        return Pair.of(result, pickFileButton);
-    }
-
-    private JPanel getTextInputPanel(String titleText) {
-        JTextField field = new JTextField();
-        JLabel titleLabel = new JLabel(titleText);
-        JPanel result = new JPanel();
-
-        Action beep = field.getActionMap().get(DefaultEditorKit.deletePrevCharAction);
-        beep.setEnabled(false);
-        titleLabel.setAlignmentX(LEFT_ALIGNMENT);
-        field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setBorder(new FlatLineBorder(new Insets(1,1,1,1), Colors.COMPONENT_PRIMARY_COLOR.darker(), 1, 3));
-        field.setBackground(Colors.BACKGROUND_PRIMARY_COLOR);
-        field.setPreferredSize(new Dimension(130, 20));
-
-        result.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
-        result.add(titleLabel);
-        result.add(field);
-
-        return result;
-    }
-
-    private void setServerJarPath(File path) {
-        if(!path.isFile()) {
-            openServerJarPanel.getValue().setImportButtonWarning("Not a file");
-            return;
-        }
-        if(ZipUtils.getFileExtension(path).equals("jar")) {
-//            serverJarPath = path;
-            currentServer.setServerJarPath(path);
-        } else {
-            openServerJarPanel.getValue().setImportButtonWarning("Not a jar file");
-        }
-        if(currentServer.isComplete())
-            confirmButton.setEnabled(true);
-
-
-        String s = path.getName();
-        if(s.length() > 27) { //max 27chars
-            s = s.substring(0, s.length() / 2 - (s.length() - 27) / 2) + "..." + s.substring(s.length() / 2 + (s.length() - 27) / 2);
-        }
-        openServerJarPanel.getValue().setCustomButtonText(s);
-        openServerJarPanel.getValue().setToolTipText(path.getAbsolutePath());
-        serverInfoPanel.updateText(currentServer);
-
-        if(serverInfoPanel.isVisible())
-            return;
-        serverInfoPanel.setVisible(true);
-        owner.setBounds(owner.getX() - 155, owner.getY(), 760, 450);
-    }
-
-    private void setJavaBinPath(File path) {
-        currentServer.setJavaExecutablePath(path);
-        if(currentServer.isComplete())
-            confirmButton.setEnabled(true);
-
-        openJavaBinPanel.getValue().setCustomButtonText(path.getName() + ", Version: " + currentServer.getJavaVersion());
-        openJavaBinPanel.getValue().setToolTipText(path.getAbsolutePath());
-        serverInfoPanel.updateText(currentServer);
-    }
-
     public AddServerPanel(ContainerPane parentPane, Window owner) {
         setLayout(new BorderLayout());
         this.owner = owner;
+        setFocusable(true);
+        requestFocusInWindow();
 
         if (Config.getDefaultJava() == null) {
             openJavaBinPanel.getValue().setImportButtonWarning("No default java installation found");
@@ -112,8 +39,6 @@ public class AddServerPanel extends JPanel {
 
 
         currentServer.setServerLaunchArgs("nogui");
-//        currentServer.setServerId(Config.getData().get(Config.getData().size() - 1).getServerId() + 1);
-
         confirmButton.setEnabled(false);
         confirmButton.setAlignmentX(LEFT_ALIGNMENT);
 
@@ -185,11 +110,99 @@ public class AddServerPanel extends JPanel {
             handleKeyTyping(serverNameInput);
             handleKeyTyping(launchArgsInput);
 
+            if(Config.getData().isEmpty()) {
+                parentPane.removeTabAt(0);
+            }
+
             Config.getData().add(currentServer);
             parentPane.addServer(currentServer);
             MCServer.writeAllToConfig();
             owner.dispose();
         });
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                requestFocusInWindow();
+            }
+        });
+
+        //TODO not sure if this's a good idea
+        SwingUtilities.getRootPane(owner).setDefaultButton(confirmButton);
+    }
+
+    private Pair<JPanel, PickFileButton> getOpenDirButtonPanel(String titleText, FilePickerButtonAction action) {
+        PickFileButton pickFileButton = new PickFileButton("Open file", new Dimension(130, 40), new Dimension(300, 40), action);
+        JLabel titleLabel = new JLabel(titleText);
+        JPanel result = new JPanel();
+
+        pickFileButton.setTransferHandler(pickFileButton.getCustomTransferHandler(action));
+
+        titleLabel.setAlignmentX(LEFT_ALIGNMENT);
+        pickFileButton.setAlignmentX(LEFT_ALIGNMENT);
+
+        result.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
+        result.add(titleLabel);
+        result.add(pickFileButton);
+
+        return Pair.of(result, pickFileButton);
+    }
+
+    private JPanel getTextInputPanel(String titleText) {
+        JTextField field = new JTextField();
+        JLabel titleLabel = new JLabel(titleText);
+        JPanel result = new JPanel();
+
+
+        titleLabel.setAlignmentX(LEFT_ALIGNMENT);
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setBorder(new FlatLineBorder(new Insets(1,1,1,1), Colors.COMPONENT_PRIMARY_COLOR.darker(), 1, 3));
+        field.setBackground(Colors.BACKGROUND_PRIMARY_COLOR);
+        field.setPreferredSize(new Dimension(130, 20));
+
+        result.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
+        result.add(titleLabel);
+        result.add(field);
+
+        return result;
+    }
+
+    private void setServerJarPath(File path) {
+        if(!path.isFile()) {
+            openServerJarPanel.getValue().setImportButtonWarning("Not a file");
+            return;
+        }
+        if(ZipUtils.getFileExtension(path).equals("jar")) {
+            currentServer.setServerJarPath(path);
+        } else {
+            openServerJarPanel.getValue().setImportButtonWarning("Not a jar file");
+        }
+        if(currentServer.isComplete())
+            confirmButton.setEnabled(true);
+
+
+        String s = path.getName();
+        if(s.length() > 27) { //max 27chars
+            s = s.substring(0, s.length() / 2 - (s.length() - 27) / 2) + "..." + s.substring(s.length() / 2 + (s.length() - 27) / 2);
+        }
+        openServerJarPanel.getValue().setCustomButtonText(s);
+        openServerJarPanel.getValue().setToolTipText(path.getAbsolutePath());
+        serverInfoPanel.updateText(currentServer);
+
+        if(serverInfoPanel.isVisible())
+            return;
+        serverInfoPanel.setVisible(true);
+        owner.setBounds(owner.getX() - 155, owner.getY(), 760, 450);
+    }
+
+    private void setJavaBinPath(File path) {
+        currentServer.setJavaExecutablePath(path);
+        if(currentServer.isComplete())
+            confirmButton.setEnabled(true);
+
+        openJavaBinPanel.getValue().setCustomButtonText(path.getName() + ", Version: " + currentServer.getJavaVersion());
+        openJavaBinPanel.getValue().setToolTipText(path.getAbsolutePath());
+        serverInfoPanel.updateText(currentServer);
     }
 
     private void handleKeyTyping(JTextField field) {

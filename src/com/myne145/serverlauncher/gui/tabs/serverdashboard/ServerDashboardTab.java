@@ -16,22 +16,24 @@ public class ServerDashboardTab extends JPanel {
     private final JButton startServer = new JButton("Start server");
     private final JButton stopServer = new JButton("Stop server");
     private final JButton killServer = new JButton("Kill server");
-    private final int index;
+    private final MCServer server;
+//    private final int index;
     private final ServerConsole serverConsole;
     private final ContainerPane parentPane;
     private final CPUChart cpuChart = new CPUChart();
     private final RAMChart ramChart = new RAMChart();
 
-    public ServerDashboardTab(ContainerPane parentPane, int index) {
-        this.index = index;
+    public ServerDashboardTab(ContainerPane parentPane, MCServer server) {
+//        this.index = index;
         this.parentPane = parentPane;
+        this.server = server;
 
         setLayout(new BorderLayout());
 
         JPanel upperPanel = new JPanel(new BorderLayout());
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel serverButtons = new JPanel();
-        serverConsole = new ServerConsole(parentPane, index, this);
+        serverConsole = new ServerConsole(parentPane, server, this);
 
 
         upperPanel.add(Box.createRigidArea(new Dimension(5, 10)), BorderLayout.LINE_START);
@@ -83,13 +85,12 @@ public class ServerDashboardTab extends JPanel {
         killServer.setEnabled(isServerStarting);
         serverConsole.setPIDTextVisible(isServerStarting);
 
-        ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(index);
+        ServerTabLabel tabLabel = (ServerTabLabel) parentPane.getTabComponentAt(server.getServerId());
         tabLabel.changeServerActionContextMenuToServerStart(!isServerStarting);
     }
 
     public void startServer() {
-        MCServer MCServerConfig = Config.getData().get(index);
-        serverConsole.startServerWithoutChangingTheButtons(MCServerConfig);
+        serverConsole.startServerWithoutChangingTheButtons();
         changeServerActionButtonsVisibility(true);
     }
 
@@ -100,7 +101,7 @@ public class ServerDashboardTab extends JPanel {
     private void killServer() {
         serverConsole.killServer();
         changeServerActionButtonsVisibility(false);
-        parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
+        parentPane.setIconAt(server.getServerId(), DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
     }
 
     public void setChartsEnabled(boolean setEnabled) {
@@ -110,25 +111,5 @@ public class ServerDashboardTab extends JPanel {
 
     public ServerConsole getServerConsoleArea() {
         return serverConsole;
-    }
-
-    public CPUChart getCpuChart() {
-        return cpuChart;
-    }
-
-    public RAMChart getRamChart() {
-        return ramChart;
-    }
-
-    public JButton getStartServerButton() {
-        return startServer;
-    }
-
-    public JButton getStopServerButton() {
-        return stopServer;
-    }
-
-    public JButton getKillServerButton() {
-        return killServer;
     }
 }

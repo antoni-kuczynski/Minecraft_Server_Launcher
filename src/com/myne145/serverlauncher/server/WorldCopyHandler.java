@@ -143,7 +143,7 @@ public class WorldCopyHandler extends Thread {
             FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_the_end"));
             FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_nether"));
         } catch (IOException e) {
-            showErrorMessage("Cannot remove " + Config.getData().get(worldsManagerTab.getTabIndex()).getServerName() + "'s world nether or end dirs.", e);
+            showErrorMessage("Cannot remove " + Config.getData().get(worldsManagerTab.getTabIndex()).getName() + "'s world nether or end dirs.", e);
         }
     }
 

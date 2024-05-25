@@ -3,7 +3,6 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerConsoleContextMenu;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.MCServer;
-import com.myne145.serverlauncher.server.Config;
 //import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -33,7 +32,8 @@ public class ServerConsole extends JPanel {
     public boolean isVisible = false;
     private final ArrayList<String> commandHistory = new ArrayList<>();
     private int commandIndex;
-    private final JLabel serverConsoleTitle = new JLabel( "<html>Console - " + Config.getData().get(index).getServerName() + "</html>");
+    private MCServer server = null;
+    private final JLabel serverConsoleTitle;
     private final Runnable consoleRunner = () -> {
 //        try {
             while (true) {
@@ -42,7 +42,7 @@ public class ServerConsole extends JPanel {
                         try {
                             wait(500);
                         } catch (InterruptedException e) {
-                            showErrorMessage("Console thread for " + Config.getData().get(index).getServerName() + " was interrupted.", e);
+                            showErrorMessage("Console thread for " + server.getName() + " was interrupted.", e);
                         }
                     }
                 }
@@ -61,7 +61,7 @@ public class ServerConsole extends JPanel {
                     try {
                         line = bufferedReader.readLine();
                     } catch (IOException e) {
-                        showErrorMessage("I/O error in " + Config.getData().get(index).getServerName() + " thread - reading line.", e);
+                        showErrorMessage("I/O error in " + server.getName() + " thread - reading line.", e);
                     }
 
                     if(line != null) {
@@ -92,7 +92,6 @@ public class ServerConsole extends JPanel {
                         parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
                         parentConsoleTab.changeServerActionButtonsVisibility(false);
                         parentPane.setToolTipTextAt(index, "Errored");
-
                     }
                     parentConsoleTab.setWaitingStop(false);
                     wasServerStopCausedByUser = true;
@@ -104,15 +103,16 @@ public class ServerConsole extends JPanel {
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
 
-    protected ServerConsole(ContainerPane parentPane, int index, ServerDashboardTab tab) {
+    protected ServerConsole(ContainerPane parentPane, MCServer server, ServerDashboardTab tab) {
         setLayout(new BorderLayout());
-        this.index = index;
+        this.index = server.getServerId();
+        this.server = server;
         this.parentPane = parentPane;
         this.parentConsoleTab = tab;
         JScrollPane scrollPane = new JScrollPane(consoleOutput);
         ServerConsoleContextMenu.addDefaultContextMenu(consoleOutput);
 
-        consoleMainThread.setName("SERVER_" + Config.getData().get(index).getServerId() + "_CONSOLE");
+        consoleMainThread.setName("SERVER_" + server.getServerId() + "_CONSOLE");
         setBackground(Colors.BACKGROUND_PRIMARY_COLOR);
         consoleOutput.setBorder(null);
 
@@ -120,10 +120,11 @@ public class ServerConsole extends JPanel {
         JButton executeButton = new JButton("Execute");
 
 
-        serverConsoleTitle.setText("<html>Console - " + Config.getData().get(index).getServerName() + "</html>");
+
+        serverConsoleTitle = new JLabel("<html>Console - " + server.getName() + "</html>");
 
         //.console_history file loading
-        File consoleHistory = new File(Config.getData().get(index).getServerPath() + "/.console_history");
+        File consoleHistory = new File(server.getServerPath() + "/.console_history");
         if(consoleHistory.exists()) {
             String commands;
             try {
@@ -230,19 +231,19 @@ public class ServerConsole extends JPanel {
     }
 
 
-    protected void startServerWithoutChangingTheButtons(MCServer MCServer) {
+    protected void startServerWithoutChangingTheButtons() {
         serverConsoleTitle.setIcon(null);
         isVisible = true;
-        boolean isSelectedJavaTheDefaultOne = MCServer.getJavaExecutablePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
-                MCServer.getJavaExecutablePath().getAbsolutePath().endsWith("java");
-        String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : MCServer.getJavaExecutablePath().getAbsolutePath();
-        ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", MCServer.getServerJarPath().getAbsolutePath(), "nogui"));
+        boolean isSelectedJavaTheDefaultOne = server.getJavaExecutablePath().getAbsolutePath().contains(new File("").getAbsolutePath()) &&
+                server.getJavaExecutablePath().getAbsolutePath().endsWith("java");
+        String tempJavaPath = isSelectedJavaTheDefaultOne ? "java" : server.getJavaExecutablePath().getAbsolutePath();
+        ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", server.getServerJarPath().getAbsolutePath(), "nogui"));
         consoleOutput.setText("");
 
         ProcessBuilder processBuilder;
         try {
             processBuilder = new ProcessBuilder(command);
-            processBuilder.directory(MCServer.getServerPath());
+            processBuilder.directory(server.getServerPath());
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
             Process serverProcess = processBuilder.start();
@@ -254,16 +255,11 @@ public class ServerConsole extends JPanel {
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
             parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ONLINE));
-        } catch (Exception e) { //TODO
+        } catch (IOException e) { //TODO
 //            System.out.println(Window.getErrorDialogMessage(e));
 
             parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
             parentPane.setToolTipTextAt(index, "Errored");
-
-
-            serverConsoleTitle.setIcon(DefaultIcons.getSVGIcon(DefaultIcons.ERROR).derive(16,16));
-
-
             consoleOutput.append(e.getMessage() +
                     "\n(You probably specified a java executable that is not valid in the config file.)");
         }
@@ -271,7 +267,7 @@ public class ServerConsole extends JPanel {
 
         if (consoleMainThread.isAlive()) {
             processBuilder = new ProcessBuilder(command);
-            processBuilder.directory(MCServer.getServerPath());
+            processBuilder.directory(server.getServerPath());
             processBuilder.redirectErrorStream(true);
             isServerRunning = true;
         }
@@ -310,7 +306,7 @@ public class ServerConsole extends JPanel {
     public void setTextFromLatestLogFile() throws IOException {
         if(!isServerRunning)
             return;
-        File latestLog = new File(Config.getData().get(index).getServerPath().getAbsolutePath() + "\\logs\\latest.log");
+        File latestLog = new File(server.getServerPath().getAbsolutePath() + "\\logs\\latest.log");
         if(!latestLog.exists()) {
 //            System.out.println(ServerIcon.getServerIconSVG(ServerIcon.WARNING));
 //            serverConsoleTitle.setIcon(ServerIcon.getServerIconSVG(ServerIcon.WARNING));

@@ -6,14 +6,15 @@ import com.myne145.serverlauncher.gui.window.Window;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
 
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 //import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
@@ -29,50 +30,7 @@ public class MCServer {
     private final LinkedHashMap<String, String> properties = new LinkedHashMap<>();
     private ServerPlatform platform;
     private String javaVersion;
-
-    public boolean isComplete() {
-        return serverName != null && serverPath != null
-                && serverJarPath != null && javaExecutablePath != null
-                && serverLaunchArgs != null;
-    }
-
-    public MCServer() {
-        this.serverId = Config.getData().get(Config.getData().size() - 1).getServerId() + 1;
-    }
-
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
-    }
-
-    public void setServerJarPath(File serverJarPath) {
-        this.serverJarPath = serverJarPath;
-        this.serverPath = serverJarPath.getParentFile();
-        this.platform = getPlatformFromManifestFile();
-        try {
-            updateProperties();
-        } catch (IOException e) {
-            showErrorMessage("Cannot read " + serverName + " server.properties file.", e);
-        }
-
-    }
-
-    public void setJavaExecutablePath(File javaExecutablePath) {
-        this.javaExecutablePath = javaExecutablePath;
-        try {
-            javaVersion = getJavaVersionFromReleaseFile();
-        } catch (Exception e) {
-            showErrorMessage("Cannot read java release file.", e);
-            javaVersion = "Unknown";
-        }
-    }
-
-    public void setServerLaunchArgs(String serverLaunchArgs) {
-        this.serverLaunchArgs = "nogui " + serverLaunchArgs.replace("nogui", "");
-    }
-
-    public void setServerId(int id) {
-        this.serverId = id;
-    }
+    private String minecraftVersion;
 
     public MCServer(String serverName, File serverPath, File serverJarPath, String javaExecutablePath, String serverLaunchArgs, int serverId) {
         this.serverName = serverName;
@@ -95,8 +53,79 @@ public class MCServer {
             throw new RuntimeException(e);
         }
         platform = getPlatformFromManifestFile();
+        minecraftVersion = getMinecraftServerVersion();
     }
 
+    public MCServer() {
+        if(Config.getData().isEmpty())
+            this.serverId = 1;
+        else
+            this.serverId = Config.getData().get(Config.getData().size() - 1).getServerId() + 1;
+    }
+
+    private String getVersionFromVersionJSONFile() {
+        try (JarFile jarFile = new JarFile(this.serverJarPath.getAbsolutePath())) {
+            ZipEntry entry = jarFile.getEntry("version.json");
+
+            if (entry == null) {
+                return "Unknown";
+            }
+
+            try (InputStream inputStream = jarFile.getInputStream(entry);
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+                StringBuilder jsonContent = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonContent.append(line);
+                }
+
+                JSONObject jsonObject = new JSONObject(jsonContent.toString());
+                return jsonObject.getString("id"); // assuming "id" contains the version
+            }
+        } catch (IOException e) {
+            return "Unknown";
+        }
+    }
+
+    private String getVersionFromLatestLog() throws FileNotFoundException {
+        File logPath = new File(serverPath.getAbsolutePath() + "/logs/latest.log");
+        if(!logPath.exists())
+            return "Unknown";
+
+        Scanner sc = new Scanner(logPath);
+        String line = "";
+        for(int i = 0; i < 50; i++) {
+            line = sc.nextLine();
+            if(!line.contains("Starting minecraft server version"))
+                continue;
+
+            Pattern versionPattern = Pattern.compile("version\\s+([0-9]+\\.[0-9]+(\\.[0-9]+)?)");
+            Matcher matcher = versionPattern.matcher(line);
+
+            if (matcher.find()) {
+                return matcher.group(1);
+            } else {
+                return "Unknown";
+            }
+        }
+        return "Unknown";
+    }
+
+    private String getMinecraftServerVersion() {
+        String version;
+        //check for jar' version.json file if there isn't one skip
+        version = getVersionFromVersionJSONFile();
+
+        //check for latest.log file
+        try {
+            version = getVersionFromLatestLog();
+        } catch (FileNotFoundException e) {
+            version = "Unknown";
+        }
+
+        return version;
+    }
 
     private ServerPlatform getPlatformFromManifestFile() {
         String jarFilePath = serverJarPath.getAbsolutePath();
@@ -249,7 +278,13 @@ public class MCServer {
         }
     }
 
-    public String getServerName() {
+    public boolean isComplete() {
+        return serverName != null && serverPath != null
+                && serverJarPath != null && javaExecutablePath != null
+                && serverLaunchArgs != null;
+    }
+
+    public String getName() {
         return serverName;
     }
 
@@ -283,5 +318,44 @@ public class MCServer {
 
     public String getJavaVersion() {
         return javaVersion;
+    }
+
+    public String getMinecraftVersion() {
+        return minecraftVersion;
+    }
+
+    public void setServerId(int id) {
+        this.serverId = id;
+    }
+
+    public void setServerLaunchArgs(String serverLaunchArgs) {
+        this.serverLaunchArgs = "nogui " + serverLaunchArgs.replace("nogui", "");
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
+
+    public void setServerJarPath(File serverJarPath) {
+        this.serverJarPath = serverJarPath;
+        this.serverPath = serverJarPath.getParentFile();
+        this.platform = getPlatformFromManifestFile();
+        this.minecraftVersion = getMinecraftServerVersion();
+        try {
+            updateProperties();
+        } catch (IOException e) {
+            showErrorMessage("Cannot read " + serverName + " server.properties file.", e);
+        }
+
+    }
+
+    public void setJavaExecutablePath(File javaExecutablePath) {
+        this.javaExecutablePath = javaExecutablePath;
+        try {
+            javaVersion = getJavaVersionFromReleaseFile();
+        } catch (Exception e) {
+            showErrorMessage("Cannot read java release file.", e);
+            javaVersion = "Unknown";
+        }
     }
 }

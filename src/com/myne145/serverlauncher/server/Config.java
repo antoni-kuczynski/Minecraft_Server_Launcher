@@ -41,15 +41,16 @@ public abstract class Config extends ArrayList<MCServer> {
 
         if(!serverConfigFile.exists() && !serverConfigFile.createNewFile()) {
             Window.showErrorMessage("Cannot create the " + serverConfigFile.getName() + " file.", new IOException());
-            System.exit(1);
+//            System.exit(1);
         }
 
 //        boolean isConfigAValidJSON = true;
         try {
             new JSONArray(readFileString(new File("servers.json")));
         } catch (Exception e) {
-            Window.showErrorMessage(serverConfigFile.getName() + " file is not a valid JSON.", e);
-            System.exit(1);
+            return;
+//            Window.showErrorMessage(serverConfigFile.getName() + " file is not a valid JSON.", e);
+//            System.exit(1);
         }
 
         if(!serverConfigFile.exists()) {

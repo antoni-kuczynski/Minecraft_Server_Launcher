@@ -38,7 +38,7 @@ public class Window extends JFrame {
     private final static Taskbar taskbar = Taskbar.getTaskbar();
     private static final JMenuBar menuBar = new JMenuBar();
     private final JButton addServerButton = new JButton("Add server");
-    private final Container glassPane = (Container) getRootPane().getGlassPane();
+//    private final Container glassPane = (Container) getRootPane().getGlassPane();
 //    public final JPopupMenu contextMenu = new JPopupMenu();
 
     public Window() {
@@ -92,15 +92,15 @@ public class Window extends JFrame {
 
 
 
-        glassPane.setVisible(true);
-        glassPane.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.insets = new Insets(130, 0, 0, 15);
-        gbc.anchor = GridBagConstraints.SOUTHWEST;
-        glassPane.add(addServerButton, gbc);
+//        glassPane.setVisible(true);
+//        glassPane.setLayout(new GridBagLayout());
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.weightx = 1.0;
+//        gbc.weighty = 1.0;
+//        gbc.fill = GridBagConstraints.NONE;
+//        gbc.insets = new Insets(130, 0, 0, 15);
+//        gbc.anchor = GridBagConstraints.SOUTHWEST;
+//        glassPane.add(addServerButton, gbc);
 
         addServerButton.setPreferredSize(new Dimension(220, 50));
         addServerButton.setBorder(new FlatLineBorder(new Insets(5,5,5,5), Colors.BORDER_COLOR));
@@ -119,7 +119,11 @@ public class Window extends JFrame {
             dialog.setVisible(true);
         });
 
+//        JPanel test = new JPanel(new BorderLayout());
+//        test.add(addServerButton, BorderLayout.LINE_START);
+//
         add(containerPane, BorderLayout.CENTER);
+//        add(test, BorderLayout.PAGE_END);
 
 
         setVisible(true);
