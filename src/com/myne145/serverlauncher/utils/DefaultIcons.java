@@ -19,6 +19,7 @@ public enum DefaultIcons {
     ERROR(DefaultIcon.error),
     WORLD_MISSING(DefaultIcon.defaultWorld),
     APP_ICON(DefaultIcon.appIcon);
+
     private ImageIcon icon;
     private FlatSVGIcon svgIcon;
 
@@ -38,7 +39,36 @@ public enum DefaultIcons {
     }
 
     public static ImageIcon getIcon(ServerPlatform iconType) {
-        return DefaultIcon.serverPlatformIcons.get(iconType);
+        if(DefaultIcon.paperMc == null) {
+            try {
+                DefaultIcon.loadPlatformIcons();
+            } catch (IOException e) {
+                showErrorMessage("I/O errors reading assets.", e);
+            }
+        }
+        switch (iconType) {
+            case PAPER_MC -> {
+                return DefaultIcon.paperMc;
+            }
+            case  FORGE-> {
+                return DefaultIcon.forge;
+            }
+            case BUKKIT -> {
+                return DefaultIcon.craftbukkit;
+            }
+            case SPIGOT -> {
+                return DefaultIcon.spigotMc;
+            }
+            case VANILLA -> {
+                return DefaultIcon.vanilla;
+            }
+            case FABRIC -> {
+                return DefaultIcon.fabricMc;
+            }
+            default -> {
+                return DefaultIcon.unknownPlatform;
+            }
+        }
     }
 
     public static FlatSVGIcon getSVGIcon(DefaultIcons iconType) {
@@ -52,32 +82,35 @@ class DefaultIcon {
     static ImageIcon serverErrored;
     static ImageIcon defaultWorld;
     static ImageIcon appIcon;
-    static LinkedHashMap<ServerPlatform, ImageIcon> serverPlatformIcons = new LinkedHashMap<>();
+
+    static ImageIcon paperMc;
+    static ImageIcon forge;
+    static ImageIcon craftbukkit;
+    static ImageIcon spigotMc;
+    static ImageIcon vanilla;
+    static ImageIcon fabricMc;
+    static ImageIcon unknownPlatform;
+//    static LinkedHashMap<ServerPlatform, ImageIcon> serverPlatformIcons = new LinkedHashMap<>();
 
     static FlatSVGIcon error;
+
+    protected static void loadPlatformIcons() throws IOException {
+        paperMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/papermc.png")));
+        forge = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/forge.png")));
+        craftbukkit = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/craftbukkit.png")));
+        spigotMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/spigotmc.png")));
+        vanilla = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/vanilla.png")));
+        fabricMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/fabricmc.png")));
+        unknownPlatform = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/papermc.png"))); //TODO remove placeholder here
+    }
+
     static {
         try {
             serverOnline = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_online.png")));
             serverOffline = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_offline.png")));
             serverErrored = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_errored.png")));
-            defaultWorld = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH));
-            appIcon = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH));
-
-
-            serverPlatformIcons.put(ServerPlatform.PAPER_MC,
-                    new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/papermc.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-            serverPlatformIcons.put(ServerPlatform.FORGE,
-                    new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/forge.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-            serverPlatformIcons.put(ServerPlatform.BUKKIT,
-                    new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/craftbukkit.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-            serverPlatformIcons.put(ServerPlatform.SPIGOT,
-                    new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/spigotmc.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-            serverPlatformIcons.put(ServerPlatform.VANILLA,
-                    new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/vanilla.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-            serverPlatformIcons.put(ServerPlatform.FABRIC,
-                    new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/fabricmc.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH)));
-            serverPlatformIcons.put(ServerPlatform.UNKNOWN,
-                    new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/papermc.png")).getScaledInstance(96,96, Image.SCALE_SMOOTH)));
+            defaultWorld = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")));
+            appIcon = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png")));
 
             error = new FlatSVGIcon(Config.RESOURCES_PATH + "/error.svg", Config.classLoader);
         } catch (IOException e) {
