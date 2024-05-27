@@ -57,8 +57,6 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
         if (contextMenu == null) {
             return;
         }
-        Point p = SwingUtilities.convertPoint(component, e.getPoint(), Window.getWindow().getAddServerButton());
-//        contextMenu.setComponentZOrder(Window.getWindow().getGlassPane(), 0);
-        SwingUtilities.invokeLater(() -> contextMenu.show(Window.getWindow().getAddServerButton(), p.x, p.y));
+        SwingUtilities.invokeLater(() -> contextMenu.show(component, e.getX(), e.getY()));
     }
 }

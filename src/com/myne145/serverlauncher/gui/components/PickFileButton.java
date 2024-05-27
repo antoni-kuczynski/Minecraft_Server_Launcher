@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.components;
 
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 import com.myne145.serverlauncher.utils.FilePickerButtonAction;
@@ -20,17 +21,20 @@ public class PickFileButton extends JButton {
     private static final JnaFileChooser FILE_CHOOSER = new JnaFileChooser();
     private final Dimension defaultSize;
     private String customText;
-
-    public void setCustomButtonText(String s) {
-        customText = "<html><b>Currently selected:</b><br><small>" + s + "</small></html>";
-        this.setText(customText);
-    }
+    private String defaultFile = "";
 
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(super.getPreferredSize().width, defaultSize.height);
     }
 
+    public void setFileChooserFileExtension(String extension) {
+        defaultFile = ("*." + extension);
+    }
+    public void setCustomButtonText(String s) {
+        customText = "<html><b>Currently selected:</b><br><small>" + s + "</small></html>";
+        this.setText(customText);
+    }
     private void removeImportButtonWarning() {
         this.setIcon(null);
         this.setToolTipText(null);
@@ -49,17 +53,20 @@ public class PickFileButton extends JButton {
         }
     }
 
-    private void updateFileRelatedStuff(File filePaths, FilePickerButtonAction afterFileIsSelected) {
+    private void updateFileRelatedStuff(File filePath, FilePickerButtonAction afterFileIsSelected) {
         removeImportButtonWarning();
-        if(filePaths == null)
+        if(filePath == null) {
             return;
+        }
 
-        afterFileIsSelected.run(filePaths);
+        afterFileIsSelected.run(filePath);
 
-        if(customText == null)
-            this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(filePaths.getAbsolutePath(), 60) + "</small></html>");
-        else
+        if(customText == null) {
+            this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(filePath.getAbsolutePath(), 60) + "</small></html>");
+        }
+        else {
             this.setText(customText);
+        }
     }
 
     public PickFileButton(String defaultTitle, Dimension defaultSize, Dimension maximumSize, FilePickerButtonAction afterFileIsSelected) {
@@ -73,7 +80,8 @@ public class PickFileButton extends JButton {
 
         this.addActionListener(e -> {
             Runnable runnable = () -> {
-                FILE_CHOOSER.showOpenDialog(null);
+                FILE_CHOOSER.setDefaultFileName(defaultFile);
+                FILE_CHOOSER.showOpenDialog(Window.getWindow());
                 updateFileRelatedStuff(FILE_CHOOSER.getSelectedFile(), afterFileIsSelected);
             };
             Thread thread = new Thread(runnable);

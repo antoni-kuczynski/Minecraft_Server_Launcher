@@ -3,7 +3,7 @@ package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 import com.myne145.serverlauncher.gui.components.PickFileButton;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
-import com.myne145.serverlauncher.server.Config;
+import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
 import org.apache.commons.io.FileUtils;
 
@@ -19,18 +19,18 @@ public class WorldsManagerTab extends JPanel {
     private String extractedWorldDir;
     private boolean isInArchiveMode;
     private final WorldsManagerTab worldsManagerTab;
-    private final int tabIndex;
+    private final int index;
     private final WorldsInfoPanels worldsInfoPanels;
     private final PickFileButton pickFileButton = new PickFileButton("Import existing world", new Dimension(130, 40), new Dimension(130, 40), this::setUserAddedWorld);
 
-    public WorldsManagerTab(ContainerPane parentPane, int tabSwitchingToIndex) {
+    public WorldsManagerTab(ContainerPane parentPane, MCServer server) {
         super(new BorderLayout());
 
-        tabIndex = tabSwitchingToIndex;
+        index = server.getServerId();
         worldsManagerTab = this;
-        worldsInfoPanels = new WorldsInfoPanels(tabIndex);
+        worldsInfoPanels = new WorldsInfoPanels(server);
 
-        if(!Config.getData().get(tabSwitchingToIndex).getServerPath().exists())
+        if(!server.getServerPath().exists())
             return;
 
         startCopying.setEnabled(false);
@@ -45,7 +45,7 @@ public class WorldsManagerTab extends JPanel {
         JButton refreshButton = new JButton("Refresh worlds");
         refreshButton.setToolTipText("Refreshes the server world, if it was replaced meanwhile.\nNote: This isn't for refreshing the server list.");
 
-        refreshButton.addActionListener(e -> parentPane.onTabSwitched(tabSwitchingToIndex));
+        refreshButton.addActionListener(e -> parentPane.onTabSwitched(index));
 
         Dimension EMPTY_BOX_DIMENSION = new Dimension(10, 10);
 
@@ -62,7 +62,7 @@ public class WorldsManagerTab extends JPanel {
         JPanel addingWorld = new JPanel(new BorderLayout());
         JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
-        JLabel title = new JLabel( "<html>Worlds - " + Config.getData().get(tabSwitchingToIndex).getName() + "</html>");
+        JLabel title = new JLabel( "<html>Worlds - " + server.getName() + "</html>");
         title.setFont(new Font("Arial", Font.BOLD, 18));
 
 
@@ -172,8 +172,8 @@ public class WorldsManagerTab extends JPanel {
         return worldsInfoPanels;
     }
 
-    public int getTabIndex() {
-        return tabIndex;
+    public int getIndex() {
+        return index;
     }
 
     public PickFileButton getPickDirectoryButton() {

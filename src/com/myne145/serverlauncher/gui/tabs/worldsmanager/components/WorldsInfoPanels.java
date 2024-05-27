@@ -5,6 +5,7 @@ import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ClientMinecraftWorl
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ServerMinecraftWorld;
 import com.myne145.serverlauncher.gui.window.Window;
+import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -21,13 +22,14 @@ public class WorldsInfoPanels extends JPanel {
 //    private ImageIcon DEFAULT_WORLD_ICON_PACK_PNG;
     private final WorldInformationPanel clientWorldInfo;
     private final WorldInformationPanel serverWorldInfo;
-    private final int tabIndex;
+    private final MCServer server;
+//    private final int tabIndex;
     private final WorldsContextMenu clientWorldContextMenu = new WorldsContextMenu();
     private final WorldsContextMenu serverWorldContextMenu = new WorldsContextMenu();
 
-    public WorldsInfoPanels(int tabIndex) {
-        this.tabIndex = tabIndex;
-
+    public WorldsInfoPanels(MCServer server) {
+//        this.tabIndex = tabIndex;
+        this.server = server;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         clientWorldInfo = createInformationPanel("World to import (to replace with)", false);
@@ -73,7 +75,7 @@ public class WorldsInfoPanels extends JPanel {
         MinecraftWorld minecraftWorld;
         try {
             if(worldInformationPanel.isServerPanel) {
-                minecraftWorld = new ServerMinecraftWorld(worldPath, tabIndex);
+                minecraftWorld = new ServerMinecraftWorld(server);
             } else {
                 minecraftWorld = new ClientMinecraftWorld(worldPath);
             }

@@ -4,7 +4,8 @@ import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
 import com.myne145.serverlauncher.gui.components.ServerTabLabel;
 import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
-import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
+import com.myne145.serverlauncher.gui.tabs.ServerTabbedPane;
+import com.myne145.serverlauncher.gui.tabs.addserver.AddServerTab;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.server.MCServer;
@@ -21,7 +22,7 @@ import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DI
 
 
 public class ContainerPane extends JTabbedPane {
-    private static final ArrayList<JTabbedPane> serverTabbedPanes = new ArrayList<>();
+    private static final ArrayList<ServerTabbedPane> serverTabbedPanes = new ArrayList<>();
     private static final OpenContextMenuItem openServerFolderItem = (OpenContextMenuItem) Window.getMenu().getMenu(0).getItem(0);
     private static ContainerPane currentPane;
     private boolean isTabbedPaneFocused = true;
@@ -112,10 +113,10 @@ public class ContainerPane extends JTabbedPane {
                 return 220;
             }
 
-//            @Override
-//            protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
-//                return 220;
-//            }
+            @Override
+            protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
+                return 220;
+            }
 
         });
         setTabPlacement(LEFT);
@@ -127,9 +128,11 @@ public class ContainerPane extends JTabbedPane {
         for(int i = 0; i < configData.size(); i++)
             serverTabbedPanes.add(null); //initialize the array
 
-        addTab("Add server", new AddServerPanel(this, new JDialog()));
-        setTabComponentAt(0, new TabLabelWithFileTransfer("Add server", 0));
-        setIconAt(0, DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING));
+        addTab("<html><p style=\"text-align: left; width: 110px\">" + "Add server" + "</p></html>", new ServerTabbedPane(
+                new AddServerTab(this))
+        );
+        setTabComponentAt(0, new TabLabelWithFileTransfer("<html><p style=\"text-align: left; width: 110px\">" + "Add server" + "</p></html>", 0));
+        setIconAt(0, DefaultIcons.getSVGIcon(DefaultIcons.ADD_SERVER).derive(32, 32));
 
         configData.forEach(this::addServer);
 
@@ -179,24 +182,29 @@ public class ContainerPane extends JTabbedPane {
     }
 
     public void addServer(MCServer server) {
-        JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
-//        tabbedPane.addTab("Console", new ServerDashboardTab(this, server.getServerId() - 1));
-        tabbedPane.addTab("Console", new ServerDashboardTab(this, server));
-        tabbedPane.addTab("Worlds", new WorldsManagerTab(this, server.getServerId() - 1));
-        tabbedPane.setTabComponentAt(0, new TabLabelWithFileTransfer("Console", tabbedPane,0));
-        tabbedPane.setTabComponentAt(1, new TabLabelWithFileTransfer("Worlds", tabbedPane,1));
-//        serverTabbedPanes.add(tabbedPane);
+        ServerTabbedPane serverTabbedPane = new ServerTabbedPane(
+                new ServerDashboardTab(this, server),
+                new WorldsManagerTab(this, server)
+        );
+
+//        JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
+////        tabbedPane.addTab("Console", new ServerDashboardTab(this, server.getServerId() - 1));
+//        tabbedPane.addTab("Console", new ServerDashboardTab(this, server));
+//        tabbedPane.addTab("Worlds", new WorldsManagerTab(this, server));
+//        tabbedPane.setTabComponentAt(0, new TabLabelWithFileTransfer("Console", tabbedPane,0));
+//        tabbedPane.setTabComponentAt(1, new TabLabelWithFileTransfer("Worlds", tabbedPane,1));
+        serverTabbedPanes.add(serverTabbedPane);
         if(serverTabbedPanes.size() < server.getServerId()) {
             for (int i = 0; i < server.getServerId() - serverTabbedPanes.size(); i++) {
                 serverTabbedPanes.add(null);
             }
         }
-        serverTabbedPanes.set(server.getServerId() - 1, tabbedPane);
+        serverTabbedPanes.set(server.getServerId() - 1, serverTabbedPane);
 
         String serverName = server.getName();
         if(serverName.length() > 52)
             serverName = serverName.substring(0, 52);
-        addTab(serverName, tabbedPane);
+        addTab(serverName, serverTabbedPane);
 
         ServerTabLabel tabLabel = new ServerTabLabel(server);
         setTabComponentAt(server.getServerId(), tabLabel);
@@ -284,7 +292,7 @@ public class ContainerPane extends JTabbedPane {
     }
 
     public void updateServerButtonsSizes() {
-        for(int i = 1; i <= serverTabbedPanes.size(); i++) {
+        for(int i = 0; i < serverTabbedPanes.size(); i++) {
             ImageIcon imageIcon = (ImageIcon) getIconAt(i);
             setIconAt(i, new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         }

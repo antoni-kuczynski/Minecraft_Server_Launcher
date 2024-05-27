@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -16,8 +17,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ServerInfoPanel extends JPanel{
+public class ServerInfoPanel extends JPanel {
     private final JLabel serverDetailsText = new JLabel("<html><center>Server details are going to appear here.</center></html>", SwingConstants.CENTER);
+
+
+    @Override
+    public void setVisible(boolean aFlag) {
+//        int futureSize = Window.getWindow().getWidth() + 310;
+
+        super.setVisible(aFlag);
+    }
 
     protected void updateText(MCServer server) {
         if(server.getServerJarPath() == null)

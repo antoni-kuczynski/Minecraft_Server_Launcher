@@ -94,8 +94,10 @@ public class MCServer {
             return "Unknown";
 
         Scanner sc = new Scanner(logPath);
-        String line = "";
-        for(int i = 0; i < 50; i++) {
+        String line;
+        int index = 0;
+        while(sc.hasNextLine() && index < 50) {
+            index++;
             line = sc.nextLine();
             if(!line.contains("Starting minecraft server version"))
                 continue;

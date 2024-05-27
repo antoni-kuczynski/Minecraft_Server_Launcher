@@ -1,5 +1,7 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
+import com.myne145.serverlauncher.server.MCServer;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -24,7 +26,7 @@ public class ServerMinecraftWorld extends MinecraftWorld {
         }
     }
 
-    public ServerMinecraftWorld(File worldPath, int serverIndex) throws IOException {
-        super(worldPath, serverIndex);
+    public ServerMinecraftWorld(MCServer server) throws IOException {
+        super(server.getWorldPath(), server.getServerId());
     }
 }

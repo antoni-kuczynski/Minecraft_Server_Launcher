@@ -18,7 +18,8 @@ public enum DefaultIcons {
     SERVER_ERRORED(DefaultIcon.serverErrored),
     ERROR(DefaultIcon.error),
     WORLD_MISSING(DefaultIcon.defaultWorld),
-    APP_ICON(DefaultIcon.appIcon);
+    APP_ICON(DefaultIcon.appIcon),
+    ADD_SERVER(DefaultIcon.addServer);
 
     private ImageIcon icon;
     private FlatSVGIcon svgIcon;
@@ -92,6 +93,7 @@ class DefaultIcon {
     static ImageIcon unknownPlatform;
 //    static LinkedHashMap<ServerPlatform, ImageIcon> serverPlatformIcons = new LinkedHashMap<>();
 
+    static FlatSVGIcon addServer;
     static FlatSVGIcon error;
 
     protected static void loadPlatformIcons() throws IOException {
@@ -111,8 +113,11 @@ class DefaultIcon {
             serverErrored = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_errored.png")));
             defaultWorld = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")));
             appIcon = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png")));
+//            addServer = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/add_server.png")));
 
             error = new FlatSVGIcon(Config.RESOURCES_PATH + "/error.svg", Config.classLoader);
+            addServer = new FlatSVGIcon(Config.RESOURCES_PATH + "/add_server.svg", Config.classLoader);
+//            addServer = new FlatSVGIcon(Config.RESOURCES_PATH + "/add_server.svg", Config.classLoader);
         } catch (IOException e) {
             showErrorMessage("I/O errors reading assets.", e);
         }

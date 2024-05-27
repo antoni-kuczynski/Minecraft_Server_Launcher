@@ -3,6 +3,7 @@ package com.myne145.serverlauncher.gui.tabs.addserver;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.myne145.serverlauncher.gui.components.PickFileButton;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.Colors;
@@ -15,17 +16,26 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 
-public class AddServerPanel extends JPanel {
-    private final Window owner;
+public class AddServerTab extends JPanel {
     private final JButton confirmButton = new JButton("Add server");
-    private final Pair<JPanel, PickFileButton> openServerJarPanel = getOpenDirButtonPanel("Server jar", this::setServerJarPath);
-    private final Pair<JPanel, PickFileButton> openJavaBinPanel = getOpenDirButtonPanel("Java bin", this::setJavaBinPath);
+    private final Pair<JPanel, PickFileButton> openServerJarPanel = getOpenDirButtonPanel("Open server jar file", "Server jar", this::setServerJarPath);
+    private final Pair<JPanel, PickFileButton> openJavaBinPanel = getOpenDirButtonPanel("Open java bin file", "Java bin", this::setJavaBinPath);
     private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
     private final MCServer currentServer = new MCServer();
 
-    public AddServerPanel(ContainerPane parentPane, Window owner) {
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if(com.myne145.serverlauncher.gui.window.Window.getWindow() == null || currentServer.getServerJarPath() == null) {
+            return;
+        }
+//        System.out.println("sfedfgsdgdf");
+//        if(Window.getWindow().getWidth() < 986)
+        serverInfoPanel.setVisible(Window.getWindow().getWidth() >= 986);
+    }
+
+    public AddServerTab(ContainerPane parentPane) {
         setLayout(new BorderLayout());
-        this.owner = owner;
         setFocusable(true);
         requestFocusInWindow();
 
@@ -37,6 +47,9 @@ public class AddServerPanel extends JPanel {
 
         serverInfoPanel.setVisible(false);
 
+
+        openServerJarPanel.getValue().setFileChooserFileExtension("jar");
+//        openJavaBinPanel.getValue().setFileChooserFileExtension("");
 
         currentServer.setServerLaunchArgs("nogui");
         confirmButton.setEnabled(false);
@@ -110,14 +123,9 @@ public class AddServerPanel extends JPanel {
             handleKeyTyping(serverNameInput);
             handleKeyTyping(launchArgsInput);
 
-            if(Config.getData().isEmpty()) {
-                parentPane.removeTabAt(0);
-            }
-
             Config.getData().add(currentServer);
             parentPane.addServer(currentServer);
             MCServer.writeAllToConfig();
-            owner.dispose();
         });
 
         addMouseListener(new MouseAdapter() {
@@ -126,13 +134,10 @@ public class AddServerPanel extends JPanel {
                 requestFocusInWindow();
             }
         });
-
-        //TODO not sure if this's a good idea
-        SwingUtilities.getRootPane(owner).setDefaultButton(confirmButton);
     }
 
-    private Pair<JPanel, PickFileButton> getOpenDirButtonPanel(String titleText, FilePickerButtonAction action) {
-        PickFileButton pickFileButton = new PickFileButton("Open file", new Dimension(130, 40), new Dimension(300, 40), action);
+    private Pair<JPanel, PickFileButton> getOpenDirButtonPanel(String buttonText, String titleText, FilePickerButtonAction action) {
+        PickFileButton pickFileButton = new PickFileButton(buttonText, new Dimension(130, 40), new Dimension(300, 40), action);
         JLabel titleLabel = new JLabel(titleText);
         JPanel result = new JPanel();
 
@@ -168,12 +173,13 @@ public class AddServerPanel extends JPanel {
     }
 
     private void setServerJarPath(File path) {
+        boolean isValid = false;
         if(!path.isFile()) {
             openServerJarPanel.getValue().setImportButtonWarning("Not a file");
-            return;
         }
         if(ZipUtils.getFileExtension(path).equals("jar")) {
             currentServer.setServerJarPath(path);
+            isValid = true;
         } else {
             openServerJarPanel.getValue().setImportButtonWarning("Not a jar file");
         }
@@ -185,14 +191,16 @@ public class AddServerPanel extends JPanel {
         if(s.length() > 27) { //max 27chars
             s = s.substring(0, s.length() / 2 - (s.length() - 27) / 2) + "..." + s.substring(s.length() / 2 + (s.length() - 27) / 2);
         }
+
         openServerJarPanel.getValue().setCustomButtonText(s);
         openServerJarPanel.getValue().setToolTipText(path.getAbsolutePath());
+        if(!isValid)
+            return;
         serverInfoPanel.updateText(currentServer);
 
-        if(serverInfoPanel.isVisible())
-            return;
+//        if(serverInfoPanel.isVisible())
+//            return;
         serverInfoPanel.setVisible(true);
-        owner.setBounds(owner.getX() - 155, owner.getY(), 760, 450);
     }
 
     private void setJavaBinPath(File path) {

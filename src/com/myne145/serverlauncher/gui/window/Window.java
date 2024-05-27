@@ -2,7 +2,7 @@ package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
-import com.myne145.serverlauncher.gui.tabs.addserver.AddServerPanel;
+import com.myne145.serverlauncher.gui.tabs.addserver.AddServerTab;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 //import com.myne145.serverlauncher.utils.AlertType;
@@ -114,7 +114,7 @@ public class Window extends JFrame {
             dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
 
             dialog.setBounds(this.getX() + (this.getWidth() / 2) - 225, this.getY() + (this.getHeight() / 2) - 225, 450, 450);
-            dialog.add(new AddServerPanel(containerPane, dialog));
+            dialog.add(new AddServerTab(containerPane));
             dialog.setResizable(false);
             dialog.setVisible(true);
         });
@@ -286,6 +286,13 @@ public class Window extends JFrame {
 
     public JButton getAddServerButton() {
         return addServerButton;
+    }
+
+
+    @Override
+    public void repaint(long time, int x, int y, int width, int height) {
+        super.repaint(time, x, y, width, height);
+        System.out.println(getWidth());
     }
 
     public static void main(String[] args) throws Exception {
