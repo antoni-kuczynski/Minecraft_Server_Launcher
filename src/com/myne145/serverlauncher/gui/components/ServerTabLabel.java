@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.components;
 
+import com.myne145.serverlauncher.gui.tabs.ServerTabbedPane;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;

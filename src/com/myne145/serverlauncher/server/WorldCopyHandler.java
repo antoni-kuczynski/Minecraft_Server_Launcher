@@ -51,11 +51,7 @@ public class WorldCopyHandler extends Thread {
      * @return {@link com.myne145.serverlauncher.server.WorldCopyHandler} instance
      */
     public static WorldCopyHandler createWorldCopyHandler(WorldsManagerTab worldsManagerTab) {
-        try {
-            return new WorldCopyHandler(worldsManagerTab, false);
-        } catch (Exception e) { //TODO
-            throw new RuntimeException();
-        }
+        return new WorldCopyHandler(worldsManagerTab, false);
     }
 
     /**

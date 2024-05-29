@@ -31,10 +31,13 @@ public class ServerTabbedPane extends JTabbedPane {
         for(Component tab : component) {
             if(tab instanceof ServerDashboardTab) {
                 addTab("Console", tab);
+                this.serverDashboardTab = (ServerDashboardTab) tab;
             } else if(tab instanceof WorldsManagerTab) {
                 addTab("Worlds", tab);
+                this.worldsManagerTab = (WorldsManagerTab) tab;
             } else if(tab instanceof AddServerTab) {
                 addTab("Add local", tab);
+                this.addServerTab = (AddServerTab) tab;
             } else {
                 addTab("", tab);
             }

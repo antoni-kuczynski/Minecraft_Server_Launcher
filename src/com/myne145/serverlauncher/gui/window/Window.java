@@ -252,7 +252,7 @@ public class Window extends JFrame {
                     FileUtils.deleteDirectory(tempFile);
                 else
                     tempFile.delete();
-            } catch (IOException e) { //TODO
+            } catch (IOException e) {
 //                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }

@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 import dev.dewy.nbt.Nbt;
 import dev.dewy.nbt.tags.collection.CompoundTag;
@@ -37,7 +38,7 @@ public class MinecraftWorld {
         File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
         try {
             worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-        } catch (Exception e) { //TODO
+        } catch (IOException e) {
             worldIcon = DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING);
         }
         File levelDatFile = getLevelDatFile(worldPath);

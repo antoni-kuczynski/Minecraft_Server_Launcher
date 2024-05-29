@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class ServerMinecraftWorld extends MinecraftWorld {
             }
 
             return tempLevelDatFile;
-        } catch (IOException e) { //TODO
+        } catch (IOException e) {
             return levelDat;
         }
     }

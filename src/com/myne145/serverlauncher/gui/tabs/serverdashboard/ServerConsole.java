@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerConsoleContextMenu;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
+import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.MCServer;
 //import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
@@ -67,7 +68,6 @@ public class ServerConsole extends JPanel {
                     if(line != null) {
                         String finalLine = line;
                         SwingUtilities.invokeLater(() -> consoleOutput.append(finalLine + "\n"));
-                        System.out.println(line + "\n");
                         continue;
                     }
 
@@ -128,9 +128,10 @@ public class ServerConsole extends JPanel {
         if(consoleHistory.exists()) {
             String commands;
             try {
-                commands = readFileString(consoleHistory);
-            } catch (IOException e) { //TODO
-                throw new RuntimeException();
+                commands = Config.readFileString(consoleHistory);
+            } catch (IOException e) {
+                showErrorMessage("I/O error reading " + consoleHistory.getAbsolutePath() + " file.", e);
+                return;
             }
             for(String s : commands.split("\n")) {
                 commandHistory.add(s.substring(14)); //this's gonna break on 20nov 2286
@@ -255,13 +256,11 @@ public class ServerConsole extends JPanel {
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
             parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ONLINE));
-        } catch (IOException e) { //TODO
-//            System.out.println(Window.getErrorDialogMessage(e));
-
+        } catch (IOException e) {
             parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
             parentPane.setToolTipTextAt(index, "Errored");
             consoleOutput.append(e.getMessage() +
-                    "\n(You probably specified a java executable that is not valid in the config file.)");
+                    "\n(You probably specified an invalid java executable)");
         }
 
 
@@ -295,14 +294,6 @@ public class ServerConsole extends JPanel {
             p.destroy();
     }
 
-    private static String readFileString(File fileToRead) throws IOException {
-        StringBuilder fileToReadReader = new StringBuilder();
-        for (String fileLine : Files.readAllLines(fileToRead.toPath())) {
-            fileToReadReader.append(fileLine).append("\n");
-        }
-        return fileToReadReader.toString();
-    }
-
     public void setTextFromLatestLogFile() throws IOException {
         if(!isServerRunning)
             return;
@@ -315,7 +306,7 @@ public class ServerConsole extends JPanel {
             return;
         }
         consoleOutput.setText("");
-        consoleOutput.append(readFileString(latestLog));
+        consoleOutput.append(Config.readFileString(latestLog));
         isVisible = true;
     }
 

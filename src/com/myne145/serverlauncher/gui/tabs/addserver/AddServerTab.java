@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.myne145.serverlauncher.gui.components.PickFileButton;
+import com.myne145.serverlauncher.gui.tabs.ServerTabbedPane;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
@@ -18,10 +19,10 @@ import java.io.File;
 
 public class AddServerTab extends JPanel {
     private final JButton confirmButton = new JButton("Add server");
-    private final Pair<JPanel, PickFileButton> openServerJarPanel = getOpenDirButtonPanel("Open server jar file", "Server jar", this::setServerJarPath);
-    private final Pair<JPanel, PickFileButton> openJavaBinPanel = getOpenDirButtonPanel("Open java bin file", "Java bin", this::setJavaBinPath);
+    private Pair<JPanel, PickFileButton> openServerJarPanel = getOpenDirButtonPanel("Open server jar file", "Server jar", this::setServerJarPath);
+    private Pair<JPanel, PickFileButton> openJavaBinPanel = getOpenDirButtonPanel("Open java bin file", "Java bin", this::setJavaBinPath);
     private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
-    private final MCServer currentServer = new MCServer();
+    private MCServer currentServer = new MCServer();
 
     @Override
     public void paintComponent(Graphics g) {
@@ -29,8 +30,7 @@ public class AddServerTab extends JPanel {
         if(com.myne145.serverlauncher.gui.window.Window.getWindow() == null || currentServer.getServerJarPath() == null) {
             return;
         }
-//        System.out.println("sfedfgsdgdf");
-//        if(Window.getWindow().getWidth() < 986)
+
         serverInfoPanel.setVisible(Window.getWindow().getWidth() >= 986);
     }
 
@@ -126,6 +126,11 @@ public class AddServerTab extends JPanel {
             Config.getData().add(currentServer);
             parentPane.addServer(currentServer);
             MCServer.writeAllToConfig();
+
+
+            parentPane.setComponentAt(0, new ServerTabbedPane(
+                    new AddServerTab(parentPane)
+            ));
         });
 
         addMouseListener(new MouseAdapter() {
@@ -174,18 +179,18 @@ public class AddServerTab extends JPanel {
 
     private void setServerJarPath(File path) {
         boolean isValid = false;
-        if(!path.isFile()) {
-            openServerJarPanel.getValue().setImportButtonWarning("Not a file");
-        }
+//        if(!path.isFile()) {
+//            openServerJarPanel.getValue().setImportButtonWarning("Not a file");
+//        }
         if(ZipUtils.getFileExtension(path).equals("jar")) {
             currentServer.setServerJarPath(path);
             isValid = true;
         } else {
             openServerJarPanel.getValue().setImportButtonWarning("Not a jar file");
         }
-        if(currentServer.isComplete())
-            confirmButton.setEnabled(true);
 
+        if(currentServer.isComplete())
+            confirmButton.setEnabled(isValid);
 
         String s = path.getName();
         if(s.length() > 27) { //max 27chars
@@ -194,8 +199,10 @@ public class AddServerTab extends JPanel {
 
         openServerJarPanel.getValue().setCustomButtonText(s);
         openServerJarPanel.getValue().setToolTipText(path.getAbsolutePath());
-        if(!isValid)
+        if(!isValid) {
+            serverInfoPanel.setVisible(false);
             return;
+        }
         serverInfoPanel.updateText(currentServer);
 
 //        if(serverInfoPanel.isVisible())
@@ -222,8 +229,10 @@ public class AddServerTab extends JPanel {
             currentServer.setServerLaunchArgs(field.getText());
         }
 
-        if(currentServer.isComplete())
-            confirmButton.setEnabled(true);
+//        if(currentServer.isComplete())
+//            confirmButton.setEnabled(true);
+
+        confirmButton.setEnabled(currentServer.isComplete());
         serverInfoPanel.updateText(currentServer);
     }
 

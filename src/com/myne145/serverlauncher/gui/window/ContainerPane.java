@@ -16,15 +16,16 @@ import com.myne145.serverlauncher.utils.DefaultIcons;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
+import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 
 
 public class ContainerPane extends JTabbedPane {
     private static final ArrayList<ServerTabbedPane> serverTabbedPanes = new ArrayList<>();
     private static final OpenContextMenuItem openServerFolderItem = (OpenContextMenuItem) Window.getMenu().getMenu(0).getItem(0);
-    private static ContainerPane currentPane;
     private boolean isTabbedPaneFocused = true;
 
     @Override
@@ -45,7 +46,7 @@ public class ContainerPane extends JTabbedPane {
 
     @Override
     public void setTitleAt(int index, String title) {
-        ServerTabLabel tabLabel = (ServerTabLabel) this.getTabComponentAt(index);
+        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
         tabLabel.setText(title);
     }
 
@@ -53,14 +54,14 @@ public class ContainerPane extends JTabbedPane {
     public String getTitleAt(int index) {
         if(this.getTabComponentAt(index) == null)
             return "";
-        ServerTabLabel tabLabel = (ServerTabLabel) this.getTabComponentAt(index);
+        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
         return tabLabel.getText();
     }
 
     @Override
     public void setEnabledAt(int index, boolean enabled) {
         super.setEnabledAt(index, enabled);
-        ServerTabLabel tabLabel = (ServerTabLabel) this.getTabComponentAt(index);
+        TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
         tabLabel.setEnabled(enabled);
     }
 
@@ -104,12 +105,6 @@ public class ContainerPane extends JTabbedPane {
 
             @Override
             protected int calculateTabAreaWidth(int tabPlacement, int vertRunCount, int maxTabWidth) {
-//                int width = super.calculateTabAreaWidth(tabPlacement, vertRunCount, maxTabWidth);
-//                if(Window.getWindow() != null) {
-//                    Window.getWindow().updateAddServerButtonsSize(width);
-//                }
-//                return width;
-//                return super.calculateTabAreaWidth(tabPlacement, vertRunCount, maxTabWidth);
                 return 220;
             }
 
@@ -125,14 +120,14 @@ public class ContainerPane extends JTabbedPane {
 
 
         ArrayList<MCServer> configData = Config.getData();
-        for(int i = 0; i < configData.size(); i++)
-            serverTabbedPanes.add(null); //initialize the array
-
-        addTab("<html><p style=\"text-align: left; width: 110px\">" + "Add server" + "</p></html>", new ServerTabbedPane(
-                new AddServerTab(this))
+        ServerTabbedPane addServerPane = new ServerTabbedPane(
+                new AddServerTab(this)
         );
+
+        addTab("<html><p style=\"text-align: left; width: 110px\">" + "Add server" + "</p></html>", addServerPane);
         setTabComponentAt(0, new TabLabelWithFileTransfer("<html><p style=\"text-align: left; width: 110px\">" + "Add server" + "</p></html>", 0));
         setIconAt(0, DefaultIcons.getSVGIcon(DefaultIcons.ADD_SERVER).derive(32, 32));
+        serverTabbedPanes.add(addServerPane);
 
         configData.forEach(this::addServer);
 
@@ -187,19 +182,7 @@ public class ContainerPane extends JTabbedPane {
                 new WorldsManagerTab(this, server)
         );
 
-//        JTabbedPane tabbedPane = new JTabbedPane(RIGHT);
-////        tabbedPane.addTab("Console", new ServerDashboardTab(this, server.getServerId() - 1));
-//        tabbedPane.addTab("Console", new ServerDashboardTab(this, server));
-//        tabbedPane.addTab("Worlds", new WorldsManagerTab(this, server));
-//        tabbedPane.setTabComponentAt(0, new TabLabelWithFileTransfer("Console", tabbedPane,0));
-//        tabbedPane.setTabComponentAt(1, new TabLabelWithFileTransfer("Worlds", tabbedPane,1));
         serverTabbedPanes.add(serverTabbedPane);
-        if(serverTabbedPanes.size() < server.getServerId()) {
-            for (int i = 0; i < server.getServerId() - serverTabbedPanes.size(); i++) {
-                serverTabbedPanes.add(null);
-            }
-        }
-        serverTabbedPanes.set(server.getServerId() - 1, serverTabbedPane);
 
         String serverName = server.getName();
         if(serverName.length() > 52)
@@ -238,55 +221,43 @@ public class ContainerPane extends JTabbedPane {
         if(tabIndex == 0) {
             return;
         }
-        tabIndex--;
-//        TabLabelWithFileTransfer tabLabelWithFileTransfer = (TabLabelWithFileTransfer) getTabComponentAt(tabIndex);
-//        if(tabLabelWithFileTransfer.getClientProperty("is_server").equals(0))
-//            return;
 
         if(openServerFolderItem != null && tabIndex != getTabCount() - 1) {
 //            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
             openServerFolderItem.updatePath(Config.getData().get(tabIndex).getServerPath());
         }
 
-        ServerDashboardTab selectedConsoleTab = (ServerDashboardTab) serverTabbedPanes.get(tabIndex).getComponentAt(0);
-
         setChartsVisibility(Window.areChartsEnabled());
 
-        MCServer mcServerConfig = Config.getData().get(tabIndex);
+        MCServer mcServerConfig = Config.getData().get(tabIndex - 1);
 
         Window.getUserValues().putInt("prefs_server_id", tabIndex);
         mcServerConfig.updateWorldPath();
-//        Config.reloadServersWorldPath(mcServerConfig);
 
-
-        WorldsManagerTab worldsManagerTab = (WorldsManagerTab) serverTabbedPanes.get(tabIndex).getComponentAt(1);
+        WorldsManagerTab worldsManagerTab = serverTabbedPanes.get(tabIndex).getWorldsManagerTab();
         worldsManagerTab.setIcons();
         if(mcServerConfig.getWorldPath().exists()) {
             worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(mcServerConfig.getWorldPath());
         }
 
-        for (JTabbedPane serverTabbedPane : serverTabbedPanes) {
-            ServerDashboardTab c = (ServerDashboardTab) serverTabbedPane.getComponentAt(0);
-            c.getServerConsoleArea().isVisible = false;
-        }
-
-        selectedConsoleTab.getServerConsoleArea().isVisible = true;
+        ServerDashboardTab selectedConsoleTab = serverTabbedPanes.get(tabIndex).getServerDashboardTab();
         try {
             selectedConsoleTab.getServerConsoleArea().setTextFromLatestLogFile();
-        } catch (Exception e) { //TODO
-            throw new RuntimeException();
+        } catch (IOException e) {
+            showErrorMessage("I/O error reading latest.log file.", e);
         }
     }
 
     public void setChartsVisibility(boolean isVisible) {
-        for(JTabbedPane tabbedPane : serverTabbedPanes) {
-            ServerDashboardTab serverDashboardTab = (ServerDashboardTab) tabbedPane.getComponentAt(0);
-            serverDashboardTab.setChartsEnabled(isVisible);
+        for(int i = 1; i < serverTabbedPanes.size(); i++) {
+            serverTabbedPanes.get(i).getServerDashboardTab().setChartsEnabled(isVisible);
         }
     }
     public void killAllServerProcesses() {
-        for(JTabbedPane tabbedPane : serverTabbedPanes) {
-            ServerDashboardTab serverDashboardTab = (ServerDashboardTab) tabbedPane.getComponentAt(0);
+        for(ServerTabbedPane tabbedPane : serverTabbedPanes) {
+            ServerDashboardTab serverDashboardTab = tabbedPane.getServerDashboardTab();
+            if(serverDashboardTab == null)
+                continue;
             serverDashboardTab.getServerConsoleArea().killAllProcesses();
         }
     }

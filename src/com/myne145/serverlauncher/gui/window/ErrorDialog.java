@@ -35,6 +35,7 @@ public class ErrorDialog extends JDialog {
         JButton ok = new JButton("OK");
         JButton viewStackTraceButton = new JButton("View stack trace");
         JTextArea stackTraceArea = new JTextArea();
+        JScrollPane stackTraceScrollPane = new JScrollPane(stackTraceArea);
 
         stackTraceArea.setText(getErrorDialogMessage(e));
         stackTraceArea.setEditable(false);
@@ -47,7 +48,7 @@ public class ErrorDialog extends JDialog {
         buttonPanel.add(viewStackTraceButton, BorderLayout.LINE_START);
 
         stackTracePanel.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.LINE_START);
-        stackTracePanel.add(stackTraceArea, BorderLayout.CENTER);
+        stackTracePanel.add(stackTraceScrollPane, BorderLayout.CENTER);
         stackTracePanel.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.LINE_END);
         stackTracePanel.setVisible(false);
 

@@ -27,7 +27,7 @@ public abstract class Config extends ArrayList<MCServer> {
         return new File(System.getProperty("java.home") + "/bin/javaw.exe");
     }
 
-    private static String readFileString(File fileToRead) throws IOException {
+    public static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
         for(String fileLine : Files.readAllLines(fileToRead.toPath())) {
             fileToReadReader.append(fileLine);

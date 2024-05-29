@@ -49,8 +49,8 @@ public class MCServer {
         updateWorldPath();
         try {
             updateProperties();
-        } catch (Exception e) { //TODO
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            showErrorMessage("I/O error reading server.properties file.", e);
         }
         platform = getPlatformFromManifestFile();
         minecraftVersion = getMinecraftServerVersion();
@@ -60,7 +60,8 @@ public class MCServer {
         if(Config.getData().isEmpty())
             this.serverId = 1;
         else
-            this.serverId = Config.getData().get(Config.getData().size() - 1).getServerId() + 1;
+            this.serverId = Config.getData().size() + 1; //top tier code right here
+//            this.serverId = Config.getData().get(Config.getData().size() - 1).getServerId() + 1;
     }
 
     private String getVersionFromVersionJSONFile() {
@@ -281,9 +282,10 @@ public class MCServer {
     }
 
     public boolean isComplete() {
-        return serverName != null && serverPath != null
+        return (serverName != null && serverPath != null
                 && serverJarPath != null && javaExecutablePath != null
-                && serverLaunchArgs != null;
+                && serverLaunchArgs != null) &&
+                !serverName.isEmpty();
     }
 
     public String getName() {

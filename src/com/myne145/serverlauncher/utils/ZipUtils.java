@@ -84,6 +84,8 @@ public class ZipUtils {
     }
 
     public static boolean isArchive(File file) {
+        if(file.isDirectory())
+            return false;
         String extension = getFileExtension(file);
         return extension.equals("zip") || extension.equals("rar");
     }
