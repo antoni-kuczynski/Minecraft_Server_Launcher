@@ -30,7 +30,7 @@ public abstract class Config extends ArrayList<MCServer> {
     public static String readFileString(File fileToRead) throws IOException {
         StringBuilder fileToReadReader = new StringBuilder();
         for(String fileLine : Files.readAllLines(fileToRead.toPath())) {
-            fileToReadReader.append(fileLine);
+            fileToReadReader.append(fileLine).append("\n");
         }
         return fileToReadReader.toString();
     }

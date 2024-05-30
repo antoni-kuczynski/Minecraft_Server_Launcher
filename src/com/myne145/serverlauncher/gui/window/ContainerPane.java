@@ -206,8 +206,8 @@ public class ContainerPane extends JTabbedPane {
 
         if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1) {
             setSelectedIndex(index);
-        } else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2){
-            ServerDashboardTab consoleTab = (ServerDashboardTab) serverTabbedPanes.get(index - 1).getComponentAt(0);
+        } else if(index != 0 && e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2){
+            ServerDashboardTab consoleTab = serverTabbedPanes.get(index).getServerDashboardTab();
             if(!consoleTab.getServerConsoleArea().isServerRunning())
                 consoleTab.startServer();
         } else if(e.getButton() == MouseEvent.BUTTON3 && index != 0) {
@@ -263,7 +263,7 @@ public class ContainerPane extends JTabbedPane {
     }
 
     public void updateServerButtonsSizes() {
-        for(int i = 0; i < serverTabbedPanes.size(); i++) {
+        for(int i = 1; i < serverTabbedPanes.size(); i++) {
             ImageIcon imageIcon = (ImageIcon) getIconAt(i);
             setIconAt(i, new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         }

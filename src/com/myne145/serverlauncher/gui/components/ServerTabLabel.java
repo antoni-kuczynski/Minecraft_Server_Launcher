@@ -1,9 +1,11 @@
 package com.myne145.serverlauncher.gui.components;
 
 import com.myne145.serverlauncher.gui.tabs.ServerTabbedPane;
+import com.myne145.serverlauncher.gui.tabs.addserver.ServerInfoPanel;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.utils.Colors;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,8 +42,40 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
         OpenContextMenuItem openContextMenuItem = new OpenContextMenuItem("Open server folder");
         openContextMenuItem.updatePath(server.getServerPath());
 
+        JMenuItem properties = new JMenuItem("<html>Properties\n<center><sub>" + server.getName() + "</sub></center></html>");
+        properties.addActionListener(e -> {
+            JDialog dialog = new JDialog(Window.getWindow(), server.getName() + " properties");
+            dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
+            dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
+            dialog.setLayout(new BorderLayout());
+            ServerInfoPanel panel = new ServerInfoPanel();
+            panel.updateText(server);
+            JPanel bottomPanel = new JPanel();
+            JButton button = new JButton("OK");
+            SwingUtilities.getRootPane(dialog).setDefaultButton(button);
+            button.setBorder(BorderFactory.createEmptyBorder(20,10,20,10));
+            button.setPreferredSize(new Dimension(100, 20));
+            button.addActionListener(e1 -> {
+                dialog.dispose();
+            });
+
+            bottomPanel.add(button);
+            dialog.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.PAGE_START);
+            dialog.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.LINE_START);
+            dialog.add(panel, BorderLayout.CENTER);
+            dialog.add(Box.createRigidArea(new Dimension(10,10)), BorderLayout.LINE_END);
+            dialog.add(bottomPanel, BorderLayout.PAGE_END);
+
+            Point p = Window.getCenter();
+            dialog.setBounds(p.x - 175, p.y - 225, 350, 450); //TODO
+//            dialog.setPreferredSize(new Dimension(350, 450));
+            dialog.setVisible(true);
+            dialog.pack();
+        });
+
         contextMenu.add(openContextMenuItem);
         contextMenu.add(serverRunAction);
+        contextMenu.add(properties);
     }
 
     public void changeServerActionContextMenuToServerStart(boolean changeToStart) {

@@ -1,11 +1,8 @@
 package com.myne145.serverlauncher.gui.window;
 
-import com.formdev.flatlaf.ui.FlatLineBorder;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
-import com.myne145.serverlauncher.gui.tabs.addserver.AddServerTab;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
-//import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
@@ -37,7 +34,7 @@ public class Window extends JFrame {
     private static Window window;
     private final static Taskbar taskbar = Taskbar.getTaskbar();
     private static final JMenuBar menuBar = new JMenuBar();
-    private final JButton addServerButton = new JButton("Add server");
+//    private final JButton addServerButton = new JButton("Add server");
 //    private final Container glassPane = (Container) getRootPane().getGlassPane();
 //    public final JPopupMenu contextMenu = new JPopupMenu();
 
@@ -102,22 +99,22 @@ public class Window extends JFrame {
 //        gbc.anchor = GridBagConstraints.SOUTHWEST;
 //        glassPane.add(addServerButton, gbc);
 
-        addServerButton.setPreferredSize(new Dimension(220, 50));
-        addServerButton.setBorder(new FlatLineBorder(new Insets(5,5,5,5), Colors.BORDER_COLOR));
-        addServerButton.setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
+//        addServerButton.setPreferredSize(new Dimension(220, 50));
+//        addServerButton.setBorder(new FlatLineBorder(new Insets(5,5,5,5), Colors.BORDER_COLOR));
+//        addServerButton.setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
 
-        addServerButton.addActionListener(e -> {
-            JDialog dialog = new JDialog((Dialog) null);
-            dialog.setTitle("Add server");
-            dialog.setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
-            dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
-            dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
-
-            dialog.setBounds(this.getX() + (this.getWidth() / 2) - 225, this.getY() + (this.getHeight() / 2) - 225, 450, 450);
-            dialog.add(new AddServerTab(containerPane));
-            dialog.setResizable(false);
-            dialog.setVisible(true);
-        });
+//        addServerButton.addActionListener(e -> {
+//            JDialog dialog = new JDialog((Dialog) null);
+//            dialog.setTitle("Add server");
+//            dialog.setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
+//            dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
+//            dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
+//
+//            dialog.setBounds(this.getX() + (this.getWidth() / 2) - 225, this.getY() + (this.getHeight() / 2) - 225, 450, 450);
+//            dialog.add(new AddServerTab(containerPane));
+//            dialog.setResizable(false);
+//            dialog.setVisible(true);
+//        });
 
 //        JPanel test = new JPanel(new BorderLayout());
 //        test.add(addServerButton, BorderLayout.LINE_START);
@@ -259,6 +256,12 @@ public class Window extends JFrame {
         new File(tempFilesDirectory.getAbsolutePath() + "/worlds_level_dat").mkdirs();
     }
 
+    public static Point getCenter() {
+        return new Point(
+                window.getX() + (window.getWidth() / 2),
+                window.getY() + (window.getHeight() / 2)
+                );
+    }
 
     public static Window getWindow() {
         return window;
@@ -284,9 +287,9 @@ public class Window extends JFrame {
         return dateFormat;
     }
 
-    public JButton getAddServerButton() {
-        return addServerButton;
-    }
+//    public JButton getAddServerButton() {
+//        return addServerButton;
+//    }
 
 
     @Override

@@ -28,7 +28,7 @@ public class ServerInfoPanel extends JPanel {
         super.setVisible(aFlag);
     }
 
-    protected void updateText(MCServer server) {
+    public void updateText(MCServer server) {
         if(server.getServerJarPath() == null)
             return;
 
@@ -57,7 +57,7 @@ public class ServerInfoPanel extends JPanel {
         serverDetailsText.setIcon(DefaultIcons.getIcon(server.getPlatform()));
     }
 
-    protected ServerInfoPanel() {
+    public ServerInfoPanel() {
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         this.setLayout(boxLayout);
 

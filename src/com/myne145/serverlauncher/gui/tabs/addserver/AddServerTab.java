@@ -84,13 +84,13 @@ public class AddServerTab extends JPanel {
 
         mainPanel.add(new JLabel("<html><b><font size=4>Required</font></b></html>"));
         mainPanel.add(serverNameInputPanel);
-        mainPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 20)));
         mainPanel.add(openServerJarPanel.getKey());
 
-        mainPanel.add(Box.createRigidArea(new Dimension(10, 50)));
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 80)));
         mainPanel.add(new JLabel("<html><b><font size=4>Optional</font></b></html>"));
         mainPanel.add(launchArgsInputPanel);
-        mainPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 20)));
         mainPanel.add(openJavaBinPanel.getKey());
 
 
@@ -102,7 +102,7 @@ public class AddServerTab extends JPanel {
         serverInfoPanelWithSpacing.add(Box.createRigidArea(new Dimension(10, 10)));
 
 
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         bottomPanel.add(confirmButton, BorderLayout.LINE_END);
 
         add(titlePanel, BorderLayout.PAGE_START);
