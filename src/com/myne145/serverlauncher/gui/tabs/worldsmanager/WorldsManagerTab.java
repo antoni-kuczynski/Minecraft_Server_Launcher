@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
+import com.myne145.serverlauncher.gui.components.ButtonWarning;
 import com.myne145.serverlauncher.gui.components.PickFileButton;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
@@ -62,7 +63,7 @@ public class WorldsManagerTab extends JPanel {
         JPanel addingWorld = new JPanel(new BorderLayout());
         JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
-        JLabel title = new JLabel( "<html>Worlds - " + server.getName() + "</html>");
+        JLabel title = new JLabel( "<html>Worlds - " + server.getAbbreviatedName(50) + "</html>");
         title.setFont(new Font("Arial", Font.BOLD, 18));
 
 
@@ -113,7 +114,7 @@ public class WorldsManagerTab extends JPanel {
         double ONE_GIGABYTE = 1073741824;
         if (isArchive(world)) {
             if (FileUtils.sizeOf(world) >= ONE_GIGABYTE) {
-                pickFileButton.setImportButtonWarning("File larger than 1GiB");
+                pickFileButton.setImportButtonWarning(ButtonWarning.LARGER_THAN_1GIB);
             }
             userAddedWorld = world;
             isInArchiveMode = true;
@@ -121,7 +122,7 @@ public class WorldsManagerTab extends JPanel {
             worldCopyHandler.start();
         } else {
             if (FileUtils.sizeOfDirectory(world.getParentFile()) >= ONE_GIGABYTE) {
-                pickFileButton.setImportButtonWarning("Folder larger than 1GiB");
+                pickFileButton.setImportButtonWarning(ButtonWarning.LARGER_THAN_1GIB);
             }
             isInArchiveMode = false;
             if(world.isFile()) {

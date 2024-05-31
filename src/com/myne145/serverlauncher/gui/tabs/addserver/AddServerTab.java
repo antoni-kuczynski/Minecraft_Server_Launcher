@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.myne145.serverlauncher.gui.components.ButtonWarning;
 import com.myne145.serverlauncher.gui.components.PickFileButton;
 import com.myne145.serverlauncher.gui.tabs.ServerTabbedPane;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
@@ -40,7 +41,8 @@ public class AddServerTab extends JPanel {
         requestFocusInWindow();
 
         if (Config.getDefaultJava() == null) {
-            openJavaBinPanel.getValue().setImportButtonWarning("No default java installation found");
+//            openJavaBinPanel.getValue().setImportButtonWarning("No default java installation found");
+            openJavaBinPanel.getValue().setImportButtonWarning(ButtonWarning.NO_DEFAULT_JAVA);
         } else {
             setJavaBinPath(Config.getDefaultJava());
         }
@@ -186,7 +188,7 @@ public class AddServerTab extends JPanel {
             currentServer.setServerJarPath(path);
             isValid = true;
         } else {
-            openServerJarPanel.getValue().setImportButtonWarning("Not a jar file");
+            openServerJarPanel.getValue().setImportButtonWarning(ButtonWarning.NOT_A_JAR_FILE);
         }
 
         if(currentServer.isComplete())

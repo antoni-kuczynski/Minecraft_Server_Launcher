@@ -17,7 +17,7 @@ public class ServerTabbedPane extends JTabbedPane {
     @Override
     public void addTab(String title, Component component) {
         super.addTab(title, component);
-        setTabComponentAt(getTabCount() - 1, new TabLabelWithFileTransfer(title, getTabCount() - 1));
+        setTabComponentAt(getTabCount() - 1, new TabLabelWithFileTransfer(title, this,getTabCount() - 1));
     }
 
     public ServerTabbedPane(Component... component) {

@@ -13,6 +13,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
@@ -22,6 +23,7 @@ public class PickFileButton extends JButton {
     private final Dimension defaultSize;
     private String customText;
     private String defaultFile = "";
+    private final ArrayList<ButtonWarning> currentWarnings = new ArrayList<>();
 
     @Override
     public Dimension getPreferredSize() {
@@ -38,19 +40,56 @@ public class PickFileButton extends JButton {
     private void removeImportButtonWarning() {
         this.setIcon(null);
         this.setToolTipText(null);
+        currentWarnings.clear();
     }
 
-    public void setImportButtonWarning(String message) {
+//    public void setImportButtonWarning(String message) {
+//        this.setIcon(DefaultIcons.getSVGIcon(DefaultIcons.ERROR).derive(16,16));
+//
+//        if(this.getToolTipText() == null)
+//            this.setToolTipText("");
+//
+//        if(!this.getToolTipText().isEmpty()) {
+//            this.setToolTipText(this.getToolTipText() + "\n- " + message);
+//        } else {
+//            this.setToolTipText("- " + message);
+//        }
+//    }
+
+
+    @Override
+    public void setToolTipText(String text) { //TODO fixme
+        if(currentWarnings.isEmpty()) {
+            super.setToolTipText(text);
+            return;
+        }
+
+        StringBuilder s = new StringBuilder();
+        for(ButtonWarning warning1 : currentWarnings)
+            s.append("- ").append(warning1.toString()).append("\n");
+
+        if(text == null)
+            super.setToolTipText(s.toString());
+        else
+            super.setToolTipText(s + text);
+    }
+
+    public void setImportButtonWarning(ButtonWarning warning) {
         this.setIcon(DefaultIcons.getSVGIcon(DefaultIcons.ERROR).derive(16,16));
 
-        if(this.getToolTipText() == null)
-            this.setToolTipText("");
+        if(!currentWarnings.contains(warning)) //TODO fixme
+            currentWarnings.add(warning);
+        setToolTipText(getToolTipText());
 
-        if(!this.getToolTipText().isEmpty()) {
-            this.setToolTipText(this.getToolTipText() + "\n- " + message);
-        } else {
-            this.setToolTipText("- " + message);
-        }
+
+//        if(this.getToolTipText() == null)
+//            this.setToolTipText("");
+//
+//        if(!this.getToolTipText().isEmpty()) {
+//            this.setToolTipText(this.getToolTipText() + "\n- " + message);
+//        } else {
+//            this.setToolTipText("- " + message);
+//        }
     }
 
     private void updateFileRelatedStuff(File filePath, FilePickerButtonAction afterFileIsSelected) {

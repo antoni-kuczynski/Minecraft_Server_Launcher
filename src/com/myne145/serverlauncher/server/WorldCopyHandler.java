@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.server;
 
+import com.myne145.serverlauncher.gui.components.ButtonWarning;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.apache.commons.io.FileUtils;
@@ -113,7 +114,7 @@ public class WorldCopyHandler extends Thread {
             }
         }
         if(!hasDirectory && !copyFilesToServerDir) {
-            worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
+            worldsManagerTab.getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
         }
         if (containsLevelDat) {
             return foundLevelDat.getParent();
@@ -161,7 +162,7 @@ public class WorldCopyHandler extends Thread {
                     showErrorMessage("Cannot create " + serverWorldDir.getAbsolutePath() + " world directory.", new FileSystemException(serverWorldDir.getAbsolutePath()));
                 }
                 if (!isAddedWorldDirEmpty && !containsWorldFiles) {
-                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
+                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
                 }
 
                 if(new File(selectedWorld.getAbsolutePath() + "/level.dat").exists()) {
@@ -171,7 +172,7 @@ public class WorldCopyHandler extends Thread {
             }
             if(copyFilesToServerDir) {
                 if (!isAddedWorldDirEmpty && !containsWorldFiles) {
-                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
+                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
                 } else if (serverWorldDir.list() != null && serverWorldDir.list().length > 0) { //world dir is not empty
                     FileUtils.deleteDirectory(serverWorldDir);
                 }
@@ -198,7 +199,7 @@ public class WorldCopyHandler extends Thread {
                     return;
                 }
                 if(!worldExtractDirectory.exists()) {
-                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning("Not a Minecraft world");
+                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
                     return;
                 }
 

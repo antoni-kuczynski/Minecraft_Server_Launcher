@@ -288,6 +288,11 @@ public class MCServer {
                 !serverName.isEmpty();
     }
 
+    public String getAbbreviatedName(int maxChars) {
+        if(serverName.length() < maxChars)
+            return serverName;
+        return serverName.substring(0, maxChars - 3) + "...";
+    }
     public String getName() {
         return serverName;
     }

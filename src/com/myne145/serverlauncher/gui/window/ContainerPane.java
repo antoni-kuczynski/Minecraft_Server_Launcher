@@ -67,10 +67,10 @@ public class ContainerPane extends JTabbedPane {
 
     @Override
     public void setToolTipTextAt(int index, String toolTipText) {
-        String name = Config.getData().get(index - 1).getName();
-        if(name.length() > 52)
-            super.setToolTipTextAt(index, name + "\n" + toolTipText);
-        else
+//        String name = Config.getData().get(index - 1).getName();
+//        if(name.length() > 52)
+//            super.setToolTipTextAt(index, name + "\n" + toolTipText); //TODO
+//        else
             super.setToolTipTextAt(index, toolTipText);
     }
 
@@ -113,6 +113,45 @@ public class ContainerPane extends JTabbedPane {
                 return 220;
             }
 
+            @Override
+            protected JButton createScrollButton(int direction) {
+                JButton button =  super.createScrollButton(direction);
+                button.setTransferHandler(new TransferHandler() {
+
+                    @Override
+                    public boolean canImport(TransferSupport support) {
+                        Thread thread = new Thread(() -> {
+                            if(getSelectedIndex() >= getTabCount())
+                                return;
+
+                            setSelectedIndex(getSelectedIndex() + 1);
+
+                            try {
+                                Thread.sleep(200);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                        thread.start();
+                        try {
+                            thread.join();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return true;
+                    }
+
+
+                });
+                return button;
+            }
+
+            @Override
+            protected JButton createMoreTabsButton() {
+                JButton button = super.createMoreTabsButton();
+                button.setToolTipText(null);
+                return button;
+            }
         });
         setTabPlacement(LEFT);
         setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
@@ -125,7 +164,7 @@ public class ContainerPane extends JTabbedPane {
         );
 
         addTab("<html><p style=\"text-align: left; width: 110px\">" + "Add server" + "</p></html>", addServerPane);
-        setTabComponentAt(0, new TabLabelWithFileTransfer("<html><p style=\"text-align: left; width: 110px\">" + "Add server" + "</p></html>", 0));
+        setTabComponentAt(0, new TabLabelWithFileTransfer("<html><p style=\"text-align: left; width: 110px\">" + "Add server" + "</p></html>", this, 0));
         setIconAt(0, DefaultIcons.getSVGIcon(DefaultIcons.ADD_SERVER).derive(32, 32));
         serverTabbedPanes.add(addServerPane);
 
@@ -173,7 +212,7 @@ public class ContainerPane extends JTabbedPane {
             }
         });
 
-        TabLabelWithFileTransfer.setParentPane(this);
+//        TabLabelWithFileTransfer.setParentPane(this);
     }
 
     public void addServer(MCServer server) {
@@ -184,10 +223,7 @@ public class ContainerPane extends JTabbedPane {
 
         serverTabbedPanes.add(serverTabbedPane);
 
-        String serverName = server.getName();
-        if(serverName.length() > 52)
-            serverName = serverName.substring(0, 52);
-        addTab(serverName, serverTabbedPane);
+        addTab(server.getAbbreviatedName(50), serverTabbedPane);
 
         ServerTabLabel tabLabel = new ServerTabLabel(server);
         setTabComponentAt(server.getServerId(), tabLabel);
