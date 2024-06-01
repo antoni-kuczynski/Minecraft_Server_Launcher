@@ -4,9 +4,7 @@ import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.CPUChart;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.RAMChart;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.components.ServerTabLabel;
-import com.myne145.serverlauncher.utils.DesktopOpener;
 import com.myne145.serverlauncher.server.MCServer;
-import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 
 import javax.swing.*;
@@ -101,7 +99,7 @@ public class ServerDashboardTab extends JPanel {
     private void killServer() {
         serverConsole.killServer();
         changeServerActionButtonsVisibility(false);
-        parentPane.setIconAt(server.getServerId(), DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
+        parentPane.setIconAt(server.getServerId(), DefaultIcons.getServerPlatformIcon(DefaultIcons.SERVER_OFFLINE));
     }
 
     public void setChartsEnabled(boolean setEnabled) {

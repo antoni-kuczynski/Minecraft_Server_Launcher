@@ -1,6 +1,8 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
 import com.myne145.serverlauncher.gui.window.Window;
+import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.utils.DateFormat;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 import dev.dewy.nbt.Nbt;
 import dev.dewy.nbt.tags.collection.CompoundTag;
@@ -17,48 +19,39 @@ public class MinecraftWorld {
     private ImageIcon worldIcon;
     private String levelName = "";
     private String folderName = "";
-    private Calendar lastPlayedDate = Calendar.getInstance();
+    private Calendar lastPlayedDate;
     private String gamemode = "";
-    private boolean isUsingCheats = false;
-    private String gameVersion = "";
-    private final int serverIndex;
+    private boolean isUsingCheats;
+    private String gameVersion;
+    private boolean hasLevelDat;
 
-    public File getLevelDatFile(File worldPath) {
-        return new File("world_temp/worlds_level_dat/level_" + worldPath.getName() + ".dat");
-    }
-
-    public int getServerIndex() { //this is so bad
-        return serverIndex;
-    }
-
-    public MinecraftWorld(File worldPath, int serverIndex) throws IOException {
-        this.serverIndex = serverIndex;
-
-        //Icon
-        File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
-        try {
-            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-        } catch (IOException e) {
-            worldIcon = DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING);
-        }
-        File levelDatFile = getLevelDatFile(worldPath);
-
-        if(!levelDatFile.exists())
-            return;
+    public void update(File levelDatFile) {
+        hasLevelDat = levelDatFile.exists();
 
         //level.dat NBT reading
         Nbt levelDat = new Nbt();
-        CompoundTag content = levelDat.fromFile(levelDatFile);
-
-        if(content == null || content.isEmpty())
+        CompoundTag content;
+        try {
+            content = levelDat.fromFile(levelDatFile);
+        } catch (IOException e) {
+            hasLevelDat = false;
+//            Window.showErrorMessage("I/O error reading the level.dat file", e);
             return;
+        }
+
+        if(content == null || content.isEmpty()) {
+            hasLevelDat = false;
+            return;
+        }
 
         CompoundTag levelDatData = content.get("Data");
-        if(levelDatData == null)
+        if(levelDatData == null) {
+            hasLevelDat = false;
             return;
+        }
 
         levelName = levelDatData.getString("LevelName").toString().replace("\"", "");
-        folderName = worldPath.getName();
+        folderName = levelDatFile.getParentFile().getName();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date(levelDatData.getLong("LastPlayed").getValue()));
@@ -79,12 +72,39 @@ public class MinecraftWorld {
             gameVersion = levelDatData.getCompound("Version").getString("Name").getValue();
     }
 
-    public String getLevelNameColors() {
-        return convertColors(levelName);
+
+    //server constructor
+    public MinecraftWorld(MCServer server) {
+        //Icon
+        File iconFile = new File(server.getWorldPath().getAbsolutePath() + "/icon.png");
+        try {
+            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            worldIcon = DefaultIcons.getServerPlatformIcon(DefaultIcons.WORLD_MISSING);
+        }
+
+        update(server.getTempLevelDat());
     }
 
-    public String getLevelNameNoColors() {
-        return levelName;
+    //client constructor
+    public MinecraftWorld(File worldPath) {
+        //Icon
+        File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
+        try {
+            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            worldIcon = DefaultIcons.getServerPlatformIcon(DefaultIcons.WORLD_MISSING);
+        }
+
+        File levelDatFile = new File("world_temp/worlds_level_dat/level_" + worldPath.getName() + ".dat");
+        if(!levelDatFile.exists())
+            return;
+
+        update(levelDatFile);
+    }
+
+    public String getLevelNameColors() {
+        return convertColors(levelName);
     }
 
     public String getFolderName() {
@@ -109,6 +129,31 @@ public class MinecraftWorld {
 
     public ImageIcon getWorldIcon() {
         return worldIcon;
+    }
+
+    public boolean hasLevelDat() {
+        return hasLevelDat;
+    }
+
+    public String getFormattedDate() {
+        String AM_PM = "AM";
+        if(getLastPlayedDate().get(Calendar.AM_PM) == Calendar.PM)
+            AM_PM = "PM";
+
+
+        String formattedDate = "Invalid date format";
+        if(Window.getDateFormat() == DateFormat.DD_MM_YYYY) {
+            formattedDate = this.getLastPlayedDate().get(Calendar.DAY_OF_MONTH) + "∕" +
+                    (this.getLastPlayedDate().get(Calendar.MONTH) + 1) + "∕" +
+                    this.getLastPlayedDate().get(Calendar.YEAR) + ", " +
+                    this.getLastPlayedDate().get(Calendar.HOUR) + ":" + this.getLastPlayedDate().get(Calendar.MINUTE) + " " + AM_PM;
+        } else if(Window.getDateFormat() == DateFormat.YYYY_MM_DD) {
+            formattedDate = this.getLastPlayedDate().get(Calendar.YEAR) + "∕" +
+                    (this.getLastPlayedDate().get(Calendar.MONTH) + 1) + "∕" +
+                    this.getLastPlayedDate().get(Calendar.DAY_OF_MONTH) + ", " +
+                    this.getLastPlayedDate().get(Calendar.HOUR) + ":" + this.getLastPlayedDate().get(Calendar.MINUTE) + " " + AM_PM;
+        }
+        return formattedDate;
     }
 
     private static final Map<String, String> MC_COLOR_CODES = Map.ofEntries(

@@ -2,12 +2,15 @@ package com.myne145.serverlauncher.server;
 
 //import com.myne145.serverlauncher.utils.AlertType;
 
+import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -31,6 +34,7 @@ public class MCServer {
     private ServerPlatform platform;
     private String javaVersion;
     private String minecraftVersion;
+    private MinecraftWorld serverWorld;
 
     public MCServer(String serverName, File serverPath, File serverJarPath, String javaExecutablePath, String serverLaunchArgs, int serverId) {
         this.serverName = serverName;
@@ -54,6 +58,7 @@ public class MCServer {
         }
         platform = getPlatformFromManifestFile();
         minecraftVersion = getMinecraftServerVersion();
+        serverWorld = new MinecraftWorld(this);
     }
 
     public MCServer() {
@@ -288,6 +293,9 @@ public class MCServer {
                 !serverName.isEmpty();
     }
 
+    public boolean hasServerProperties() {
+        return !properties.isEmpty();
+    }
     public String getAbbreviatedName(int maxChars) {
         if(serverName.length() < maxChars)
             return serverName;
@@ -341,6 +349,10 @@ public class MCServer {
         this.serverLaunchArgs = "nogui " + serverLaunchArgs.replace("nogui", "");
     }
 
+    public MinecraftWorld getServerWorld() {
+        return serverWorld;
+    }
+
     public void setServerName(String serverName) {
         this.serverName = serverName;
     }
@@ -355,7 +367,8 @@ public class MCServer {
         } catch (IOException e) {
             showErrorMessage("Cannot read " + serverName + " server.properties file.", e);
         }
-
+        updateWorldPath();
+        serverWorld = new MinecraftWorld(this);
     }
 
     public void setJavaExecutablePath(File javaExecutablePath) {
@@ -365,6 +378,22 @@ public class MCServer {
         } catch (Exception e) {
             showErrorMessage("Cannot read java release file.", e);
             javaVersion = "Unknown";
+        }
+    }
+
+    public File getTempLevelDat() {
+        File levelDat = new File(this.getWorldPath().getAbsolutePath() + "/level.dat");
+        File tempLevelDatFile = new File("world_temp/level_" + "server_id_" + this.getServerId() + ".dat");
+
+        try {
+            try (FileChannel sourceChannel = FileChannel.open(levelDat.toPath(), StandardOpenOption.READ);
+                 FileChannel destChannel = FileChannel.open(tempLevelDatFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
+                sourceChannel.transferTo(0, sourceChannel.size(), destChannel);
+            }
+
+            return tempLevelDatFile;
+        } catch (IOException e) {
+            return levelDat;
         }
     }
 }

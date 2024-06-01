@@ -1,7 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -9,16 +8,9 @@ import com.myne145.serverlauncher.utils.DefaultIcons;
 import javax.swing.*;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ServerInfoPanel extends JPanel {
-    private final JLabel serverDetailsText = new JLabel("<html><center>Server details are going to appear here.</center></html>", SwingConstants.CENTER);
+    private final JLabel serverDetailsText = new JLabel("<html><center>Missing server.properties file.</center></html>", SwingConstants.CENTER);
 
 
     @Override
@@ -29,7 +21,7 @@ public class ServerInfoPanel extends JPanel {
     }
 
     public void updateText(MCServer server) {
-        if(server.getServerJarPath() == null)
+        if(server.getServerJarPath() == null || !server.hasServerProperties())
             return;
 
         String gamemode = server.getProperty("gamemode");
@@ -41,20 +33,22 @@ public class ServerInfoPanel extends JPanel {
             default -> String.valueOf(gamemode.charAt(0)).toUpperCase() + gamemode.substring(1);
         };
 
-
         boolean isInOnlineMode = server.getProperty("online-mode").equals("true");
+        String world = "";
+        if(server.getServerWorld().hasLevelDat())
+            world = "<br>World: " + server.getServerWorld().getLevelNameColors();
 
         serverDetailsText.setText(
                 "<html><center>" +
                         "<b>" + server.getPlatform().toString() + "</b>" +
                         "<br>" + gamemode + " Mode" +
                         "<br>Version: " + server.getMinecraftVersion() +
-                        "<br>World: " + "a really long world name for testing purposes lol" +
+                         world +
                         "<br>Port: " + server.getProperty("server-port") +
                         "<br>" + (isInOnlineMode ? "Online Mode" : "Offline Mode") +
                         "</center></html>");
 
-        serverDetailsText.setIcon(DefaultIcons.getIcon(server.getPlatform()));
+        serverDetailsText.setIcon(DefaultIcons.getServerPlatformIcon(server.getPlatform()).derive(96, 96));
     }
 
     public ServerInfoPanel() {
@@ -73,7 +67,7 @@ public class ServerInfoPanel extends JPanel {
 
 //        serverDetailsText.setText("<html><center>PaperMC Server<br>Version: 1.19.4<br>Online mode<br>World name: Parkour Paradise 3<br>Java version: 19.0.2<br>Gamemode: Survival<br>Port: 25565<br></center></html>");
 //        serverDetailsText.setText("<html><center><b>PaperMC Server</b><br>Survival Mode<br>Version: 1.19.4<br>World: Parkour Paradise 3<br>Port: 25565<br>Online mode</center></html>");
-        serverDetailsText.setIcon(DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING));
+        serverDetailsText.setIcon(DefaultIcons.getServerPlatformIcon(DefaultIcons.WORLD_MISSING));
 
 
 //        add(image);

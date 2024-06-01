@@ -15,7 +15,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -84,12 +83,12 @@ public class ServerConsole extends JPanel {
                     howManyTimesLineWasNull = 0;
                     processes.get(processes.size() - 1).destroy();
                     if (wasServerStopCausedByUser) {
-                        parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
+                        parentPane.setIconAt(index, DefaultIcons.getServerPlatformIcon(DefaultIcons.SERVER_OFFLINE));
                         parentConsoleTab.changeServerActionButtonsVisibility(false);
                         parentConsoleTab.setWaitingStop(false);
                         parentPane.setToolTipTextAt(index, "Offline");
                     } else {
-                        parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
+                        parentPane.setIconAt(index, DefaultIcons.getServerPlatformIcon(DefaultIcons.SERVER_ERRORED));
                         parentConsoleTab.changeServerActionButtonsVisibility(false);
                         parentPane.setToolTipTextAt(index, "Errored");
                     }
@@ -255,9 +254,9 @@ public class ServerConsole extends JPanel {
             if (processes.size() == 1)
                 consoleMainThread.start();
             parentPane.setToolTipTextAt(index, "Running");
-            parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ONLINE));
+            parentPane.setIconAt(index, DefaultIcons.getServerPlatformIcon(DefaultIcons.SERVER_ONLINE));
         } catch (IOException e) {
-            parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
+            parentPane.setIconAt(index, DefaultIcons.getServerPlatformIcon(DefaultIcons.SERVER_ERRORED));
             parentPane.setToolTipTextAt(index, "Errored");
             consoleOutput.append(e.getMessage() +
                     "\n(You probably specified an invalid java executable)");

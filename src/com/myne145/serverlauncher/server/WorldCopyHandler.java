@@ -235,7 +235,7 @@ public class WorldCopyHandler extends Thread {
         startImportingButtonFromWorldManagerTab.setEnabled(true);
         worldsManagerTab.setIcons();
         if(Config.getData().get(worldsManagerTab.getIndex()).getWorldPath().exists()) {
-            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(Config.getData().get(worldsManagerTab.getIndex()).getWorldPath());
+            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation();
         }
     }
 

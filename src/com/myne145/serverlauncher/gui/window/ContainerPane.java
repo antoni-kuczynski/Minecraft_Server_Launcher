@@ -228,7 +228,7 @@ public class ContainerPane extends JTabbedPane {
         ServerTabLabel tabLabel = new ServerTabLabel(server);
         setTabComponentAt(server.getServerId(), tabLabel);
 
-        setIconAt(server.getServerId(), DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
+        setIconAt(server.getServerId(), DefaultIcons.getServerPlatformIcon(DefaultIcons.SERVER_OFFLINE));
         setToolTipTextAt(server.getServerId(), "Offline");
         tabLabel.enableContextMenu();
     }
@@ -273,7 +273,7 @@ public class ContainerPane extends JTabbedPane {
         WorldsManagerTab worldsManagerTab = serverTabbedPanes.get(tabIndex).getWorldsManagerTab();
         worldsManagerTab.setIcons();
         if(mcServerConfig.getWorldPath().exists()) {
-            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation(mcServerConfig.getWorldPath());
+            worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation();
         }
 
         ServerDashboardTab selectedConsoleTab = serverTabbedPanes.get(tabIndex).getServerDashboardTab();

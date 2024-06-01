@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui.tabs.addserver;
+package com.myne145.serverlauncher.utils;
 
 import java.awt.*;
 import java.awt.event.*;

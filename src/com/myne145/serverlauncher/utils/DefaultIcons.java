@@ -8,7 +8,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.LinkedHashMap;
 
 import static com.myne145.serverlauncher.gui.window.Window.*;
 
@@ -32,14 +31,14 @@ public enum DefaultIcons {
         this.svgIcon = icon;
     }
 
-    public static ImageIcon getIcon(DefaultIcons iconType) {
+    public static ImageIcon getServerPlatformIcon(DefaultIcons iconType) {
         if(iconType == DefaultIcons.SERVER_OFFLINE || iconType == DefaultIcons.SERVER_ONLINE || iconType == DefaultIcons.SERVER_ERRORED)
             return new ImageIcon(iconType.icon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
         else
             return iconType.icon;
     }
 
-    public static ImageIcon getIcon(ServerPlatform iconType) {
+    public static FlatSVGIcon getServerPlatformIcon(ServerPlatform iconType) {
         if(DefaultIcon.paperMc == null) {
             try {
                 DefaultIcon.loadPlatformIcons();
@@ -84,26 +83,41 @@ class DefaultIcon {
     static ImageIcon defaultWorld;
     static ImageIcon appIcon;
 
-    static ImageIcon paperMc;
-    static ImageIcon forge;
-    static ImageIcon craftbukkit;
-    static ImageIcon spigotMc;
-    static ImageIcon vanilla;
-    static ImageIcon fabricMc;
-    static ImageIcon unknownPlatform;
+    static FlatSVGIcon paperMc;
+//    static FlatSVGIcon paperMcTest;
+    static FlatSVGIcon forge;
+    static FlatSVGIcon craftbukkit;
+    static FlatSVGIcon spigotMc;
+    static FlatSVGIcon vanilla;
+    static FlatSVGIcon fabricMc;
+    static FlatSVGIcon unknownPlatform;
 //    static LinkedHashMap<ServerPlatform, ImageIcon> serverPlatformIcons = new LinkedHashMap<>();
 
     static FlatSVGIcon addServer;
     static FlatSVGIcon error;
 
     protected static void loadPlatformIcons() throws IOException {
-        paperMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/papermc.png")));
-        forge = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/forge.png")));
-        craftbukkit = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/craftbukkit.png")));
-        spigotMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/spigotmc.png")));
-        vanilla = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/vanilla.png")));
-        fabricMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/fabricmc.png")));
-        unknownPlatform = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/papermc.png"))); //TODO remove placeholder here
+//        paperMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/papermc.png")));
+        paperMc = new FlatSVGIcon(Config.RESOURCES_PATH + "/server_platforms/papermc.svg", Config.classLoader);
+
+
+//        forge = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/forge.png")));
+        forge = new FlatSVGIcon(Config.RESOURCES_PATH + "/server_platforms/forge.svg", Config.classLoader);
+
+//        craftbukkit = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/craftbukkit.png")));
+        craftbukkit = new FlatSVGIcon(Config.RESOURCES_PATH + "/server_platforms/craftbukkit.svg", Config.classLoader);
+
+//        spigotMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/spigotmc.png")));
+        spigotMc = new FlatSVGIcon(Config.RESOURCES_PATH + "/server_platforms/spigotmc.svg", Config.classLoader);
+
+//        vanilla = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/vanilla.png")));
+        vanilla = new FlatSVGIcon(Config.RESOURCES_PATH + "/server_platforms/vanilla.svg", Config.classLoader);
+
+//        fabricMc = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_platforms/fabricmc.png")));
+        vanilla = new FlatSVGIcon(Config.RESOURCES_PATH + "/server_platforms/vanilla.svg", Config.classLoader);
+
+        unknownPlatform = new FlatSVGIcon(Config.RESOURCES_PATH + "/server_platforms/papermc.svg", Config.classLoader); //TODO remove placeholder here
+
     }
 
     static {

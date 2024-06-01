@@ -40,7 +40,7 @@ public class Window extends JFrame {
 
     public Window() {
         // Set up the JFrame
-        setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
+        setIconImage(DefaultIcons.getServerPlatformIcon(DefaultIcons.APP_ICON).getImage());
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
