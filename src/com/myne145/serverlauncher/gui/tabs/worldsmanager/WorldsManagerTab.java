@@ -3,6 +3,7 @@ package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 import com.myne145.serverlauncher.gui.components.ButtonWarning;
 import com.myne145.serverlauncher.gui.components.PickFileButton;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
+import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
@@ -16,7 +17,7 @@ import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 public class WorldsManagerTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
     private final JButton startCopying = new JButton("Start importing");
-    private File userAddedWorld;
+    private MinecraftWorld userAddedWorld = new MinecraftWorld();
     private String extractedWorldDir;
     private boolean isInArchiveMode;
     private final WorldsManagerTab worldsManagerTab;
@@ -116,10 +117,11 @@ public class WorldsManagerTab extends JPanel {
             if (FileUtils.sizeOf(world) >= ONE_GIGABYTE) {
                 pickFileButton.setImportButtonWarning(ButtonWarning.LARGER_THAN_1GIB);
             }
-            userAddedWorld = world;
-            isInArchiveMode = true;
-            WorldCopyHandler worldCopyHandler = WorldCopyHandler.createWorldCopyHandler(worldsManagerTab);
-            worldCopyHandler.start();
+            //TODO: implement
+//            userAddedWorld = world;
+//            isInArchiveMode = true;
+//            WorldCopyHandler worldCopyHandler = WorldCopyHandler.createWorldCopyHandler(worldsManagerTab);
+//            worldCopyHandler.start();
         } else {
             if (FileUtils.sizeOfDirectory(world.getParentFile()) >= ONE_GIGABYTE) {
                 pickFileButton.setImportButtonWarning(ButtonWarning.LARGER_THAN_1GIB);
@@ -128,20 +130,34 @@ public class WorldsManagerTab extends JPanel {
             if(world.isFile()) {
                 world = new File(world.getParent());
             }
+            File levelDat = new File(world.getAbsolutePath() + "/level.dat");
+            if(!levelDat.exists()) {
+                getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
+                return;
+            }
+//            if(userAddedWorld == null)
+//                userAddedWorld = new MinecraftWorld(levelDat);
+//            else
+            userAddedWorld.update(levelDat);
+            startCopying.setEnabled(true);
 
-            userAddedWorld = world;
-            WorldCopyHandler.createWorldCopyHandler(worldsManagerTab).start();
+//            userAddedWorld = world;
+            getWorldsInfoPanels().updateClientWorldInformation(userAddedWorld);
+//            WorldCopyHandler.createWorldCopyHandler(worldsManagerTab).start();
             setIcons();
         }
     }
 
     public void setIcons() {
-        if(userAddedWorld != null)
-            isInArchiveMode = isArchive(userAddedWorld);
+        if(userAddedWorld != null && userAddedWorld.getPath() != null)
+            isInArchiveMode = isArchive(userAddedWorld.getPath());
 
-        if(userAddedWorld != null && isInArchiveMode) {
-            worldsInfoPanels.updateClientWorldInformation(new File(extractedWorldDir));
-        } else if(!isInArchiveMode && userAddedWorld != null) {
+//        if(userAddedWorld != null && isInArchiveMode) {
+//            worldsInfoPanels.updateClientWorldInformation(new File(extractedWorldDir));
+//        } else if(!isInArchiveMode && userAddedWorld != null) {
+//            worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
+//        } //TODO: implement
+        if(!isInArchiveMode && userAddedWorld != null) {
             worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
         }
     }
@@ -154,7 +170,7 @@ public class WorldsManagerTab extends JPanel {
     }
 
     public File getUserAddedWorld() {
-        return userAddedWorld;
+        return userAddedWorld.getPath();
     }
 
     public JProgressBar getProgressBar() {

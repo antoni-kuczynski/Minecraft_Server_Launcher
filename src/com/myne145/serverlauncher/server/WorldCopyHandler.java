@@ -157,19 +157,19 @@ public class WorldCopyHandler extends Thread {
                             selectedWorldFilenamesList.contains("data") ||
                             selectedWorldFilenamesList.contains("region");
 
-            if(!copyFilesToServerDir) {
-                if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
-                    showErrorMessage("Cannot create " + serverWorldDir.getAbsolutePath() + " world directory.", new FileSystemException(serverWorldDir.getAbsolutePath()));
-                }
-                if (!isAddedWorldDirEmpty && !containsWorldFiles) {
-                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
-                }
-
-                if(new File(selectedWorld.getAbsolutePath() + "/level.dat").exists()) {
-                    //copying world's level.dat file analogically like server ones
-                    FileUtils.copyFile(new File(selectedWorld.getAbsolutePath() + "/level.dat"), new File("world_temp/worlds_level_dat/level_" + selectedWorld.getName() + ".dat"));
-                }
-            }
+//            if(!copyFilesToServerDir) {
+//                if (!serverWorldDir.exists() && !serverWorldDir.mkdirs()) {
+//                    showErrorMessage("Cannot create " + serverWorldDir.getAbsolutePath() + " world directory.", new FileSystemException(serverWorldDir.getAbsolutePath()));
+//                }
+//                if (!isAddedWorldDirEmpty && !containsWorldFiles) {
+//                    worldsManagerTab.getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
+//                }
+//
+//                if(new File(selectedWorld.getAbsolutePath() + "/level.dat").exists()) {
+//                    //copying world's level.dat file analogically like server ones
+//                    FileUtils.copyFile(new File(selectedWorld.getAbsolutePath() + "/level.dat"), new File("world_temp/worlds_level_dat/level_" + selectedWorld.getName() + ".dat"));
+//                }
+//            }
             if(copyFilesToServerDir) {
                 if (!isAddedWorldDirEmpty && !containsWorldFiles) {
                     worldsManagerTab.getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
