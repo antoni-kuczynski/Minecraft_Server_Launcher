@@ -31,7 +31,7 @@ public enum DefaultIcons {
         this.svgIcon = icon;
     }
 
-    public static ImageIcon getServerPlatformIcon(DefaultIcons iconType) {
+    public static ImageIcon getIcon(DefaultIcons iconType) {
         if(iconType == DefaultIcons.SERVER_OFFLINE || iconType == DefaultIcons.SERVER_ONLINE || iconType == DefaultIcons.SERVER_ERRORED)
             return new ImageIcon(iconType.icon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
         else
@@ -127,7 +127,8 @@ class DefaultIcon {
             serverErrored = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_errored.png")));
             defaultWorld = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")));
             appIcon = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png")));
-//            addServer = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/add_server.png")));
+//            appIcon = new FlatSVGIcon(Config.RESOURCES_PATH + "/icon_test.svg", Config.classLoader);
+
 
             error = new FlatSVGIcon(Config.RESOURCES_PATH + "/error.svg", Config.classLoader);
             addServer = new FlatSVGIcon(Config.RESOURCES_PATH + "/add_server.svg", Config.classLoader);

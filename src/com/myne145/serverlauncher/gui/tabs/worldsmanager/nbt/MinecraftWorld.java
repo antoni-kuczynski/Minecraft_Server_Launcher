@@ -4,13 +4,20 @@ import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.DateFormat;
 import com.myne145.serverlauncher.utils.DefaultIcons;
-import dev.dewy.nbt.Nbt;
-import dev.dewy.nbt.tags.collection.CompoundTag;
+import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.io.NbtIO;
+import net.lenni0451.mcstructs.nbt.io.NbtReadTracker;
+import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
+//import dev.dewy.nbt.Nbt;
+//import dev.dewy.nbt.tags.collection.CompoundTag;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -28,73 +35,150 @@ public class MinecraftWorld {
     public void update(File levelDatFile) {
         hasLevelDat = levelDatFile.exists();
 
-        //level.dat NBT reading
-        Nbt levelDat = new Nbt();
-        CompoundTag content;
+        //Icon
+        File iconFile = new File(levelDatFile.getParentFile().getAbsolutePath() + "/icon.png");
         try {
-            content = levelDat.fromFile(levelDatFile);
+            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
         } catch (IOException e) {
+            worldIcon = DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING);
+        }
+
+        //level.dat NBT reading
+//        Nbt levelDat = new Nbt();
+//
+//        CompoundTag content;
+//        try {
+//            content = levelDat.fromFile(levelDatFile);
+//        } catch (IOException e) {
+//            hasLevelDat = false;
+////            Window.showErrorMessage("I/O error reading the level.dat file", e);
+//            return;
+//        }
+
+        try (FileChannel sourceChannel = FileChannel.open(levelDatFile.toPath(), StandardOpenOption.READ);
+            InputStream stream = Channels.newInputStream(sourceChannel);
+
+        ) {
+            INbtTag tag = NbtIO.JAVA.read(stream, true, NbtReadTracker.unlimited());
+            CompoundTag tag1 = tag.asCompoundTag();
+            CompoundTag content = tag1.get("Data");
+
+            stream.close();
+            sourceChannel.close();
+
+            String levelName = content.get("LevelName").asStringTag().getValue();
+            String folderName = levelDatFile.getParentFile().getName();
+            long lastPlayed = content.getLong("LastPlayed");
+            int gameMode = content.getInt("GameType");
+            boolean isUsingCheats = content.getBoolean("allowCommands");
+            String version = content.get("Version").asCompoundTag().getString("Name");
+
+
+            if(content.isEmpty()) {
+                hasLevelDat = false;
+                return;
+            }
+
+//        CompoundTag levelDatData = content.get("Data");
+
+            this.levelName = levelName;
+            this.folderName = folderName;
+//            levelName = levelDatData.getString("LevelName").toString().replace("\"", "");
+//        folderName = levelDatFile.getParentFile().getName();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date(lastPlayed));
+            this.lastPlayedDate = calendar;
+
+            switch (gameMode) {
+                case 0 -> this.gamemode = "Survival";
+                case 1 -> this.gamemode = "Creative";
+                case 2 -> this.gamemode = "Adventure";
+                case 3 -> this.gamemode = "Spectator";
+                default -> this.gamemode = "Unknown";
+            }
+            this.isUsingCheats = isUsingCheats;
+            this.gameVersion = version;
+
+            //            if(content.get("Version").asCompoundTag() == null)
+//                gameVersion = "Unknown";
+//            else
+//                this.gameVersion = version;
+
+
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-                //-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-//-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+//            for(byte b : stream.readAllBytes())
+//                System.out.println(b);
+//            System.out.println("\nljdsflkjsdflkjsdflkjdsflksdjflksdjflksdjflksdjflksdjfklsdfjlksdfjklsdfjsdklfjsdklfjsdlkfjsdklfjsdklfjsdklfjsdklfjsdklfjsdklfjsdlkfjsdklfjsdlkfjsdklfjdsklfjsdklfjsdklfjsdlkfjsdklfjsdlkfjsdklfjsdklfj");
+////            System.out.println(stream.readAllBytes());
+//            System.out.println(levelDat.fromStream(new DataInputStream(stream)));
+//            content = levelDat.fromStream(new DataInputStream(stream));
+
+        } catch (IOException ex) {
             hasLevelDat = false;
-//            Window.showErrorMessage("I/O error reading the level.dat file", e);
-            return;
+//            Window.showErrorMessage("I/O error reading the level.dat file", ex);
+//            return;
         }
 
-        if(content == null || content.isEmpty()) {
-            hasLevelDat = false;
-            return;
-        }
 
-        CompoundTag levelDatData = content.get("Data");
-        if(levelDatData == null) {
-            hasLevelDat = false;
-            return;
-        }
 
-        levelName = levelDatData.getString("LevelName").toString().replace("\"", "");
-        folderName = levelDatFile.getParentFile().getName();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date(levelDatData.getLong("LastPlayed").getValue()));
-        lastPlayedDate = calendar;
-
-        switch (levelDatData.getInt("GameType").intValue()) {
-            case 0 -> gamemode = "Survival";
-            case 1 -> gamemode = "Creative";
-            case 2 -> gamemode = "Adventure";
-            case 3 -> gamemode = "Spectator";
-            default -> gamemode = "Unknown";
-        }
-        isUsingCheats = levelDatData.getByte("allowCommands").intValue() == 1;
-
-        if(levelDatData.getCompound("Version") == null)
-            gameVersion = "Unknown";
-        else
-            gameVersion = levelDatData.getCompound("Version").getString("Name").getValue();
+//        if(content == null || content.isEmpty()) {
+//            hasLevelDat = false;
+//            return;
+//        }
+//
+//        CompoundTag levelDatData = content.get("Data");
+//        if(levelDatData == null) {
+//            hasLevelDat = false;
+//            return;
+//        }
+//
+//        levelName = levelDatData.getString("LevelName").toString().replace("\"", "");
+//        folderName = levelDatFile.getParentFile().getName();
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(new Date(levelDatData.getLong("LastPlayed").getValue()));
+//        lastPlayedDate = calendar;
+//
+//        switch (levelDatData.getInt("GameType").intValue()) {
+//            case 0 -> gamemode = "Survival";
+//            case 1 -> gamemode = "Creative";
+//            case 2 -> gamemode = "Adventure";
+//            case 3 -> gamemode = "Spectator";
+//            default -> gamemode = "Unknown";
+//        }
+//        isUsingCheats = levelDatData.getByte("allowCommands").intValue() == 1;
+//
+//        if(levelDatData.getCompound("Version") == null)
+//            gameVersion = "Unknown";
+//        else
+//            gameVersion = levelDatData.getCompound("Version").getString("Name").getValue();
     }
 
 
     //server constructor
     public MinecraftWorld(MCServer server) {
-        //Icon
-        File iconFile = new File(server.getWorldPath().getAbsolutePath() + "/icon.png");
-        try {
-            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-        } catch (IOException e) {
-            worldIcon = DefaultIcons.getServerPlatformIcon(DefaultIcons.WORLD_MISSING);
-        }
+//        //Icon
+//        File iconFile = new File(server.getWorldPath().getAbsolutePath() + "/icon.png");
+//        try {
+//            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+//        } catch (IOException e) {
+//            worldIcon = DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING);
+//        }
 
         update(server.getTempLevelDat());
     }
 
     //client constructor
     public MinecraftWorld(File worldPath) {
-        //Icon
-        File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
-        try {
-            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
-        } catch (IOException e) {
-            worldIcon = DefaultIcons.getServerPlatformIcon(DefaultIcons.WORLD_MISSING);
-        }
+//        //Icon
+//        File iconFile = new File(worldPath.getAbsolutePath() + "/icon.png");
+//        try {
+//            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+//        } catch (IOException e) {
+//            worldIcon = DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING);
+//        }
 
         File levelDatFile = new File("world_temp/worlds_level_dat/level_" + worldPath.getName() + ".dat");
         if(!levelDatFile.exists())

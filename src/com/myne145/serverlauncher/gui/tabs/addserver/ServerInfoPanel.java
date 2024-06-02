@@ -67,7 +67,7 @@ public class ServerInfoPanel extends JPanel {
 
 //        serverDetailsText.setText("<html><center>PaperMC Server<br>Version: 1.19.4<br>Online mode<br>World name: Parkour Paradise 3<br>Java version: 19.0.2<br>Gamemode: Survival<br>Port: 25565<br></center></html>");
 //        serverDetailsText.setText("<html><center><b>PaperMC Server</b><br>Survival Mode<br>Version: 1.19.4<br>World: Parkour Paradise 3<br>Port: 25565<br>Online mode</center></html>");
-        serverDetailsText.setIcon(DefaultIcons.getServerPlatformIcon(DefaultIcons.WORLD_MISSING));
+        serverDetailsText.setIcon(DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING));
 
 
 //        add(image);

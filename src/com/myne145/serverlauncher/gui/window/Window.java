@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,9 +41,10 @@ public class Window extends JFrame {
 
     public Window() {
         // Set up the JFrame
-        setIconImage(DefaultIcons.getServerPlatformIcon(DefaultIcons.APP_ICON).getImage());
+        setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension((int) (730 * getDisplayScale()), (int) (490 * getDisplayScale())));
 
         SERVER_STATUS_ICON_DIMENSION = getUserValues().getInt(PREFS_SERVER_ICONS_SCALE,  32);
 
@@ -263,6 +265,13 @@ public class Window extends JFrame {
                 );
     }
 
+    public static double getDisplayScale() {
+        GraphicsConfiguration asdf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        AffineTransform asfd2 = asdf.getDefaultTransform();
+        double scaleX = asfd2.getScaleX();
+        return scaleX;
+    }
+
     public static Window getWindow() {
         return window;
     }
@@ -295,13 +304,14 @@ public class Window extends JFrame {
     @Override
     public void repaint(long time, int x, int y, int width, int height) {
         super.repaint(time, x, y, width, height);
-        System.out.println(getWidth());
+        System.out.println(getWidth() + "\t" + getHeight());
     }
 
     public static void main(String[] args) throws Exception {
         Config.createConfig();
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
+//        System.out.println(Config.abbreviateFilePath(new File("G:\\Videos\\Edited & Old (MOUNT)\\Jacob Wronix nagrywki\\file.txt")));
         SwingUtilities.invokeLater(Window::new);
     }
 }

@@ -24,6 +24,7 @@ public class PickFileButton extends JButton {
     private String customText;
     private String defaultFile = "";
     private final ArrayList<ButtonWarning> currentWarnings = new ArrayList<>();
+    private String tooltipTextWithoutWarnings = "";
 
     @Override
     public Dimension getPreferredSize() {
@@ -58,38 +59,39 @@ public class PickFileButton extends JButton {
 
 
     @Override
-    public void setToolTipText(String text) { //TODO fixme
+    public void setToolTipText(String text) {
+        if((text == null || text.isEmpty()) && currentWarnings.isEmpty())
+            return;
+
+        tooltipTextWithoutWarnings = text;
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < currentWarnings.size(); i++) {
+            builder.append("- ").append(currentWarnings.get(i).toString());
+            if(i != currentWarnings.size() - 1)
+                builder.append("\n");
+        }
+
         if(currentWarnings.isEmpty()) {
-            super.setToolTipText(text);
+            super.setToolTipText(tooltipTextWithoutWarnings);
             return;
         }
 
-        StringBuilder s = new StringBuilder();
-        for(ButtonWarning warning1 : currentWarnings)
-            s.append("- ").append(warning1.toString()).append("\n");
+        if(tooltipTextWithoutWarnings == null || tooltipTextWithoutWarnings.isEmpty()) {
+            super.setToolTipText(builder.toString());
+            return;
+        }
+        builder.append("\n");
 
-        if(text == null)
-            super.setToolTipText(s.toString());
-        else
-            super.setToolTipText(s + text);
+        super.setToolTipText(builder + tooltipTextWithoutWarnings);
     }
 
     public void setImportButtonWarning(ButtonWarning warning) {
         this.setIcon(DefaultIcons.getSVGIcon(DefaultIcons.ERROR).derive(16,16));
 
-        if(!currentWarnings.contains(warning)) //TODO fixme
+        if(!currentWarnings.contains(warning))
             currentWarnings.add(warning);
-        setToolTipText(getToolTipText());
 
-
-//        if(this.getToolTipText() == null)
-//            this.setToolTipText("");
-//
-//        if(!this.getToolTipText().isEmpty()) {
-//            this.setToolTipText(this.getToolTipText() + "\n- " + message);
-//        } else {
-//            this.setToolTipText("- " + message);
-//        }
+        setToolTipText("");
     }
 
     private void updateFileRelatedStuff(File filePath, FilePickerButtonAction afterFileIsSelected) {
@@ -101,7 +103,7 @@ public class PickFileButton extends JButton {
         afterFileIsSelected.run(filePath);
 
         if(customText == null) {
-            this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(filePath.getAbsolutePath(), 60) + "</small></html>");
+            this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePathOld(filePath.getAbsolutePath(), 60) + "</small></html>");
         }
         else {
             this.setText(customText);

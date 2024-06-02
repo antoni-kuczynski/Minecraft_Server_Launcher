@@ -1,6 +1,8 @@
 package com.myne145.serverlauncher.server;
 
 import com.myne145.serverlauncher.gui.window.Window;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,7 +13,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 
 public abstract class Config extends ArrayList<MCServer> {
@@ -144,7 +145,7 @@ public abstract class Config extends ArrayList<MCServer> {
 //    }
 
 
-    public static String abbreviateFilePath(String path, int maxLength) {
+    public static String abbreviateFilePathOld(String path, int maxLength) {
 
         if (path.length() <= maxLength)
             return path;
@@ -211,6 +212,32 @@ public abstract class Config extends ArrayList<MCServer> {
 
         return result.toString();
 //        return (begBuf.append(endBuf).toString());
+    }
+
+    public static String abbreviateFilePath(File filePath) {
+        int max = 20;
+        int currentLength = 0;
+        StringBuilder result = new StringBuilder();
+        ArrayList<String> folders = new ArrayList<>();
+        while (filePath.getParentFile() != null) {
+          folders.add(filePath.getName());
+          filePath = filePath.getParentFile();
+        }
+        if(System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            String driveLetter = FilenameUtils.getPrefix(filePath.getAbsolutePath());
+            folders.add(driveLetter);
+            result.append(driveLetter);
+            currentLength += driveLetter.length();
+        }
+        int lastTwoLength = folders.get(folders.size() - 1).length() + folders.get(folders.size() - 2).length();
+        if(lastTwoLength > max)
+            return folders.get(folders.size() - 1);
+
+        Collections.reverse(folders);
+
+
+        System.out.println(folders);
+      return null;
     }
 
     public static ArrayList<MCServer> getData() {

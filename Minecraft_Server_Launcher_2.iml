@@ -32,5 +32,6 @@
     <orderEntry type="library" name="formdev.flatlaf" level="project" />
     <orderEntry type="library" name="apache.commons.lang3" level="project" />
     <orderEntry type="library" name="swing-jnafilechooser" level="project" />
+    <orderEntry type="library" name="nbt-2.4.2" level="project" />
   </component>
 </module>

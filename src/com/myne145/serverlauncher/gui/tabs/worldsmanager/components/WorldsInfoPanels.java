@@ -74,7 +74,7 @@ public class WorldsInfoPanels extends JPanel {
     private void updatePanel(WorldInformationPanel worldInformationPanel, MinecraftWorld minecraftWorld) {
         if(!minecraftWorld.hasLevelDat()) {
             worldInformationPanel.worldInformationLabel.setText("<html><font size=4>Level.dat file not found!</font></html>");
-            worldInformationPanel.worldInformationLabel.setIcon(DefaultIcons.getServerPlatformIcon(DefaultIcons.WORLD_MISSING));
+            worldInformationPanel.worldInformationLabel.setIcon(DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING));
             return;
         }
 
@@ -99,7 +99,7 @@ public class WorldsInfoPanels extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 
         iconAndWorldInfo.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        iconAndWorldInfo.setIcon(DefaultIcons.getServerPlatformIcon(DefaultIcons.WORLD_MISSING));
+        iconAndWorldInfo.setIcon(DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING));
 
 
         worldPanel.add(titleLabel, BorderLayout.PAGE_START);

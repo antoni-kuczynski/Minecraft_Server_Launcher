@@ -228,7 +228,7 @@ public class ContainerPane extends JTabbedPane {
         ServerTabLabel tabLabel = new ServerTabLabel(server);
         setTabComponentAt(server.getServerId(), tabLabel);
 
-        setIconAt(server.getServerId(), DefaultIcons.getServerPlatformIcon(DefaultIcons.SERVER_OFFLINE));
+        setIconAt(server.getServerId(), DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
         setToolTipTextAt(server.getServerId(), "Offline");
         tabLabel.enableContextMenu();
     }

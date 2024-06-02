@@ -35,9 +35,9 @@ public class WorldCopyHandler extends Thread {
         setName("WORLD_COPY_HANDLER");
         this.worldsManagerTab = worldsManagerTab;
 
-        this.currentServerAbsPath = Config.getData().get(worldsManagerTab.getIndex()).getServerPath().getAbsolutePath();
+        this.currentServerAbsPath = Config.getData().get(worldsManagerTab.getIndex() - 1).getServerPath().getAbsolutePath();
 
-        this.serverWorldName = Config.getData().get(worldsManagerTab.getIndex()).getWorldPath().getName();
+        this.serverWorldName = Config.getData().get(worldsManagerTab.getIndex() - 1).getWorldPath().getName();
         this.serverWorldDir = new File(currentServerAbsPath + "/" + serverWorldName);
 
         this.selectedWorld = worldsManagerTab.getUserAddedWorld();
@@ -140,7 +140,7 @@ public class WorldCopyHandler extends Thread {
             FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_the_end"));
             FileUtils.deleteDirectory(new File(serverWorldDir.getParent() + "/" + serverWorldName + "_nether"));
         } catch (IOException e) {
-            showErrorMessage("Cannot remove " + Config.getData().get(worldsManagerTab.getIndex()).getName() + "'s world nether or end dirs.", e);
+            showErrorMessage("Cannot remove " + Config.getData().get(worldsManagerTab.getIndex() - 1).getName() + "'s world nether or end dirs.", e);
         }
     }
 
@@ -234,7 +234,7 @@ public class WorldCopyHandler extends Thread {
         }
         startImportingButtonFromWorldManagerTab.setEnabled(true);
         worldsManagerTab.setIcons();
-        if(Config.getData().get(worldsManagerTab.getIndex()).getWorldPath().exists()) {
+        if(Config.getData().get(worldsManagerTab.getIndex() - 1).getWorldPath().exists()) {
             worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation();
         }
     }

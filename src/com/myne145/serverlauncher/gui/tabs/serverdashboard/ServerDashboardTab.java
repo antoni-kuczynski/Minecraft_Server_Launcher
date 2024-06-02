@@ -99,7 +99,7 @@ public class ServerDashboardTab extends JPanel {
     private void killServer() {
         serverConsole.killServer();
         changeServerActionButtonsVisibility(false);
-        parentPane.setIconAt(server.getServerId(), DefaultIcons.getServerPlatformIcon(DefaultIcons.SERVER_OFFLINE));
+        parentPane.setIconAt(server.getServerId(), DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
     }
 
     public void setChartsEnabled(boolean setEnabled) {

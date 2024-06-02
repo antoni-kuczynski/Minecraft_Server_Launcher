@@ -41,7 +41,7 @@ public class MCServer {
         this.serverPath = serverPath;
         this.serverJarPath = serverJarPath;
 
-        if(javaExecutablePath.equalsIgnoreCase("java")) {
+        if (javaExecutablePath.equalsIgnoreCase("java")) {
             this.javaExecutablePath = Config.getDefaultJava();
         } else {
             this.javaExecutablePath = new File(javaExecutablePath);
@@ -62,7 +62,7 @@ public class MCServer {
     }
 
     public MCServer() {
-        if(Config.getData().isEmpty())
+        if (Config.getData().isEmpty())
             this.serverId = 1;
         else
             this.serverId = Config.getData().size() + 1; //top tier code right here
@@ -96,16 +96,16 @@ public class MCServer {
 
     private String getVersionFromLatestLog() throws FileNotFoundException {
         File logPath = new File(serverPath.getAbsolutePath() + "/logs/latest.log");
-        if(!logPath.exists())
+        if (!logPath.exists())
             return "Unknown";
 
         Scanner sc = new Scanner(logPath);
         String line;
         int index = 0;
-        while(sc.hasNextLine() && index < 50) {
+        while (sc.hasNextLine() && index < 50) {
             index++;
             line = sc.nextLine();
-            if(!line.contains("Starting minecraft server version"))
+            if (!line.contains("Starting minecraft server version"))
                 continue;
 
             Pattern versionPattern = Pattern.compile("version\\s+([0-9]+\\.[0-9]+(\\.[0-9]+)?)");
@@ -148,9 +148,9 @@ public class MCServer {
                 String key = String.valueOf(entry.getKey());
                 String value = String.valueOf(entry.getValue());
 
-                if(key.equalsIgnoreCase("Main-Class")) {
+                if (key.equalsIgnoreCase("Main-Class")) {
                     mainClass = value.toLowerCase();
-                } else if(key.equalsIgnoreCase("Implementation-Version")) {
+                } else if (key.equalsIgnoreCase("Implementation-Version")) {
                     implementationVersion = value.toLowerCase();
                 }
             }
@@ -159,19 +159,19 @@ public class MCServer {
             showErrorMessage("I/O error reading " + serverJarPath.getName() + " file, when trying to obtain server's version.", e);
         }
 
-        if(mainClass.contains("papermc")) {
+        if (mainClass.contains("papermc")) {
             return ServerPlatform.PAPER_MC;
-        } else if(mainClass.contains("fml")) {
+        } else if (mainClass.contains("fml")) {
             return ServerPlatform.FORGE;
-        } else if(mainClass.contains("bukkit") &&
+        } else if (mainClass.contains("bukkit") &&
                 (implementationVersion.isEmpty() || implementationVersion.contains("bukkit"))) {
             return ServerPlatform.BUKKIT;
-        } else if(mainClass.contains("bukkit") &&
+        } else if (mainClass.contains("bukkit") &&
                 implementationVersion.contains("spigot")) {
             return ServerPlatform.SPIGOT;
-        } else if(mainClass.contains("minecraftserver")) {
+        } else if (mainClass.contains("minecraftserver")) {
             return ServerPlatform.VANILLA;
-        } else if(mainClass.contains("fabricmc")) {
+        } else if (mainClass.contains("fabricmc")) {
             return ServerPlatform.FABRIC;
         }
 
@@ -181,7 +181,7 @@ public class MCServer {
 
     public void updateWorldPath() {
         String worldName;
-        if(!properties.containsKey("level-name")) {
+        if (!properties.containsKey("level-name")) {
             worldName = "world";
         } else {
             worldName = getProperty("level-name");
@@ -193,29 +193,29 @@ public class MCServer {
     private String getJavaVersionFromReleaseFile() throws IOException {
         File javaPath = getJavaExecutablePath();
         String javaVersion = "Unknown";
-        if(javaPath == null || javaPath.getParentFile().list() == null || javaPath.getParentFile().list().length == 0)
+        if (javaPath == null || javaPath.getParentFile().list() == null || javaPath.getParentFile().list().length == 0)
             return javaVersion;
 
-        if(javaPath.isFile())
+        if (javaPath.isFile())
             javaPath = javaPath.getParentFile();
 
-        if(javaPath.list() == null)
+        if (javaPath.list() == null)
             return javaVersion;
 
         List<String> files = Arrays.asList(javaPath.list());
-        if(!files.contains("release") && javaPath.getParentFile() != null && javaPath.getParentFile().list() != null) {
+        if (!files.contains("release") && javaPath.getParentFile() != null && javaPath.getParentFile().list() != null) {
             files = Arrays.asList(javaPath.getParentFile().list()); //one folder back if user selected the "bin" folder
             javaPath = javaPath.getParentFile();
         }
 
 
-        if(!files.contains("release"))
+        if (!files.contains("release"))
             return javaVersion;
 
 
         ArrayList<String> content = (ArrayList<String>) Files.readAllLines(new File(javaPath.getAbsolutePath() + "/release").toPath());
-        for(String s : content) {
-            if(s.split("=")[0].equals("JAVA_VERSION")) {
+        for (String s : content) {
+            if (s.split("=")[0].equals("JAVA_VERSION")) {
                 javaVersion = s.split("=")[1].replace("\"", "");
             }
         }
@@ -225,14 +225,14 @@ public class MCServer {
 
     private void updateProperties() throws IOException {
         File propertiesFile = new File(serverPath.getAbsolutePath() + "/server.properties");
-        if(!propertiesFile.exists())
+        if (!propertiesFile.exists())
             return;
         ArrayList<String> content = (ArrayList<String>) Files.readAllLines(propertiesFile.toPath());
-        if(content.isEmpty())
+        if (content.isEmpty())
             return;
 
-        for(String s : content) {
-            if(s.startsWith("#"))
+        for (String s : content) {
+            if (s.startsWith("#"))
                 continue;
             String[] lineSplitted = s.split("=");
             String value = getValue(lineSplitted);
@@ -243,11 +243,10 @@ public class MCServer {
 
     private static String getValue(String[] lineSplitted) {
         StringBuilder value = new StringBuilder();
-        if(lineSplitted.length == 2) {
+        if (lineSplitted.length == 2) {
             value.append(lineSplitted[1]);
-        }
-        else if(lineSplitted.length > 2) {
-            for(int i = 1; i < lineSplitted.length; i++) {
+        } else if (lineSplitted.length > 2) {
+            for (int i = 1; i < lineSplitted.length; i++) {
                 value.append("=").append(lineSplitted[i]);
             }
         }
@@ -255,7 +254,7 @@ public class MCServer {
     }
 
     public String getProperty(String key) {
-        if(!properties.containsKey(key))
+        if (!properties.containsKey(key))
             return "";
 
         return properties.get(key);
@@ -273,12 +272,12 @@ public class MCServer {
 
     public static void writeAllToConfig() {
         JSONArray array = new JSONArray();
-        for(MCServer server : Config.getData()) {
+        for (MCServer server : Config.getData()) {
             JSONObject object = getJSONObject(server);
             array.put(object);
         }
 
-        try(FileWriter writer = new FileWriter(Config.ABSOLUTE_PATH)) {
+        try (FileWriter writer = new FileWriter(Config.ABSOLUTE_PATH)) {
             writer.write("");
             writer.write(array.toString(4));
         } catch (IOException e) {
@@ -296,11 +295,13 @@ public class MCServer {
     public boolean hasServerProperties() {
         return !properties.isEmpty();
     }
+
     public String getAbbreviatedName(int maxChars) {
-        if(serverName.length() < maxChars)
+        if (serverName.length() < maxChars)
             return serverName;
         return serverName.substring(0, maxChars - 3) + "...";
     }
+
     public String getName() {
         return serverName;
     }
@@ -383,17 +384,19 @@ public class MCServer {
 
     public File getTempLevelDat() {
         File levelDat = new File(this.getWorldPath().getAbsolutePath() + "/level.dat");
-        File tempLevelDatFile = new File("world_temp/level_" + "server_id_" + this.getServerId() + ".dat");
-
-        try {
-            try (FileChannel sourceChannel = FileChannel.open(levelDat.toPath(), StandardOpenOption.READ);
-                 FileChannel destChannel = FileChannel.open(tempLevelDatFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
-                sourceChannel.transferTo(0, sourceChannel.size(), destChannel);
-            }
-
-            return tempLevelDatFile;
-        } catch (IOException e) {
-            return levelDat;
-        }
+//        File tempLevelDatFile = new File("world_temp/level_" + "server_id_" + this.getServerId() + ".dat");
+//
+//        try {
+//            try (FileChannel sourceChannel = FileChannel.open(levelDat.toPath(), StandardOpenOption.READ);
+//                 FileChannel destChannel = FileChannel.open(tempLevelDatFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
+//                sourceChannel.transferTo(0, sourceChannel.size(), destChannel);
+//            }
+//
+//            return tempLevelDatFile;
+//        } catch (IOException e) {
+//            return levelDat;
+//        }
+//    }
+        return levelDat;
     }
 }
