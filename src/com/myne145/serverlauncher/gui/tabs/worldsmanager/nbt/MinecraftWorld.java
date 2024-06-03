@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt;
 
+import com.myne145.serverlauncher.gui.components.ButtonWarning;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.utils.DateFormat;
@@ -8,6 +9,7 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.io.NbtIO;
 import net.lenni0451.mcstructs.nbt.io.NbtReadTracker;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
+import org.apache.commons.io.FileUtils;
 //import dev.dewy.nbt.Nbt;
 //import dev.dewy.nbt.tags.collection.CompoundTag;
 
@@ -18,9 +20,10 @@ import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
+
+import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
+import static com.myne145.serverlauncher.utils.ZipUtils.extractArchive;
 
 public class MinecraftWorld {
     private ImageIcon worldIcon;
@@ -32,6 +35,75 @@ public class MinecraftWorld {
     private String gameVersion;
     private boolean hasLevelDat;
     private File path;
+
+//    public static String findWorldDirectory(String dir) {
+//        ArrayList<File> arr = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dir).listFiles())));
+//        File foundLevelDat = new File(dir);
+//        boolean containsLevelDat = false;
+//        boolean hasDirectory = false;
+//        for(File f : arr)
+//            if(f.isDirectory())
+//                hasDirectory = true;
+//        for (File f : arr) {
+//            if (f.getName().equals("level.dat") || !hasDirectory) {
+//                containsLevelDat = true;
+//                foundLevelDat = new File(f.getAbsolutePath());
+//            }
+//        }
+//
+//        if (containsLevelDat) {
+//            return foundLevelDat.getParent();
+//        } else {
+//            String nextDir = null;
+//            for (File f : arr) {
+//                if (f.isDirectory()) {
+//                    nextDir = f.getAbsolutePath();
+//                    break;
+//                } else {
+//                    nextDir = new File(f.getParent()).getParent();
+//                }
+//            }
+//            if(!nextDir.equals(dir))
+//                return findWorldDirectory(nextDir);
+//            else
+//                return dir;
+//        }
+//    }
+
+//    public static MinecraftWorld extractWorld(File world) {
+//        File worldExtractDirectory = new File("world_temp/" + world.getName());
+//        if (worldExtractDirectory.exists())
+//            FileUtils.deleteDirectory(worldExtractDirectory);
+//
+//
+//        String extractedDirectory;
+//        try {
+//            extractedDirectory = extractArchive(world.getAbsolutePath(), worldExtractDirectory.getAbsolutePath(), worldsManagerTab);
+//        } catch (IOException e) {
+//            showErrorMessage("I/O error extracting " + world.getName() + " file.", e);
+//            return null;
+//        }
+//        if(!worldExtractDirectory.exists()) {
+//            return null;
+////            worldsManagerTab.getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
+////            return;
+//        }
+//
+//        String extractedDirTemp = new File(extractedDirectory).getParent();
+//        File predictedWorldDir = new File(findWorldDirectory(extractedDirTemp));
+//        worldsManagerTab.setExtractedWorldDir(predictedWorldDir.getAbsolutePath());
+//
+//
+//        File extractedWorldsLevelDat = new File(predictedWorldDir.getAbsolutePath() + "/level.dat");
+//        if(!extractedWorldsLevelDat.exists()) {//copying world's level.dat file analogically like server ones
+////            File worldLevelDat = new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat");
+////            FileUtils.copyFile(extractedWorldsLevelDat, worldLevelDat);
+//            return null;
+//        }
+//        MinecraftWorld world1 = new MinecraftWorld();
+//        world1.update(extractedWorldsLevelDat);
+//        return world1;
+//    }
 
     public void update(File levelDatFile) {
         path = levelDatFile.getParentFile();

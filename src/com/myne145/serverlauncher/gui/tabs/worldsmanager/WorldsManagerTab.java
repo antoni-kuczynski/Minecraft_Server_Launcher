@@ -5,13 +5,17 @@ import com.myne145.serverlauncher.gui.components.PickFileButton;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.components.WorldsInfoPanels;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MCServer;
 import com.myne145.serverlauncher.server.WorldCopyHandler;
+import com.myne145.serverlauncher.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+
 import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 
 public class WorldsManagerTab extends JPanel {
@@ -24,6 +28,7 @@ public class WorldsManagerTab extends JPanel {
     private final int index;
     private final WorldsInfoPanels worldsInfoPanels;
     private final PickFileButton pickFileButton = new PickFileButton("Import existing world", new Dimension(130, 40), new Dimension(130, 40), this::setUserAddedWorld);
+    private File selectedWorld;
 
     public WorldsManagerTab(ContainerPane parentPane, MCServer server) {
         super(new BorderLayout());
@@ -112,16 +117,41 @@ public class WorldsManagerTab extends JPanel {
     }
 
     private void setUserAddedWorld(File world) {
+//        final File worldBs = world;
         double ONE_GIGABYTE = 1073741824;
         if (isArchive(world)) {
             if (FileUtils.sizeOf(world) >= ONE_GIGABYTE) {
                 pickFileButton.setImportButtonWarning(ButtonWarning.LARGER_THAN_1GIB);
             }
+
+//            File finalWorld = world; //bs
+//            Thread thread = new Thread(() -> {
+//                File worldExtractDirectory = new File("world_temp/" + worldBs.getName());
+//
+//
+//
+//                try {
+//                    String file = ZipUtils.extractArchive(finalWorld.getAbsolutePath(), "world_temp/" + finalWorld.getName(), this);
+//                    System.out.println(MinecraftWorld.findWorldDirectory(file));
+//                    File levelDat = new File(MinecraftWorld.findWorldDirectory(file) + "/level.dat");
+//                    if(!levelDat.exists() || !new File(file).exists()) {
+//                        getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
+//                        return;
+//                    }
+//                    userAddedWorld.update(levelDat);
+//                    setIcons();
+//                } catch (IOException e) {
+//                    Window.showErrorMessage("I/O error extracting the archive.", e);
+//                }
+//            });
+//            thread.start();
+
             //TODO: implement
 //            userAddedWorld = world;
 //            isInArchiveMode = true;
-//            WorldCopyHandler worldCopyHandler = WorldCopyHandler.createWorldCopyHandler(worldsManagerTab);
-//            worldCopyHandler.start();
+            selectedWorld = world;
+            WorldCopyHandler worldCopyHandler = WorldCopyHandler.createWorldCopyHandler(worldsManagerTab);
+            worldCopyHandler.start();
         } else {
             if (FileUtils.sizeOfDirectory(world.getParentFile()) >= ONE_GIGABYTE) {
                 pickFileButton.setImportButtonWarning(ButtonWarning.LARGER_THAN_1GIB);
@@ -152,11 +182,11 @@ public class WorldsManagerTab extends JPanel {
         if(userAddedWorld != null && userAddedWorld.getPath() != null)
             isInArchiveMode = isArchive(userAddedWorld.getPath());
 
-//        if(userAddedWorld != null && isInArchiveMode) {
-//            worldsInfoPanels.updateClientWorldInformation(new File(extractedWorldDir));
-//        } else if(!isInArchiveMode && userAddedWorld != null) {
-//            worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
-//        } //TODO: implement
+        if(userAddedWorld != null && isInArchiveMode) {
+            worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
+        } else if(!isInArchiveMode && userAddedWorld != null) {
+            worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
+        } //TODO: implement
         if(!isInArchiveMode && userAddedWorld != null) {
             worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
         }
@@ -169,8 +199,8 @@ public class WorldsManagerTab extends JPanel {
         return extractedWorldDir;
     }
 
-    public File getUserAddedWorld() {
-        return userAddedWorld.getPath();
+    public MinecraftWorld getUserAddedWorld() {
+        return userAddedWorld;
     }
 
     public JProgressBar getProgressBar() {
@@ -197,5 +227,7 @@ public class WorldsManagerTab extends JPanel {
         return pickFileButton;
     }
 
-
+    public File getSelectedWorld() {
+        return selectedWorld;
+    }
 }

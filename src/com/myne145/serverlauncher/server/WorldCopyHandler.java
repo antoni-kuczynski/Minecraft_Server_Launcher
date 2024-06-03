@@ -40,7 +40,7 @@ public class WorldCopyHandler extends Thread {
         this.serverWorldName = Config.getData().get(worldsManagerTab.getIndex() - 1).getWorldPath().getName();
         this.serverWorldDir = new File(currentServerAbsPath + "/" + serverWorldName);
 
-        this.selectedWorld = worldsManagerTab.getUserAddedWorld();
+        this.selectedWorld = worldsManagerTab.getSelectedWorld();
         WorldCopyHandler.progressBar = worldsManagerTab.getProgressBar();
         this.copyFilesToServerDir = copyFilesToServerDir;
         WorldCopyHandler.startImportingButtonFromWorldManagerTab = worldsManagerTab.getStartCopyingButton();
@@ -209,11 +209,12 @@ public class WorldCopyHandler extends Thread {
 
 
                 File extractedWorldsLevelDat = new File(predictedWorldDir.getAbsolutePath() + "/level.dat");
-                if(extractedWorldsLevelDat.exists()) {//copying world's level.dat file analogically like server ones
-                    File worldLevelDat = new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat");
-                    FileUtils.copyFile(extractedWorldsLevelDat, worldLevelDat);
-
-                }
+                worldsManagerTab.getUserAddedWorld().update(extractedWorldsLevelDat);
+//                if(extractedWorldsLevelDat.exists()) {//copying world's level.dat file analogically like server ones
+//                    File worldLevelDat = new File("world_temp/worlds_level_dat/level_" + predictedWorldDir.getName() + ".dat");
+//                    FileUtils.copyFile(extractedWorldsLevelDat, worldLevelDat);
+//
+//                }
             }
             if (copyFilesToServerDir) {
                 startImportingButtonFromWorldManagerTab.setEnabled(false);

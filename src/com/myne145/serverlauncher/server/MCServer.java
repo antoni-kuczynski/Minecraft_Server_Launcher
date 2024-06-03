@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
@@ -188,6 +189,9 @@ public class MCServer {
         }
 
         worldPath = new File(serverPath.getAbsolutePath() + "/" + worldName);
+        if (!worldPath.exists() && !worldPath.mkdirs()) {
+            showErrorMessage("Cannot create " + worldPath.getAbsolutePath() + " world directory.", new FileSystemException(worldPath.getAbsolutePath()));
+        }
     }
 
     private String getJavaVersionFromReleaseFile() throws IOException {
