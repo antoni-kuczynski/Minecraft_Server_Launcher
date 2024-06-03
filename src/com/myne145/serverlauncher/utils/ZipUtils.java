@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.utils;
 
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
+import org.apache.commons.io.FilenameUtils;
 
 import java.awt.*;
 import java.io.*;
@@ -73,20 +74,11 @@ public class ZipUtils {
         return extractedDirectory;
     }
 
-    public static String getFileExtension(File file) {
-        String fileName = file.getName();
-        int lastDotIndex = fileName.lastIndexOf('.');
-        if (lastDotIndex == -1) {
-            return "";
-        } else {
-            return fileName.substring(lastDotIndex + 1);
-        }
-    }
 
     public static boolean isArchive(File file) {
         if(file.isDirectory())
             return false;
-        String extension = getFileExtension(file);
+        String extension = FilenameUtils.getExtension(file.getName());
         return extension.equals("zip") || extension.equals("rar");
     }
 

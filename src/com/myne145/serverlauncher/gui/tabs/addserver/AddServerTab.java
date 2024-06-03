@@ -1,17 +1,17 @@
 package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import com.myne145.serverlauncher.gui.components.ButtonWarning;
+import com.myne145.serverlauncher.utils.ButtonWarning;
 import com.myne145.serverlauncher.gui.components.PickFileButton;
-import com.myne145.serverlauncher.gui.tabs.ServerTabbedPane;
+import com.myne145.serverlauncher.gui.window.ServerTabbedPane;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.server.MinecraftServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.FilePickerButtonAction;
 import com.myne145.serverlauncher.utils.TextPrompt;
-import com.myne145.serverlauncher.utils.ZipUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.*;
@@ -24,7 +24,7 @@ public class AddServerTab extends JPanel {
     private Pair<JPanel, PickFileButton> openServerJarPanel = getOpenDirButtonPanel("Open server jar file", "Server jar", this::setServerJarPath);
     private Pair<JPanel, PickFileButton> openJavaBinPanel = getOpenDirButtonPanel("Open java bin file", "Java bin", this::setJavaBinPath);
     private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
-    private MCServer currentServer = new MCServer();
+    private MinecraftServer currentServer = new MinecraftServer();
 
     @Override
     public void paintComponent(Graphics g) {
@@ -128,7 +128,7 @@ public class AddServerTab extends JPanel {
 
             Config.getData().add(currentServer);
             parentPane.addServer(currentServer);
-            MCServer.writeAllToConfig();
+            MinecraftServer.writeAllToConfig();
 
 
             parentPane.setComponentAt(0, new ServerTabbedPane(
@@ -185,7 +185,7 @@ public class AddServerTab extends JPanel {
 //        if(!path.isFile()) {
 //            openServerJarPanel.getValue().setImportButtonWarning("Not a file");
 //        }
-        if(ZipUtils.getFileExtension(path).equals("jar")) {
+        if(FilenameUtils.getExtension(path.getName()).equals("jar")) {
             currentServer.setServerJarPath(path);
             isValid = true;
         } else {

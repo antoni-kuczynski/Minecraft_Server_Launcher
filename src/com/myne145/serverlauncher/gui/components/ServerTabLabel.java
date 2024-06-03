@@ -1,10 +1,10 @@
 package com.myne145.serverlauncher.gui.components;
 
-import com.myne145.serverlauncher.gui.tabs.ServerTabbedPane;
+import com.myne145.serverlauncher.gui.window.ServerTabbedPane;
 import com.myne145.serverlauncher.gui.tabs.addserver.ServerInfoPanel;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.window.Window;
-import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.server.MinecraftServer;
 import com.myne145.serverlauncher.utils.Colors;
 
 import javax.swing.*;
@@ -17,9 +17,9 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
 //    private final int tabIndex;
     private JMenuItem serverRunAction;
     private boolean isServerActionStartServer = true;
-    private final MCServer server;
+    private final MinecraftServer server;
 
-    public ServerTabLabel(MCServer server) {
+    public ServerTabLabel(MinecraftServer server) {
         super(server.getAbbreviatedName(50), containerPane, server.getServerId());
         this.server = server;
 //        this.tabIndex = tabIndex;

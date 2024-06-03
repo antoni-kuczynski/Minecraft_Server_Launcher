@@ -1,7 +1,7 @@
 package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
-import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.server.MinecraftServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 
@@ -20,7 +20,7 @@ public class ServerInfoPanel extends JPanel {
         super.setVisible(aFlag);
     }
 
-    public void updateText(MCServer server) {
+    public void updateText(MinecraftServer server) {
         if(server.getServerJarPath() == null || !server.hasServerProperties())
             return;
 

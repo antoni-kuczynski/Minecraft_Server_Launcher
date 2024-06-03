@@ -4,7 +4,7 @@ import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.CPUChart;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.RAMChart;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.gui.components.ServerTabLabel;
-import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.server.MinecraftServer;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 
 import javax.swing.*;
@@ -14,14 +14,14 @@ public class ServerDashboardTab extends JPanel {
     private final JButton startServer = new JButton("Start server");
     private final JButton stopServer = new JButton("Stop server");
     private final JButton killServer = new JButton("Kill server");
-    private final MCServer server;
+    private final MinecraftServer server;
 //    private final int index;
     private final ServerConsole serverConsole;
     private final ContainerPane parentPane;
     private final CPUChart cpuChart = new CPUChart();
     private final RAMChart ramChart = new RAMChart();
 
-    public ServerDashboardTab(ContainerPane parentPane, MCServer server) {
+    public ServerDashboardTab(ContainerPane parentPane, MinecraftServer server) {
 //        this.index = index;
         this.parentPane = parentPane;
         this.server = server;

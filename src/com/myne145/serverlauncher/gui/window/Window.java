@@ -3,7 +3,7 @@ package com.myne145.serverlauncher.gui.window;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
-import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.server.MinecraftServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DateFormat;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -189,7 +189,7 @@ public class Window extends JFrame {
                 userSavedValues.putBoolean(PREFS_ARE_CHARTS_ENABLED, areChartsEnabled);
 
                 containerPane.killAllServerProcesses();
-                MCServer.writeAllToConfig();
+                MinecraftServer.writeAllToConfig();
 
                 File temporaryFilesDirectory = new File("world_temp");
                 if(!temporaryFilesDirectory.exists())
@@ -203,9 +203,9 @@ public class Window extends JFrame {
 
             @Override
             public void windowOpened(WindowEvent e) {
-                File temporaryWorldLevelDatFiles = new File("world_temp/worlds_level_dat");
-                if(!temporaryWorldLevelDatFiles.exists())
-                    temporaryWorldLevelDatFiles.mkdirs();
+//                File temporaryWorldLevelDatFiles = new File("world_temp/worlds_level_dat");
+//                if(!temporaryWorldLevelDatFiles.exists())
+//                    temporaryWorldLevelDatFiles.mkdirs();
                 clearTempDirectory();
             }
 
@@ -255,7 +255,7 @@ public class Window extends JFrame {
 //                alert(AlertType.ERROR, "Cannot clear the \"world_temp\" folder." + getErrorDialogMessage(e));
             }
         }
-        new File(tempFilesDirectory.getAbsolutePath() + "/worlds_level_dat").mkdirs();
+//        new File(tempFilesDirectory.getAbsolutePath() + "/worlds_level_dat").mkdirs();
     }
 
     public static Point getCenter() {

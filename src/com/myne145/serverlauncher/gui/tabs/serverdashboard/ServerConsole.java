@@ -1,9 +1,8 @@
 package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 
-import com.myne145.serverlauncher.gui.tabs.serverdashboard.components.ServerConsoleContextMenu;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.Config;
-import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.server.MinecraftServer;
 //import com.myne145.serverlauncher.utils.AlertType;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -32,7 +31,7 @@ public class ServerConsole extends JPanel {
     public boolean isVisible = false;
     private final ArrayList<String> commandHistory = new ArrayList<>();
     private int commandIndex;
-    private MCServer server = null;
+    private MinecraftServer server = null;
     private final JLabel serverConsoleTitle;
     private final Runnable consoleRunner = () -> {
 //        try {
@@ -102,7 +101,7 @@ public class ServerConsole extends JPanel {
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
 
-    protected ServerConsole(ContainerPane parentPane, MCServer server, ServerDashboardTab tab) {
+    protected ServerConsole(ContainerPane parentPane, MinecraftServer server, ServerDashboardTab tab) {
         setLayout(new BorderLayout());
         this.index = server.getServerId();
         this.server = server;

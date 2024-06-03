@@ -4,11 +4,10 @@ import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
 import com.myne145.serverlauncher.gui.components.ServerTabLabel;
 import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
-import com.myne145.serverlauncher.gui.tabs.ServerTabbedPane;
 import com.myne145.serverlauncher.gui.tabs.addserver.AddServerTab;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
 import com.myne145.serverlauncher.gui.tabs.worldsmanager.WorldsManagerTab;
-import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.server.MinecraftServer;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -158,7 +157,7 @@ public class ContainerPane extends JTabbedPane {
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 
-        ArrayList<MCServer> configData = Config.getData();
+        ArrayList<MinecraftServer> configData = Config.getData();
         ServerTabbedPane addServerPane = new ServerTabbedPane(
                 new AddServerTab(this)
         );
@@ -215,7 +214,7 @@ public class ContainerPane extends JTabbedPane {
 //        TabLabelWithFileTransfer.setParentPane(this);
     }
 
-    public void addServer(MCServer server) {
+    public void addServer(MinecraftServer server) {
         ServerTabbedPane serverTabbedPane = new ServerTabbedPane(
                 new ServerDashboardTab(this, server),
                 new WorldsManagerTab(this, server)
@@ -265,14 +264,14 @@ public class ContainerPane extends JTabbedPane {
 
         setChartsVisibility(Window.areChartsEnabled());
 
-        MCServer mcServerConfig = Config.getData().get(tabIndex - 1);
+        MinecraftServer minecraftServerConfig = Config.getData().get(tabIndex - 1);
 
         Window.getUserValues().putInt("prefs_server_id", tabIndex);
-        mcServerConfig.updateWorldPath();
+        minecraftServerConfig.updateWorldPath();
 
         WorldsManagerTab worldsManagerTab = serverTabbedPanes.get(tabIndex).getWorldsManagerTab();
         worldsManagerTab.setIcons();
-        if(mcServerConfig.getWorldPath().exists()) {
+        if(minecraftServerConfig.getWorldPath().exists()) {
             worldsManagerTab.getWorldsInfoPanels().updateServerWorldInformation();
         }
 

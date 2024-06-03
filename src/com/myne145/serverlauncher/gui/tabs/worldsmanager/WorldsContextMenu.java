@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui.tabs.worldsmanager.components;
+package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.utils.DesktopOpener;

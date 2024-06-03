@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui.tabs.serverdashboard.components;
+package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;

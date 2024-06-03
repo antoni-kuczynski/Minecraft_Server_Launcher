@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui.components;
+package com.myne145.serverlauncher.utils;
 
 public enum ButtonWarning {
     NOT_A_MINECRAFT_WORLD("Not a Minecraft world"),

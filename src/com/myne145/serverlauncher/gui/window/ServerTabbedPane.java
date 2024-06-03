@@ -1,4 +1,4 @@
-package com.myne145.serverlauncher.gui.tabs;
+package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
 import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;

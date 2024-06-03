@@ -2,16 +2,13 @@ package com.myne145.serverlauncher.server;
 
 //import com.myne145.serverlauncher.utils.AlertType;
 
-import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -23,7 +20,7 @@ import java.util.zip.ZipEntry;
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 //import static com.myne145.serverlauncher.gui.window.Window.getErrorDialogMessage;
 
-public class MCServer {
+public class MinecraftServer {
     private String serverName;
     private File serverPath;
     private File serverJarPath;
@@ -37,7 +34,7 @@ public class MCServer {
     private String minecraftVersion;
     private MinecraftWorld serverWorld;
 
-    public MCServer(String serverName, File serverPath, File serverJarPath, String javaExecutablePath, String serverLaunchArgs, int serverId) {
+    public MinecraftServer(String serverName, File serverPath, File serverJarPath, String javaExecutablePath, String serverLaunchArgs, int serverId) {
         this.serverName = serverName;
         this.serverPath = serverPath;
         this.serverJarPath = serverJarPath;
@@ -62,7 +59,7 @@ public class MCServer {
         serverWorld = new MinecraftWorld(this);
     }
 
-    public MCServer() {
+    public MinecraftServer() {
         if (Config.getData().isEmpty())
             this.serverId = 1;
         else
@@ -264,7 +261,7 @@ public class MCServer {
         return properties.get(key);
     }
 
-    private static JSONObject getJSONObject(MCServer server) {
+    private static JSONObject getJSONObject(MinecraftServer server) {
         JSONObject object = new JSONObject();
         object.put("serverName", server.serverName);
         object.put("pathToServerJarFile", server.serverJarPath);
@@ -276,7 +273,7 @@ public class MCServer {
 
     public static void writeAllToConfig() {
         JSONArray array = new JSONArray();
-        for (MCServer server : Config.getData()) {
+        for (MinecraftServer server : Config.getData()) {
             JSONObject object = getJSONObject(server);
             array.put(object);
         }

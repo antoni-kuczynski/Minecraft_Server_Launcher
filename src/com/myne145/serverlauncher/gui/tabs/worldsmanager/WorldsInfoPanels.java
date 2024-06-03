@@ -1,10 +1,10 @@
-package com.myne145.serverlauncher.gui.tabs.worldsmanager.components;
+package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
 //import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ClientMinecraftWorld;
-import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.MinecraftWorld;
 //import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ServerMinecraftWorld;
-import com.myne145.serverlauncher.server.MCServer;
+import com.myne145.serverlauncher.server.MinecraftServer;
+import com.myne145.serverlauncher.server.MinecraftWorld;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
 
@@ -13,18 +13,17 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 
 public class WorldsInfoPanels extends JPanel {
 //    private ImageIcon DEFAULT_WORLD_ICON_PACK_PNG;
     private final WorldInformationPanel clientWorldInfo;
     private final WorldInformationPanel serverWorldInfo;
-    private final MCServer server;
+    private final MinecraftServer server;
 //    private final int tabIndex;
     private final WorldsContextMenu clientWorldContextMenu = new WorldsContextMenu();
     private final WorldsContextMenu serverWorldContextMenu = new WorldsContextMenu();
 
-    public WorldsInfoPanels(MCServer server) {
+    public WorldsInfoPanels(MinecraftServer server) {
 //        this.tabIndex = tabIndex;
         this.server = server;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -64,7 +63,7 @@ public class WorldsInfoPanels extends JPanel {
     }
 
     public void updateServerWorldInformation() {
-        server.getServerWorld().update(server.getTempLevelDat());
+        server.getServerWorld().updateFromLevelDat(server.getTempLevelDat());
         updatePanel(serverWorldInfo, server.getServerWorld());
         serverWorldContextMenu.updateDirectory(server.getWorldPath());
     }

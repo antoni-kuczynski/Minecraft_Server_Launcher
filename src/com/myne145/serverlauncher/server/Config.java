@@ -1,7 +1,6 @@
 package com.myne145.serverlauncher.server;
 
 import com.myne145.serverlauncher.gui.window.Window;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public abstract class Config extends ArrayList<MCServer> {
-    private static final ArrayList<MCServer> data = new ArrayList<>();
+public abstract class Config extends ArrayList<MinecraftServer> {
+    private static final ArrayList<MinecraftServer> data = new ArrayList<>();
     public static final ClassLoader classLoader = Config.class.getClassLoader();
     public static String RESOURCES_PATH = "com/myne145/serverlauncher/resources";
     public static String ABSOLUTE_PATH;
@@ -80,7 +79,7 @@ public abstract class Config extends ArrayList<MCServer> {
                 continue;
             }
 
-            data.add(new MCServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), pathToJavaRuntime,
+            data.add(new MinecraftServer(serverName, new File(pathToServerFolder), new File(pathToServerJarFile), pathToJavaRuntime,
                 serverLaunchArgs, tabIndex));
 //            serverId++;
         }
@@ -96,7 +95,7 @@ public abstract class Config extends ArrayList<MCServer> {
         for(int i = 0; i < data.size(); i++) {
             data.get(i).setServerId(i + 1);
         }
-        MCServer.writeAllToConfig();
+        MinecraftServer.writeAllToConfig();
     }
 
     private static FileWriter getConfigWriter(File serverConfigFile) throws IOException {
@@ -240,7 +239,7 @@ public abstract class Config extends ArrayList<MCServer> {
       return null;
     }
 
-    public static ArrayList<MCServer> getData() {
+    public static ArrayList<MinecraftServer> getData() {
         return data;
     }
 }
