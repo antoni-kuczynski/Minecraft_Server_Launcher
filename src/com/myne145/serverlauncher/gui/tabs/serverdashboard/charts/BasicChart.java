@@ -2,6 +2,7 @@ package com.myne145.serverlauncher.gui.tabs.serverdashboard.charts;
 
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import com.myne145.serverlauncher.utils.Colors;
+import com.sun.management.OperatingSystemMXBean;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
 import org.knowm.xchart.PieSeries;
@@ -12,12 +13,32 @@ import org.knowm.xchart.style.Styler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
+import java.lang.management.ManagementFactory;
 import java.util.Timer;
 import java.util.TimerTask;
 
-class BasicChart extends JPanel {
+public class BasicChart extends JPanel {
     private final PieChart chart;
+    private final static OperatingSystemMXBean systemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
     private boolean isEnabled = true;
+
+    protected static int cpuLoad = 0;
+    protected final static double TOTAL_MEMORY_GB = (double) systemMXBean.getTotalMemorySize() / 1073741824;
+    protected static double usedMemoryGB = 0;
+    protected static double usedMemoryPercentage = 0;
+
+
+    public static void startResourceMonitoringTimer() {
+        Timer timer = new Timer("TEST");
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                cpuLoad = (int) Math.ceil(systemMXBean.getCpuLoad() * 100);
+                usedMemoryGB = TOTAL_MEMORY_GB - (double) systemMXBean.getFreeMemorySize() / 1073741824;
+                usedMemoryPercentage = usedMemoryGB / TOTAL_MEMORY_GB * 100;
+            }
+        }, 0, 5000);
+    }
 
     @Override
     public void setVisible(boolean aFlag) {

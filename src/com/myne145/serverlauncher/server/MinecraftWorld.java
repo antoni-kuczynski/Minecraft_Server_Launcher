@@ -19,6 +19,7 @@ import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileSystemException;
+import java.nio.file.FileSystemLoopException;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
@@ -35,7 +36,7 @@ public class MinecraftWorld {
     private boolean isUsingCheats;
     private String gameVersion;
     private boolean hasLevelDat;
-    private File path;
+    private File worldPath;
 
 
     public void copyToServer(MinecraftServer server) throws IOException {
@@ -44,12 +45,17 @@ public class MinecraftWorld {
             return;
         }
 
+        if (worldPath.isDirectory() && worldPath.toString().contains(server.getServerPath().getAbsolutePath())) {
+            Window.showErrorMessage("Cannot copy world files from the same server.", new FileSystemLoopException(worldPath.getAbsolutePath()));
+            return;
+        }
+
         if(server.getWorldPath().exists() &&
-                server.getWorldPath().getAbsolutePath().equals(server.getServerWorld().path.getAbsolutePath())) {
+                server.getWorldPath().getAbsolutePath().equals(server.getServerWorld().worldPath.getAbsolutePath())) {
             FileUtils.deleteDirectory(server.getWorldPath());
         }
 
-        try {
+        try { //the server can deal with copying these files by itself
             FileUtils.deleteDirectory(new File(server.getServerPath().getAbsoluteFile() + "/" + server.getProperty("level-name") + "_the_end"));
             FileUtils.deleteDirectory(new File(server.getServerPath().getAbsoluteFile() + "/" + server.getProperty("level-name") + "_nether"));
         } catch (IOException e) {
@@ -57,7 +63,7 @@ public class MinecraftWorld {
         }
 
 
-        copyDirectoryWithProgressBar(path, server.getWorldPath());
+        copyDirectoryWithProgressBar(worldPath, server.getWorldPath());
     }
 
 
@@ -113,7 +119,7 @@ public class MinecraftWorld {
     }
 
     public void updateFromLevelDat(File levelDatFile) {
-        path = levelDatFile.getParentFile();
+        worldPath = levelDatFile.getParentFile();
         hasLevelDat = levelDatFile.exists();
 
         //Icon
@@ -184,8 +190,8 @@ public class MinecraftWorld {
 
     }
 
-    public File getPath() {
-        return path;
+    public File getWorldPath() {
+        return worldPath;
     }
 
     public String getLevelNameColors() {

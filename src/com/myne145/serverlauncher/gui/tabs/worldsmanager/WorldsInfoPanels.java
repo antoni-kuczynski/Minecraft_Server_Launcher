@@ -59,7 +59,7 @@ public class WorldsInfoPanels extends JPanel {
 //        MinecraftWorld clientWorld = new MinecraftWorld(world);
 
         updatePanel(clientWorldInfo, world);
-        clientWorldContextMenu.updateDirectory(world.getPath());
+        clientWorldContextMenu.updateDirectory(world.getWorldPath());
     }
 
     public void updateServerWorldInformation() {

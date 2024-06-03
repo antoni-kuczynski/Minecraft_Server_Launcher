@@ -147,7 +147,7 @@ public class WorldsManagerTab extends JPanel {
             File levelDat = new File(world.getAbsolutePath() + "/level.dat");
             if(!levelDat.exists()) {
                 getPickDirectoryButton().setImportButtonWarning(ButtonWarning.NOT_A_MINECRAFT_WORLD);
-                return;
+//                return;
             }
 //            if(userAddedWorld == null)
 //                userAddedWorld = new MinecraftWorld(levelDat);
@@ -163,8 +163,8 @@ public class WorldsManagerTab extends JPanel {
     }
 
     public void setIcons() {
-        if(userAddedWorld != null && userAddedWorld.getPath() != null)
-            isInArchiveMode = isArchive(userAddedWorld.getPath());
+        if(userAddedWorld != null && userAddedWorld.getWorldPath() != null)
+            isInArchiveMode = isArchive(userAddedWorld.getWorldPath());
 
         if(userAddedWorld != null && isInArchiveMode) {
             worldsInfoPanels.updateClientWorldInformation(userAddedWorld);

@@ -5,8 +5,8 @@ import java.lang.management.ManagementFactory;
 import com.sun.management.OperatingSystemMXBean;
 
 public class RAMChart extends BasicChart {
-    private final static OperatingSystemMXBean operatingSystem = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-    private final static double TOTAL_MEMORY_GB = (double) operatingSystem.getTotalMemorySize() / 1073741824;
+//    private final static OperatingSystemMXBean operatingSystem = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+//    private final static double TOTAL_MEMORY_GB = (double) operatingSystem.getTotalMemorySize() / 1073741824;
 
     public RAMChart() {
         super("RAM_CHART");
@@ -23,8 +23,8 @@ public class RAMChart extends BasicChart {
 
     @Override
     protected void updateChartData() {
-        double usedMemoryGB = TOTAL_MEMORY_GB - (double) operatingSystem.getFreeMemorySize() / 1073741824;
-        double usedMemoryPercentage = usedMemoryGB / TOTAL_MEMORY_GB * 100;
+//        double usedMemoryGB = TOTAL_MEMORY_GB - (double) operatingSystem.getFreeMemorySize() / 1073741824;
+//        double usedMemoryPercentage = usedMemoryGB / TOTAL_MEMORY_GB * 100;
 
         getChart().updatePieSeries("ram_usage", usedMemoryPercentage);
         getChart().getStyler().setSumFormat(Math.round(usedMemoryGB * 10.0) / 10.0 +

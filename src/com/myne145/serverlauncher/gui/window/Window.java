@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
+import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.BasicChart;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.myne145.serverlauncher.server.MinecraftServer;
@@ -124,6 +125,7 @@ public class Window extends JFrame {
         add(containerPane, BorderLayout.CENTER);
 //        add(test, BorderLayout.PAGE_END);
 
+        BasicChart.startResourceMonitoringTimer();
 
         setVisible(true);
         containerPane.setChartsVisibility(areChartsEnabled);

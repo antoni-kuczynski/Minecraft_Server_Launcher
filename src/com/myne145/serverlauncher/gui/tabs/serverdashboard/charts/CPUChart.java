@@ -5,7 +5,7 @@ import java.lang.management.ManagementFactory;
 import com.sun.management.OperatingSystemMXBean;
 
 public class CPUChart extends BasicChart {
-    private final static OperatingSystemMXBean systemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+
 
     public CPUChart() {
         super("CPU_CHART");
@@ -22,7 +22,7 @@ public class CPUChart extends BasicChart {
 
     @Override
     protected void updateChartData() {
-        int cpuLoad = (int) Math.ceil(systemMXBean.getCpuLoad() * 100);
+//        int cpuLoad = (int) Math.ceil(systemMXBean.getCpuLoad() * 100);
         getChart().updatePieSeries("cpu_usage", cpuLoad);
         getChart().getStyler().setSumFormat(cpuLoad + "%%");
         getChart().updatePieSeries("empty", 100 - cpuLoad);
