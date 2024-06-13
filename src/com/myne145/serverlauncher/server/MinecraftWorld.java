@@ -190,6 +190,8 @@ public class MinecraftWorld {
 
     }
 
+
+
     public File getWorldPath() {
         return worldPath;
     }
@@ -200,6 +202,11 @@ public class MinecraftWorld {
 
     public String getFolderName() {
         return folderName;
+    }
+    public String getFolderName(int maxLength) {
+        if (folderName.length() < maxLength)
+            return folderName;
+        return folderName.substring(0, maxLength - 3) + "...";
     }
 
     public Calendar getLastPlayedDate() {

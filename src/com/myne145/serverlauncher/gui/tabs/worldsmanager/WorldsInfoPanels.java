@@ -79,7 +79,7 @@ public class WorldsInfoPanels extends JPanel {
 
 
         String details = "<html><font size=4><b>" + minecraftWorld.getLevelNameColors() +"</b>" +
-                "<br>"+ minecraftWorld.getFolderName() + " (" + minecraftWorld.getFormattedDate() + ")" +
+                "<br>"+ minecraftWorld.getFolderName(30) + " (" + minecraftWorld.getFormattedDate() + ")" +
                 "<br>" + minecraftWorld.getGamemode() + " Mode, " + (minecraftWorld.isUsingCheats() ? "Cheats, " : "") + "Version: " + minecraftWorld.getGameVersion() + "</font></html>";
         worldInformationPanel.worldInformationLabel.setText(details);
         worldInformationPanel.worldInformationLabel.setIcon(minecraftWorld.getWorldIcon());

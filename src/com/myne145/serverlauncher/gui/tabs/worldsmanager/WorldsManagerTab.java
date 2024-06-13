@@ -70,7 +70,7 @@ public class WorldsManagerTab extends JPanel {
         JPanel addingWorld = new JPanel(new BorderLayout());
         JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
-        JLabel title = new JLabel( "<html>Worlds - " + server.getAbbreviatedName(50) + "</html>");
+        JLabel title = new JLabel( "<html>Worlds - " + server.getName(50) + "</html>");
         title.setFont(new Font("Arial", Font.BOLD, 18));
 
 

@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
+import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.BasicChart;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
@@ -234,8 +235,16 @@ public class Window extends JFrame {
                 taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.NORMAL);
             }
+
         });
         window = this;
+    }
+
+    public boolean isMouseWithinWindow() {
+        Point mousePos = MouseInfo.getPointerInfo().getLocation();
+        Rectangle bounds = getBounds();
+        bounds.setLocation(getLocationOnScreen());
+        return bounds.contains(mousePos);
     }
 
     public static void showErrorMessage(String basicInfo, Exception e) {
@@ -313,7 +322,7 @@ public class Window extends JFrame {
         Config.createConfig();
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
-//        System.out.println(Config.abbreviateFilePath(new File("G:\\Videos\\Edited & Old (MOUNT)\\Jacob Wronix nagrywki\\file.txt")));
+//        System.out.println(Config.abbreviateFilePath(new File("G:\\Videos\\Edited & Old (MOUNT)\\Jacob Wronix nagrywki\\fiasdasdasdasdasdasdasdasdasdale.txt"), 20));
         SwingUtilities.invokeLater(Window::new);
     }
 }

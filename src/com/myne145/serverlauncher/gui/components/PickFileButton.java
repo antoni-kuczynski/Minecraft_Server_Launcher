@@ -104,7 +104,7 @@ public class PickFileButton extends JButton {
         afterFileIsSelected.run(filePath);
 
         if(customText == null) {
-            this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePathOld(filePath.getAbsolutePath(), 60) + "</small></html>");
+            this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(filePath, 60) + "</small></html>");
         }
         else {
             this.setText(customText);

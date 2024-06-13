@@ -27,6 +27,35 @@ public class ContainerPane extends JTabbedPane {
     private static final OpenContextMenuItem openServerFolderItem = (OpenContextMenuItem) Window.getMenu().getMenu(0).getItem(0);
     private boolean isTabbedPaneFocused = true;
 
+    private TransferHandler getScrollButtonTransferHandler(int direction) {
+        // 1 5
+        return new TransferHandler() {
+            @Override
+            public boolean canImport(TransferSupport support) {
+                Thread t = new Thread(() -> {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e); //TODO
+                    }
+                    if(direction == SOUTH && getSelectedIndex() + 1 < getTabCount())
+                        setSelectedIndex(getSelectedIndex() + 1);
+                    else if(direction == NORTH && getSelectedIndex() - 1 >= 0)
+                        setSelectedIndex(getSelectedIndex() - 1);
+                });
+                t.setPriority(Thread.MIN_PRIORITY);
+                t.start();
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e); //TODO
+                }
+
+                return true;
+            }
+        };
+    }
+
     @Override
     public void setIconAt(int index, Icon icon) {
         TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
@@ -85,6 +114,7 @@ public class ContainerPane extends JTabbedPane {
                 boolean isSelected = tabIndex == tabPane.getSelectedIndex();
                 Rectangle currentTabRects = rects[tabIndex];
 
+
                 if (isTabbedPaneFocused) {
                     this.paintTabBackground(g, tabPlacement, tabIndex, currentTabRects.x, currentTabRects.y, currentTabRects.width, currentTabRects.height, isSelected);
                 }
@@ -115,33 +145,35 @@ public class ContainerPane extends JTabbedPane {
             @Override
             protected JButton createScrollButton(int direction) {
                 JButton button =  super.createScrollButton(direction);
-                button.setTransferHandler(new TransferHandler() {
-
-                    @Override
-                    public boolean canImport(TransferSupport support) {
-                        Thread thread = new Thread(() -> {
-                            if(getSelectedIndex() >= getTabCount())
-                                return;
-
-                            setSelectedIndex(getSelectedIndex() + 1);
-
-                            try {
-                                Thread.sleep(200);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
-                        thread.start();
-                        try {
-                            thread.join();
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        return true;
-                    }
-
-
-                });
+                button.setTransferHandler(getScrollButtonTransferHandler(direction));
+//               button.setTransferHandler(new TabLabelWithFileTransfer("Test", ContainerPane.this, -1).getTransferHandler());
+//                button.setTransferHandler(new TransferHandler() {
+//
+//                    @Override
+//                    public boolean canImport(TransferSupport support) {
+//                        Thread thread = new Thread(() -> {
+//                            if(getSelectedIndex() >= getTabCount())
+//                                return;
+//
+//                            setSelectedIndex(getSelectedIndex() + 1);
+//
+//                            try {
+//                                Thread.sleep(200);
+//                            } catch (InterruptedException e) {
+//                                throw new RuntimeException(e);
+//                            }
+//                        });
+//                        thread.start();
+//                        try {
+//                            thread.join();
+//                        } catch (InterruptedException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                        return true;
+//                    }
+//
+//
+//                });
                 return button;
             }
 
@@ -201,14 +233,18 @@ public class ContainerPane extends JTabbedPane {
             @Override
             public void mouseExited(MouseEvent e) {
                 isTabbedPaneFocused = false;
+                TabLabelWithFileTransfer.fileEntered = false;
                 repaint();
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                isTabbedPaneFocused = true;
+                isTabbedPaneFocused = false;
+                TabLabelWithFileTransfer.fileEntered = true;
                 repaint();
             }
+
+
         });
 
 //        TabLabelWithFileTransfer.setParentPane(this);
@@ -222,7 +258,7 @@ public class ContainerPane extends JTabbedPane {
 
         serverTabbedPanes.add(serverTabbedPane);
 
-        addTab(server.getAbbreviatedName(50), serverTabbedPane);
+        addTab(server.getName(50), serverTabbedPane);
 
         ServerTabLabel tabLabel = new ServerTabLabel(server);
         setTabComponentAt(server.getServerId(), tabLabel);
@@ -302,6 +338,10 @@ public class ContainerPane extends JTabbedPane {
             ImageIcon imageIcon = (ImageIcon) getIconAt(i);
             setIconAt(i, new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
         }
+    }
+
+    public boolean isTabbedPaneFocused() {
+        return isTabbedPaneFocused;
     }
 }
 

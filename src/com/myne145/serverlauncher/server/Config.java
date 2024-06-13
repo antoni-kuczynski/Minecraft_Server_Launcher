@@ -144,78 +144,81 @@ public abstract class Config extends ArrayList<MinecraftServer> {
 //    }
 
 
-    public static String abbreviateFilePathOld(String path, int maxLength) {
+//    public static String abbreviateFilePathOld(String path, int maxLength) {
+//
+//        if (path.length() <= maxLength)
+//            return path;
+//
+//        File f = new File(path);
+//        ArrayList<String> coll = new ArrayList<>();
+//        String name;
+//        StringBuilder begBuf = new StringBuilder();
+//        StringBuilder endBuf = new StringBuilder();
+//        int len;
+//        boolean b;
+//
+//        while ((f != null) && (name = f.getName()) != null) {
+//            coll.add(0, name);
+//            f = f.getParentFile();
+//        }
+//        if (coll.isEmpty())
+//            return path;
+//
+//        len = coll.size() << 1;
+//        name = coll.remove(coll.size() - 1);
+//        endBuf.insert(0, name);
+//        len += name.length();
+//        if (!coll.isEmpty()) {
+//            name = coll.remove(0);
+//            begBuf.append(name);
+//            begBuf.append(File.separator);
+//            len += name.length() - 1;
+//        }
+//        if (!coll.isEmpty()) {
+//            name = coll.remove(0);
+//            if (name.equals("Volumes")) {
+//                begBuf.append('…');
+//                begBuf.append(File.separator);
+//            } else {
+//                begBuf.append(name);
+//                begBuf.append(File.separator);
+//                len += name.length() - 1;
+//            }
+//        }
+//        for (b = true; !coll.isEmpty() && len <= maxLength; b = !b) {
+//            if (b) {
+//                name = coll.remove(coll.size() - 1);
+//                endBuf.insert(0, File.separator);
+//                endBuf.insert(0, name);
+//            } else {
+//                name = coll.remove(0);
+//                begBuf.append(name);
+//                begBuf.append(File.separator);
+//            }
+//            len += name.length() - 1;
+//        }
+//
+//        while (!coll.isEmpty()) {
+//            coll.remove(0);
+//            begBuf.append('…');
+//            begBuf.append(File.separator);
+//        }
+//
+//        StringBuilder result = begBuf.append(endBuf);
+//        if(result.length() > maxLength) {
+//            result.delete(0, result.length() - maxLength);
+//        }
+//
+//        return result.toString();
+//    }
 
-        if (path.length() <= maxLength)
-            return path;
+    public static String abbreviateFilePath(File filePath, int max) {
+        if(filePath.getName().length() > max)
+            return filePath.getName().substring(0, max - 4) + "...";
 
-        File f = new File(path);
-        ArrayList<String> coll = new ArrayList<>();
-        String name;
-        StringBuilder begBuf = new StringBuilder();
-        StringBuilder endBuf = new StringBuilder();
-        int len;
-        boolean b;
+        if(filePath.getAbsolutePath().length() <= max)
+            return filePath.getAbsolutePath();
 
-        while ((f != null) && (name = f.getName()) != null) {
-            coll.add(0, name);
-            f = f.getParentFile();
-        }
-        if (coll.isEmpty())
-            return path;
-
-        len = coll.size() << 1;
-        name = coll.remove(coll.size() - 1);
-        endBuf.insert(0, name);
-        len += name.length();
-        if (!coll.isEmpty()) {
-            name = coll.remove(0);
-            begBuf.append(name);
-            begBuf.append(File.separator);
-            len += name.length() - 1;
-        }
-        if (!coll.isEmpty()) {
-            name = coll.remove(0);
-            if (name.equals("Volumes")) {
-                begBuf.append('…');
-                begBuf.append(File.separator);
-            } else {
-                begBuf.append(name);
-                begBuf.append(File.separator);
-                len += name.length() - 1;
-            }
-        }
-        for (b = true; !coll.isEmpty() && len <= maxLength; b = !b) {
-            if (b) {
-                name = coll.remove(coll.size() - 1);
-                endBuf.insert(0, File.separator);
-                endBuf.insert(0, name);
-            } else {
-                name = coll.remove(0);
-                begBuf.append(name);
-                begBuf.append(File.separator);
-            }
-            len += name.length() - 1;
-        }
-
-        while (!coll.isEmpty()) {
-            coll.remove(0);
-            begBuf.append('…');
-            begBuf.append(File.separator);
-        }
-
-        StringBuilder result = begBuf.append(endBuf);
-        if(result.length() > maxLength) {
-            result.delete(0, result.length() - maxLength);
-        }
-
-        return result.toString();
-//        return (begBuf.append(endBuf).toString());
-    }
-
-    public static String abbreviateFilePath(File filePath) {
-        int max = 20;
-        int currentLength = 0;
         StringBuilder result = new StringBuilder();
         ArrayList<String> folders = new ArrayList<>();
         while (filePath.getParentFile() != null) {
@@ -224,19 +227,24 @@ public abstract class Config extends ArrayList<MinecraftServer> {
         }
         if(System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             String driveLetter = FilenameUtils.getPrefix(filePath.getAbsolutePath());
-            folders.add(driveLetter);
-            result.append(driveLetter);
-            currentLength += driveLetter.length();
+            folders.add(driveLetter.replace("\\", ""));
         }
-        int lastTwoLength = folders.get(folders.size() - 1).length() + folders.get(folders.size() - 2).length();
-        if(lastTwoLength > max)
-            return folders.get(folders.size() - 1);
-
         Collections.reverse(folders);
 
+        int currentSize = folders.get(folders.size() - 1).length();
+        for(int i = 0; i < folders.size() - 1; i++) {
+            String s = folders.get(i);
+            if(s.length() + currentSize <= max) {
+                result.append(s);
+                currentSize += s.length();
+            } else {
+                result.append("...");
+            }
+            result.append(File.separator);
+        }
+        result.append(folders.get(folders.size() - 1));
 
-        System.out.println(folders);
-      return null;
+        return result.toString();
     }
 
     public static ArrayList<MinecraftServer> getData() {

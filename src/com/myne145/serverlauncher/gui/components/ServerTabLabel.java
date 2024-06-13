@@ -20,17 +20,17 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
     private final MinecraftServer server;
 
     public ServerTabLabel(MinecraftServer server) {
-        super(server.getAbbreviatedName(50), containerPane, server.getServerId());
+        super(server.getName(50), containerPane, server.getServerId());
         this.server = server;
 //        this.tabIndex = tabIndex;
         this.setHorizontalAlignment(JLabel.CENTER);
         this.setVerticalAlignment(JLabel.CENTER);
         setBackground(UIManager.getColor("TabbedPane.background"));
-        setText("<html><p style=\"text-align: left; width: 110px\">" + server.getAbbreviatedName(50) + "</p></html>");
+        setText("<html><p style=\"text-align: left; width: 110px\">" + server.getName(50) + "</p></html>");
     }
 
     public void enableContextMenu() {
-        serverRunAction = new JMenuItem("<html>Start server\n<center><sub>" + server.getAbbreviatedName(50) + "</sub></center></html>");
+        serverRunAction = new JMenuItem("<html>Start server\n<center><sub>" + server.getName(50) + "</sub></center></html>");
         serverRunAction.addActionListener(e -> {
             ServerTabbedPane tabbedPane = (ServerTabbedPane) containerPane.getComponentAt(server.getServerId());
             ServerDashboardTab tab = (ServerDashboardTab) tabbedPane.getComponentAt(0);
@@ -42,9 +42,9 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
         OpenContextMenuItem openContextMenuItem = new OpenContextMenuItem("Open server folder");
         openContextMenuItem.updatePath(server.getServerPath());
 
-        JMenuItem properties = new JMenuItem("<html>Properties\n<center><sub>" + server.getAbbreviatedName(50) + "</sub></center></html>");
+        JMenuItem properties = new JMenuItem("<html>Properties\n<center><sub>" + server.getName(50) + "</sub></center></html>");
         properties.addActionListener(e -> {
-            JDialog dialog = new JDialog(Window.getWindow(), server.getAbbreviatedName(50) + " properties");
+            JDialog dialog = new JDialog(Window.getWindow(), server.getName(50) + " properties");
             dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
             dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
             dialog.setLayout(new BorderLayout());
@@ -80,10 +80,10 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
 
     public void changeServerActionContextMenuToServerStart(boolean changeToStart) {
         if(changeToStart) {
-            serverRunAction.setText("<html>Start server\n<center><sub>" + server.getAbbreviatedName(50) + "</sub></center></html>");
+            serverRunAction.setText("<html>Start server\n<center><sub>" + server.getName(50) + "</sub></center></html>");
             isServerActionStartServer = false;
         } else {
-            serverRunAction.setText("<html>Stop server\n<center><sub>" + server.getAbbreviatedName(50) + "</sub></center></html>");
+            serverRunAction.setText("<html>Stop server\n<center><sub>" + server.getName(50) + "</sub></center></html>");
             isServerActionStartServer = true;
         }
     }

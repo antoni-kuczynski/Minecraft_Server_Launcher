@@ -297,7 +297,7 @@ public class MinecraftServer {
         return !properties.isEmpty();
     }
 
-    public String getAbbreviatedName(int maxChars) {
+    public String getName(int maxChars) {
         if (serverName.length() < maxChars)
             return serverName;
         return serverName.substring(0, maxChars - 3) + "...";

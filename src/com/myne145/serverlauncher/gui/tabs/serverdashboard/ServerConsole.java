@@ -119,7 +119,7 @@ public class ServerConsole extends JPanel {
 
 
 
-        serverConsoleTitle = new JLabel("<html>Console - " + server.getAbbreviatedName(50) + "</html>");
+        serverConsoleTitle = new JLabel("<html>Console - " + server.getName(50) + "</html>");
 
         //.console_history file loading
         File consoleHistory = new File(server.getServerPath() + "/.console_history");
