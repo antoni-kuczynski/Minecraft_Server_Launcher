@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.BasicChart;
@@ -35,7 +36,7 @@ public class Window extends JFrame {
     public static int SERVER_STATUS_ICON_DIMENSION;
     public static DateFormat dateFormat = DateFormat.YYYY_MM_DD;
     private static Window window;
-    private final static Taskbar taskbar = Taskbar.getTaskbar();
+    private static Taskbar taskbar;
     private static final JMenuBar menuBar = new JMenuBar();
 //    private final JButton addServerButton = new JButton("Add server");
 //    private final Container glassPane = (Container) getRootPane().getGlassPane();
@@ -47,6 +48,9 @@ public class Window extends JFrame {
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension((int) (730 * getDisplayScale()), (int) (490 * getDisplayScale())));
+
+        if(Taskbar.isTaskbarSupported())
+            taskbar = Taskbar.getTaskbar();
 
         SERVER_STATUS_ICON_DIMENSION = getUserValues().getInt(PREFS_SERVER_ICONS_SCALE,  32);
 
@@ -214,31 +218,36 @@ public class Window extends JFrame {
 
             @Override
             public void windowIconified(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                if(Taskbar.isTaskbarSupported())
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.ICONIFIED);
             }
 
             @Override
             public void windowDeiconified(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                if(Taskbar.isTaskbarSupported())
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.NORMAL);
             }
 
             @Override
             public void windowLostFocus(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                if(Taskbar.isTaskbarSupported())
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.ICONIFIED);
             }
 
             @Override
             public void windowGainedFocus(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+                if(Taskbar.isTaskbarSupported())
+                    taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
                 Window.getWindow().setState(Window.NORMAL);
             }
 
         });
         window = this;
     }
+
 
     public boolean isMouseWithinWindow() {
         Point mousePos = MouseInfo.getPointerInfo().getLocation();
@@ -248,7 +257,14 @@ public class Window extends JFrame {
     }
 
     public static void showErrorMessage(String basicInfo, Exception e) {
+        if(!Taskbar.isTaskbarSupported()) {
+            new ErrorDialog(basicInfo, e).setVisible(true);
+            return;
+        }
+        getTaskbar().setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
+        getTaskbar().setWindowProgressValue(Window.getWindow(), 100);
         new ErrorDialog(basicInfo, e).setVisible(true);
+        getTaskbar().setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
     }
 
     private static void clearTempDirectory() {
@@ -307,22 +323,21 @@ public class Window extends JFrame {
         return dateFormat;
     }
 
-//    public JButton getAddServerButton() {
-//        return addServerButton;
-//    }
-
 
     @Override
     public void repaint(long time, int x, int y, int width, int height) {
         super.repaint(time, x, y, width, height);
-        System.out.println(getWidth() + "\t" + getHeight());
     }
 
     public static void main(String[] args) throws Exception {
-        Config.createConfig();
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
-//        System.out.println(Config.abbreviateFilePath(new File("G:\\Videos\\Edited & Old (MOUNT)\\Jacob Wronix nagrywki\\fiasdasdasdasdasdasdasdasdasdale.txt"), 20));
+        if( SystemInfo.isLinux ) {
+            // enable custom window decorations
+            JFrame.setDefaultLookAndFeelDecorated( true );
+            JDialog.setDefaultLookAndFeelDecorated( true );
+        }
+        Config.createConfig();
         SwingUtilities.invokeLater(Window::new);
     }
 }

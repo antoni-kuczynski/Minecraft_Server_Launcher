@@ -12,15 +12,15 @@ import java.awt.event.WindowEvent;
 
 public class ErrorDialog extends JDialog {
     private static final FlatOptionPaneErrorIcon icon = new FlatOptionPaneErrorIcon();
-    private final static Taskbar taskbar = Taskbar.getTaskbar();
+//    private final static Taskbar taskbar = Taskbar.getTaskbar();
 
     protected ErrorDialog(String text, Exception e) {
         setPreferredSize(new Dimension(400, 160));
         setTitle("Error");
         getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
         getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
-        taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
-        taskbar.setWindowProgressValue(Window.getWindow(), 100);
+//        Window.getTaskbar().setWindowProgressState(Window.getWindow(), Taskbar.State.ERROR);
+//        Window.getTaskbar().setWindowProgressValue(Window.getWindow(), 100);
 
 
 //        JLabel basicText = new JLabel("12345678912345678912345678912345678912345678912345");
@@ -61,7 +61,7 @@ public class ErrorDialog extends JDialog {
 
         getRootPane().setDefaultButton(ok);
         SwingUtilities.invokeLater(ok::requestFocusInWindow);
-
+        System.out.println(stackTraceArea.getText());
 
         viewStackTraceButton.addActionListener(e1 -> {
             if(!stackTracePanel.isVisible()) {
@@ -75,18 +75,18 @@ public class ErrorDialog extends JDialog {
 
         ok.addActionListener(e1 -> {
             dispose();
-            taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+//            Window.getTaskbar().setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
         });
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+//                Window.getTaskbar().setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
             }
 
             @Override
             public void windowClosed(WindowEvent e) {
-                taskbar.setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
+//                Window.getTaskbar().setWindowProgressState(Window.getWindow(), Taskbar.State.OFF);
             }
         });
     }

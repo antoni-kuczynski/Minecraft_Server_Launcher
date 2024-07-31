@@ -24,7 +24,14 @@ public abstract class Config extends ArrayList<MinecraftServer> {
     public static File getDefaultJava() {
         if(System.getProperty("java.home") == null)
             return null;
-        return new File(System.getProperty("java.home") + "/bin/javaw.exe");
+        File file = new File(System.getProperty("java.home"));
+        if(System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            file = new File(file.getAbsolutePath() + "/bin/java.exe");
+        } else {
+            file = new File(file.getAbsolutePath() + "/bin/java");
+        }
+
+        return file;
     }
 
     public static String readFileString(File fileToRead) throws IOException {

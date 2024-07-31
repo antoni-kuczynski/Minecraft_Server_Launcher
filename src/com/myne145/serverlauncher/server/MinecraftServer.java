@@ -67,6 +67,7 @@ public class MinecraftServer {
 //            this.serverId = Config.getData().get(Config.getData().size() - 1).getServerId() + 1;
     }
 
+
     private String getVersionFromVersionJSONFile() {
         try (JarFile jarFile = new JarFile(this.serverJarPath.getAbsolutePath())) {
             ZipEntry entry = jarFile.getEntry("version.json");
@@ -154,7 +155,7 @@ public class MinecraftServer {
             }
             jarFile.close();
         } catch (IOException e) {
-            showErrorMessage("I/O error reading " + serverJarPath.getName() + " file, when trying to obtain server's version.", e);
+            showErrorMessage("I/O error reading " + serverJarPath.getName() + " file - " + e.getMessage(), e);
         }
 
         if (mainClass.contains("papermc")) {

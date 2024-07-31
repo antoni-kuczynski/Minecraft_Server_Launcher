@@ -31,73 +31,69 @@ public class ServerConsole extends JPanel {
     public boolean isVisible = false;
     private final ArrayList<String> commandHistory = new ArrayList<>();
     private int commandIndex;
-    private MinecraftServer server = null;
+    private MinecraftServer server;
     private final JLabel serverConsoleTitle;
     private final Runnable consoleRunner = () -> {
-//        try {
-            while (true) {
-                synchronized (this) {
-                    while (!isVisible || !isServerRunning) {
-                        try {
-                            wait(500);
-                        } catch (InterruptedException e) {
-                            showErrorMessage("Console thread for " + server.getName() + " was interrupted.", e);
-                        }
-                    }
-                }
-
-                // Get the input stream of the server process
-                InputStream inputStream = processes.get(processes.size() - 1).getInputStream();
-
-                // Create a reader to read the input stream
-                InputStreamReader reader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(reader);
-
-                String line = null;
-                int howManyTimesLineWasNull = 0;
-
-                while (isServerRunning && isVisible) {
+        while (true) {
+            synchronized (this) {
+                while (!isVisible || !isServerRunning) {
                     try {
-                        line = bufferedReader.readLine();
-                    } catch (IOException e) {
-                        showErrorMessage("I/O error in " + server.getName() + " thread - reading line.", e);
+                        wait(500);
+                    } catch (InterruptedException e) {
+                        showErrorMessage("Console thread for " + server.getName() + " was interrupted.", e);
                     }
-
-                    if(line != null) {
-                        String finalLine = line;
-                        SwingUtilities.invokeLater(() -> consoleOutput.append(finalLine + "\n"));
-                        continue;
-                    }
-
-                    inputStream = processes.get(processes.size() - 1).getInputStream();
-                    reader = new InputStreamReader(inputStream);
-                    bufferedReader = new BufferedReader(reader);
-                    howManyTimesLineWasNull++;
-
-                    if(howManyTimesLineWasNull < 50)
-                        continue;
-
-                    //assuming that a server has been stopped (at least 50 lines were null)
-                    isServerRunning = false;
-                    howManyTimesLineWasNull = 0;
-                    processes.get(processes.size() - 1).destroy();
-                    if (wasServerStopCausedByUser) {
-                        parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
-                        parentConsoleTab.changeServerActionButtonsVisibility(false);
-                        parentConsoleTab.setWaitingStop(false);
-                        parentPane.setToolTipTextAt(index, "Offline");
-                    } else {
-                        parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
-                        parentConsoleTab.changeServerActionButtonsVisibility(false);
-                        parentPane.setToolTipTextAt(index, "Errored");
-                    }
-                    parentConsoleTab.setWaitingStop(false);
-                    wasServerStopCausedByUser = true;
                 }
             }
-//        } catch (IOException | InterruptedException e) {
-//            alert(AlertType.ERROR, "Error in server console thread:\n" + getErrorDialogMessage(e));
-//        }
+
+            // Get the input stream of the server process
+            InputStream inputStream = processes.get(processes.size() - 1).getInputStream();
+
+            // Create a reader to read the input stream
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            String line = null;
+            int howManyTimesLineWasNull = 0;
+
+            while (isServerRunning && isVisible) {
+                try {
+                    line = bufferedReader.readLine();
+                } catch (IOException e) {
+                    showErrorMessage("I/O error in " + server.getName() + " thread - reading line.", e);
+                }
+
+                if(line != null) {
+                    String finalLine = line;
+                    SwingUtilities.invokeLater(() -> consoleOutput.append(finalLine + "\n"));
+                    continue;
+                }
+
+                inputStream = processes.get(processes.size() - 1).getInputStream();
+                reader = new InputStreamReader(inputStream);
+                bufferedReader = new BufferedReader(reader);
+                howManyTimesLineWasNull++;
+
+                if(howManyTimesLineWasNull < 50)
+                    continue;
+
+                //assuming that a server has been stopped (at least 50 lines were null)
+                isServerRunning = false;
+                howManyTimesLineWasNull = 0;
+                processes.get(processes.size() - 1).destroy();
+                if (wasServerStopCausedByUser) {
+                    parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_OFFLINE));
+                    parentConsoleTab.changeServerActionButtonsVisibility(false);
+                    parentConsoleTab.setWaitingStop(false);
+                    parentPane.setToolTipTextAt(index, "Offline");
+                } else {
+                    parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
+                    parentConsoleTab.changeServerActionButtonsVisibility(false);
+                    parentPane.setToolTipTextAt(index, "Errored");
+                }
+                parentConsoleTab.setWaitingStop(false);
+                wasServerStopCausedByUser = true;
+            }
+        }
     };
     private final Thread consoleMainThread = new Thread(consoleRunner);
 
@@ -239,6 +235,7 @@ public class ServerConsole extends JPanel {
         ArrayList<String> command = new ArrayList<>(Arrays.asList(tempJavaPath, "-jar", server.getServerJarPath().getAbsolutePath(), "nogui"));
         consoleOutput.setText("");
 
+
         ProcessBuilder processBuilder;
         try {
             processBuilder = new ProcessBuilder(command);
@@ -256,6 +253,7 @@ public class ServerConsole extends JPanel {
             parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ONLINE));
         } catch (IOException e) {
             parentPane.setIconAt(index, DefaultIcons.getIcon(DefaultIcons.SERVER_ERRORED));
+            parentConsoleTab.changeServerActionButtonsVisibility(false);
             parentPane.setToolTipTextAt(index, "Errored");
             consoleOutput.append(e.getMessage() +
                     "\n(You probably specified an invalid java executable)");
