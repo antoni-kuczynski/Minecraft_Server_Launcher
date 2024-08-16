@@ -15,7 +15,10 @@ public class ErrorDialog extends JDialog {
 //    private final static Taskbar taskbar = Taskbar.getTaskbar();
 
     protected ErrorDialog(String text, Exception e) {
-        setPreferredSize(new Dimension(400, 160));
+        Dimension dimension = new Dimension((int) (400 * Window.getDisplayScale()), (int) (160 * Window.getDisplayScale()));
+        setPreferredSize(dimension);
+        setMinimumSize(dimension);
+        setBounds(dimension.width, dimension.height, (int) (Window.getCenter().x - dimension.getWidth() / 2), (int) (Window.getCenter().y - dimension.getHeight() / 2));
         setTitle("Error");
         getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
         getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);

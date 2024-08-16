@@ -257,7 +257,6 @@ public class ContainerPane extends JTabbedPane {
         );
 
         serverTabbedPanes.add(serverTabbedPane);
-
         addTab(server.getName(50), serverTabbedPane);
 
         ServerTabLabel tabLabel = new ServerTabLabel(server);

@@ -116,7 +116,18 @@ public class AddServerTab extends JPanel {
 
 
         serverNameInput.putClientProperty("type", "server_name");
-        serverNameInput.addKeyListener(getKeyAdapter(serverNameInput));
+        serverNameInput.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                handleKeyTyping(serverNameInput);
+                System.out.println(serverNameInput.getText().length());
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                handleKeyTyping(serverNameInput);
+            }
+        });
 
         launchArgsInput.putClientProperty("type", "launch_args");
         launchArgsInput.addKeyListener(getKeyAdapter(launchArgsInput));

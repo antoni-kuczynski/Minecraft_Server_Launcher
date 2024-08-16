@@ -38,16 +38,13 @@ public class Window extends JFrame {
     private static Window window;
     private static Taskbar taskbar;
     private static final JMenuBar menuBar = new JMenuBar();
-//    private final JButton addServerButton = new JButton("Add server");
-//    private final Container glassPane = (Container) getRootPane().getGlassPane();
-//    public final JPopupMenu contextMenu = new JPopupMenu();
 
     public Window() {
         // Set up the JFrame
         setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension((int) (730 * getDisplayScale()), (int) (490 * getDisplayScale())));
+        setMinimumSize(new Dimension((int) (750 * getDisplayScale()), (int) (490 * getDisplayScale())));
 
         if(Taskbar.isTaskbarSupported())
             taskbar = Taskbar.getTaskbar();
@@ -55,7 +52,7 @@ public class Window extends JFrame {
         SERVER_STATUS_ICON_DIMENSION = getUserValues().getInt(PREFS_SERVER_ICONS_SCALE,  32);
 
 
-        JFrame.setDefaultLookAndFeelDecorated(true);
+        
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
         this.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
 
@@ -96,40 +93,8 @@ public class Window extends JFrame {
         ContainerPane containerPane = new ContainerPane();
 
 
-
-//        glassPane.setVisible(true);
-//        glassPane.setLayout(new GridBagLayout());
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.weightx = 1.0;
-//        gbc.weighty = 1.0;
-//        gbc.fill = GridBagConstraints.NONE;
-//        gbc.insets = new Insets(130, 0, 0, 15);
-//        gbc.anchor = GridBagConstraints.SOUTHWEST;
-//        glassPane.add(addServerButton, gbc);
-
-//        addServerButton.setPreferredSize(new Dimension(220, 50));
-//        addServerButton.setBorder(new FlatLineBorder(new Insets(5,5,5,5), Colors.BORDER_COLOR));
-//        addServerButton.setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
-
-//        addServerButton.addActionListener(e -> {
-//            JDialog dialog = new JDialog((Dialog) null);
-//            dialog.setTitle("Add server");
-//            dialog.setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
-//            dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
-//            dialog.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
-//
-//            dialog.setBounds(this.getX() + (this.getWidth() / 2) - 225, this.getY() + (this.getHeight() / 2) - 225, 450, 450);
-//            dialog.add(new AddServerTab(containerPane));
-//            dialog.setResizable(false);
-//            dialog.setVisible(true);
-//        });
-
-//        JPanel test = new JPanel(new BorderLayout());
-//        test.add(addServerButton, BorderLayout.LINE_START);
 //
         add(containerPane, BorderLayout.CENTER);
-//        add(test, BorderLayout.PAGE_END);
-
         BasicChart.startResourceMonitoringTimer();
 
         setVisible(true);
@@ -286,6 +251,8 @@ public class Window extends JFrame {
     }
 
     public static Point getCenter() {
+        if(window == null)
+            return new Point(0,0);
         return new Point(
                 window.getX() + (window.getWidth() / 2),
                 window.getY() + (window.getHeight() / 2)
@@ -332,11 +299,11 @@ public class Window extends JFrame {
     public static void main(String[] args) throws Exception {
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
         IntelliJTheme.setup(inputStream);
-        if( SystemInfo.isLinux ) {
-            // enable custom window decorations
-            JFrame.setDefaultLookAndFeelDecorated( true );
-            JDialog.setDefaultLookAndFeelDecorated( true );
-        }
+//        if( SystemInfo.isLinux ) {
+//            // enable custom window decorations
+//            JFrame.setDefaultLookAndFeelDecorated( true );
+//            JDialog.setDefaultLookAndFeelDecorated( true );
+//        }
         Config.createConfig();
         SwingUtilities.invokeLater(Window::new);
     }

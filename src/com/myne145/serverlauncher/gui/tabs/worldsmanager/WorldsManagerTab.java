@@ -19,7 +19,7 @@ import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 public class WorldsManagerTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
     private final JButton startCopying = new JButton("Start importing");
-    private final MinecraftWorld userAddedWorld = new MinecraftWorld();
+    private final MinecraftWorld userAddedWorld = new MinecraftWorld(progressBar);
     private boolean isInArchiveMode;
     private final int index;
     private final WorldsInfoPanels worldsInfoPanels;
@@ -72,6 +72,8 @@ public class WorldsManagerTab extends JPanel {
 
         JLabel title = new JLabel( "<html>Worlds - " + server.getName(50) + "</html>");
         title.setFont(new Font("Arial", Font.BOLD, 18));
+        if(server.getName().length() > 50)
+            title.setToolTipText(server.getName());
 
 
         titlePanel.add(Box.createRigidArea(new Dimension(5,5)), BorderLayout.PAGE_START);
