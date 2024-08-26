@@ -42,7 +42,8 @@ public abstract class Config extends ArrayList<MinecraftServer> {
         return fileToReadReader.toString();
     }
 
-    public static void createConfig() throws Exception {
+    public static void createConfig() throws IOException {
+        data.clear();
         File serverConfigFile = new File("servers.json");
         ABSOLUTE_PATH = serverConfigFile.getAbsolutePath();
 
@@ -123,101 +124,6 @@ public abstract class Config extends ArrayList<MinecraftServer> {
     public static InputStream getResource(String resource) {
         return classLoader.getResourceAsStream(resource);
     }
-
-//    public static String abbreviateFilePath(String filePath, int maxLength) {
-//        if (filePath.length() <= maxLength) {
-//            return filePath;
-//        }
-//
-//        String separator = "/";
-//        int separatorIndex = filePath.lastIndexOf(separator);
-//
-//        if (separatorIndex == -1) {
-//            // Handle case where there is no separator in the path
-//            return filePath.substring(0, maxLength);
-//        }
-//
-//        String filename = filePath.substring(separatorIndex + 1);
-//        int filenameLength = filename.length();
-//
-//        int prefixLength = maxLength - (filenameLength + 3); // 3 for "..."
-//
-//        if (prefixLength <= 0) {
-//            return "..." + filename;
-//        }
-//
-//        String prefix = filePath.substring(0, separatorIndex);
-//        return prefix.substring(0, Math.min(prefix.length(), prefixLength)) + "..." + filename;
-//    }
-
-
-//    public static String abbreviateFilePathOld(String path, int maxLength) {
-//
-//        if (path.length() <= maxLength)
-//            return path;
-//
-//        File f = new File(path);
-//        ArrayList<String> coll = new ArrayList<>();
-//        String name;
-//        StringBuilder begBuf = new StringBuilder();
-//        StringBuilder endBuf = new StringBuilder();
-//        int len;
-//        boolean b;
-//
-//        while ((f != null) && (name = f.getName()) != null) {
-//            coll.add(0, name);
-//            f = f.getParentFile();
-//        }
-//        if (coll.isEmpty())
-//            return path;
-//
-//        len = coll.size() << 1;
-//        name = coll.remove(coll.size() - 1);
-//        endBuf.insert(0, name);
-//        len += name.length();
-//        if (!coll.isEmpty()) {
-//            name = coll.remove(0);
-//            begBuf.append(name);
-//            begBuf.append(File.separator);
-//            len += name.length() - 1;
-//        }
-//        if (!coll.isEmpty()) {
-//            name = coll.remove(0);
-//            if (name.equals("Volumes")) {
-//                begBuf.append('…');
-//                begBuf.append(File.separator);
-//            } else {
-//                begBuf.append(name);
-//                begBuf.append(File.separator);
-//                len += name.length() - 1;
-//            }
-//        }
-//        for (b = true; !coll.isEmpty() && len <= maxLength; b = !b) {
-//            if (b) {
-//                name = coll.remove(coll.size() - 1);
-//                endBuf.insert(0, File.separator);
-//                endBuf.insert(0, name);
-//            } else {
-//                name = coll.remove(0);
-//                begBuf.append(name);
-//                begBuf.append(File.separator);
-//            }
-//            len += name.length() - 1;
-//        }
-//
-//        while (!coll.isEmpty()) {
-//            coll.remove(0);
-//            begBuf.append('…');
-//            begBuf.append(File.separator);
-//        }
-//
-//        StringBuilder result = begBuf.append(endBuf);
-//        if(result.length() > maxLength) {
-//            result.delete(0, result.length() - maxLength);
-//        }
-//
-//        return result.toString();
-//    }
 
     public static String abbreviateFilePath(File filePath, int max) {
         if(filePath.getName().length() > max)

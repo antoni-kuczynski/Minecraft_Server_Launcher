@@ -57,22 +57,21 @@ public class Window extends JFrame {
         this.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
 
         JMenu fileMenu = new JMenu("File");
+        OpenContextMenuItem openConfigFile = new OpenContextMenuItem("Open config file");
+        openConfigFile.updatePath(new File(Config.ABSOLUTE_PATH));
+        OpenContextMenuItem openCurrentServer = new OpenContextMenuItem("Open current server's folder");
+        fileMenu.add(openCurrentServer);
+        fileMenu.add(openConfigFile);
+
         JMenu viewMenu = new JMenu("View");
         JCheckBoxMenuItem showCharts = new JCheckBoxMenuItem("Show CPU & RAM usage graphs");
-
         JMenu serverButtonsScale = new JMenu("Server buttons scale");
+
         ButtonGroup buttonGroup = new ButtonGroup();
         JRadioButtonMenuItem scaleSmall = new JRadioButtonMenuItem("Small");
         JRadioButtonMenuItem scaleMedium = new JRadioButtonMenuItem("Medium");
         JRadioButtonMenuItem scaleLarge = new JRadioButtonMenuItem("Large");
-
-//        JMenuItem openServerFolder = new JMenuItem("Open current server's folder");
-        OpenContextMenuItem openConfigFile = new OpenContextMenuItem("Open config file");
-        openConfigFile.updatePath(new File(Config.ABSOLUTE_PATH));
-
-        fileMenu.add(new OpenContextMenuItem("Open current server's folder"));
-        fileMenu.add(openConfigFile);
-
+        JMenuItem refreshAllServers = new JMenuItem("Refresh servers");
         buttonGroup.add(scaleSmall);
         buttonGroup.add(scaleMedium);
         buttonGroup.add(scaleLarge);
@@ -82,18 +81,17 @@ public class Window extends JFrame {
 
         viewMenu.add(showCharts);
         viewMenu.add(serverButtonsScale);
+        viewMenu.add(refreshAllServers);
 
 
         menuBar.setBorder(new MatteBorder(0,0,1,0, Colors.BORDER_COLOR));
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
-//        menuBar.add(debugShit1);
         setJMenuBar(menuBar);
 
         ContainerPane containerPane = new ContainerPane();
 
 
-//
         add(containerPane, BorderLayout.CENTER);
         BasicChart.startResourceMonitoringTimer();
 
@@ -130,6 +128,23 @@ public class Window extends JFrame {
                 containerPane.updateServerButtonsSizes();
             }
         });
+
+        refreshAllServers.addActionListener(e -> {
+            try {
+                Config.createConfig();
+            } catch (IOException ex) {
+                showErrorMessage("Cannot refresh servers from config file.", ex);
+            }
+
+            int tabCount = containerPane.getTabCount();
+            for(int i = 1; i < tabCount; i++) {
+                containerPane.remove(1);
+            }
+            Config.getData().forEach(containerPane::addServer);
+            MinecraftServer.writeAllToConfig();
+            containerPane.setSelectedIndex(0);
+        });
+
         areChartsEnabled = getUserValues().getBoolean(PREFS_ARE_CHARTS_ENABLED, true);
         showCharts.setSelected(areChartsEnabled);
 
