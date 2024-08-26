@@ -146,34 +146,6 @@ public class ContainerPane extends JTabbedPane {
             protected JButton createScrollButton(int direction) {
                 JButton button =  super.createScrollButton(direction);
                 button.setTransferHandler(getScrollButtonTransferHandler(direction));
-//               button.setTransferHandler(new TabLabelWithFileTransfer("Test", ContainerPane.this, -1).getTransferHandler());
-//                button.setTransferHandler(new TransferHandler() {
-//
-//                    @Override
-//                    public boolean canImport(TransferSupport support) {
-//                        Thread thread = new Thread(() -> {
-//                            if(getSelectedIndex() >= getTabCount())
-//                                return;
-//
-//                            setSelectedIndex(getSelectedIndex() + 1);
-//
-//                            try {
-//                                Thread.sleep(200);
-//                            } catch (InterruptedException e) {
-//                                throw new RuntimeException(e);
-//                            }
-//                        });
-//                        thread.start();
-//                        try {
-//                            thread.join();
-//                        } catch (InterruptedException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                        return true;
-//                    }
-//
-//
-//                });
                 return button;
             }
 
