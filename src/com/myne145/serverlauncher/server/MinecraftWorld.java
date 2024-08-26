@@ -9,8 +9,6 @@ import net.lenni0451.mcstructs.nbt.io.NbtIO;
 import net.lenni0451.mcstructs.nbt.io.NbtReadTracker;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 import org.apache.commons.io.FileUtils;
-//import dev.dewy.nbt.Nbt;
-//import dev.dewy.nbt.tags.collection.CompoundTag;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -26,7 +24,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
-//import static com.myne145.serverlauncher.server.WorldCopyHandler.copyDirectoryWithProgressBar;
 import static com.myne145.serverlauncher.utils.ZipUtils.extractArchive;
 
 public class MinecraftWorld {
@@ -101,12 +98,10 @@ public class MinecraftWorld {
             boolean isUsingCheats = content.getBoolean("allowCommands");
             String version = content.get("Version").asCompoundTag().getString("Name");
 
-
             if(content.isEmpty()) {
                 hasLevelDat = false;
                 return;
             }
-
 
             this.levelName = levelName;
             this.folderName = folderName;
@@ -191,7 +186,8 @@ public class MinecraftWorld {
             FileUtils.deleteDirectory(server.getWorldPath());
         }
 
-        try { //the server can deal with copying these files by itself
+        //The server can deal with copying these files by itself
+        try {
             FileUtils.deleteDirectory(new File(server.getServerPath().getAbsoluteFile() + "/" + server.getProperty("level-name") + "_the_end"));
             FileUtils.deleteDirectory(new File(server.getServerPath().getAbsoluteFile() + "/" + server.getProperty("level-name") + "_nether"));
         } catch (IOException e) {

@@ -56,6 +56,57 @@ public class ContainerPane extends JTabbedPane {
         };
     }
 
+    private FlatTabbedPaneUI containerPaneUI = new FlatTabbedPaneUI() {
+        @Override
+        protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect) {
+            super.paintTab(g, tabPlacement, rects, tabIndex, iconRect, textRect);
+
+            boolean isSelected = tabIndex == tabPane.getSelectedIndex();
+            Rectangle currentTabRects = rects[tabIndex];
+
+
+            if (isTabbedPaneFocused) {
+                this.paintTabBackground(g, tabPlacement, tabIndex, currentTabRects.x, currentTabRects.y, currentTabRects.width, currentTabRects.height, isSelected);
+            }
+
+            if (isSelected) {
+                g.setColor(Colors.TAB_SELECTION_COLOR);
+                g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
+            }
+
+        }
+
+        @Override
+        public void paint(Graphics g, JComponent c) {
+            g.setColor(Colors.TABBEDPANE_BACKGROUND_COLOR);
+            g.fillRect(0,0, getWidth(), getHeight());
+        }
+
+        @Override
+        protected int calculateTabAreaWidth(int tabPlacement, int vertRunCount, int maxTabWidth) {
+            return 220;
+        }
+
+        @Override
+        protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
+            return 220;
+        }
+
+        @Override
+        protected JButton createScrollButton(int direction) {
+            JButton button =  super.createScrollButton(direction);
+            button.setTransferHandler(getScrollButtonTransferHandler(direction));
+            return button;
+        }
+
+        @Override
+        protected JButton createMoreTabsButton() {
+            JButton button = super.createMoreTabsButton();
+            button.setToolTipText(null);
+            return button;
+        }
+    };
+
     @Override
     public void setIconAt(int index, Icon icon) {
         TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
@@ -93,69 +144,9 @@ public class ContainerPane extends JTabbedPane {
         tabLabel.setEnabled(enabled);
     }
 
-    @Override
-    public void setToolTipTextAt(int index, String toolTipText) {
-//        String name = Config.getData().get(index - 1).getName();
-//        if(name.length() > 52)
-//            super.setToolTipTextAt(index, name + "\n" + toolTipText); //TODO
-//        else
-            super.setToolTipTextAt(index, toolTipText);
-    }
-
-
-
-
     public ContainerPane() {
         setLayout(new BorderLayout());
-
-        setUI(new FlatTabbedPaneUI() {
-            @Override
-            protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect) {
-                boolean isSelected = tabIndex == tabPane.getSelectedIndex();
-                Rectangle currentTabRects = rects[tabIndex];
-
-
-                if (isTabbedPaneFocused) {
-                    this.paintTabBackground(g, tabPlacement, tabIndex, currentTabRects.x, currentTabRects.y, currentTabRects.width, currentTabRects.height, isSelected);
-                }
-
-                if (isSelected) {
-                    g.setColor(Colors.TAB_SELECTION_COLOR);
-                    g.fillRect(rects[tabIndex].x, rects[tabIndex].y, rects[tabIndex].width, rects[tabIndex].height);
-                }
-
-            }
-
-            @Override
-            public void paint(Graphics g, JComponent c) {
-                g.setColor(Colors.TABBEDPANE_BACKGROUND_COLOR);
-                g.fillRect(0,0, getWidth(), getHeight());
-            }
-
-            @Override
-            protected int calculateTabAreaWidth(int tabPlacement, int vertRunCount, int maxTabWidth) {
-                return 220;
-            }
-
-            @Override
-            protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
-                return 220;
-            }
-
-            @Override
-            protected JButton createScrollButton(int direction) {
-                JButton button =  super.createScrollButton(direction);
-                button.setTransferHandler(getScrollButtonTransferHandler(direction));
-                return button;
-            }
-
-            @Override
-            protected JButton createMoreTabsButton() {
-                JButton button = super.createMoreTabsButton();
-                button.setToolTipText(null);
-                return button;
-            }
-        });
+        setUI(containerPaneUI);
         setTabPlacement(LEFT);
         setBackground(Colors.TABBEDPANE_BACKGROUND_COLOR);
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -215,11 +206,7 @@ public class ContainerPane extends JTabbedPane {
                 TabLabelWithFileTransfer.fileEntered = true;
                 repaint();
             }
-
-
         });
-
-//        TabLabelWithFileTransfer.setParentPane(this);
     }
 
     public void addServer(MinecraftServer server) {
