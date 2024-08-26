@@ -42,7 +42,7 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
         OpenContextMenuItem openContextMenuItem = new OpenContextMenuItem("Open server folder");
         openContextMenuItem.updatePath(server.getServerPath());
 
-        JMenuItem properties = new JMenuItem("<html>Properties\n<center><sub>" + server.getName(50) + "</sub></center></html>");
+        JMenuItem properties = new JMenuItem("<html>Properties</html>");
         properties.addActionListener(e -> {
             JDialog dialog = new JDialog(Window.getWindow(), server.getName(50) + " properties");
             dialog.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);

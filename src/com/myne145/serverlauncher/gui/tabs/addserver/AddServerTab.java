@@ -68,7 +68,7 @@ public class AddServerTab extends JPanel {
         JPanel mainPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         JTextField serverNameInput = (JTextField) serverNameInputPanel.getComponent(1);
         JTextField launchArgsInput = (JTextField) launchArgsInputPanel.getComponent(1);
-
+        JLabel serverNameCharCounter = new JLabel("<html>0 / 50</html>");
 
         JPanel serverInfoPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -78,6 +78,7 @@ public class AddServerTab extends JPanel {
         titleText.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         titlePanel.add(titleText, BorderLayout.LINE_START);
 
+//        serverNameInputPanel.add(serverNameCharCounter);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(new FlatLineBorder(new Insets(10, 100, 10, 100), Colors.BORDER_COLOR, 1, 16));
@@ -114,18 +115,24 @@ public class AddServerTab extends JPanel {
         add(serverInfoPanelWithSpacing, BorderLayout.LINE_END);
         add(bottomPanel, BorderLayout.PAGE_END);
 
-
         serverNameInput.putClientProperty("type", "server_name");
         serverNameInput.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 handleKeyTyping(serverNameInput);
-                System.out.println(serverNameInput.getText().length());
+//                System.out.println(serverNameInput.getText().length());
+////                if(serverNameInput.getText().length() == 1 || serverNameInput.getText().isEmpty()) {
+////                    serverNameCharCounter.setText("0 / 50");
+////                    return;
+////                }
+//                serverNameCharCounter.setText((serverNameInput.getText().length() + 1) + " / 50");
+                //fuck this shit
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
                 handleKeyTyping(serverNameInput);
+//                serverNameCharCounter.setText((serverNameInput.getText().length() + 1) + " / 50");
             }
         });
 

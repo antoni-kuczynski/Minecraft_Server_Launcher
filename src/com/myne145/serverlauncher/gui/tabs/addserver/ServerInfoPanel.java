@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ServerInfoPanel extends JPanel {
-    private final JLabel serverDetailsText = new JLabel("<html><center>Missing server.properties file.</center></html>", SwingConstants.CENTER);
+    private final JLabel serverDetailsText = new JLabel("<html><center>Server.properties file not found!</center></html>", SwingConstants.CENTER);
 
 
     @Override
@@ -21,8 +21,10 @@ public class ServerInfoPanel extends JPanel {
     }
 
     public void updateText(MinecraftServer server) {
-        if(server.getServerJarPath() == null || !server.hasServerProperties())
+        if(server.getServerJarPath() == null || !server.hasServerProperties()) {
+            serverDetailsText.setIcon(null);
             return;
+        }
 
         String gamemode = server.getProperty("gamemode");
         gamemode = switch (gamemode) {
