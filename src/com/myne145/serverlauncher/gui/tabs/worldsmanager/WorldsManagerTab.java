@@ -165,17 +165,11 @@ public class WorldsManagerTab extends JPanel {
     }
 
     public void setIcons() {
-        if(userAddedWorld != null && userAddedWorld.getWorldPath() != null)
-            isInArchiveMode = isArchive(userAddedWorld.getWorldPath());
+        if(userAddedWorld == null || userAddedWorld.getWorldPath() == null)
+            return;
 
-        if(userAddedWorld != null && isInArchiveMode) {
-            worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
-        } else if(!isInArchiveMode && userAddedWorld != null) {
-            worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
-        }
-        if(!isInArchiveMode && userAddedWorld != null) {
-            worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
-        }
+        isInArchiveMode = isArchive(userAddedWorld.getWorldPath());
+        worldsInfoPanels.updateClientWorldInformation(userAddedWorld);
     }
 
     public JProgressBar getProgressBar() {

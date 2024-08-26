@@ -29,7 +29,7 @@ public class AddServerTab extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(com.myne145.serverlauncher.gui.window.Window.getWindow() == null || currentServer.getServerJarPath() == null) {
+        if(com.myne145.serverlauncher.gui.window.Window.getWindow() == null || currentServer.getServerJarPath() == null || openServerJarPanel.getValue().hasWarnings()) {
             return;
         }
 
@@ -42,18 +42,13 @@ public class AddServerTab extends JPanel {
         requestFocusInWindow();
 
         if (Config.getDefaultJava() == null) {
-//            openJavaBinPanel.getValue().setImportButtonWarning("No default java installation found");
             openJavaBinPanel.getValue().setImportButtonWarning(ButtonWarning.NO_DEFAULT_JAVA);
         } else {
             setJavaBinPath(Config.getDefaultJava());
         }
 
         serverInfoPanel.setVisible(false);
-
-
         openServerJarPanel.getValue().setFileChooserFileExtension("jar");
-//        openJavaBinPanel.getValue().setFileChooserFileExtension("");
-
         currentServer.setServerLaunchArgs("nogui");
         confirmButton.setEnabled(false);
         confirmButton.setAlignmentX(LEFT_ALIGNMENT);
@@ -68,17 +63,13 @@ public class AddServerTab extends JPanel {
         JPanel mainPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         JTextField serverNameInput = (JTextField) serverNameInputPanel.getComponent(1);
         JTextField launchArgsInput = (JTextField) launchArgsInputPanel.getComponent(1);
-        JLabel serverNameCharCounter = new JLabel("<html>0 / 50</html>");
 
         JPanel serverInfoPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         JPanel bottomPanel = new JPanel(new BorderLayout());
 
-
         titleText.setFont(new Font("Arial", Font.BOLD, 18));
         titleText.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         titlePanel.add(titleText, BorderLayout.LINE_START);
-
-//        serverNameInputPanel.add(serverNameCharCounter);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(new FlatLineBorder(new Insets(10, 100, 10, 100), Colors.BORDER_COLOR, 1, 16));
@@ -120,19 +111,11 @@ public class AddServerTab extends JPanel {
             @Override
             public void keyTyped(KeyEvent e) {
                 handleKeyTyping(serverNameInput);
-//                System.out.println(serverNameInput.getText().length());
-////                if(serverNameInput.getText().length() == 1 || serverNameInput.getText().isEmpty()) {
-////                    serverNameCharCounter.setText("0 / 50");
-////                    return;
-////                }
-//                serverNameCharCounter.setText((serverNameInput.getText().length() + 1) + " / 50");
-                //fuck this shit
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
                 handleKeyTyping(serverNameInput);
-//                serverNameCharCounter.setText((serverNameInput.getText().length() + 1) + " / 50");
             }
         });
 
@@ -224,10 +207,8 @@ public class AddServerTab extends JPanel {
             serverInfoPanel.setVisible(false);
             return;
         }
-        serverInfoPanel.updateText(currentServer);
 
-//        if(serverInfoPanel.isVisible())
-//            return;
+        serverInfoPanel.updateText(currentServer);
         serverInfoPanel.setVisible(true);
     }
 
@@ -249,9 +230,6 @@ public class AddServerTab extends JPanel {
         } else if(field.getClientProperty("type").equals("launch_args")) {
             currentServer.setServerLaunchArgs(field.getText());
         }
-
-//        if(currentServer.isComplete())
-//            confirmButton.setEnabled(true);
 
         confirmButton.setEnabled(currentServer.isComplete());
         serverInfoPanel.updateText(currentServer);

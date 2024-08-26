@@ -32,6 +32,28 @@ public class PickFileButton extends JButton {
         return new Dimension(super.getPreferredSize().width, defaultSize.height);
     }
 
+
+    public PickFileButton(String defaultTitle, Dimension defaultSize, Dimension maximumSize, FilePickerButtonAction afterFileIsSelected) {
+        this.defaultSize = defaultSize;
+        this.setText("<html>" + defaultTitle + "</html>");
+        this.setMinimumSize(defaultSize);
+        this.setMaximumSize(maximumSize);
+        this.setToolTipText("");
+
+        FILE_CHOOSER.setMode(JnaFileChooser.Mode.Files);
+
+        this.addActionListener(e -> {
+            Runnable runnable = () -> {
+                FILE_CHOOSER.setDefaultFileName(defaultFile);
+                FILE_CHOOSER.showOpenDialog(Window.getWindow());
+                updateFileRelatedStuff(FILE_CHOOSER.getSelectedFile(), afterFileIsSelected);
+            };
+            Thread thread = new Thread(runnable);
+            thread.setName("FILECHOOSER");
+            thread.start();
+        });
+    }
+
     public void setFileChooserFileExtension(String extension) {
         defaultFile = ("*." + extension);
     }
@@ -44,19 +66,6 @@ public class PickFileButton extends JButton {
         this.setToolTipText(null);
         currentWarnings.clear();
     }
-
-//    public void setImportButtonWarning(String message) {
-//        this.setIcon(DefaultIcons.getSVGIcon(DefaultIcons.ERROR).derive(16,16));
-//
-//        if(this.getToolTipText() == null)
-//            this.setToolTipText("");
-//
-//        if(!this.getToolTipText().isEmpty()) {
-//            this.setToolTipText(this.getToolTipText() + "\n- " + message);
-//        } else {
-//            this.setToolTipText("- " + message);
-//        }
-//    }
 
 
     @Override
@@ -111,29 +120,6 @@ public class PickFileButton extends JButton {
         }
     }
 
-    public PickFileButton(String defaultTitle, Dimension defaultSize, Dimension maximumSize, FilePickerButtonAction afterFileIsSelected) {
-        this.defaultSize = defaultSize;
-        this.setText("<html>" + defaultTitle + "</html>");
-        this.setMinimumSize(defaultSize);
-        this.setMaximumSize(maximumSize);
-        this.setToolTipText("");
-
-        FILE_CHOOSER.setMode(JnaFileChooser.Mode.Files);
-
-        this.addActionListener(e -> {
-            Runnable runnable = () -> {
-                FILE_CHOOSER.setDefaultFileName(defaultFile);
-                FILE_CHOOSER.showOpenDialog(Window.getWindow());
-                updateFileRelatedStuff(FILE_CHOOSER.getSelectedFile(), afterFileIsSelected);
-            };
-            Thread thread = new Thread(runnable);
-            thread.setName("FILECHOOSER");
-            thread.start();
-        });
-    }
-
-
-
     public TransferHandler getCustomTransferHandler(FilePickerButtonAction action) {
         return new TransferHandler() {
             @Override
@@ -160,6 +146,10 @@ public class PickFileButton extends JButton {
                 return true;
             }
         };
+    }
+
+    public boolean hasWarnings() {
+        return !currentWarnings.isEmpty();
     }
 }
 
