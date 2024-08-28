@@ -18,8 +18,8 @@ import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 
 public class WorldsManagerTab extends JPanel {
     private final JProgressBar progressBar = new JProgressBar();
-    private final JButton startCopying = new JButton("Start importing");
-    private final MinecraftWorld userAddedWorld = new MinecraftWorld(progressBar);
+    private final JButton startCopying = new JButton("Import");
+    private final MinecraftWorld userAddedWorld;
     private boolean isInArchiveMode;
     private final int index;
     private final WorldsInfoPanels worldsInfoPanels;
@@ -29,6 +29,7 @@ public class WorldsManagerTab extends JPanel {
     public WorldsManagerTab(ContainerPane parentPane, MinecraftServer server) {
         super(new BorderLayout());
 
+        userAddedWorld = new MinecraftWorld(progressBar);
         index = server.getServerId();
         worldsInfoPanels = new WorldsInfoPanels(server);
 
@@ -45,7 +46,9 @@ public class WorldsManagerTab extends JPanel {
                 userAddedWorld.copyToServer(Config.getData().get(index - 1));
             } catch (IOException e1) {
                 Window.showErrorMessage("I/O error copying the world files.", e1);
+                return;
             }
+
             worldsInfoPanels.updateServerWorldInformation();
             setIcons();
         });

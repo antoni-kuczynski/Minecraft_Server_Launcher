@@ -14,7 +14,7 @@ public class OpenContextMenuItem extends JMenuItem {
         if(f == null)
             return;
         file = f;
-        this.setText("<html>" + defaultTitle + "\n<center><sub>" + Config.abbreviateFilePath(f, 27) + "</html>");
+        this.setText("<html>" + defaultTitle + "\n<center><sub>" + Config.abbreviateFilePath(f, 27) + "</sub></center></html>");
     }
 
     public OpenContextMenuItem(String defaultTitle) {

@@ -155,7 +155,7 @@ public class MinecraftServer {
             }
             jarFile.close();
         } catch (IOException e) {
-            showErrorMessage("I/O error reading " + serverJarPath.getName() + " file - " + e.getMessage(), e);
+            //it tells u about an invalid jar later, no need to do it now
         }
 
         if (mainClass.contains("papermc")) {
