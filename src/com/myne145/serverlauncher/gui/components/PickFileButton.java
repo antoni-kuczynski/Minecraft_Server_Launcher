@@ -34,7 +34,7 @@ public class PickFileButton extends JButton {
     }
 
     public PickFileButton(String defaultTitle, Dimension defaultSize, Dimension maximumSize, FilePickerButtonAction afterFileIsSelected) {
-        this.defaultSize = defaultSize;
+        this.defaultSize = new Dimension(defaultSize.width, defaultSize.height + 10);
         this.setText("<html>" + defaultTitle + "</html>");
         this.setMinimumSize(defaultSize);
         this.setMaximumSize(maximumSize);
