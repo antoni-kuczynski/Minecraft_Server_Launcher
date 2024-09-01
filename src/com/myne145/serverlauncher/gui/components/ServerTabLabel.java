@@ -68,7 +68,8 @@ public class ServerTabLabel extends TabLabelWithFileTransfer {
 
             Point p = Window.getCenter();
             dialog.setBounds(p.x - 175, p.y - 225, 350, 450); //TODO
-//            dialog.setPreferredSize(new Dimension(350, 450));
+            dialog.setPreferredSize(new Dimension(350, 450));
+
             dialog.setVisible(true);
             dialog.pack();
         });
