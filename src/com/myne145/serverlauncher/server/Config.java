@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.server;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.window.Window;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
@@ -138,7 +139,13 @@ public abstract class Config extends ArrayList<MinecraftServer> {
           folders.add(filePath.getName());
           filePath = filePath.getParentFile();
         }
-        if(System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+        System.out.println(folders);
+        if(SystemInfo.isLinux && folders.get(folders.size() - 1).equals("home")) {
+            folders.remove(folders.size() - 1);
+            folders.set(folders.size() - 1, "~");
+        }
+
+        if(SystemInfo.isWindows) {
             String driveLetter = FilenameUtils.getPrefix(filePath.getAbsolutePath());
             folders.add(driveLetter.replace("\\", ""));
         }

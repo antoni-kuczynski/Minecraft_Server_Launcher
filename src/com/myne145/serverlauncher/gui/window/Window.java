@@ -19,10 +19,12 @@ import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
+import javax.tools.Tool;
 
 public class Window extends JFrame {
     private final String PREFS_KEY_X = "window_x";
@@ -226,6 +228,8 @@ public class Window extends JFrame {
 
         });
         window = this;
+        System.out.println(this.getSize());
+        System.out.println(getDisplayScale());
     }
 
 
@@ -277,8 +281,7 @@ public class Window extends JFrame {
     public static double getDisplayScale() {
         GraphicsConfiguration asdf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         AffineTransform asfd2 = asdf.getDefaultTransform();
-        double scaleX = asfd2.getScaleX();
-        return scaleX;
+        return asfd2.getScaleX();
     }
 
     public static Window getWindow() {
@@ -306,10 +309,10 @@ public class Window extends JFrame {
     }
 
 
-    @Override
-    public void repaint(long time, int x, int y, int width, int height) {
-        super.repaint(time, x, y, width, height);
-    }
+//    @Override
+//    public void repaint(long time, int x, int y, int width, int height) {
+//        super.repaint(time, x, y, width, height);
+//    }
 
     public static void main(String[] args) throws Exception {
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");

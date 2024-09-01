@@ -251,9 +251,9 @@ public class ContainerPane extends JTabbedPane {
             return;
         }
 
-        if(openServerFolderItem != null && tabIndex != getTabCount() - 1) {
-//            openServerFolderItem.setText("<html>Open current server's folder\n<center><sub>" + Config.abbreviateServerPath(tabIndex) + "</sub></center></html>");
-            openServerFolderItem.updatePath(Config.getData().get(tabIndex).getServerPath());
+
+        if(openServerFolderItem != null) {
+            openServerFolderItem.updatePath(Config.getData().get(tabIndex - 1).getServerPath());
         }
 
         setChartsVisibility(Window.areChartsEnabled());

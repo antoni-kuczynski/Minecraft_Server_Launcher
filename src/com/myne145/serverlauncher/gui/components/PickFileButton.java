@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.components;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.utils.ButtonWarning;
@@ -31,7 +32,6 @@ public class PickFileButton extends JButton {
     public Dimension getPreferredSize() {
         return new Dimension(super.getPreferredSize().width, defaultSize.height);
     }
-
 
     public PickFileButton(String defaultTitle, Dimension defaultSize, Dimension maximumSize, FilePickerButtonAction afterFileIsSelected) {
         this.defaultSize = defaultSize;
