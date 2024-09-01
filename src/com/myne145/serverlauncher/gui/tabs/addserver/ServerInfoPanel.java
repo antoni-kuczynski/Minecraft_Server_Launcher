@@ -57,7 +57,7 @@ public class ServerInfoPanel extends JPanel {
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         this.setLayout(boxLayout);
 
-        serverDetailsText.setFont(new Font("Arial", Font.PLAIN, 14));
+//        serverDetailsText.setFont(new Font("Arial", Font.PLAIN, 14));
         serverDetailsText.setHorizontalTextPosition(JLabel.CENTER);
         serverDetailsText.setVerticalTextPosition(JLabel.BOTTOM);
 

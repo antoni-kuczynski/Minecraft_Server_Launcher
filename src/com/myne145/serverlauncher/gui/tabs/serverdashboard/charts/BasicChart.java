@@ -1,6 +1,8 @@
 package com.myne145.serverlauncher.gui.tabs.serverdashboard.charts;
 
 import com.formdev.flatlaf.ui.FlatRoundBorder;
+import com.formdev.flatlaf.util.SystemInfo;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.utils.Colors;
 import com.sun.management.OperatingSystemMXBean;
 import org.knowm.xchart.PieChart;
@@ -74,7 +76,12 @@ public class BasicChart extends JPanel {
     }
 
     protected PieChart createChart() {
-        PieChart chart = new PieChartBuilder().width(130).height(150).build();
+        Dimension dimension = new Dimension(130, 150);
+        if(SystemInfo.isLinux) {
+            dimension.width *= Window.getDisplayScale();
+            dimension.height *= Window.getDisplayScale();
+        }
+        PieChart chart = new PieChartBuilder().width(dimension.width).height(dimension.height).build();
 
         chart.getStyler().setCircular(false);
         chart.getStyler().setLegendPosition(Styler.LegendPosition.OutsideS);

@@ -40,6 +40,7 @@ public class Window extends JFrame {
     private static Window window;
     private static Taskbar taskbar;
     private static final JMenuBar menuBar = new JMenuBar();
+    private static double scale = -1;
 
     public Window() {
         // Set up the JFrame
@@ -279,6 +280,8 @@ public class Window extends JFrame {
     }
 
     public static double getDisplayScale() {
+        if(scale != -1)
+            return scale;
         GraphicsConfiguration asdf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         AffineTransform asfd2 = asdf.getDefaultTransform();
         return asfd2.getScaleX();
@@ -322,6 +325,13 @@ public class Window extends JFrame {
 //            JFrame.setDefaultLookAndFeelDecorated( true );
 //            JDialog.setDefaultLookAndFeelDecorated( true );
 //        }
+
+        for(int i = 0; i < args.length; i++) {
+            if(args[i].equals("--scale") && args.length >= i + 1) {
+                scale = Double.parseDouble(args[i + 1]);
+            }
+        }
+
         Config.createConfig();
         SwingUtilities.invokeLater(Window::new);
     }

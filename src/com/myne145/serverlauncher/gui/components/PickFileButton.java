@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +22,8 @@ import java.util.List;
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 
 public class PickFileButton extends JButton {
-    private static final JnaFileChooser FILE_CHOOSER = new JnaFileChooser();
+    private static final JnaFileChooser FILE_CHOOSER_WINDOWS = new JnaFileChooser();
+    private static final FileDialog FILE_CHOOSER = new FileDialog(Window.getWindow());
     private final Dimension defaultSize;
     private String customText;
     private String defaultFile = "";
@@ -40,18 +42,28 @@ public class PickFileButton extends JButton {
         this.setMaximumSize(maximumSize);
         this.setToolTipText("");
 
-        FILE_CHOOSER.setMode(JnaFileChooser.Mode.Files);
+        FILE_CHOOSER_WINDOWS.setMode(JnaFileChooser.Mode.Files);
+        FILE_CHOOSER.setMode(FileDialog.LOAD);
 
-        this.addActionListener(e -> {
-            Runnable runnable = () -> {
-                FILE_CHOOSER.setDefaultFileName(defaultFile);
-                FILE_CHOOSER.showOpenDialog(Window.getWindow());
-                updateFileRelatedStuff(FILE_CHOOSER.getSelectedFile(), afterFileIsSelected);
-            };
-            Thread thread = new Thread(runnable);
-            thread.setName("FILECHOOSER");
-            thread.start();
-        });
+        this.addActionListener(e -> getActionListener(afterFileIsSelected));
+    }
+
+    private void getActionListener(FilePickerButtonAction afterFileIsSelected) {
+        Runnable runnable = () -> {
+            if(SystemInfo.isWindows) {
+                FILE_CHOOSER_WINDOWS.setDefaultFileName(defaultFile);
+                FILE_CHOOSER_WINDOWS.showOpenDialog(Window.getWindow());
+                updateFileRelatedStuff(FILE_CHOOSER_WINDOWS.getSelectedFile(), afterFileIsSelected);
+                return;
+            }
+            FILE_CHOOSER.setFile(defaultFile);
+            FILE_CHOOSER.setVisible(true);
+            if(FILE_CHOOSER.getFile() != null)
+                updateFileRelatedStuff(new File(FILE_CHOOSER.getDirectory() + FILE_CHOOSER.getFile()), afterFileIsSelected);
+        };
+        Thread thread = new Thread(runnable);
+        thread.setName("FILECHOOSER");
+        thread.start();
     }
 
     public void setFileChooserFileExtension(String extension) {
