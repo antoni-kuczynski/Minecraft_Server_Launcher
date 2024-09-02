@@ -18,7 +18,7 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.myne145.serverlauncher.gui.window.Window.SERVER_STATUS_ICON_DIMENSION;
+import static com.myne145.serverlauncher.gui.window.Window.serverStatusIconScaleMode;
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 
 
@@ -291,10 +291,10 @@ public class ContainerPane extends JTabbedPane {
         }
     }
 
-    public void updateServerButtonsSizes() {
+    public void updateServerButtonsSizes(int size) {
         for(int i = 1; i < serverTabbedPanes.size(); i++) {
             ImageIcon imageIcon = (ImageIcon) getIconAt(i);
-            setIconAt(i, new ImageIcon(imageIcon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH)));
+            setIconAt(i, new ImageIcon(imageIcon.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH)));
         }
     }
 

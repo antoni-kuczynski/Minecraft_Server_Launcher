@@ -32,10 +32,7 @@ public enum DefaultIcons {
     }
 
     public static ImageIcon getIcon(DefaultIcons iconType) {
-        if(iconType == DefaultIcons.SERVER_OFFLINE || iconType == DefaultIcons.SERVER_ONLINE || iconType == DefaultIcons.SERVER_ERRORED)
-            return new ImageIcon(iconType.icon.getImage().getScaledInstance(SERVER_STATUS_ICON_DIMENSION, SERVER_STATUS_ICON_DIMENSION, Image.SCALE_SMOOTH));
-        else
-            return iconType.icon;
+        return iconType.icon;
     }
 
     public static FlatSVGIcon getServerPlatformIcon(ServerPlatform iconType) {

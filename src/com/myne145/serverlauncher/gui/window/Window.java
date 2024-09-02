@@ -1,9 +1,7 @@
 package com.myne145.serverlauncher.gui.window;
 
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
-import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.charts.BasicChart;
 import com.myne145.serverlauncher.server.Config;
 import com.formdev.flatlaf.IntelliJTheme;
@@ -20,12 +18,10 @@ import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
-import javax.tools.Tool;
 
 public class Window extends JFrame {
     private final String PREFS_KEY_X = "window_x";
@@ -33,10 +29,10 @@ public class Window extends JFrame {
     private final String PREFS_KEY_WIDTH = "window_width";
     private final String PREFS_KEY_HEIGHT = "window_height";
     private final String PREFS_ARE_CHARTS_ENABLED = "are_charts_enabled";
-    private final String PREFS_SERVER_ICONS_SCALE = "prefs_server_icons_scale";
+    private final String PREFS_ICON_SCALE_MODE = "prefs_server_icons_scale";
     private static final Preferences userValues = Preferences.userNodeForPackage(Window.class);
     private static boolean areChartsEnabled;
-    public static int SERVER_STATUS_ICON_DIMENSION;
+    public static int serverStatusIconScaleMode;
     public static DateFormat dateFormat = DateFormat.YYYY_MM_DD;
     private static Window window;
     private static Taskbar taskbar;
@@ -53,7 +49,8 @@ public class Window extends JFrame {
         if(Taskbar.isTaskbarSupported())
             taskbar = Taskbar.getTaskbar();
 
-        SERVER_STATUS_ICON_DIMENSION = getUserValues().getInt(PREFS_SERVER_ICONS_SCALE,  32);
+        //1 small, 2 medium, 3 large
+        serverStatusIconScaleMode = getUserValues().getInt(PREFS_ICON_SCALE_MODE,  2);
         
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
         this.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
@@ -110,22 +107,22 @@ public class Window extends JFrame {
 
         scaleSmall.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                SERVER_STATUS_ICON_DIMENSION = 16;
-                containerPane.updateServerButtonsSizes();
+                serverStatusIconScaleMode = 1;
+                containerPane.updateServerButtonsSizes(getScaledSize(16));
             }
         });
 
         scaleMedium.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                SERVER_STATUS_ICON_DIMENSION = 32;
-                containerPane.updateServerButtonsSizes();
+                serverStatusIconScaleMode = 2;
+                containerPane.updateServerButtonsSizes(getScaledSize(32));
             }
         });
 
         scaleLarge.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                SERVER_STATUS_ICON_DIMENSION = 48;
-                containerPane.updateServerButtonsSizes();
+                serverStatusIconScaleMode = 3;
+                containerPane.updateServerButtonsSizes(getScaledSize(48));
             }
         });
 
@@ -149,10 +146,10 @@ public class Window extends JFrame {
         showCharts.setSelected(areChartsEnabled);
 
 
-        switch(SERVER_STATUS_ICON_DIMENSION) {
-            case 16 -> scaleSmall.setSelected(true);
-            case 32 -> scaleMedium.setSelected(true);
-            case 48 -> scaleLarge.setSelected(true);
+        switch(serverStatusIconScaleMode) {
+            case 1 -> scaleSmall.setSelected(true);
+            case 2 -> scaleMedium.setSelected(true);
+            case 3 -> scaleLarge.setSelected(true);
         }
 
         int savedXPosition = getUserValues().getInt(PREFS_KEY_X, 0);
@@ -172,7 +169,7 @@ public class Window extends JFrame {
                 userSavedValues.putInt(PREFS_KEY_Y, screenDimensions.y);
                 userSavedValues.putInt(PREFS_KEY_WIDTH, screenDimensions.width);
                 userSavedValues.putInt(PREFS_KEY_HEIGHT, screenDimensions.height);
-                userSavedValues.putInt(PREFS_SERVER_ICONS_SCALE, SERVER_STATUS_ICON_DIMENSION);
+                userSavedValues.putInt(PREFS_ICON_SCALE_MODE, serverStatusIconScaleMode);
                 userSavedValues.putBoolean(PREFS_ARE_CHARTS_ENABLED, areChartsEnabled);
 
                 containerPane.killAllServerProcesses();
@@ -282,7 +279,7 @@ public class Window extends JFrame {
         return asfd2.getScaleX();
     }
 
-    public static int getScaledFontSize(int fontSize) {
+    public static int getScaledSize(int fontSize) {
         if(SystemInfo.isLinux)
             return (int) (fontSize * getDisplayScale());
         return fontSize;

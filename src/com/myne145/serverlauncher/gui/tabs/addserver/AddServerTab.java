@@ -19,7 +19,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 
-import static com.myne145.serverlauncher.gui.window.Window.getScaledFontSize;
+import static com.myne145.serverlauncher.gui.window.Window.getScaledSize;
 
 public class AddServerTab extends JPanel {
     private final JButton confirmButton = new JButton("Add server");
@@ -69,7 +69,7 @@ public class AddServerTab extends JPanel {
         JPanel serverInfoPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         JPanel bottomPanel = new JPanel(new BorderLayout());
 
-        titleText.setFont(new Font("Arial", Font.BOLD, getScaledFontSize(18)));
+        titleText.setFont(new Font("Arial", Font.BOLD, getScaledSize(18)));
         titleText.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         titlePanel.add(titleText, BorderLayout.LINE_START);
 

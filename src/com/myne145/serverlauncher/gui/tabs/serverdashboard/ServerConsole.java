@@ -1,6 +1,5 @@
 package com.myne145.serverlauncher.gui.tabs.serverdashboard;
 
-import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.window.ContainerPane;
 import com.myne145.serverlauncher.server.Config;
 import com.myne145.serverlauncher.server.MinecraftServer;
@@ -186,7 +185,7 @@ public class ServerConsole extends JPanel {
         options.setOpaque(true);
         options.setBackground(Colors.BACKGROUND_PRIMARY_COLOR);
 
-        serverConsoleTitle.setFont(new Font("Arial", Font.BOLD, getScaledFontSize(18)));
+        serverConsoleTitle.setFont(new Font("Arial", Font.BOLD, getScaledSize(18)));
         optionsPanel.add(options, BorderLayout.LINE_END);
         optionsPanel.add(serverConsoleTitle, BorderLayout.LINE_START);
 

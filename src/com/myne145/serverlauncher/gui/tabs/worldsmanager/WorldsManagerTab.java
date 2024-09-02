@@ -14,7 +14,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-import static com.myne145.serverlauncher.gui.window.Window.getScaledFontSize;
+import static com.myne145.serverlauncher.gui.window.Window.getScaledSize;
 import static com.myne145.serverlauncher.utils.ZipUtils.isArchive;
 
 public class WorldsManagerTab extends JPanel {
@@ -75,7 +75,7 @@ public class WorldsManagerTab extends JPanel {
         JPanel refreshButtonWithSpacing = new JPanel(new BorderLayout());
 
         JLabel title = new JLabel( "<html>Worlds - " + server.getName(50) + "</html>");
-        title.setFont(new Font("Arial", Font.BOLD, getScaledFontSize(18)));
+        title.setFont(new Font("Arial", Font.BOLD, getScaledSize(18)));
         if(server.getName().length() > 50)
             title.setToolTipText(server.getName());
 
