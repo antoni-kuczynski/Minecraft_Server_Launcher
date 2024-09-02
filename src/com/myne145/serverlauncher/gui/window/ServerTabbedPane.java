@@ -1,6 +1,7 @@
 package com.myne145.serverlauncher.gui.window;
 
 import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
+import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
 import com.myne145.serverlauncher.gui.tabs.addserver.AddServerTab;
 import com.myne145.serverlauncher.gui.tabs.serverdashboard.ServerDashboardTab;
@@ -25,6 +26,8 @@ public class ServerTabbedPane extends JTabbedPane {
         setUI(new FlatTabbedPaneUI() {
             @Override
             protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
+                if(SystemInfo.isLinux)
+                    return (int) (65 * Window.getDisplayScale());
                 return 65;
             }
         });

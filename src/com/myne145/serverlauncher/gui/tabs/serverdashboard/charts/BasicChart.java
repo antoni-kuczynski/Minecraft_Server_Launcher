@@ -104,11 +104,16 @@ public class BasicChart extends JPanel {
         chart.getStyler().setChartFontColor(Colors.TEXT_COLOR);
 
         chart.getStyler().setLabelType(PieStyler.LabelType.NameAndPercentage);
-        chart.getStyler().setSumFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+
 
         chart.getStyler().setLabelsDistance(.82);
         chart.getStyler().setPlotContentSize(.9);
         chart.getStyler().setSumVisible(true);
+        if(SystemInfo.isLinux) {
+            chart.getStyler().setSumFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) (12 * Window.getDisplayScale())));
+            return;
+        }
+        chart.getStyler().setSumFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
     }
 
     protected PieChart getChart() {

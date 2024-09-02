@@ -1,5 +1,6 @@
 package com.myne145.serverlauncher.gui.window;
 
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.myne145.serverlauncher.gui.components.OpenContextMenuItem;
 import com.myne145.serverlauncher.gui.components.TabLabelWithFileTransfer;
@@ -53,8 +54,6 @@ public class Window extends JFrame {
             taskbar = Taskbar.getTaskbar();
 
         SERVER_STATUS_ICON_DIMENSION = getUserValues().getInt(PREFS_SERVER_ICONS_SCALE,  32);
-
-
         
         this.getRootPane().putClientProperty("JRootPane.titleBarBackground", Colors.TABBEDPANE_BACKGROUND_COLOR);
         this.getRootPane().putClientProperty("JRootPane.titleBarForeground", Colors.TEXT_COLOR);
@@ -93,8 +92,6 @@ public class Window extends JFrame {
         setJMenuBar(menuBar);
 
         ContainerPane containerPane = new ContainerPane();
-
-
         add(containerPane, BorderLayout.CENTER);
         BasicChart.startResourceMonitoringTimer();
 
@@ -162,7 +159,7 @@ public class Window extends JFrame {
         int savedYPosition = getUserValues().getInt(PREFS_KEY_Y, 0);
         int savedWidth = getUserValues().getInt(PREFS_KEY_WIDTH, 1000);
         int savedHeight = getUserValues().getInt(PREFS_KEY_HEIGHT, 550);
-        setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight);
+        setBounds(savedXPosition, savedYPosition, savedWidth, savedHeight); //doesnt work on linux
 
         for(WindowListener windowListener : getWindowListeners())
             removeWindowListener(windowListener);
@@ -229,8 +226,6 @@ public class Window extends JFrame {
 
         });
         window = this;
-        System.out.println(this.getSize());
-        System.out.println(getDisplayScale());
     }
 
 
@@ -287,6 +282,12 @@ public class Window extends JFrame {
         return asfd2.getScaleX();
     }
 
+    public static int getScaledFontSize(int fontSize) {
+        if(SystemInfo.isLinux)
+            return (int) (fontSize * getDisplayScale());
+        return fontSize;
+    }
+
     public static Window getWindow() {
         return window;
     }
@@ -310,12 +311,6 @@ public class Window extends JFrame {
     public static DateFormat getDateFormat() {
         return dateFormat;
     }
-
-
-//    @Override
-//    public void repaint(long time, int x, int y, int width, int height) {
-//        super.repaint(time, x, y, width, height);
-//    }
 
     public static void main(String[] args) throws Exception {
         InputStream inputStream = Config.getResource(Config.RESOURCES_PATH + "/DarkFlatTheme/DarkFlatTheme.json");
