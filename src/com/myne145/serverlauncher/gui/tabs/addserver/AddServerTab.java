@@ -50,6 +50,7 @@ public class AddServerTab extends JPanel {
         }
 
         serverInfoPanel.setVisible(false);
+
         openServerJarPanel.getValue().setFileChooserFileExtension("jar");
         currentServer.setServerLaunchArgs("nogui");
         confirmButton.setEnabled(false);
@@ -94,13 +95,14 @@ public class AddServerTab extends JPanel {
         mainPanelWithSpacing.add(Box.createRigidArea(new Dimension(10, 10)));
         mainPanelWithSpacing.add(mainPanel);
 
-
         serverInfoPanelWithSpacing.add(serverInfoPanel);
         serverInfoPanelWithSpacing.add(Box.createRigidArea(new Dimension(10, 10)));
 
-
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         bottomPanel.add(confirmButton, BorderLayout.LINE_END);
+
+
+        serverInfoPanel.setPreferredSize(new Dimension(250, mainPanel.getPreferredSize().height));
 
         add(titlePanel, BorderLayout.PAGE_START);
         add(mainPanelWithSpacing, BorderLayout.LINE_START);
@@ -145,6 +147,9 @@ public class AddServerTab extends JPanel {
                 requestFocusInWindow();
             }
         });
+
+        System.out.println(serverInfoPanel.getPreferredSize());
+        System.out.println(mainPanel.getPreferredSize());
     }
 
     private Pair<JPanel, PickFileButton> getOpenDirButtonPanel(String buttonText, String titleText, FilePickerButtonAction action) {
