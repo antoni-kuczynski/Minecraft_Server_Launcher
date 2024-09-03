@@ -139,7 +139,6 @@ public abstract class Config extends ArrayList<MinecraftServer> {
           folders.add(filePath.getName());
           filePath = filePath.getParentFile();
         }
-        System.out.println(folders);
         if(SystemInfo.isLinux && folders.get(folders.size() - 1).equals("home")) {
             folders.remove(folders.size() - 1);
             folders.set(folders.size() - 1, "~");

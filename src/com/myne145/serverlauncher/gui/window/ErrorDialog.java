@@ -64,7 +64,7 @@ public class ErrorDialog extends JDialog {
 
         getRootPane().setDefaultButton(ok);
         SwingUtilities.invokeLater(ok::requestFocusInWindow);
-        System.out.println(stackTraceArea.getText());
+        System.err.println(stackTraceArea.getText());
 
         viewStackTraceButton.addActionListener(e1 -> {
             if(!stackTracePanel.isVisible()) {

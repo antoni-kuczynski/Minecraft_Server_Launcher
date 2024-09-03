@@ -32,7 +32,7 @@ public class Window extends JFrame {
     private final String PREFS_ICON_SCALE_MODE = "prefs_server_icons_scale";
     private static final Preferences userValues = Preferences.userNodeForPackage(Window.class);
     private static boolean areChartsEnabled;
-    public static int serverStatusIconScaleMode;
+    private static int serverStatusIconScaleMode;
     public static DateFormat dateFormat = DateFormat.YYYY_MM_DD;
     private static Window window;
     private static Taskbar taskbar;
@@ -135,9 +135,10 @@ public class Window extends JFrame {
 
             int tabCount = containerPane.getTabCount();
             for(int i = 1; i < tabCount; i++) {
-                containerPane.remove(1);
+                containerPane.removeTabAt(1);
             }
             Config.getData().forEach(containerPane::addServer);
+            containerPane.updateServerButtonsSizes(getScaledSize(serverStatusIconScaleMode * 16));
             MinecraftServer.writeAllToConfig();
             containerPane.setSelectedIndex(0);
         });

@@ -174,7 +174,8 @@ public class AddServerTab extends JPanel {
         field.setAlignmentX(LEFT_ALIGNMENT);
         field.setBorder(new FlatLineBorder(new Insets(1,1,1,1), Colors.COMPONENT_PRIMARY_COLOR.darker(), 1, 3));
         field.setBackground(Colors.BACKGROUND_PRIMARY_COLOR);
-        field.setPreferredSize(new Dimension(130, 20));
+        field.setPreferredSize(new Dimension(130, 25));
+
 
         result.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
         result.add(titleLabel);

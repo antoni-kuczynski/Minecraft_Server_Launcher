@@ -18,7 +18,7 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.myne145.serverlauncher.gui.window.Window.serverStatusIconScaleMode;
+import static com.myne145.serverlauncher.gui.window.Window.getScaledSize;
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 
 
@@ -26,6 +26,7 @@ public class ContainerPane extends JTabbedPane {
     private static final ArrayList<ServerTabbedPane> serverTabbedPanes = new ArrayList<>();
     private static final OpenContextMenuItem openServerFolderItem = (OpenContextMenuItem) Window.getMenu().getMenu(0).getItem(0);
     private boolean isTabbedPaneFocused = true;
+    private final int tabbedPaneWidth = getScaledSize(220);
 
     private TransferHandler getScrollButtonTransferHandler(int direction) {
         // 1 5
@@ -84,12 +85,12 @@ public class ContainerPane extends JTabbedPane {
 
         @Override
         protected int calculateTabAreaWidth(int tabPlacement, int vertRunCount, int maxTabWidth) {
-            return 220;
+            return tabbedPaneWidth;
         }
 
         @Override
         protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
-            return 220;
+            return tabbedPaneWidth;
         }
 
         @Override
@@ -143,6 +144,13 @@ public class ContainerPane extends JTabbedPane {
         TabLabelWithFileTransfer tabLabel = (TabLabelWithFileTransfer) this.getTabComponentAt(index);
         tabLabel.setEnabled(enabled);
     }
+
+    @Override
+    public void removeTabAt(int index) {
+        super.removeTabAt(index);
+        serverTabbedPanes.remove(index);
+    }
+
 
     public ContainerPane() {
         setLayout(new BorderLayout());
