@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.myne145.serverlauncher.gui.window.Window.getScaledSize;
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 
 public class PickFileButton extends JButton {
@@ -29,6 +30,7 @@ public class PickFileButton extends JButton {
     private String defaultFile = "";
     private final ArrayList<ButtonWarning> currentWarnings = new ArrayList<>();
     private String tooltipTextWithoutWarnings = "";
+    private File previousFile;
 
     @Override
     public Dimension getPreferredSize() {
@@ -56,10 +58,16 @@ public class PickFileButton extends JButton {
                 updateFileRelatedStuff(FILE_CHOOSER_WINDOWS.getSelectedFile(), afterFileIsSelected);
                 return;
             }
+            if(previousFile != null) {
+                FILE_CHOOSER.setDirectory(previousFile.getPath());
+            }
             FILE_CHOOSER.setFile(defaultFile);
             FILE_CHOOSER.setVisible(true);
-            if(FILE_CHOOSER.getFile() != null)
-                updateFileRelatedStuff(new File(FILE_CHOOSER.getDirectory() + FILE_CHOOSER.getFile()), afterFileIsSelected);
+            if(FILE_CHOOSER.getFile() != null) {
+                File f = new File(FILE_CHOOSER.getDirectory() + FILE_CHOOSER.getFile());
+                updateFileRelatedStuff(f, afterFileIsSelected);
+                previousFile = f.getParentFile();
+            }
         };
         Thread thread = new Thread(runnable);
         thread.setName("FILECHOOSER");
@@ -70,7 +78,7 @@ public class PickFileButton extends JButton {
         defaultFile = ("*." + extension);
     }
     public void setCustomButtonText(String s) {
-        customText = "<html><b>Currently selected:</b><br><small>" + s + "</small></html>";
+        customText = "<html><b>Currently selected:</b><br><p style=\"font-size:" + getScaledSize(9) + "px\">" + s + "</p></html>";
         this.setText(customText);
     }
     private void removeImportButtonWarning() {
@@ -125,7 +133,7 @@ public class PickFileButton extends JButton {
         afterFileIsSelected.run(filePath);
 
         if(customText == null) {
-            this.setText("<html><b>Currently selected:</b><br><small>" + Config.abbreviateFilePath(filePath, 60) + "</small></html>");
+            this.setText("<html><b>Currently selected:</b><br><p style=\"font-size:" + getScaledSize(9) + "px\">" + Config.abbreviateFilePath(filePath, 60) + "</p></html>");
         }
         else {
             this.setText(customText);

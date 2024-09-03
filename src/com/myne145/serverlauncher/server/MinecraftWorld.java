@@ -97,7 +97,12 @@ public class MinecraftWorld {
             long lastPlayed = content.getLong("LastPlayed");
             int gameMode = content.getInt("GameType");
             boolean isUsingCheats = content.getBoolean("allowCommands");
-            String version = content.get("Version").asCompoundTag().getString("Name");
+            String version = "Unknown";
+
+            //check for older versions not storing exact number in level.dat
+            if(content.contains("Version")) {
+                version = content.get("Version").asCompoundTag().getString("Name");
+            }
 
             if(content.isEmpty()) {
                 hasLevelDat = false;

@@ -44,7 +44,13 @@ public class Window extends JFrame {
         setIconImage(DefaultIcons.getIcon(DefaultIcons.APP_ICON).getImage());
         setTitle("Minecraft Server Launcher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension((int) (750 * getDisplayScale()), (int) (490 * getDisplayScale())));
+        Dimension minSize = new Dimension((int) (750 * getDisplayScale()), (int) (490 * getDisplayScale()));
+        if(SystemInfo.isLinux) {
+            minSize.width *= getDisplayScale();
+            minSize.height *= getDisplayScale();
+        }
+        setMinimumSize(minSize);
+
 
         if(Taskbar.isTaskbarSupported())
             taskbar = Taskbar.getTaskbar();
@@ -280,10 +286,10 @@ public class Window extends JFrame {
         return asfd2.getScaleX();
     }
 
-    public static int getScaledSize(int fontSize) {
+    public static int getScaledSize(int size) {
         if(SystemInfo.isLinux)
-            return (int) (fontSize * getDisplayScale());
-        return fontSize;
+            return (int) (size * getDisplayScale());
+        return size;
     }
 
     public static Window getWindow() {

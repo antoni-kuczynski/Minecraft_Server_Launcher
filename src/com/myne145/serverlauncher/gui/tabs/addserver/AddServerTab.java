@@ -146,9 +146,6 @@ public class AddServerTab extends JPanel {
                 requestFocusInWindow();
             }
         });
-
-        System.out.println(serverInfoPanel.getPreferredSize());
-        System.out.println(mainPanel.getPreferredSize());
     }
 
     private Pair<JPanel, PickFileButton> getOpenDirButtonPanel(String buttonText, String titleText, FilePickerButtonAction action) {
@@ -178,7 +175,7 @@ public class AddServerTab extends JPanel {
         field.setAlignmentX(LEFT_ALIGNMENT);
         field.setBorder(new FlatLineBorder(new Insets(1,1,1,1), Colors.COMPONENT_PRIMARY_COLOR.darker(), 1, 3));
         field.setBackground(Colors.BACKGROUND_PRIMARY_COLOR);
-        field.setPreferredSize(new Dimension(130, 25));
+        field.setPreferredSize(new Dimension(170, 25));
 
 
         result.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
