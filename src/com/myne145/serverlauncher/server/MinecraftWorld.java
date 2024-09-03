@@ -23,6 +23,7 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
+import static com.myne145.serverlauncher.gui.window.Window.getScaledSize;
 import static com.myne145.serverlauncher.gui.window.Window.showErrorMessage;
 import static com.myne145.serverlauncher.utils.ZipUtils.extractArchive;
 
@@ -74,7 +75,7 @@ public class MinecraftWorld {
         //Icon
         File iconFile = new File(levelDatFile.getParentFile().getAbsolutePath() + "/icon.png");
         try {
-            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(96, 96, Image.SCALE_SMOOTH));
+            worldIcon = new ImageIcon(ImageIO.read(iconFile).getScaledInstance(getScaledSize(96), getScaledSize(96), Image.SCALE_SMOOTH));
         } catch (IOException e) {
             worldIcon = DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING);
         }

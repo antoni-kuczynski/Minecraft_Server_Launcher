@@ -122,7 +122,9 @@ class DefaultIcon {
             serverOnline = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_online.png")));
             serverOffline = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_offline.png")));
             serverErrored = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/server_errored.png")));
-            defaultWorld = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png")));
+            defaultWorld = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/default_world_icon.png"))
+                    .getScaledInstance(getScaledSize(96), getScaledSize(96), Image.SCALE_SMOOTH));
+
             appIcon = new ImageIcon(ImageIO.read(Config.getResource(Config.RESOURCES_PATH + "/app_icon.png")));
 //            appIcon = new FlatSVGIcon(Config.RESOURCES_PATH + "/icon_test.svg", Config.classLoader);
 

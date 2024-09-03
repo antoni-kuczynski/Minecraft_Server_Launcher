@@ -3,6 +3,7 @@ package com.myne145.serverlauncher.gui.tabs.worldsmanager;
 import com.formdev.flatlaf.ui.FlatLineBorder;
 //import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ClientMinecraftWorld;
 //import com.myne145.serverlauncher.gui.tabs.worldsmanager.nbt.ServerMinecraftWorld;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MinecraftServer;
 import com.myne145.serverlauncher.server.MinecraftWorld;
 import com.myne145.serverlauncher.utils.Colors;
@@ -72,15 +73,15 @@ public class WorldsInfoPanels extends JPanel {
 
     private void updatePanel(WorldInformationPanel worldInformationPanel, MinecraftWorld minecraftWorld) {
         if(!minecraftWorld.hasLevelDat()) {
-            worldInformationPanel.worldInformationLabel.setText("<html><font size=4>Level.dat file not found!</font></html>");
+            worldInformationPanel.worldInformationLabel.setText("<html>Level.dat file not found!</html>");
             worldInformationPanel.worldInformationLabel.setIcon(DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING));
             return;
         }
 
 
-        String details = "<html><font size=4><b>" + minecraftWorld.getLevelNameColors() +"</b>" +
+        String details = "<html><b>" + minecraftWorld.getLevelNameColors() +"</b>" +
                 "<br>"+ minecraftWorld.getFolderName(30) + " (" + minecraftWorld.getFormattedDate() + ")" +
-                "<br>" + minecraftWorld.getGamemode() + " Mode, " + (minecraftWorld.isUsingCheats() ? "Cheats, " : "") + "Version: " + minecraftWorld.getGameVersion() + "</font></html>";
+                "<br>" + minecraftWorld.getGamemode() + " Mode, " + (minecraftWorld.isUsingCheats() ? "Cheats, " : "") + "Version: " + minecraftWorld.getGameVersion() + "</html>";
         worldInformationPanel.worldInformationLabel.setText(details);
         worldInformationPanel.worldInformationLabel.setIcon(minecraftWorld.getWorldIcon());
     }
@@ -88,13 +89,15 @@ public class WorldsInfoPanels extends JPanel {
     private WorldInformationPanel createInformationPanel(String title, boolean isServer) {
         JPanel worldPanel = new JPanel(new BorderLayout());
         JLabel titleLabel = new JLabel(title);
-        JLabel iconAndWorldInfo = new JLabel("<html><font size=4>World details are going to appear here.</font></html>");
+//        JLabel iconAndWorldInfo = new JLabel("<html><font size=4>World details are going to appear here.</font></html>");
+        JLabel iconAndWorldInfo = new JLabel("<html>World details are going to appear here.<html>");
+        iconAndWorldInfo.setFont(new Font("Arial", Font.PLAIN, Window.getScaledSize(14)));
 
         worldPanel.setBorder(new FlatLineBorder(new Insets(10, 10, 10, 0), Colors.BORDER_COLOR, 1, 16));
         worldPanel.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
-        worldPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
+        worldPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Window.getScaledSize(160)));
 
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, Window.getScaledSize(16)));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 
         iconAndWorldInfo.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
