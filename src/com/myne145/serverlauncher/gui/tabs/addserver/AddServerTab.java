@@ -22,11 +22,11 @@ import java.io.File;
 import static com.myne145.serverlauncher.gui.window.Window.getScaledSize;
 
 public class AddServerTab extends JPanel {
-    private final JButton confirmButton = new JButton("Add server");
-    private Pair<JPanel, PickFileButton> openServerJarPanel = getOpenDirButtonPanel("Open server jar file", "Server jar", this::setServerJarPath);
-    private Pair<JPanel, PickFileButton> openJavaBinPanel = getOpenDirButtonPanel("Open java bin file", "Java bin", this::setJavaBinPath);
     private final ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
-    private MinecraftServer currentServer = new MinecraftServer();
+    private final Pair<JPanel, PickFileButton> openServerJarPanel = getOpenDirButtonPanel("Open server jar file", "Server jar", this::setServerJarPath);
+    private final Pair<JPanel, PickFileButton> openJavaBinPanel = getOpenDirButtonPanel("Open java bin file", "Java bin", this::setJavaBinPath);
+    private final JButton confirmButton = new JButton("Add server");
+    private final MinecraftServer currentServer = new MinecraftServer();
 
     @Override
     public void paintComponent(Graphics g) {
@@ -49,67 +49,66 @@ public class AddServerTab extends JPanel {
             setJavaBinPath(Config.getDefaultJava());
         }
 
-        serverInfoPanel.setVisible(false);
-
-        openServerJarPanel.getValue().setFileChooserFileExtension("jar");
-        currentServer.setServerLaunchArgs("nogui");
-        confirmButton.setEnabled(false);
-        confirmButton.setAlignmentX(LEFT_ALIGNMENT);
-
-
         JPanel titlePanel = new JPanel(new BorderLayout());
         JLabel titleText = new JLabel("Add server");
-
-        JPanel mainPanel = new JPanel();
-        JPanel serverNameInputPanel = getTextInputPanel("Server name");
-        JPanel launchArgsInputPanel = getTextInputPanel("Launch args");
-        JPanel mainPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        JTextField serverNameInput = (JTextField) serverNameInputPanel.getComponent(1);
-        JTextField launchArgsInput = (JTextField) launchArgsInputPanel.getComponent(1);
-
-        JPanel serverInfoPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-
         titleText.setFont(new Font("Arial", Font.BOLD, getScaledSize(18)));
         titleText.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         titlePanel.add(titleText, BorderLayout.LINE_START);
+
+        JPanel mainPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        JPanel mainPanel = new JPanel();
+        JLabel requiredFieldsText = new JLabel("Required");
+        JPanel serverNameInputPanel = getTextInputPanel("Server name");
+        JTextField serverNameInput = (JTextField) serverNameInputPanel.getComponent(1);
+        JLabel optionalFieldsText = new JLabel("Optional");
+        JPanel launchArgsInputPanel = getTextInputPanel("Launch args");
+        JTextField launchArgsInput = (JTextField) launchArgsInputPanel.getComponent(1);
+
+        requiredFieldsText.setFont(new Font("Arial", Font.BOLD, getScaledSize(14)));
+        optionalFieldsText.setFont(new Font("Arial", Font.BOLD, getScaledSize(14)));
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(new FlatLineBorder(new Insets(10, 100, 10, 100), Colors.BORDER_COLOR, 1, 16));
         mainPanel.setBackground(Colors.COMPONENT_PRIMARY_COLOR);
         mainPanel.setAlignmentX(LEFT_ALIGNMENT);
 
-
-        mainPanel.add(new JLabel("<html><b><font size=4>Required</font></b></html>"));
+        mainPanel.add(requiredFieldsText);
         mainPanel.add(serverNameInputPanel);
         mainPanel.add(Box.createRigidArea(new Dimension(10, 20)));
         mainPanel.add(openServerJarPanel.getKey());
+        openServerJarPanel.getValue().setFileChooserFileExtension("jar");
 
         mainPanel.add(Box.createRigidArea(new Dimension(10, 80)));
-        mainPanel.add(new JLabel("<html><b><font size=4>Optional</font></b></html>"));
+        mainPanel.add(optionalFieldsText);
         mainPanel.add(launchArgsInputPanel);
         mainPanel.add(Box.createRigidArea(new Dimension(10, 20)));
         mainPanel.add(openJavaBinPanel.getKey());
 
-
         mainPanelWithSpacing.add(Box.createRigidArea(new Dimension(10, 10)));
         mainPanelWithSpacing.add(mainPanel);
 
+
+        JPanel serverInfoPanelWithSpacing = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+
         serverInfoPanelWithSpacing.add(serverInfoPanel);
         serverInfoPanelWithSpacing.add(Box.createRigidArea(new Dimension(10, 10)));
+        serverInfoPanel.setVisible(false);
+        serverInfoPanel.setPreferredSize(new Dimension(250, mainPanel.getPreferredSize().height));
 
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         bottomPanel.add(confirmButton, BorderLayout.LINE_END);
+        confirmButton.setEnabled(false);
+        confirmButton.setAlignmentX(LEFT_ALIGNMENT);
+
+        this.add(titlePanel, BorderLayout.PAGE_START);
+        this.add(mainPanelWithSpacing, BorderLayout.LINE_START);
+        this.add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.CENTER);
+        this.add(serverInfoPanelWithSpacing, BorderLayout.LINE_END);
+        this.add(bottomPanel, BorderLayout.PAGE_END);
 
 
-        serverInfoPanel.setPreferredSize(new Dimension(250, mainPanel.getPreferredSize().height));
-
-        add(titlePanel, BorderLayout.PAGE_START);
-        add(mainPanelWithSpacing, BorderLayout.LINE_START);
-        add(Box.createRigidArea(new Dimension(10, 10)), BorderLayout.CENTER);
-        add(serverInfoPanelWithSpacing, BorderLayout.LINE_END);
-        add(bottomPanel, BorderLayout.PAGE_END);
-
+        currentServer.setServerLaunchArgs("nogui");
         serverNameInput.putClientProperty("type", "server_name");
         serverNameInput.addKeyListener(new KeyAdapter() {
             @Override
