@@ -1,8 +1,6 @@
 package com.myne145.serverlauncher.gui.tabs.serverdashboard.charts;
 
 import org.knowm.xchart.*;
-import java.lang.management.ManagementFactory;
-import com.sun.management.OperatingSystemMXBean;
 
 public class CPUChart extends BasicChart {
 

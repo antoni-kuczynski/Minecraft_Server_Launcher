@@ -1,6 +1,8 @@
 package com.myne145.serverlauncher.gui.tabs.addserver;
 
 import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.util.SystemInfo;
+import com.myne145.serverlauncher.gui.window.Window;
 import com.myne145.serverlauncher.server.MinecraftServer;
 import com.myne145.serverlauncher.utils.Colors;
 import com.myne145.serverlauncher.utils.DefaultIcons;
@@ -70,9 +72,13 @@ public class ServerInfoPanel extends JPanel {
 //        serverDetailsText.setText("<html><center>PaperMC Server<br>Version: 1.19.4<br>Online mode<br>World name: Parkour Paradise 3<br>Java version: 19.0.2<br>Gamemode: Survival<br>Port: 25565<br></center></html>");
 //        serverDetailsText.setText("<html><center><b>PaperMC Server</b><br>Survival Mode<br>Version: 1.19.4<br>World: Parkour Paradise 3<br>Port: 25565<br>Online mode</center></html>");
         serverDetailsText.setIcon(DefaultIcons.getIcon(DefaultIcons.WORLD_MISSING));
-
-
+        if(SystemInfo.isWindows) {
+            serverDetailsText.setFont(new Font("Arial", Font.PLAIN, 16));
+        } else {
+            serverDetailsText.setFont(new Font("Arial", Font.PLAIN, Window.getScaledSize(15)));
+        }
 //        add(image);
+        add(Box.createRigidArea(new Dimension(0, 10)));
         add(serverDetailsText);
     }
 }
