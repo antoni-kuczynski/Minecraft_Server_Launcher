@@ -1,4 +1,4 @@
-# Minecraft_Server_Launcher_V2
+# Minecraft Server Launcher
 
 <img align="left" src="https://github.com/myne145/Minecraft_Server_Launcher_V2/assets/78707580/e7d36409-8678-48e9-9a65-b04bfc8b4319"><br><br>
 Cross platform Minecraft server GUI launcher, intended for better server management in one place.
