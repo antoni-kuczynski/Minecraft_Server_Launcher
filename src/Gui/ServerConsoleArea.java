@@ -49,7 +49,7 @@ public class ServerConsoleArea extends JPanel {
                     } else {
                         consoleOutput.append(line + "\n");
                     }
-//                    System.out.println(line);
+                    System.out.println(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -154,7 +154,7 @@ public class ServerConsoleArea extends JPanel {
 
     public void startServer(ButtonData buttonData) {
         ArrayList<String> command = new ArrayList<>(Arrays.asList("java",
-                 "-jar", buttonData.serverJarPath().getAbsolutePath(), "nogui"));
+                 "-jar", buttonData.serverPath().getAbsolutePath(), "nogui"));
         System.out.println("Command: " + command);
         try {
             processBuilder = new ProcessBuilder(command);
@@ -183,7 +183,7 @@ public class ServerConsoleArea extends JPanel {
 //                processes.add(process1);
 //                if (processes.size() == 1)
 //                    consoleMainThread.start();
-//                System.out.println("Console main thread state: " + consoleMainThread.getState());
+                System.out.println("Console main thread state: " + consoleMainThread.getState());
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -2,12 +2,8 @@
   <library name="libraries">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/commons-io-2.11.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/flatlaf-3.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/flatlaf-intellij-themes-3.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/gson-2.10.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/json-20220924.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/nbt-1.5.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/swing-jnafilechooser.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
